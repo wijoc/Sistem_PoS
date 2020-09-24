@@ -65,7 +65,7 @@ class Product_c extends MY_Controller {
 	function addKategoriProses(){
 	  /* Get data post dari form */
 	  	$postData = array(
-	  		'ktgr_nama' => $this->input->post('postKategori')
+	  		'ktgr_nama' => $this->input->post('postKategoriNama')
 	  	);
 
 	  /* Insert proses */
@@ -85,11 +85,35 @@ class Product_c extends MY_Controller {
 	  	redirect('Product_c/listKatSatPage');
 	}
 
+	/* Function : edit Kategori Proses */
+	function editKategoriProses(){
+		$editData = array(
+			'ktgr_id' 	=> $this->input->post('postID'),
+			'ktgr_nama' => $this->input->post('postNama')
+		);
+		//print("<pre>".print_r($editData, true)."</pre>");
+		
+		$editKategori = $this->Product_m->updateKategori($editData);
+
+	  /* return & redirect */ 
+	  	/* Set Session untuk alert */
+	  	if($inputKategori > 0){
+	  		$this->session->set_flashdata('flashStatus', 'successUpdate');
+	  		$this->session->set_flashdata('flashMsg', 'Success insert kategori');
+	  	} else {
+	  		$this->session->set_flashdata('flashStatus', 'failedUpdate');
+	  		$this->session->set_flashdata('flashMsg', 'Failed insert kategori');
+	  	}
+
+	  	/* Redirect list kategori dan satuan */
+	  	redirect('Product_c/listKatSatPage');
+	}
+
 	/* Function : add Satuan Proses */
 	function addSatuanProses(){
 	  /* Get data post dari form */
 	  	$postData = array(
-	  		'satuan_nama' => $this->input->post('postSatuan')
+	  		'satuan_nama' => $this->input->post('postSatuanNama')
 	  	);
 
 	  /* Insert proses */
@@ -103,6 +127,30 @@ class Product_c extends MY_Controller {
 	  	} else {
 	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
 	  		$this->session->set_flashdata('flashMsg', 'Failed insert satuan');
+	  	}
+
+	  	/* Redirect list kategori dan satuan */
+	  	redirect('Product_c/listKatSatPage');
+	}
+
+	/* Function : edit Satuan Proses */
+	function editSatuanProses(){
+		$editData = array(
+			'satuan_id' 	=> $this->input->post('postID'),
+			'satuan_nama' => $this->input->post('postNama')
+		);
+		print("<pre>".print_r($editData, true)."</pre>");
+
+		$editSatuan = $this->Product_m->updateSatuan($editData);
+
+	  /* return & redirect */ 
+	  	/* Set Session untuk alert */
+	  	if($inputKategori > 0){
+	  		$this->session->set_flashdata('flashStatus', 'successUpdate');
+	  		$this->session->set_flashdata('flashMsg', 'Success update satuan');
+	  	} else {
+	  		$this->session->set_flashdata('flashStatus', 'failedUpdate');
+	  		$this->session->set_flashdata('flashMsg', 'Failed update satuan');
 	  	}
 
 	  	/* Redirect list kategori dan satuan */

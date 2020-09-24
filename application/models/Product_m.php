@@ -40,11 +40,19 @@ Class Product_m extends CI_Model {
   	}
 
    /* Function : Select semua kategori, dan sort berdasar ktgr_nama */
-  	function getKategori(){
-  		$this->db->order_by($this->kat_f[1], 'ASC');
-  		$resultInsert = $this->db->get($this->kat_tb);
-  		return $resultInsert->result_array();
-  	}
+    function getKategori(){
+      $this->db->order_by($this->kat_f[1], 'ASC');
+      $resultInsert = $this->db->get($this->kat_tb);
+      return $resultInsert->result_array();
+    }
+
+   /* Function : Update Kategori */
+    function updateKategori($data){
+      $this->db->set($this->kat_f[1], $data['ktgr_nama']);
+      $this->db->where($this->kat_f[0], $data['ktgr_id']);
+      $resultUpdate = $this->db->update($this->kat_tb);
+      return $resultUpdate;
+    }
 
   /* Function CRUD Satuan */
    /* Function : Insert Satuan */
@@ -59,4 +67,12 @@ Class Product_m extends CI_Model {
   		$resultInsert = $this->db->get($this->sat_tb);
   		return $resultInsert->result_array();
   	}
+
+   /* Function : Update Satuan */
+    function updateSatuan($data){
+      $this->db->set($this->sat_f[1], $data['satuan_nama']);
+      $this->db->where($this->sat_f[0], $data['satuan_id']);
+      $resultUpdate = $this->db->update($this->sat_tb);
+      return $resultUpdate;
+    }
 }

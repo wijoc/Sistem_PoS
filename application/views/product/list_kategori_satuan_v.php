@@ -60,12 +60,12 @@
                               $no = 1; 
                               foreach ($dataKategori as $showKtgr) { ?>
                               <tr>
-                                <td><?php echo $no ?></td>
+                                <td><?php echo $no++ ?></td>
                                 <td><?php echo $showKtgr['ktgr_nama'] ?></td>
                                 <td><?php echo $showKtgr['ktgr_nama'] ?></td>
                                 <td class="text-center">
                                   <a class="btn btn-xs btn-info" href=""><i class="fas fa-search"></i></a>
-                                  <a class="btn btn-xs btn-warning" href=""><i class="fas fa-edit"></i></a>
+                                  <a class="btn btn-xs btn-warning ktgrEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showKtgr['ktgr_id'] ?>" data-nama="<?php echo $showKtgr['ktgr_nama'] ?>"><i class="fas fa-edit"></i></a>
                                   <a class="btn btn-xs btn-danger" href=""><i class="fas fa-trash"></i></a>
                                 </td>
                               </tr>
@@ -107,11 +107,11 @@
                               $no = 1; 
                               foreach ($dataSatuan as $showSat) { ?>
                               <tr>
-                                <td><?php echo $no ?></td>
+                                <td><?php echo $no++ ?></td>
                                 <td><?php echo $showSat['satuan_nama'] ?></td>
                                 <td class="text-center">
                                   <a class="btn btn-xs btn-info" href=""><i class="fas fa-search"></i></a>
-                                  <a class="btn btn-xs btn-warning" href=""><i class="fas fa-edit"></i></a>
+                                  <a class="btn btn-xs btn-warning satuanEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showSat['satuan_id'] ?>" data-nama="<?php echo $showSat['satuan_nama'] ?>"><i class="fas fa-edit"></i></a>
                                   <a class="btn btn-xs btn-danger" href=""><i class="fas fa-trash"></i></a>
                                 </td>
                               </tr>
@@ -147,13 +147,15 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Product_c/addKategoriProses') ?>">
+            <form method="POST" action="<?php echo site_url('Product_c/addKategoriProses') ?>" id="formKategori">
               <div class="modal-body">
-                <!-- Form-part input Kategori -->
+                <!-- Form-part hidden Kategori id -->
+                  <input type="hidden" name="postKategoriID" id="editKategoriID" value="" disabled="disabled">
+                <!-- Form-part input Kategori nama -->
                   <div class="form-group row">
                     <label for="inputKategori" class="col-sm-3 col-form-label">Nama Kategori <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postKategori" id="inputKategori" placeholder="Nama kategori baru" required>
+                      <input type="text" class="form-control float-right" name="postKategoriNama" id="inputKategoriNama" placeholder="Nama kategori baru" required>
                     </div>
                   </div>
               </div>
@@ -178,13 +180,48 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Product_c/addSatuanProses') ?>">
+            <form method="POST" action="<?php echo site_url('Product_c/addSatuanProses') ?>" id="formSatuan">
               <div class="modal-body">
+                <!-- Form-part hidden Kategori id -->
+                  <input type="text" name="postSatuanID" id="editSatuanID" value="" disabled="disabled">
                 <!-- Form-part input Kategori -->
                   <div class="form-group row">
-                    <label for="inputSatuan" class="col-sm-3 col-form-label">Nama Satuan <a class="float-right"> : </a></label>
+                    <label for="inputSatuanNama" class="col-sm-3 col-form-label">Nama Satuan <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postSatuan" id="inputSatuan" placeholder="Nama kategori baru" required>
+                      <input type="text" class="form-control float-right" name="postSatuanNama" id="inputSatuanNama" placeholder="Nama satuan baru" required>
+                    </div>
+                  </div>
+              </div>
+              <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+              </div>
+            </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+     <!-- Modal Edit -->
+      <div class="modal fade" id="modal-edit">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title"></h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form method="POST" action="<?php echo site_url('Product_c') ?>" id="formEdit">
+              <div class="modal-body">
+                <!-- Form-part hidden Edit id -->
+                  <input type="hidden" name="postID" id="editID" value="" disabled="disabled">
+                <!-- Form-part input Edit nama -->
+                  <div class="form-group row">
+                    <label for="editNama" class="col-sm-3 col-form-label">Nama <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control float-right" name="postNama" id="editNama" placeholder="" required>
                     </div>
                   </div>
               </div>
