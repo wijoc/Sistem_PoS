@@ -33,7 +33,7 @@
                     <div class="form-group row">
                       <label for="inputKodeBrg" class="col-sm-3 col-form-label">Kode Produk <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control float-right" name="postKodeBrg" id="inputKodeBrg" placeholder="Kode Produk terisi otomatis oleh sistem" required>
+                        <input type="text" class="form-control float-right" name="postKodeBrg" id="inputKodeBrg" value="<?php echo $prdKode ?>" placeholder="Kode Produk terisi otomatis oleh sistem" required readonly>
                       </div>
                     </div>
 
@@ -51,7 +51,9 @@
                       <div class="col-sm-8">
                         <select class="form-control float-right" name="postKategoriBrg" id="inputKategoriBrg">
                           <option> -- Pilih Kategori -- </option>
-                          <option> AMBIL DARI DATABASE </option>
+                          <?php foreach ($optKtgr as $showKtgr): ?>
+                            <option value="<?php echo $showKtgr['ktgr_id'] ?>"> <?php echo $showKtgr['ktgr_nama'] ?> </option>
+                          <?php endforeach; ?>
                         </select>
                       </div>
                     </div>
@@ -60,7 +62,7 @@
                     <div class="form-group row">
                       <label for="inputHargaBeli" class="col-sm-3 col-form-label">Harga Beli <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postHargaBeli" id="inputHargaBeli" placeholder="Harga Beli Produk" required>
+                        <input type="number" class="form-control float-right" step="0.01" name="postHargaBeli" id="inputHargaBeli" placeholder="Harga Beli Produk" required>
                       </div>
                     </div>
 
@@ -68,7 +70,7 @@
                     <div class="form-group row">
                       <label for="inputHargaJual" class="col-sm-3 col-form-label">Harga Jual <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postHargaJual" id="inputHargaJual" placeholder="Harga Jual Produk" required>
+                        <input type="number" class="form-control float-right" step="0.01" name="postHargaJual" id="inputHargaJual" placeholder="Harga Jual Produk" required>
                       </div>
                     </div>
 
@@ -78,11 +80,9 @@
                       <div class="col-sm-5">
                         <select class="form-control float-right" name="postSatuan" id="inputSatuan">
                           <option> -- Pilih Satuan -- </option>
-                          <option value=""> Pcs / Unit </option>
-                          <option value=""> Dus / Box </option>
-                          <option value=""> Meter </option>
-                          <option value=""> Pack </option>
-                          <option value=""> Bundle </option>
+                          <?php foreach ($optSatuan as $showSatuan): ?>
+                            <option value="<?php echo $showSatuan['satuan_id'] ?>"> <?php echo $showSatuan['satuan_nama'] ?> </option>
+                          <?php endforeach; ?>
                         </select>
                       </div>
                     </div>
@@ -99,7 +99,8 @@
                     <div class="form-group row">
                       <label for="inputDeskripsiBrg" class="col-sm-3 col-form-label">Deskripsi <a class="float-right"> : </a></label>
                       <div class="col-sm-3">
-                        <input type="number" class="form-control float-right" name="postDeskripsiBrg" id="inputDeskripsiBrg" placeholder="Deskripsi Produk (optional)" required>
+                        <textarea class="form-control" name="postDeskripsiBrg" id="inputDeskripsiBrg" placeholder="Deskripsi Produk (optional)">
+                        </textarea>
                       </div>
                     </div>
                 </div>

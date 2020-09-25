@@ -32,6 +32,23 @@ Class Product_m extends CI_Model {
    		'1' => 'satuan_nama'
     );
 
+  /* Function CRUD Product */
+    /* Query next Increment Product */
+    function getNextIncrement(){
+        $this->db->select('AUTO_INCREMENT');
+        $this->db->from('information_schema.TABLES');
+        $this->db->where('TABLE_SCHEMA', $this->db->database);
+        $this->db->where('TABLE_NAME', $this->prd_tb);
+      $returnValue = $this->db->get();
+      return $returnValue->result_array();
+    }
+
+    /* Query insert product */
+    function insertProduct($data){
+      $resultInsert = $this->db->insert($this->prd_tb, $data);
+      return $resultInsert;
+    }
+
   /* Function CRUD Kategori */
    /* Function : Insert Kategori */
   	function insertKategori($data){
