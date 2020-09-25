@@ -49,6 +49,32 @@ Class Product_m extends CI_Model {
       return $resultInsert;
     }
 
+    /* Query select semua data product */
+    function getAllProduct(){
+      $this->db->select('prd.*, kat.'.$this->kat_f[1].', sat.'.$this->sat_f[1]);
+      $this->db->from($this->prd_tb.' as prd');
+      $this->db->join($this->kat_tb.' as kat', 'kat.'.$this->kat_f[0].'=prd.'.$this->prd_f[3]);
+      $this->db->join($this->sat_tb.' as sat', 'sat.'.$this->sat_f[0].'=prd.'.$this->prd_f[6]);
+      $this->db->order_by($this->prd_f[0], 'ASC');
+      $resultSelect = $this->db->get();
+      return $resultSelect->result_array();
+    }
+
+    /* Query select 1 data product berdasar product id */
+    function getProductOnID($id){
+      $this->db->where($this->prd_f[0], $id);
+      $resultSelect = $this->db->get($this->prd_tb);
+      return $resultSelect->result_array();
+    }
+
+    /* Query update data product */
+    function updateProduct($id, $data){
+      $this->db->set($data);
+      $this->db->where($this->prd_f[0], $id);
+      $resultUpdate = $this->db->update($this->prd_tb);
+      return $resultUpdate;
+    }
+
   /* Function CRUD Kategori */
    /* Function : Insert Kategori */
   	function insertKategori($data){

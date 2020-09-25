@@ -23,7 +23,7 @@ class Product_c extends MY_Controller {
 	}
 
   /* Function CRUD Product */
-	/* Function : Form Add Product */
+	/* Function : Form add product */
 	public function addProductPage(){
 	  /* Set kode automatis untuk kode product */
 	  	$nextAI = $this->Product_m->getNextIncrement(); // Get next auto increment table product
@@ -47,24 +47,43 @@ class Product_c extends MY_Controller {
 			'title'   => 'PoS | Input Product',
 			'assets'  => array(),
 			'prdKode' => $nextCode,
-			'optKtgr' => $this->Product_m->getKategori(),
-			'optSatuan' => $this->Product_m->getSatuan()
+			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
+			'optSatuan' => $this->Product_m->getSatuan() // Get semua satuan untuk option
 		);
 		$this->page = 'product/add_product_v';
 		$this->layout();
 	}
 
-	/* Function : List Product */
+	/* Function : List product */
 	public function listProductPage(){
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
-			'assets' => array('datatable')
+			'assets' => array('datatable'),
+			'dataProduct' => $this->Product_m->getAllProduct() 
 		);
 		$this->page = 'product/list_product_v';
 		$this->layout();
 	}
 
-	public function addProductProses(){
+	/* Function : Form edit product */
+	public function editProductPage($id){
+	  /* Decode produk id */
+		$prdID = base64_decode(urldecode($id));
+	  
+	  /* Proses tampil halaman */
+		$this->pageData = array(
+			'title'   => 'PoS | Edit Product',
+			'assets'  => array(),
+			'detailPrd' => $this->Product_m->getProductOnID($prdID), // Get data berdasar produk id
+			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
+			'optSatuan' => $this->Product_m->getSatuan() // Get semua satuan untuk option
+		);
+		$this->page = 'product/edit_product_v';
+		$this->layout();
+	}
+
+	/* Function : Proses input product */
+	function addProductProses(){
 	  /* Get post data dari form */
 		$postData = array(
 			'prd_kode'		     => $this->input->post('postKodeBrg'),
@@ -89,11 +108,41 @@ class Product_c extends MY_Controller {
 	  		$this->session->set_flashdata('flashMsg', 'Failed insert produk !');
 	  	}
 
+		redirect('Product_c/addProductPage');
+	}
+
+	/* Function : Proses edit / update product */
+	function editProductProses(){
+	  /* Get post data dari form */
+	  	$prdID = base64_decode(urldecode($this->input->post('postId')));
+		$postData = array(
+			'prd_nama' 			 => $this->input->post('postNamaBrg'),
+			'prd_kategori_id_fk' => $this->input->post('postKategoriBrg'),
+			'prd_harga_beli'     => $this->input->post('postHargaBeli'),
+			'prd_harga_jual'   	 => $this->input->post('postHargaJual'),
+			'prd_satuan_id_fk' 	 => $this->input->post('postSatuan'),
+			'prd_isi_per_satuan' => $this->input->post('postIsi'),
+			'prd_deskripsi' 	 => $this->input->post('postDeskripsiBrg')
+		);
+
+	  /* Update ke database */
+	  	$editPrd = $this->Product_m->updateProduct($prdID, $postData);
+
+	  /* Return dan redirect */
+	  	if($inputPrd > 0){
+	  		$this->session->set_flashdata('flashStatus', 'successUpdate');
+	  		$this->session->set_flashdata('flashMsg', 'Berhasil mengubah detail produk !');
+	  	} else {
+	  		$this->session->set_flashdata('flashStatus', 'failedUpdate');
+	  		$this->session->set_flashdata('flashMsg', 'Gagal mengubah detail produk !');
+	  	}
+
 		redirect('Product_c/listProductPage');
+
 	}
 
   /* Function CRUD Kategori & Satuan */
-	/* Function : List Kategori dan Satuan */
+	/* Function : List kategori dan satuan */
 	public function listKatSatPage(){
 	  /* Get data kategori dan Satuan dari database */
 		$dataKategori = $this->Product_m->getKategori();
@@ -110,7 +159,7 @@ class Product_c extends MY_Controller {
 		$this->layout();
 	}
 
-	/* Function : add Kategori Proses */
+	/* Function : Add Kategori Proses */
 	function addKategoriProses(){
 	  /* Get data post dari form */
 	  	$postData = array(
@@ -134,7 +183,7 @@ class Product_c extends MY_Controller {
 	  	redirect('Product_c/listKatSatPage');
 	}
 
-	/* Function : edit Kategori Proses */
+	/* Function : Edit Kategori Proses */
 	function editKategoriProses(){
 		$editData = array(
 			'ktgr_id' 	=> $this->input->post('postID'),

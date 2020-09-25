@@ -40,6 +40,24 @@
                         <th>Stok</th>
                         <th>Aksi</th>
                       </thead>
+                      <tbody>
+                        <?php $no = 1; foreach ($dataProduct as $showPrd) : ?>
+                          <tr>
+                            <td><?php echo $no++ ?></td>
+                            <td><?php echo $showPrd['prd_nama'] ?></td>
+                            <td><?php echo $showPrd['ktgr_nama'] ?></td>
+                            <td><?php echo $showPrd['prd_harga_beli'] ?></td>
+                            <td><?php echo $showPrd['prd_harga_jual'] ?></td>
+                            <td><?php echo $showPrd['satuan_nama'] ?></td>
+                            <td>0</td>
+                            <td>
+                              <a class="btn btn-xs btn-info" href=""><i class="fas fa-search"></i></a>
+                              <a class="btn btn-xs btn-warning" href="<?php echo site_url('Product_c/editProductPage').'/'.urlencode(base64_encode($showPrd['prd_id'])) ?>"><i class="fas fa-edit"></i></a>
+                              <a class="btn btn-xs btn-danger" href=""><i class="fas fa-trash"></i></a>
+                            </td>
+                          </tr>
+                        <?php endforeach; ?>
+                      </tbody>
                       <tfoot>
                         <th>No.</th>
                         <th>Nama Barang</th>
