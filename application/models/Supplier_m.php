@@ -27,4 +27,10 @@ Class Supplier_m extends CI_Model{
   		$resultInsert = $this->db->insert($this->supp_tb, $data);
   		return $resultInsert;
   	}
+
+  	/* Query delete data supplier */
+  	function deleteSupplier($id){
+  		$resultDelete = $this->db->delete($this->supp_tb, array($this->supp_f[0] => $id));
+  		return $resultDelete;
+  	}
 }

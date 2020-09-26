@@ -34,7 +34,7 @@ Class Supplier_c extends MY_Controller{
     	$this->layout();
     }
 
-    /* Function : input Supplier */
+    /* Function : Input supplier proses */
     function addSupplierProses(){
       /* Get data post dari form */
       	$postData = array(
@@ -55,6 +55,26 @@ Class Supplier_c extends MY_Controller{
 	  	} else {
 	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
 	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan kontak Supplier !');
+	  	}
+
+		redirect('Supplier_c/listSupplierPage');
+    }
+
+    /* Function : Delete supplier */
+    function delSupplier($id){
+      /* Decode id */
+    	$suppID = base64_decode(urldecode($id));
+
+      /* Delete dari database */
+      	$delSupp = $this->Supplier_m->deleteSupplier($suppID);
+
+      /* Set session & redirect */
+      	if($delSupp > 0){
+	  		$this->session->set_flashdata('flashStatus', 'successDelete');
+	  		$this->session->set_flashdata('flashMsg', 'Berhasil menghapus kontak Supplier !');
+	  	} else {
+	  		$this->session->set_flashdata('flashStatus', 'failedDelete');
+	  		$this->session->set_flashdata('flashMsg', 'Gagal menghapus kontak Supplier !');
 	  	}
 
 		redirect('Supplier_c/listSupplierPage');

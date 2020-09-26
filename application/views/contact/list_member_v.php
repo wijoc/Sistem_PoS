@@ -9,7 +9,7 @@
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?php echo site_url('Page_c') ?>"><i class="fas fa-home"></i></a></li>
               <li class="breadcrumb-item"><a href="<?php echo site_url('Page_c/contactsIndex') ?>"><i class="fas fa-address-book"></i> Kontak</a></li>
-              <li class="breadcrumb-item active">Kontak Supplier</li>
+              <li class="breadcrumb-item active">Kontak Member</li>
             </ol>
           </div>
         </div>
@@ -22,30 +22,24 @@
         <!-- Default box -->
         <div class="card card-orange card-solid card-outline">
           <div class="card-header">
-            <h5 class="m-0 card-title">Daftar Kontak Supplier</h5>
-            <a class="btn btn-sm btn-success float-right" data-toggle="modal" data-target="#modal-tambah-supplier"> <i class="fas fa-plus"></i> Tambah kontak supplier</a>
+            <h5 class="m-0 card-title">Daftar Kontak Member</h5>
+            <a class="btn btn-sm btn-success float-right" data-toggle="modal" data-target="#modal-tambah-member"> <i class="fas fa-plus"></i> Tambah member</a>
           </div>
           <div class="card-body pb-0">
             <div class="row d-flex align-items-stretch">
-              <?php foreach($dataSupplier as $showSupp) : ?>
+              <?php foreach($dataMember as $showMember) : ?>
                 <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
                   <div class="card bg-light">
                     <div class="card-header text-muted border-bottom-0">
-                      <?php echo $showSupp['supp_nama_kontak'] ?>
+                      <?php echo ($showMember['member_status'] === 'Y')? 'Aktif' : 'Non-Aktif' ?>
                     </div>
                     <div class="card-body pt-0">
                       <div class="row">
                         <div class="col-7">
-                          <h2 class="lead"><b><?php echo $showSupp['supp_nama_supplier'] ?></b></h2>
+                          <h2 class="lead"><b><?php echo $showMember['member_nama'] ?></b></h2>
                           <ul class="ml-4 mb-0 fa-ul text-muted">
                             <li class="small">
-                              <span class="fa-li"><i class="fas fa-md fa-building"></i></span> Alamat: <?php echo $showSupp['supp_alamat'] ?>
-                            </li>
-                            <li class="small">
-                              <span class="fa-li"><i class="fas fa-md fa-phone"></i></span> Phone : <?php echo $showSupp['supp_telp'] ?>
-                            </li>
-                            <li class="small">
-                              <span class="fa-li"><i class="fas fa-md fa-envelope-open-text"></i></span> Email : <?php echo $showSupp['supp_email'] ?>
+                              <span class="fa-li"><i class="fas fa-md fa-percent"></i></span> Discount : <?php echo $showMember['member_discount'] ?> %
                             </li>
                           </ul>
                         </div>
@@ -65,14 +59,14 @@
                         <a href="" class="btn btn-sm btn-warning">
                           <i class="fas fa-edit"></i>
                         </a>
-                        <a href="<?php echo site_url('Supplier_c/deleteSupplier').'/'.urlencode(base64_encode($showSupp['supp_id'])) ?>" class="btn btn-sm btn-danger">
+                        <a href="" class="btn btn-sm btn-danger">
                           <i class="fas fa-trash"></i>
                         </a>
                       </div>
                     </div>
                   </div>
                 </div>
-              <?php endforeach ?>
+              <?php endforeach; ?>
             </div>
           </div>
           <!-- /.card-body -->
@@ -100,55 +94,42 @@
 
     <!-- Modal -->
       <!-- Modal Tambah Supplier -->
-      <div class="modal fade" id="modal-tambah-supplier">
+      <div class="modal fade" id="modal-tambah-member">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Tambah Kontak Supplier</h4>
+              <h4 class="modal-title">Tambah Member</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Supplier_c/addSupplierProses') ?>" id="formSupplier">
+            <form method="POST" action="<?php echo site_url('Member_c/addMemberProses') ?>" id="formMember">
               <div class="modal-body">
                 
-                <!-- Form-part input Supplier nama -->
+                <!-- Form-part input Member nama -->
                   <div class="form-group row">
-                    <label for="inputSuppNama" class="col-sm-3 col-form-label">Nama Supplier <a class="float-right"> : </a></label>
+                    <label for="inputMemberNama" class="col-sm-3 col-form-label">Nama Member <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postSuppNama" id="inputSuppNama" placeholder="Nama Supplier" required>
+                      <input type="text" class="form-control float-right" name="postMemberNama" id="inputMemberNama" placeholder="Nama Member" required>
                     </div>
                   </div>
 
-                <!-- Form-part input Supplier nama Kontak-->
+                <!-- Form-part input Member status -->
                   <div class="form-group row">
-                    <label for="inputSuppKontak" class="col-sm-3 col-form-label">Nama Kontak <a class="float-right"> : </a></label>
+                    <label for="inputMemberTelp" class="col-sm-3 col-form-label">Status <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postSuppKontak" id="inputSuppKontak" placeholder="Nama untuk kontak supplier" required>
+                      <select class="form-control" name="postMemberStatus" id="inputMemberStatus">
+                        <option value="Y">Aktif</option>
+                        <option value="N">Tidak Aktif</option>
+                      </select>
                     </div>
                   </div>
 
-                <!-- Form-part input Supplier telp -->
+                <!-- Form-part input Member discount -->
                   <div class="form-group row">
-                    <label for="inputSuppTelp" class="col-sm-3 col-form-label">No. Telp <a class="float-right"> : </a></label>
+                    <label for="inputMemberDiscount" class="col-sm-3 col-form-label">Discount <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postSuppTelp" id="inputSuppTelp" placeholder="Nomor Telephone">
-                    </div>
-                  </div>
-
-                <!-- Form-part input Supplier email -->
-                  <div class="form-group row">
-                    <label for="inputSuppEmail" class="col-sm-3 col-form-label">E-mail <a class="float-right"> : </a></label>
-                    <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postSuppEmail" id="inputSuppEmail" placeholder="Alamat email">
-                    </div>
-                  </div>
-
-                <!-- Form-part input Supplier alamat -->
-                  <div class="form-group row">
-                    <label for="inputSuppAlamat" class="col-sm-3 col-form-label">Alamat <a class="float-right"> : </a></label>
-                    <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postSuppAlamat" id="inputSuppAlamat" placeholder="Alamat">
+                      <input type="number" class="form-control float-right" name="postMemberDiscount" id="inputMemberDiscount" placeholder="Besaran Discount">
                     </div>
                   </div>
               </div>
@@ -162,7 +143,3 @@
         </div>
         <!-- /.modal-dialog -->
       </div>
-
-      <?php 
-        print("<pre>".print_r($dataSupplier, true)."</pre>");
-      ?>

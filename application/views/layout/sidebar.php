@@ -82,21 +82,15 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="../charts/inline.html" class="nav-link">
+                <a href="<?php echo site_url('Supplier_c/listSupplierPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Supplier</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../charts/chartjs.html" class="nav-link">
+                <a href="<?php echo site_url('Member_c') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Member</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="../charts/chartjs.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pelanggan</p>
                 </a>
               </li>
             </ul>
