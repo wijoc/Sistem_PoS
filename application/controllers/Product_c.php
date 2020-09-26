@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed !');
 
-class Product_c extends MY_Controller {
+Class Product_c extends MY_Controller {
 
 	public function __construct(){
 		parent::__construct();
