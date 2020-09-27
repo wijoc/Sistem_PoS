@@ -107,39 +107,39 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="../charts/inline.html" class="nav-link">
+                <a href="<?php echo site_url('Transaksi_c/listSellingPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Trans Penjualan</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../charts/chartjs.html" class="nav-link">
+                <a href="<?php echo site_url('Transaksi_c/listBuyingPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Trans Pembelian</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../charts/flot.html" class="nav-link">
+                <a href="<?php echo site_url('Retur_c/listReturBuyPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Trans Retur Supplier/p>
+                  <p>Retur Supplier</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?php echo site_url('Retur_c/listReturSellPage') ?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Retur Pelanggan</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?php echo site_url('Transaksi_c/listBopPage') ?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Biaya Operasional</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="../charts/flot.html" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Trans Retur Pelanggan/p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="../charts/flot.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Trans Biaya Operasional/p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="../charts/flot.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Trans Pendapatan Lainnya/p>
+                  <p>Pendapatan Lainnya</p>
                 </a>
               </li>
             </ul>
@@ -168,7 +168,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../charts/inline.html" class="nav-link">
+                <a href="<?php echo site_url('Setting_c/listRekeningPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengaturan Rekening Bank</p>
                 </a>
