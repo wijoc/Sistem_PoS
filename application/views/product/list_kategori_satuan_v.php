@@ -26,10 +26,10 @@
               <div class="card-header">
                 <ul class="nav nav-justified nav-tabs ml-auto p-2" role="tablist">
                   <li class="nav-item">
-                      <a class="tabs-pilihan nav-link active" href="#kategori" data-toggle="tab">Kategori</a>
+                      <a class="tabs-pilihan nav-link active" id="pilihan-kategori" href="#kategori" data-toggle="tab">Kategori</a>
                   </li>
                   <li class="nav-item">
-                      <a class="tabs-pilihan nav-link" href="#satuan" data-toggle="tab">Satuan</a>
+                      <a class="tabs-pilihan nav-link" id="pilihan-satuan" href="#satuan" data-toggle="tab">Satuan</a>
                   </li>
                 </ul>
               </div>
@@ -44,11 +44,12 @@
                       </div>
                     </div>
                     <hr>
+                    <div id="alert-kategori"></div>
                    <?php if($dataKategori == NULL ){ ?>
                     <div class="alert alert-danger text-center"> Data Kategori belum tersedia !</div>
                    <?php } else { ?>
                     <div class="table-responsive">
-                        <table id="table-barang" class="table table-bordered table-striped">
+                        <table id="table-barang" class="table table-bordered table-striped table-katsat">
                           <thead>
                             <th>No.</th>
                             <th>Kategori</th>
@@ -92,11 +93,12 @@
                       </div>
                     </div>
                     <hr>
+                    <div id="alert-satuan"></div>
                    <?php if($dataSatuan == NULL ){ ?>
                     <div class="alert alert-danger text-center"> Data Satuan belum tersedia !</div>
                    <?php } else { ?>
                     <div class="table-responsive">
-                      <table id="table-barang" class="table table-bordered table-striped">
+                      <table id="table-barang" class="table table-bordered table-striped table-katsat">
                         <thead>
                           <th>No.</th>
                           <th>Satuan</th>
@@ -182,8 +184,6 @@
             </div>
             <form method="POST" action="<?php echo site_url('Product_c/addSatuanProses') ?>" id="formSatuan">
               <div class="modal-body">
-                <!-- Form-part hidden Kategori id -->
-                  <input type="text" name="postSatuanID" id="editSatuanID" value="" disabled="disabled">
                 <!-- Form-part input Kategori -->
                   <div class="form-group row">
                     <label for="inputSatuanNama" class="col-sm-3 col-form-label">Nama Satuan <a class="float-right"> : </a></label>
@@ -236,5 +236,5 @@
         <!-- /.modal-dialog -->
       </div>
       <?php 
-        print("<pre>".print_r($dataSatuan, true)."</pre>")
+        if(isset($flashStatus))
       ?>

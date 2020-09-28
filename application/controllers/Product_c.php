@@ -25,28 +25,11 @@ Class Product_c extends MY_Controller {
   /* Function CRUD Product */
 	/* Function : Form add product */
 	public function addProductPage(){
-	  /* Set kode automatis untuk kode product */
-	  	$nextAI = $this->Product_m->getNextIncrement(); // Get next auto increment table product
-	  	switch(strlen($nextAI['0']['AUTO_INCREMENT'])){
-	  		case '3':
-	  			$nol = '0';
-	  			break;
-	  		case '2':
-	  			$nol = '00';
-	  			break;
-	  		case '1':
-	  			$nol = '000';
-	  			break;
-	  		default :
-	  			$nol = '0000';
-	  	}
-	  	$nextCode = 'PRD'.date('Ymd').$nol.$nextAI['0']['AUTO_INCREMENT'];
 
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Input Product',
 			'assets'  => array(),
-			'prdKode' => $nextCode,
 			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
 			'optSatuan' => $this->Product_m->getSatuan() // Get semua satuan untuk option
 		);
@@ -58,7 +41,7 @@ Class Product_c extends MY_Controller {
 	public function listProductPage(){
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
-			'assets' => array('datatable'),
+			'assets' => array('datatables'),
 			'dataProduct' => $this->Product_m->getAllProduct() 
 		);
 		$this->page = 'product/list_product_v';
@@ -86,7 +69,7 @@ Class Product_c extends MY_Controller {
 	function addProductProses(){
 	  /* Get post data dari form */
 		$postData = array(
-			'prd_kode'		     => $this->input->post('postKodeBrg'),
+			'prd_barcode'		 => $this->input->post('postBarcodeBrg'),
 			'prd_nama' 			 => $this->input->post('postNamaBrg'),
 			'prd_kategori_id_fk' => $this->input->post('postKategoriBrg'),
 			'prd_harga_beli'     => $this->input->post('postHargaBeli'),
@@ -151,7 +134,7 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'  => 'PoS | List Kategori',
-			'assets' => array('datatable','katsat'),
+			'assets' => array('datatables', 'katsat', 'sweetalert2'),
 			'dataKategori' => $dataKategori,
 			'dataSatuan' => $dataSatuan
 		);
@@ -178,6 +161,7 @@ Class Product_c extends MY_Controller {
 	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
 	  		$this->session->set_flashdata('flashMsg', 'Failed insert kategori');
 	  	}
+	  		$this->session->set_flashdata('flashInput', 'kategori');
 
 	  	/* Redirect list kategori dan satuan */
 	  	redirect('Product_c/listKatSatPage');
@@ -226,6 +210,7 @@ Class Product_c extends MY_Controller {
 	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
 	  		$this->session->set_flashdata('flashMsg', 'Failed insert satuan');
 	  	}
+	  		$this->session->set_flashdata('flashInput', 'satuan');
 
 	  	/* Redirect list kategori dan satuan */
 	  	redirect('Product_c/listKatSatPage');

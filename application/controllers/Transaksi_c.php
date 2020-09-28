@@ -29,11 +29,34 @@ Class Transaksi_c extends MY_Controller{
 	  /* Load Model supplier untuk option supplier */
 	  	$this->load->model('Supplier_m');
 
+	  /* Set no transaksi seanjutnya */
+	  	$nextAI = $this->Trans_masuk_m->getNextIncrement(); // Get next auto increment table transaksi masuk
+	  	switch(strlen($nextAI['0']['AUTO_INCREMENT'])){
+	  		case ($nextAI > 5):
+	  			$nol = '';
+	  			break;
+	  		case '4':
+	  			$nol = '0';
+	  			break;
+	  		case '3':
+	  			$nol = '00';
+	  			break;
+	  		case '2':
+	  			$nol = '00';
+	  			break;
+	  		case '3':
+	  			$nol = '000';
+	  			break;
+	  		default :
+	  			$nol = '0000';
+	  	}
+
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title' => 'PoS | Trans Pembelian',
 			'assets' => array(),
-			'optSupp' => $this->Supplier_m->getAllSupplier()
+			'optSupp' => $this->Supplier_m->getAllSupplier(),
+			//'nextTransCode' => 
 		);
 		$this->page = 'trans/add_trans_beli_v';
 		$this->layout();
