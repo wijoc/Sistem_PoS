@@ -28,6 +28,8 @@
               </div>
               <form class="form-horizontal" method="POST" action="<?php echo site_url('Product_c/editProductProses') ?>">
                 <div class="card-body">
+                  <!-- Div ALert -->
+                  <div id="alert-product"></div>
 
                   <!-- Form-part hidden input ID Product -->
                   	<input type="hidden" name="postId" value="<?php echo urlencode(base64_encode($detailPrd[0]['prd_id'])) ?>">

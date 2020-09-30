@@ -21,8 +21,18 @@
 
 <!-- additional Page script goes here -->
 	<!-- Page Kategori & Satuan -->
-	<?php if(in_array('katsat',$assets)){ ?>
+	<?php if(in_array('page_katsat',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/page/js/katsat_assets.js"></script>
+	<?php } ?>	
+
+	<!-- Page Add Product -->
+	<?php if(in_array('page_addprd',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/page/js/addprd_assets.js"></script>
+	<?php } ?>	
+
+	<!-- Page Add Product -->
+	<?php if(in_array('page_contact',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/page/js/contact_assets.js"></script>
 	<?php } ?>	
 
 	<!-- Untuk session input -->
@@ -30,6 +40,11 @@
 		<script type="text/javascript">
 			var flashStatus = "<?php echo $this->session->flashdata('flashStatus') ;?>";
 			var flashMsg = "<?php echo ($this->session->flashdata('flashMsg'))? $this->session->flashdata('flashMsg') : '' ;?>";
-			var flashInput = "<?php echo ($this->session->flashdata('flashInput'))? $this->session->flashdata('flashInput') : '' ;?>";
+			<?php if($this->session->flashdata('flashInput')){ ?> // Khusus page kategori & Satuan 
+				var flashInput = "<?php echo $this->session->flashdata('flashInput') ?>";
+			<?php } ?>
+			<?php if($this->session->flashdata('flashRedirect')){ ?> // Khusus page kategori & Satuan 
+				var site_url = "<?php echo site_url($this->session->flashdata('flashRedirect')) ?>";
+			<?php } ?>
 		</script>
 	<?php } ?>

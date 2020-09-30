@@ -25,7 +25,7 @@
             <div class="card card-orange card-outline">
               <div class="card-header">
                 <h5 class="m-0 card-title">Daftar Barang</h5>
-                <a class="btn btn-sm btn-success float-right" href=""> <i class="fas fa-plus"></i> Tambah Barang</a>
+                <a class="btn btn-sm btn-success float-right" href="<?php echo site_url('Product_c/addProductPage') ?>"> <i class="fas fa-plus"></i> Tambah Barang</a>
               </div>
               <div class="card-body">
                 <div class="table-responsive">

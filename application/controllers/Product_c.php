@@ -29,7 +29,7 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Input Product',
-			'assets'  => array(),
+			'assets'  => array('sweetalert2', 'page_addprd'),
 			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
 			'optSatuan' => $this->Product_m->getSatuan() // Get semua satuan untuk option
 		);
@@ -56,7 +56,7 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Edit Product',
-			'assets'  => array(),
+			'assets'  => array('sweetalert2', 'page_addprd'),
 			'detailPrd' => $this->Product_m->getProductOnID($prdID), // Get data berdasar produk id
 			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
 			'optSatuan' => $this->Product_m->getSatuan() // Get semua satuan untuk option
@@ -85,11 +85,12 @@ Class Product_c extends MY_Controller {
 	  /* Return dan redirect */
 	  	if($inputPrd > 0){
 	  		$this->session->set_flashdata('flashStatus', 'successInsert');
-	  		$this->session->set_flashdata('flashMsg', 'Success insert produk !');
+	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan produk !');
 	  	} else {
 	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-	  		$this->session->set_flashdata('flashMsg', 'Failed insert produk !');
+	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan produk !');
 	  	}
+	  	$this->session->set_flashdata('flashRedirect', 'Product_c/listProductPage');
 
 		redirect('Product_c/addProductPage');
 	}
@@ -112,15 +113,16 @@ Class Product_c extends MY_Controller {
 	  	$editPrd = $this->Product_m->updateProduct($prdID, $postData);
 
 	  /* Return dan redirect */
-	  	if($inputPrd > 0){
+	  	if($editPrd > 0){
 	  		$this->session->set_flashdata('flashStatus', 'successUpdate');
 	  		$this->session->set_flashdata('flashMsg', 'Berhasil mengubah detail produk !');
 	  	} else {
 	  		$this->session->set_flashdata('flashStatus', 'failedUpdate');
 	  		$this->session->set_flashdata('flashMsg', 'Gagal mengubah detail produk !');
 	  	}
+	  	$this->session->set_flashdata('flashRedirect', 'Product_c/listProductPage');
 
-		redirect('Product_c/listProductPage');
+		redirect('Product_c/editProductPage/'.$this->input->post('postId'));
 
 	}
 
@@ -134,7 +136,7 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'  => 'PoS | List Kategori',
-			'assets' => array('datatables', 'katsat', 'sweetalert2'),
+			'assets' => array('datatables', 'page_katsat', 'sweetalert2'),
 			'dataKategori' => $dataKategori,
 			'dataSatuan' => $dataSatuan
 		);
@@ -156,10 +158,10 @@ Class Product_c extends MY_Controller {
 	  	/* Set Session untuk alert */
 	  	if($inputKategori > 0){
 	  		$this->session->set_flashdata('flashStatus', 'successInsert');
-	  		$this->session->set_flashdata('flashMsg', 'Success insert kategori');
+	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan kategori');
 	  	} else {
 	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-	  		$this->session->set_flashdata('flashMsg', 'Failed insert kategori');
+	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan kategori');
 	  	}
 	  		$this->session->set_flashdata('flashInput', 'kategori');
 

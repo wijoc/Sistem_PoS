@@ -13,7 +13,7 @@ Class Member_c extends MY_Controller{
     	/* Proses tampil halaman */
     	$this->pageData = array(
     		'title' => 'PoS | Member',
-    		'assets' => array(),
+      'assets' => array('sweetalert2', 'page_contact'),
     		'dataMember' => $this->Member_m->getAllMember()
     	);
     	$this->page = "contact/list_member_v";

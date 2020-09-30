@@ -82,7 +82,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="<?php echo site_url('Supplier_c/listSupplierPage') ?>" class="nav-link">
+                <a href="<?php echo site_url('Supplier_c') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Supplier</p>
                 </a>

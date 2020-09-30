@@ -47,13 +47,13 @@ $(document).ready(function(){
                     $(".tabs-pilihan").removeClass("active");
                     $("#pilihan-kategori").addClass("active");
                     $("#kategori").addClass("active");
-                    $("#alert-kategori").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">Berhasil menambahkan data kategori product !</div>');
+                    $("#alert-kategori").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">Berhasil menambahkan data kategori product ! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                 } else if (flashInput === "satuan"){
                     $(".tab-content").find(".tab-pane").removeClass("active");
                     $(".tabs-pilihan").removeClass("active");
                     $("#pilihan-satuan").addClass("active");
                     $("#satuan").addClass("active");
-                    $("#alert-satuan").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">Berhasil menambahkan data satuan</div>');
+                    $("#alert-satuan").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">Berhasil menambahkan data satuan <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                 }
             })
         }
