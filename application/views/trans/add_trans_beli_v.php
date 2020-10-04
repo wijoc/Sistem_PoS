@@ -21,19 +21,96 @@
     <div class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-10">
+          <div class="col-lg-12">
             <div class="card card-orange card-outline">
               <div class="card-header">
                 <h5 class="m-0">Form transaksi pembelian</h5>
               </div>
-              <form class="form-horizontal" method="POST" action="<?php echo site_url('Transaksi_c/addBuyingProses') ?>">
-                <div class="card-body">
+              <div class="card-body">
+                <!-- Form daftar barang -->
+                <form method="POST" action="<?php echo site_url('Transaksi_c/addTransProduct/Purchase') ?>">
+                  <!-- Autocomplete product -->
+                    <div class="row">
+                      <div class="col-md-4 col-sm-6">
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>Product</label>
+                          <input type="hidden" name="postIdPrd">
+                          <input type="text" class="form-control" name="postNamaPrd" id="inputNamaPrd" placeholder="Masukan nama atau barcode product">
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-6">
+                        <div class="form-group">
+                          <label>Jumlah</label>
+                          <input type="text" class="form-control" name="postJumlahPrd" id="inputJumlahPrd" onkeyup="totalBayar()" placeholder="Enter ...">
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-6">
+                        <div class="form-group">
+                          <label>Harga Beli Satuan</label>
+                          <input type="text" class="form-control" name="postHargaPrd" id="inputHargaPrd" placeholder="Enter ...">
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-6">
+                        <div class="form-group">
+                          <label>Total</label>
+                          <input type="text" class="form-control" name="postTotalPrd" id="inputTotalPrd" placeholder="Enter ..." readonly>
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-6">
+                        <div class="form-group">
+                          <label> &nbsp; </label>
+                          <input type="submit" class="form-control btn btn-success" value="Tambah">
+                        </div>
+                      </div> 
+                    </div>
+                  <!-- Table tampilkan product yang dipilih -->
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <th>No.</th>
+                          <th>Product</th>
+                          <th>Jumlah</th>
+                          <th>Harga satuan</th>
+                          <th>Total</th>
+                          <th>Aksi</th>
+                        </thead>
+                        <tbody>
+                          <?php 
+                          $no = 1;
+                          $totalBayar = 0; 
+                          foreach ($daftarPrd as $row): 
+                            $totalBayar += $row['tp_total_paid'];
+                          ?>
+                          <tr>
+                            <td><?php echo $no++ ?></td>
+                            <td><?php echo $row['prd_nama']; ?></td>
+                            <td><?php echo $row['tp_product_amount'] ?></td>
+                            <td><?php echo $row['tp_purchase_price'] ?></td>
+                            <td><?php echo $row['tp_total_paid'] ?></td>
+                            <td>
+                              <a href=""><i class="fas fa-trash"></i></a>
+                            </td>
+                          </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                        <tfoot>
+                          <th colspan="4" class="text-right">Total : </th>
+                          <th><?php echo $totalBayar ?></th>
+                          <th>&nbsp;</th>
+                        </tfoot>
+                      </table>
+                    </div>            
+                </form>
+
+                <!-- Form Transaksi -->
+                <form class="form-horizontal" method="POST" action="<?php echo site_url('Transaksi_c/addBuyingProses') ?>">
 
                   <!-- Form-part input Kode Transaksi : Otomatis -->
                     <div class="form-group row">
                       <label for="inputTransKode" class="col-sm-3 col-form-label">Kode Transaksi <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control float-right" name="postTransKode" id="inputTransKode" value="" placeholder="Kode transaksi terisi otomatis oleh sistem" required readonly>
+                        <input type="text" class="form-control float-right" name="postTransKode" id="inputTransKode" value="<?php echo $nextTransCode ?>" placeholder="Kode transaksi terisi otomatis oleh sistem" required readonly>
                       </div>
                     </div>
 
@@ -62,7 +139,7 @@
                     <div class="form-group row">
                       <label for="inputTransBeli" class="col-sm-3 col-form-label">Total Pembelian <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postTransBeli" id="inputTransBeli" placeholder="Harga Total Pembelian" required>
+                        <input type="number" class="form-control float-right" step="0.01" name="postTransBeli" id="inputTransBeli" value="<?php echo $totalBayar ?>" readonly required>
                       </div>
                     </div>
 
@@ -79,10 +156,10 @@
                     </div>
 
                   <!-- Form-part input Rekening -->
-                    <div class="form-group row">
+                    <div class="form-group row" id="formpartRekening" style="display:none">
                       <label for="inputTransRek" class="col-sm-3 col-form-label">Rekening <a class="float-right"> : </a></label>
                       <div class="col-sm-5">
-                        <select class="form-control float-right" name="postTransRek" id="inputTransRek">
+                        <select class="form-control float-right" name="postTransRek" id="inputTransRek" required="" disabled="disabled">
                           <option> -- Pilih Rekening -- </option>
                           <option value="TF"> AMBIL REKENING DARI DB </option>
                         </select>
@@ -93,7 +170,7 @@
                     <div class="form-group row">
                       <label for="inputTransBayar" class="col-sm-3 col-form-label">Dibayar <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postTransBayar" id="inputTransBayar" placeholder="Pembayaran pertama" required>
+                        <input type="number" class="form-control float-right" step="0.01" name="postTransBayar" id="inputTransBayar" onkeyup="hitungPayment()" placeholder="Pembayaran pertama" required>
                       </div>
                     </div>
 
@@ -101,7 +178,7 @@
                     <div class="form-group row">
                       <label for="inputTransKurang" class="col-sm-3 col-form-label">Kurangan <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postTransKurang" id="inputTransKurang" placeholder="Kurangan dari Pembayaran" required>
+                        <input type="number" class="form-control float-right" name="postTransKurang" id="inputTransKurang" readonly required>
                       </div>
                     </div>
 
@@ -137,14 +214,14 @@
                       </div>
                     </div>
 
-                </div>
-                <div class="card-footer">
+                  <!-- Form Submit Button -->
                   <div class="float-right">
                     <button type="reset" class="btn btn-secondary"><b> Reset </b></button>
                     <button type="submit" class="btn btn-success"><b> Simpan </b></button>
                   </div>
+
+                </form>
                 </div>
-              </form>
             </div>
           </div>
         </div>

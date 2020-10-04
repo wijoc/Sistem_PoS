@@ -25,7 +25,7 @@
             <div class="card card-orange card-outline">
               <div class="card-header">
                 <h5 class="m-0 card-title">Daftar Transaksi Pembelian</h5>
-                <a class="btn btn-sm btn-success float-right" href=""> <i class="fas fa-plus"></i> Tambah Transaksi</a>
+                <a class="btn btn-sm btn-success float-right" href="<?php echo site_url('Transaksi_c/addPurchasePage') ?>"> <i class="fas fa-plus"></i> Tambah Transaksi</a>
               </div>
               <div class="card-body">
                 <div class="table-responsive">

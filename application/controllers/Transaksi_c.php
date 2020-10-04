@@ -6,7 +6,7 @@ Class Transaksi_c extends MY_Controller{
 	function __construct(){
 		parent::__construct();
 		//$this->load->model('Penjualan_m');
-		//$this->load->model('Pembelian_m');
+		$this->load->model('Pembelian_m');
 	}
 
 	public function index(){
@@ -23,16 +23,34 @@ Class Transaksi_c extends MY_Controller{
 	  	$this->layout();
 	}
 
+  /* Function untuk menyimpan daftar barang transaksi ke table temp. Harus diganti ke session keranjang */
+	public function addTransProduct($trans){
+		$postData = array(
+			'post_product_id' => $this->input->post('postIdPrd'),
+			'post_harga_satuan' => $this->input->post('postHargaPrd'),
+			'post_product_jumlah' => $this->input->post('postJumlahPrd'),
+			'post_total_bayar' => $this->input->post('postTotalPrd')
+		);
+
+		if($trans === 'Purchase'){
+			$inputTemp = $this->Pembelian_m->insertTemp($postData);
+			$this->addPurchasePage();
+		} else if ($trans === 'Sales'){
+			$inputTemp = $this->Penjualan_m->insertTemp($postData);
+			$this->addSalesPage();
+		}
+	}
+
   /* Fungsi untuk CRUD Pembelian */
 	/* Function : Form tambah trans pembelian */
-	public function addBuyingPage(){
+	public function addPurchasePage(){
 	  /* Load Model supplier untuk option supplier */
 	  	$this->load->model('Supplier_m');
 
 	  /* Set no transaksi seanjutnya */
-	  	$nextAI = $this->Trans_masuk_m->getNextIncrement(); // Get next auto increment table transaksi masuk
+	  	$nextAI = $this->Pembelian_m->getNextIncrement(); // Get next auto increment table transaksi masuk
 	  	switch(strlen($nextAI['0']['AUTO_INCREMENT'])){
-	  		case ($nextAI > 5):
+	  		case ($nextAI['0']['AUTO_INCREMENT'] > 5):
 	  			$nol = '';
 	  			break;
 	  		case '4':
@@ -50,20 +68,22 @@ Class Transaksi_c extends MY_Controller{
 	  		default :
 	  			$nol = '0000';
 	  	}
+	  	$nextTransCode = 'TM'.date('Ymd').$nol.$nextAI['0']['AUTO_INCREMENT'];
 
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title' => 'PoS | Trans Pembelian',
-			'assets' => array(),
+			'assets' => array('jqueryui', 'page_addtb'),
 			'optSupp' => $this->Supplier_m->getAllSupplier(),
-			//'nextTransCode' => 
+			'nextTransCode' => $nextTransCode,
+			'daftarPrd' => $this->Pembelian_m->getTemp()
 		);
 		$this->page = 'trans/add_trans_beli_v';
 		$this->layout();
 	}
 
 	/* Function : List trans pembelian */
-	public function listBuyingPage(){
+	public function listPurchasePage(){
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title' => 'PoS | Trans Pembelian',

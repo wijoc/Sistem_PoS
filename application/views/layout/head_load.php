@@ -17,3 +17,8 @@
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
   <?php } ?>
+
+  <!-- JQuery UI -->
+  <?php if(in_array('jqueryui',$assets)){ ?>
+    <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/jquery-ui/jquery-ui.css">
+  <?php } ?>

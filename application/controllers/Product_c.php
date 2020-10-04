@@ -123,8 +123,24 @@ Class Product_c extends MY_Controller {
 	  	$this->session->set_flashdata('flashRedirect', 'Product_c/listProductPage');
 
 		redirect('Product_c/editProductPage/'.$this->input->post('postId'));
-
 	}
+
+	public function autocompleteProduct(){
+		if($this->input->get('term')){
+			$data = $this->Product_m->searchProduct($this->input->get('term'));
+			if(count($data) > 0){
+				foreach($data as $row)
+					$prdData[] = array(
+						'label' => $row['prd_nama'],
+						'prd_id' => $row['prd_id'],
+						'prd_barcode' => $row['prd_barcode'],
+						'prd_harga_beli' => $row['prd_harga_beli']
+					);
+					echo json_encode($prdData);
+			}
+		}
+		//print("<pre>".print_r($prdData, true)."</pre>");
+	} 
 
   /* Function CRUD Kategori & Satuan */
 	/* Function : List kategori dan satuan */

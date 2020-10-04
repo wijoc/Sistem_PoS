@@ -8,7 +8,7 @@ Class Product_m extends CI_Model {
 	var $prd_tb = 'tb_product';
 	var $prd_f  = array(
 		'0' => 'prd_id',
-		'1' => 'prd_kode',
+		'1' => 'prd_barcode',
 		'2' => 'prd_nama',
 		'3' => 'prd_kategori_id_fk',
 		'4' => 'prd_harga_beli',
@@ -73,6 +73,14 @@ Class Product_m extends CI_Model {
       $this->db->where($this->prd_f[0], $id);
       $resultUpdate = $this->db->update($this->prd_tb);
       return $resultUpdate;
+    }
+
+    /* Query search product */
+    function searchProduct($term){
+      $this->db->like($this->prd_f[1], $term);
+      $this->db->or_like($this->prd_f[2], $term);
+      $resultSelect = $this->db->get($this->prd_tb);
+      return $resultSelect->result_array();
     }
 
   /* Function CRUD Kategori */
