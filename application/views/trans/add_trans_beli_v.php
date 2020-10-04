@@ -194,26 +194,6 @@
                       </div>
                     </div>
 
-                  <!-- Form-part input Tenor -->
-                    <div class="form-group row">
-                      <label for="inputTransTenor" class="col-sm-3 col-form-label">Tenor <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postTransTenor" id="inputTransTenor" placeholder="Kurangan dari Pembayaran" required>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input Tempo -->
-                    <div class="form-group row">
-                      <label for="inputTransTempo" class="col-sm-3 col-form-label">Jatuh Tempo <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <select class="form-control float-right" name="postTransTempo" id="inputTransTempo">
-                          <?php for ($i=1; $i <= 31; $i++) { ?> 
-                            <option value="<?php echo $i ?>"><?php echo 'Tanggal '.$i ?></option>
-                          <?php } ?>
-                        </select>
-                      </div>
-                    </div>
-
                   <!-- Form Submit Button -->
                   <div class="float-right">
                     <button type="reset" class="btn btn-secondary"><b> Reset </b></button>

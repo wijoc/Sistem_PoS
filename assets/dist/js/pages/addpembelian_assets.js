@@ -16,15 +16,6 @@ $(document).ready(function(){
 		}
 	});
 
-	/* perubahan Status Lunas atau Belum */
-	$("#inputTransStatus").change(function(){
-		if($(this).val() == 'L'){
-			$("#formpartRekening").removeAttr("style").show();
-		} else {
-			$("#formpartRekening").hide();
-		}
-	});
-
 	/* Autocomplete on Nama atau Barcode Product */
 	$("#inputNamaPrd").autocomplete({
 		source: autocompleteUrl,
@@ -60,5 +51,12 @@ function hitungPayment(){
 		$("#inputTransKurang").val(totalBayar);
 	} else {
 		$("#inputTransKurang").val(kurangan);
+		if(kurangan > 0){
+			$("#inputTransStatus option[value=BL]").attr("selected", "selected");
+			$("#inputTransStatus option[value=L]").removeAttr("selected");
+		} else {
+			$("#inputTransStatus option[value=L]").attr("selected", "selected");
+			$("#inputTransStatus option[value=BL]").removeAttr("selected");
+		}
 	}
 }
