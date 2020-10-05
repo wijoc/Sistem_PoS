@@ -27,6 +27,7 @@
                 <h5 class="m-0">Form transaksi pembelian</h5>
               </div>
               <div class="card-body">
+                <div id="alert-trans"></div>
                 <!-- Form daftar barang -->
                 <form method="POST" action="<?php echo site_url('Transaksi_c/addTransProduct/Purchase') ?>">
                   <!-- Autocomplete product -->
@@ -104,7 +105,7 @@
                 </form>
 
                 <!-- Form Transaksi -->
-                <form class="form-horizontal" method="POST" action="<?php echo site_url('Transaksi_c/addBuyingProses') ?>">
+                <form class="form-horizontal" method="POST" action="<?php echo site_url('Transaksi_c/addPurchaseProses') ?>">
 
                   <!-- Form-part input Kode Transaksi : Otomatis -->
                     <div class="form-group row">
@@ -117,7 +118,7 @@
                   <!-- Form-part input tanggal transaksi -->
                     <div class="form-group row">
                       <label for="inputTransTgl" class="col-sm-3 col-form-label">Tanggal Transaksi<a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                      <div class="col-sm-3">
                         <input type="date" class="form-control float-right" name="postTransTgl" id="inputTransTgl" required>
                       </div>
                     </div>
@@ -159,9 +160,11 @@
                     <div class="form-group row" id="formpartRekening" style="display:none">
                       <label for="inputTransRek" class="col-sm-3 col-form-label">Rekening <a class="float-right"> : </a></label>
                       <div class="col-sm-5">
-                        <select class="form-control float-right" name="postTransRek" id="inputTransRek" required="" disabled="disabled">
+                        <select class="form-control float-right" name="postTransRek" id="inputTransRek" required>
                           <option> -- Pilih Rekening -- </option>
-                          <option value="TF"> AMBIL REKENING DARI DB </option>
+                          <?php foreach($optRek as $showOpt): ?>
+                          <option value="<?php echo $showOpt['rek_id'] ?>"> <?php echo '['.$showOpt['bank_name'].'] '.$showOpt['rek_nomor'].' - '.$showOpt['rek_atas_nama'] ?> </option>
+                          <?php endforeach; ?>
                         </select>
                       </div>
                     </div>
@@ -186,11 +189,40 @@
                     <div class="form-group row">
                       <label for="inputTransStatus" class="col-sm-3 col-form-label">Status Pembayaran <a class="float-right"> : </a></label>
                       <div class="col-sm-5">
-                        <select class="form-control float-right" name="postTransStatus" id="inputTransStatus">
+                        <select class="form-control float-right" name="postTransStatus" id="inputTransStatus" readonly>
                           <option> -- Pilih Status -- </option>
                           <option value="L"> Lunas </option>
                           <option value="BL"> Belum Lunas </option>
                         </select>
+                      </div>
+                    </div>
+
+                  <!-- Form-part input Tenor -->
+                    <div class="form-group row">
+                      <label for="inputTransTenor" class="col-sm-3 col-form-label">Tenor <a class="float-right"> : </a></label>
+                      <div class="col-sm-3">  
+                        <div class="input-group sm-3">
+                            <input type="number" class="form-control tenortempo" name="postTransTenor" id="inputTransTenor" min="0" required="" disabled>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-times"></i></span>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <select class="form-control float-right tenortempo" name="postTransTenorPeriode" id="inputTransTenorPeriode" required="" disabled>
+                          <option value="D">Harian</option>
+                          <option value="W">Mingguan</option>
+                          <option value="M">Bulanan</option>
+                          <option value="Y">Tahunan</option>
+                        </select>
+                      </div>
+                    </div>
+
+                  <!-- Form-part input Tempo -->
+                    <div class="form-group row">
+                      <label for="inputTransTempo" class="col-sm-3 col-form-label"> Tempo selanjutnya <a class="float-right"> : </a></label>
+                      <div class="col-sm-3">
+                        <input type="date" class="form-control float-right tenortempo" name="postTransTempo" id="inputTransTempo" value="" required="" disabled>
                       </div>
                     </div>
 

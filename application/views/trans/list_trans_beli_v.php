@@ -35,17 +35,38 @@
                         <th>No. Transaksi</th>
                         <th>Tanggal</th>
                         <th>Supplier</th>
-                        <th>Jumlah Barang</th>
+                        <th>Total Bayar</th>
+                        <th>Kurangan</th>
                         <th>Status</th>
                         <th>Jatuh Tempo</th>
                         <th>Aksi</th>
                       </thead>
+                      <tbody>
+                        <?php $no = 1; foreach($dataTrans as $showTP): ?>
+                          <tr>
+                            <td><?php echo $no++ ?></td>
+                            <td><?php echo $showTP['tp_no_trans'] ?></td>
+                            <td><?php echo date('d-m-Y', strtotime($showTP['tp_date'])) ?></td>
+                            <td><?php echo $showTP['supp_nama_supplier'] ?></td>
+                            <td><?php echo $showTP['tp_purchase_price'] ?></td>
+                            <td><?php echo $showTP['tp_insufficient'] ?></td>
+                            <td><?php echo ($showTP['tp_status'] === 'L')? 'Lunas' : 'Belum Lunas' ?></td>
+                            <td><?php echo ($showTP['tp_status'] === 'L')? '-' : date('d-m-Y', strtotime($showTP['tp_due_date']));?></td>
+                            <td>
+                              <a href="" class="btn btn-sm btn-info"><i class="fas fa-search"></i></a>
+                              <a href="" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                              <a href="" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                            </td>
+                          </tr>
+                        <?php endforeach; ?>
+                      </tbody>
                       <tfoot>
                         <th>No.</th>
                         <th>No. Transaksi</th>
                         <th>Tanggal</th>
                         <th>Supplier</th>
-                        <th>Jumlah Barang</th>
+                        <th>Total Bayar</th>
+                        <th>Kurangan</th>
                         <th>Status</th>
                         <th>Jatuh Tempo</th>
                         <th>Aksi</th>
@@ -60,3 +81,4 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
+    <?php print("<pre>".print_r($dataTrans, true)."</pre>") ?>
