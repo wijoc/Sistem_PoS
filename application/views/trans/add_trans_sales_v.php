@@ -32,12 +32,11 @@
                 <form method="POST" action="<?php echo site_url('Transaksi_c/addTransProduct/Sales') ?>">
                   <!-- Autocomplete product -->
                     <div class="row">
-                      <div class="col-md-4 col-sm-6">
-                        <!-- text input -->
+                      <div class="col-md-3 col-sm-6">
                         <div class="form-group">
                           <label>Product</label>
                           <input type="hidden" name="postIdPrd">
-                          <input type="text" class="form-control" name="postNamaPrd" id="inputNamaPrd" placeholder="Masukan nama atau barcode product">
+                          <input type="text" class="form-control" name="postNamaPrd" id="inputNamaPrd" placeholder="Nama / barcode product">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-6">
@@ -64,10 +63,10 @@
                           <input type="text" class="form-control" name="postTotalPrd" id="inputTotalPrd" placeholder="Harga total" readonly>
                         </div>
                       </div>
-                      <div class="col-md-2 col-sm-6">
+                      <div class="col-md-1 col-sm-6">
                         <div class="form-group">
                           <label> &nbsp; </label>
-                          <input type="submit" class="form-control btn btn-success" value="Tambah">
+                          <input type="submit" class="form-control btn btn-sm btn-success" value="Tambah">
                         </div>
                       </div> 
                     </div>
@@ -113,7 +112,7 @@
                 </form>
 
                 <!-- Form Transaksi -->
-                <form class="form-horizontal" method="POST" action="<?php echo site_url('Transaksi_c/addPurchaseProses') ?>">
+                <form class="form-horizontal" method="POST" action="<?php echo site_url('Transaksi_c/addSalesProses') ?>">
 
                   <!-- Form-part input Kode Transaksi : Otomatis -->
                     <div class="form-group row">
@@ -133,12 +132,12 @@
 
                   <!-- Form-part input supplier -->
                     <div class="form-group row">
-                      <label for="inputTransSupp" class="col-sm-3 col-form-label">Supplier <a class="float-right"> : </a></label>
+                      <label for="inputTransSupp" class="col-sm-3 col-form-label">Pembeli <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
                         <select class="form-control float-right" name="postTransSupp" id="inputTransSupp">
-                          <option> -- Pilih Supplier -- </option>
-                          <?php foreach ($optSupp as $showOpt): ?>
-                            <option value="<?php echo $showOpt['supp_id'] ?>"> <?php echo $showOpt['supp_nama_supplier'] ?> </option>
+                          <option> -- Pilih Pembeli -- </option>
+                          <?php foreach ($optMember as $showOpt): ?>
+                            <option value="<?php echo $showOpt['member_id'] ?>"> <?php echo $showOpt['member_nama'] ?> </option>
                           <?php endforeach; ?>
                         </select>
                       </div>

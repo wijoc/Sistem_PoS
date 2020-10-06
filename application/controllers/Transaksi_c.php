@@ -35,11 +35,11 @@ Class Transaksi_c extends MY_Controller{
 
 		if($trans === 'Purchase'){
 			$inputTemp = $this->Pembelian_m->insertTemp($postData);
-			$this->addPurchasePage();
+			redirect('Transaksi_c/addPurchasePage');
 		} else if ($trans === 'Sales'){
 			$postData['post_potongan'] = $this->input->post('postPotonganPrd');
 			$inputTemp = $this->Sales_m->insertTemp($postData);
-			$this->addSalesPage();
+			redirect('Transaksi_c/addSalesPage');
 		}
 	}
 
@@ -154,7 +154,6 @@ Class Transaksi_c extends MY_Controller{
   	  		$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listPurchasePage');
 
 	  	redirect('Transaksi_c/addPurchasePage');
-		//print("<pre>".print_r($inputDetTP, true)."</pre>");
 	}
 
 	/* Function : Proses update trans pembelian */
@@ -191,11 +190,12 @@ Class Transaksi_c extends MY_Controller{
 
 	  /* Data yang ditampilkan ke view */
 	  	$this->pageData = array(
-	  		'title' => 'PoS | Trans Penjualan',
-	  		'assets' => array('jqueryui', 'sweetalert2', 'page_addtrans'),
-			'optRek'  => $this->Rekening_m->getAllRekening(),
+	  		'title'		=> 'PoS | Trans Penjualan',
+	  		'assets'	=> array('jqueryui', 'sweetalert2', 'page_addtrans'),
+			'optRek'	=> $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
-			'daftarPrd' 	=> $this->Sales_m->getTemp()
+			'daftarPrd' => $this->Sales_m->getTemp(),
+			'optMember'	=> $this->Member_m->getAktifMember()
 	  	);
 	  	$this->page = 'trans/add_trans_sales_v';
 	  	$this->layout();
@@ -208,7 +208,7 @@ Class Transaksi_c extends MY_Controller{
 		$this->pageData = array(
 			'title' => 'PoS | Trans Penjualan',
 			'assets' => array('datatables'),
-			'dataTrans' => $this->Pembelian_m->getAllTransPurchase()
+			'dataTrans' => $this->Sales_m->getAllTransSales()
 		);
 		$this->page = 'trans/list_trans_sales_v';
 		$this->layout();
@@ -216,6 +216,64 @@ Class Transaksi_c extends MY_Controller{
 
 	/* Function : Form update penjualan */
 	/* Function : Proses tambah trans penjualan */
+	function addSalesProses(){
+	  /* Get posted data dari form */ 
+		$postData = array(
+			'ts_trans_code' => $this->input->post('postTransKode'),
+			'ts_date'	  	=> $this->input->post('postTransTgl'),
+			'ts_member_fk' 	=> $this->input->post('postTransSupp'),
+			'ts_payment_metode' => $this->input->post('postTransMetode'),
+			'ts_sales_price' 	=> $this->input->post('postTransTotalBayar'),
+			'ts_account_fk' 	=> ($this->input->post('postTransMetode') == 'TF')? $this->input->post('postTransRek') : '',
+			'ts_paid' 			=> $this->input->post('postTransPembayaran'),
+			'ts_insufficient' 	=> $this->input->post('postTransKurang'),
+			'ts_status' 		=> $this->input->post('postTransStatus'),
+			'ts_tenor' 			=> ($this->input->post('postTransStatus') == 'BL')? $this->input->post('postTransTenor') : '',
+			'ts_tenor_periode' 	=> ($this->input->post('postTransStatus') == 'BL')? $this->input->post('postTransTenorPeriode') : '',
+			'ts_due_date' 		=> ($this->input->post('postTransStatus') == 'BL')? $this->input->post('postTransTempo') : ''
+		);
+
+	  /* Get data dari temp table dan insert ke det trans purchase table */
+		$tempPrd = $this->Sales_m->getTemp();
+		foreach ($tempPrd as $row) {
+			$dataDetail[] = array(
+		  		'dts_ts_fk'			 => $this->input->post('postTransKode'),
+		  		'dts_product_fk'	 => $row['temps_product_fk'],
+		  		'dts_product_amount' => $row['temps_product_amount'],
+		  		'dts_sale_price' 	 => $row['temps_sale_price'],
+		  		'dts_discount'	 	 => $row['temps_discount'],
+		    	'dts_total_price'	 => $row['temps_total_paid']
+			); 
+		}
+
+	  /* Cek jika barang sudah ditambahkan */
+	  	if(count($tempPrd) > 0){
+		  /* Input data transaksi ke database */
+		  	$inputTS = $this->Sales_m->insertTransSales($postData);
+
+		  /* Input data product ke table det trans purchase */
+		  	$inputDetTS = $this->Sales_m->insertBatchDetTS($dataDetail);
+	  	} else {
+	  		$inputTS = 0;
+	  		$inputDetTS = 0;
+	  	}
+
+	  /* Cek proses insert, Set session dan redirect */
+	  	if($inputTS > 0 && $inputDetTS > 0){
+	  		/* hapus data di table temp */
+	  		$this->Sales_m->truncateTemp();
+
+  	  		$this->session->set_flashdata('flashStatus', 'successInsert');
+  	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan transaksi penjualan !');
+	  	} else {
+  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
+  	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan transaksi penjualan !');
+	  	}
+  	  		$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listSalesPage');
+
+	  	redirect('Transaksi_c/addSalesPage');
+	}
+
 	/* Function : Proses update trans penjualan */
 	/* Function : Proses delete trans penjualan */
 

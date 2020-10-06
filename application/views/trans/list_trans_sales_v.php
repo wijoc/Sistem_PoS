@@ -42,16 +42,16 @@
                         <th>Aksi</th>
                       </thead>
                       <tbody>
-                        <?php $no = 1; foreach($dataTrans as $showTP): ?>
+                        <?php $no = 1; foreach($dataTrans as $showTS): ?>
                           <tr>
                             <td><?php echo $no++ ?></td>
-                            <td><?php echo $showTP['tp_no_trans'] ?></td>
-                            <td><?php echo date('d-m-Y', strtotime($showTP['tp_date'])) ?></td>
-                            <td><?php echo $showTP['supp_nama_supplier'] ?></td>
-                            <td><?php echo $showTP['tp_purchase_price'] ?></td>
-                            <td><?php echo $showTP['tp_insufficient'] ?></td>
-                            <td><?php echo ($showTP['tp_status'] === 'L')? 'Lunas' : 'Belum Lunas' ?></td>
-                            <td><?php echo ($showTP['tp_status'] === 'L')? '-' : date('d-m-Y', strtotime($showTP['tp_due_date']));?></td>
+                            <td><?php echo $showTS['ts_trans_code'] ?></td>
+                            <td><?php echo date('d-m-Y', strtotime($showTS['ts_date'])) ?></td>
+                            <td><?php echo $showTS['member_nama'] ?></td>
+                            <td><?php echo $showTS['ts_sales_price'] ?></td>
+                            <td><?php echo $showTS['ts_insufficient'] ?></td>
+                            <td><?php echo ($showTS['ts_status'] === 'L')? 'Lunas' : 'Belum Lunas' ?></td>
+                            <td><?php echo ($showTS['ts_status'] === 'L')? '-' : date('d-m-Y', strtotime($showTS['ts_due_date']));?></td>
                             <td class="text-center">
                               <a href="" class="btn btn-xs btn-info"><i class="fas fa-search"></i></a>
                               <a href="" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>

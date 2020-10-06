@@ -9,15 +9,16 @@ Class Sales_m extends CI_Model{
 		'0' => 'ts_id',
 		'1' => 'ts_trans_code',
 		'2' => 'ts_date',
-		'3' => 'ts_payment_metode',
-		'4' => 'ts_sales_price',
-		'5' => 'ts_account_fk',
-		'6' => 'ts_paid',
-		'7' => 'ts_insufficient',
-		'8' => 'ts_status',
-		'9' => 'ts_tenor',
-		'10' => 'ts_tenor_periode',
-		'11' => 'ts_due_date'
+		'3' => 'ts_member_fk',
+		'4' => 'ts_payment_metode',
+		'5' => 'ts_sales_price',
+		'6' => 'ts_account_fk',
+		'7' => 'ts_paid',
+		'8' => 'ts_insufficient',
+		'9' => 'ts_status',
+		'10' => 'ts_tenor',
+		'11' => 'ts_tenor_periode',
+		'12' => 'ts_due_date'
 	);
 
   /* Declare table Detail Trans Penjualan */
@@ -54,8 +55,30 @@ Class Sales_m extends CI_Model{
   		return $resultAI->result_array();
   	}
 
+    /* Query insert table transaksi penjualan */
+    function insertTransSales($data){
+      $resultInsert = $this->db->insert($this->ts_tb, $data);
+      return $resultInsert;
+    }
+
+    /* Query select semua data trans pembelian */
+    function getAllTransSales(){
+      $this->db->select('ts.*, mbr.member_nama');
+      $this->db->from($this->ts_tb.' as ts');
+      $this->db->join('tb_member as mbr', 'mbr.member_id = ts.'.$this->ts_f['3']);
+      $this->db->order_by($this->ts_f['2'], 'DESC');
+      $resultSelect = $this->db->get();
+      return $resultSelect->result_array();
+    }
+
+  /* Start Query Table Detail Trans Purchase */
+    function insertBatchDetTS($data){
+      $resultInsert = $this->db->insert_batch($this->dts_tb, $data);
+      return $resultInsert;
+    }
+
   /* Start Query Table Temp Trans Purchase */
-    /* Query insert table temp product pembelian */
+    /* Query insert table temp product penjualan */
     function insertTemp($data){
       $insertData = array(
         $this->temp_f[1] => $data['post_product_id'],
@@ -69,7 +92,7 @@ Class Sales_m extends CI_Model{
       return $resultInsert;
     }
 
-    /* Query get temp product pembelian */
+    /* Query get temp product penjualan */
     function getTemp(){
       $this->db->select($this->temp_ts.'.*, tb_product.prd_nama');
       $this->db->from($this->temp_ts);

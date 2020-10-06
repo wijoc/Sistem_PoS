@@ -20,6 +20,14 @@ Class Member_m extends CI_Model{
   		return $resultGet->result_array();
   	}
 
+    /* Query select aktif member */
+    function getAktifMember(){
+      $this->db->where($this->member_f[2], 'Y');
+      $this->db->order_by($this->member_f[1], 'ASC');
+      $resultGet = $this->db->get($this->member_tb);
+      return $resultGet->result_array();
+    }
+
   	/* Query insert data member */
   	function insertMember($data){
   		$resultInsert = $this->db->insert($this->member_tb, $data);
