@@ -52,10 +52,10 @@
                             <td><?php echo $showTP['tp_insufficient'] ?></td>
                             <td><?php echo ($showTP['tp_status'] === 'L')? 'Lunas' : 'Belum Lunas' ?></td>
                             <td><?php echo ($showTP['tp_status'] === 'L')? '-' : date('d-m-Y', strtotime($showTP['tp_due_date']));?></td>
-                            <td>
-                              <a href="" class="btn btn-sm btn-info"><i class="fas fa-search"></i></a>
-                              <a href="" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                              <a href="" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                            <td class="text-center">
+                              <a href="" class="btn btn-xs btn-info"><i class="fas fa-search"></i></a>
+                              <a href="" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
+                              <a href="" class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></a>
                             </td>
                           </tr>
                         <?php endforeach; ?>
@@ -81,4 +81,3 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    <?php print("<pre>".print_r($dataTrans, true)."</pre>") ?>

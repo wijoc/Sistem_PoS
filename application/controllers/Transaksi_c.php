@@ -5,7 +5,7 @@ Class Transaksi_c extends MY_Controller{
 	
 	function __construct(){
 		parent::__construct();
-		//$this->load->model('Penjualan_m');
+		$this->load->model('Sales_m');
 		$this->load->model('Pembelian_m');
 		$this->load->model('Rekening_m');
 	}
@@ -37,7 +37,8 @@ Class Transaksi_c extends MY_Controller{
 			$inputTemp = $this->Pembelian_m->insertTemp($postData);
 			$this->addPurchasePage();
 		} else if ($trans === 'Sales'){
-			$inputTemp = $this->Penjualan_m->insertTemp($postData);
+			$postData['post_potongan'] = $this->input->post('postPotonganPrd');
+			$inputTemp = $this->Sales_m->insertTemp($postData);
 			$this->addSalesPage();
 		}
 	}
@@ -74,13 +75,13 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pembelian',
-			'assets'  => array('jqueryui', 'page_addtb', 'sweetalert2'),
+			'assets'  => array('jqueryui', 'page_addtrans', 'sweetalert2'),
 			'optSupp' => $this->Supplier_m->getAllSupplier(),
 			'optRek'  => $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
 			'daftarPrd' 	=> $this->Pembelian_m->getTemp(),
 		);
-		$this->page = 'trans/add_trans_beli_v';
+		$this->page = 'trans/add_trans_purchase_v';
 		$this->layout();
 	}
 
@@ -92,7 +93,7 @@ Class Transaksi_c extends MY_Controller{
 			'assets' => array('datatables'),
 			'dataTrans' => $this->Pembelian_m->getAllTransPurchase()
 		);
-		$this->page = 'trans/list_trans_beli_v';
+		$this->page = 'trans/list_trans_purchase_v';
 		$this->layout();
 	}
 
@@ -105,9 +106,9 @@ Class Transaksi_c extends MY_Controller{
 			'tp_date'	  => $this->input->post('postTransTgl'),
 			'tp_supplier_fk' 	=> $this->input->post('postTransSupp'),
 			'tp_payment_metode' => $this->input->post('postTransMetode'),
-			'tp_purchase_price' => $this->input->post('postTransBeli'),
+			'tp_purchase_price' => $this->input->post('postTransTotalBayar'),
 			'tp_account_fk' 	=> ($this->input->post('postTransMetode') == 'TF')? $this->input->post('postTransRek') : '',
-			'tp_paid' 			=> $this->input->post('postTransBayar'),
+			'tp_paid' 			=> $this->input->post('postTransPembayaran'),
 			'tp_insufficient' 	=> $this->input->post('postTransKurang'),
 			'tp_status' 		=> $this->input->post('postTransStatus'),
 			'tp_tenor' 			=> ($this->input->post('postTransStatus') == 'BL')? $this->input->post('postTransTenor') : '',
@@ -161,7 +162,58 @@ Class Transaksi_c extends MY_Controller{
 
   /* Fungsi untuk CRUD Penjualan */
 	/* Function : Form tambah trans penjualan */
+	public function addSalesPage(){
+	  /* Load model member untuk option member */
+	  	$this->load->model('Member_m');
+
+	  /* Set nomor transaksi selanjutnya */
+	  	$nextAI = $this->Sales_m->getNextIncrement(); // Get next auto increment table transaksi penjualan
+	  	switch(strlen($nextAI['0']['AUTO_INCREMENT'])){
+	  		case ($nextAI['0']['AUTO_INCREMENT'] > 5):
+	  			$nol = '';
+	  			break;
+	  		case '4':
+	  			$nol = '0';
+	  			break;
+	  		case '3':
+	  			$nol = '00';
+	  			break;
+	  		case '2':
+	  			$nol = '00';
+	  			break;
+	  		case '3':
+	  			$nol = '000';
+	  			break;
+	  		default :
+	  			$nol = '0000';
+	  	}
+	  	$nextTransCode = 'TK'.date('Ymd').$nol.$nextAI['0']['AUTO_INCREMENT'];
+
+	  /* Data yang ditampilkan ke view */
+	  	$this->pageData = array(
+	  		'title' => 'PoS | Trans Penjualan',
+	  		'assets' => array('jqueryui', 'sweetalert2', 'page_addtrans'),
+			'optRek'  => $this->Rekening_m->getAllRekening(),
+			'nextTransCode' => $nextTransCode,
+			'daftarPrd' 	=> $this->Sales_m->getTemp()
+	  	);
+	  	$this->page = 'trans/add_trans_sales_v';
+	  	$this->layout();
+
+	}
+
 	/* Function : List trans penjualan */
+	public function listSalesPage(){
+	  /* Data yang ditampilkan ke view */
+		$this->pageData = array(
+			'title' => 'PoS | Trans Penjualan',
+			'assets' => array('datatables'),
+			'dataTrans' => $this->Pembelian_m->getAllTransPurchase()
+		);
+		$this->page = 'trans/list_trans_sales_v';
+		$this->layout();
+	}
+
 	/* Function : Form update penjualan */
 	/* Function : Proses tambah trans penjualan */
 	/* Function : Proses update trans penjualan */

@@ -3,13 +3,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Halaman Transaksi Pembelian</h1>
+            <h1 class="m-0 text-dark">Halaman Transaksi Penjualan</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?php echo site_url('Page_c') ?>"><i class="fas fa-home"></i></a></li>
               <li class="breadcrumb-item"><a href="<?php echo site_url('Transaksi_c') ?>"><i class="fas fa-cubes"></i> Transaksi</a></li>
-              <li class="breadcrumb-item active">Tambah Pembelian</li>
+              <li class="breadcrumb-item active">Tambah Penjualan</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -29,7 +29,7 @@
               <div class="card-body">
                 <div id="alert-trans"></div>
                 <!-- Form daftar barang -->
-                <form method="POST" action="<?php echo site_url('Transaksi_c/addTransProduct/Purchase') ?>">
+                <form method="POST" action="<?php echo site_url('Transaksi_c/addTransProduct/Sales') ?>">
                   <!-- Autocomplete product -->
                     <div class="row">
                       <div class="col-md-4 col-sm-6">
@@ -43,19 +43,25 @@
                       <div class="col-md-2 col-sm-6">
                         <div class="form-group">
                           <label>Jumlah</label>
-                          <input type="text" class="form-control" name="postJumlahPrd" id="inputJumlahPrd" onkeyup="totalBayar()" placeholder="Enter ...">
+                          <input type="text" class="form-control" name="postJumlahPrd" id="inputJumlahPrd" onkeyup="totalBayar('sales')" placeholder="Enter ...">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-6">
                         <div class="form-group">
                           <label>Harga Beli Satuan</label>
-                          <input type="text" class="form-control" name="postHargaPrd" id="inputHargaPrd" placeholder="Enter ...">
+                          <input type="text" class="form-control" name="postHargaPrd" id="inputHargaPrd" placeholder="Harga satuan...">
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-6">
+                        <div class="form-group">
+                          <label>Potongan</label>
+                          <input type="text" class="form-control" name="postPotonganPrd" id="inputPotonganPrd" value="0" onkeyup="totalBayar('sales')" placeholder="Potongan harga...">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-6">
                         <div class="form-group">
                           <label>Total</label>
-                          <input type="text" class="form-control" name="postTotalPrd" id="inputTotalPrd" placeholder="Enter ..." readonly>
+                          <input type="text" class="form-control" name="postTotalPrd" id="inputTotalPrd" placeholder="Harga total" readonly>
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-6">
@@ -73,6 +79,7 @@
                           <th>Product</th>
                           <th>Jumlah</th>
                           <th>Harga satuan</th>
+                          <th>Potongan</th>
                           <th>Total</th>
                           <th>Aksi</th>
                         </thead>
@@ -81,14 +88,15 @@
                           $no = 1;
                           $totalBayar = 0; 
                           foreach ($daftarPrd as $row): 
-                            $totalBayar += $row['tp_total_paid'];
+                            $totalBayar += $row['temps_total_paid'];
                           ?>
                           <tr>
                             <td><?php echo $no++ ?></td>
                             <td><?php echo $row['prd_nama']; ?></td>
-                            <td><?php echo $row['tp_product_amount'] ?></td>
-                            <td><?php echo $row['tp_purchase_price'] ?></td>
-                            <td><?php echo $row['tp_total_paid'] ?></td>
+                            <td><?php echo $row['temps_product_amount'] ?></td>
+                            <td><?php echo $row['temps_sale_price'] ?></td>
+                            <td><?php echo $row['temps_discount'] ?></td>
+                            <td><?php echo $row['temps_total_paid'] ?></td>
                             <td>
                               <a href=""><i class="fas fa-trash"></i></a>
                             </td>
@@ -138,9 +146,9 @@
 
                   <!-- Form-part input total harga beli -->
                     <div class="form-group row">
-                      <label for="inputTransBeli" class="col-sm-3 col-form-label">Total Pembelian <a class="float-right"> : </a></label>
+                      <label for="inputTransTotalBayar" class="col-sm-3 col-form-label">Total Pembelian <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postTransBeli" id="inputTransBeli" value="<?php echo $totalBayar ?>" readonly required>
+                        <input type="number" class="form-control float-right" step="0.01" name="postTransTotalBayar" id="inputTransTotalBayar" value="<?php echo $totalBayar ?>" readonly required>
                       </div>
                     </div>
 
@@ -171,9 +179,9 @@
 
                   <!-- Form-part input Dibayar -->
                     <div class="form-group row">
-                      <label for="inputTransBayar" class="col-sm-3 col-form-label">Dibayar <a class="float-right"> : </a></label>
+                      <label for="inputTransPembayaran" class="col-sm-3 col-form-label">Pembayaran Pertama <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postTransBayar" id="inputTransBayar" onkeyup="hitungPayment()" placeholder="Pembayaran pertama" required>
+                        <input type="number" class="form-control float-right" step="0.01" name="postTransPembayaran" id="inputTransPembayaran" onkeyup="hitungPayment()" placeholder="Pembayaran pertama" required>
                       </div>
                     </div>
 
@@ -241,3 +249,4 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
+    <?php print("<pre>".print_r($daftarPrd, true)."</pre>") ?>

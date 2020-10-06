@@ -25,7 +25,7 @@
             <div class="card card-orange card-outline">
               <div class="card-header">
                 <h5 class="m-0 card-title">Daftar Transaksi Penjualan</h5>
-                <a class="btn btn-sm btn-success float-right" href=""> <i class="fas fa-plus"></i> Tambah Transaksi</a>
+                <a class="btn btn-sm btn-success float-right" href="<?php echo site_url('Transaksi_c/addSalesPage') ?>"> <i class="fas fa-plus"></i> Tambah Transaksi</a>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
@@ -34,18 +34,39 @@
                         <th>No.</th>
                         <th>No. Transaksi</th>
                         <th>Tanggal</th>
-                        <th>Costumer</th>
-                        <th>Jumlah Barang</th>
+                        <th>Customer</th>
+                        <th>Total Bayar</th>
+                        <th>Kurangan</th>
                         <th>Status</th>
                         <th>Jatuh Tempo</th>
                         <th>Aksi</th>
                       </thead>
+                      <tbody>
+                        <?php $no = 1; foreach($dataTrans as $showTP): ?>
+                          <tr>
+                            <td><?php echo $no++ ?></td>
+                            <td><?php echo $showTP['tp_no_trans'] ?></td>
+                            <td><?php echo date('d-m-Y', strtotime($showTP['tp_date'])) ?></td>
+                            <td><?php echo $showTP['supp_nama_supplier'] ?></td>
+                            <td><?php echo $showTP['tp_purchase_price'] ?></td>
+                            <td><?php echo $showTP['tp_insufficient'] ?></td>
+                            <td><?php echo ($showTP['tp_status'] === 'L')? 'Lunas' : 'Belum Lunas' ?></td>
+                            <td><?php echo ($showTP['tp_status'] === 'L')? '-' : date('d-m-Y', strtotime($showTP['tp_due_date']));?></td>
+                            <td class="text-center">
+                              <a href="" class="btn btn-xs btn-info"><i class="fas fa-search"></i></a>
+                              <a href="" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
+                              <a href="" class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></a>
+                            </td>
+                          </tr>
+                        <?php endforeach; ?>
+                      </tbody>
                       <tfoot>
                         <th>No.</th>
                         <th>No. Transaksi</th>
                         <th>Tanggal</th>
-                        <th>Costumer</th>
-                        <th>Jumlah Barang</th>
+                        <th>Customer</th>
+                        <th>Total Bayar</th>
+                        <th>Kurangan</th>
                         <th>Status</th>
                         <th>Jatuh Tempo</th>
                         <th>Aksi</th>

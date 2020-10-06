@@ -49,8 +49,8 @@ Class Pembelian_m extends CI_Model{
       $this->db->from('information_schema.TABLES');
       $this->db->where('TABLE_SCHEMA', $this->db->database);
       $this->db->where('TABLE_NAME', $this->tp_tb);
-    	$returnValue = $this->db->get();
-    	return $returnValue->result_array();
+    	$resultAI = $this->db->get();
+    	return $resultAI->result_array();
     }
 
     /* Query insert table transaksi pembelian */

@@ -41,8 +41,8 @@
 	<?php } ?>	
 
 	<!-- Page Add Trans Pembelian -->
-	<?php if(in_array('page_addtb',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/addpembelian_assets.js"></script>
+	<?php if(in_array('page_addtrans',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/addtransaction_assets.js"></script>
 		<script type="text/javascript">
 			autocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct') ?>";
 		</script>
