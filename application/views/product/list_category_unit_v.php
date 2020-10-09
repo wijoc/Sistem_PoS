@@ -26,30 +26,30 @@
               <div class="card-header">
                 <ul class="nav nav-justified nav-tabs ml-auto p-2" role="tablist">
                   <li class="nav-item">
-                      <a class="tabs-pilihan nav-link active" id="pilihan-kategori" href="#kategori" data-toggle="tab">Kategori</a>
+                      <a class="tabs-nav nav-link active" id="tab-category" href="#category" data-toggle="tab">Kategori</a>
                   </li>
                   <li class="nav-item">
-                      <a class="tabs-pilihan nav-link" id="pilihan-satuan" href="#satuan" data-toggle="tab">Satuan</a>
+                      <a class="tabs-nav nav-link" id="tab-unit" href="#unit" data-toggle="tab">Satuan</a>
                   </li>
                 </ul>
               </div>
               <div class="card-body">
                 <div class="tab-content" id="custom-content-above-tabContent">
-                  <div class="tab-pane active" id="kategori" role="tabpanel">
+                  <div class="tab-pane active" id="category" role="tabpanel">
                     <div class="row">
                       <h5 class="col-sm-6 m-0">Daftar Kategori</h5>
                       <div class="col-sm-6">
-                        <a class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#modal-kategori">
+                        <a class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#modal-category">
                           <i class="fas fa-plus"></i> Tambah Kategori</a>
                       </div>
                     </div>
                     <hr>
-                    <div id="alert-kategori"></div>
-                   <?php if($dataKategori == NULL ){ ?>
+                    <div id="alert-category"></div>
+                   <?php if($dataCtgr == NULL ){ ?>
                     <div class="alert alert-danger text-center"> Data Kategori belum tersedia !</div>
                    <?php } else { ?>
                     <div class="table-responsive">
-                        <table id="table-barang" class="table table-bordered table-striped table-katsat">
+                        <table id="table-ctgr" class="table table-bordered table-striped table-catunit">
                           <thead>
                             <th>No.</th>
                             <th>Kategori</th>
@@ -59,15 +59,14 @@
                           <tbody>
                             <?php
                               $no = 1; 
-                              foreach ($dataKategori as $showKtgr) { ?>
+                              foreach ($dataCtgr as $showCtgr) { ?>
                               <tr>
                                 <td><?php echo $no++ ?></td>
-                                <td><?php echo $showKtgr['ktgr_nama'] ?></td>
-                                <td><?php echo $showKtgr['ktgr_nama'] ?></td>
+                                <td><?php echo $showCtgr['ctgr_name'] ?></td>
+                                <td><?php echo $showCtgr['ctgr_name'] ?></td>
                                 <td class="text-center">
-                                  <a class="btn btn-xs btn-info" href=""><i class="fas fa-search"></i></a>
-                                  <a class="btn btn-xs btn-warning ktgrEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showKtgr['ktgr_id'] ?>" data-nama="<?php echo $showKtgr['ktgr_nama'] ?>"><i class="fas fa-edit"></i></a>
-                                  <a class="btn btn-xs btn-danger" href=""><i class="fas fa-trash"></i></a>
+                                  <a class="btn btn-xs btn-warning ctgrEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showCtgr['ctgr_id'] ?>" data-name="<?php echo $showCtgr['ctgr_name'] ?>"><i class="fas fa-edit"></i></a>
+                                  <a class="btn btn-xs btn-danger" onclick="confirmDelete('ctgr', '<?php echo urlencode(base64_encode($showCtgr['ctgr_id'])) ?>', '<?php echo site_url('Product_c/deleteCategoryProses') ?>')"><i class="fas fa-trash"></i></a>
                                 </td>
                               </tr>
                             <?php } ?>
@@ -84,7 +83,7 @@
                   </div>
                 </div>
                 <div class="tab-content" id="custom-content-above-tabContent">
-                  <div class="tab-pane" id="satuan" role="tabpanel">
+                  <div class="tab-pane" id="unit" role="tabpanel">
                     <div class="row">
                       <h5 class="col-sm-6 m-0">Daftar Satuan</h5>
                       <div class="col-sm-6">
@@ -94,11 +93,11 @@
                     </div>
                     <hr>
                     <div id="alert-satuan"></div>
-                   <?php if($dataSatuan == NULL ){ ?>
+                   <?php if($dataUnit == NULL ){ ?>
                     <div class="alert alert-danger text-center"> Data Satuan belum tersedia !</div>
                    <?php } else { ?>
                     <div class="table-responsive">
-                      <table id="table-barang" class="table table-bordered table-striped table-katsat">
+                      <table id="table-barang" class="table table-bordered table-striped table-catunit">
                         <thead>
                           <th>No.</th>
                           <th>Satuan</th>
@@ -107,13 +106,12 @@
                         <tbody>
                             <?php
                               $no = 1; 
-                              foreach ($dataSatuan as $showSat) { ?>
+                              foreach ($dataUnit as $showUnit) { ?>
                               <tr>
                                 <td><?php echo $no++ ?></td>
-                                <td><?php echo $showSat['satuan_nama'] ?></td>
+                                <td><?php echo $showUnit['unit_name'] ?></td>
                                 <td class="text-center">
-                                  <a class="btn btn-xs btn-info" href=""><i class="fas fa-search"></i></a>
-                                  <a class="btn btn-xs btn-warning satuanEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showSat['satuan_id'] ?>" data-nama="<?php echo $showSat['satuan_nama'] ?>"><i class="fas fa-edit"></i></a>
+                                  <a class="btn btn-xs btn-warning satuanEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showUnit['unit_id'] ?>" data-nama="<?php echo $showUnit['unit_name'] ?>"><i class="fas fa-edit"></i></a>
                                   <a class="btn btn-xs btn-danger" href=""><i class="fas fa-trash"></i></a>
                                 </td>
                               </tr>
@@ -140,7 +138,7 @@
 
     <!-- Modal -->
      <!-- Modal Kategori -->
-      <div class="modal fade" id="modal-kategori">
+      <div class="modal fade" id="modal-category">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -149,15 +147,13 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Product_c/addKategoriProses') ?>" id="formKategori">
+            <form method="POST" action="<?php echo site_url('Product_c/addCategoryProses') ?>">
               <div class="modal-body">
-                <!-- Form-part hidden Kategori id -->
-                  <input type="hidden" name="postKategoriID" id="editKategoriID" value="" disabled="disabled">
                 <!-- Form-part input Kategori nama -->
                   <div class="form-group row">
-                    <label for="inputKategori" class="col-sm-3 col-form-label">Nama Kategori <a class="float-right"> : </a></label>
+                    <label for="inputCtgrName" class="col-sm-3 col-form-label">Nama Kategori <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postKategoriNama" id="inputKategoriNama" placeholder="Nama kategori baru" required>
+                      <input type="text" class="form-control float-right" name="postCtgrName" id="inputCtgrName" placeholder="Nama kategori baru" required>
                     </div>
                   </div>
               </div>
@@ -219,9 +215,9 @@
                   <input type="hidden" name="postID" id="editID" value="" disabled="disabled">
                 <!-- Form-part input Edit nama -->
                   <div class="form-group row">
-                    <label for="editNama" class="col-sm-3 col-form-label">Nama <a class="float-right"> : </a></label>
+                    <label for="editName" class="col-sm-3 col-form-label">Nama <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postNama" id="editNama" placeholder="" required>
+                      <input type="text" class="form-control float-right" name="postName" id="editName" placeholder="" required>
                     </div>
                   </div>
               </div>
@@ -235,6 +231,3 @@
         </div>
         <!-- /.modal-dialog -->
       </div>
-      <?php 
-        if(isset($flashStatus))
-      ?>

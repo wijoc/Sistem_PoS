@@ -24,15 +24,26 @@
 		<script src="<?php echo base_url() ?>assets/plugins/jquery-ui/jquery-ui.js"></script>
 	<?php } ?>
 
+	<!-- bs-custom-file-input -->
+	<?php if(in_array('custominput',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function () {
+			  bsCustomFileInput.init();
+			});
+		</script>
+	<?php } ?>
+
+
 <!-- additional Page script goes here -->
 	<!-- Page Kategori & Satuan -->
-	<?php if(in_array('page_katsat',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/katsat_assets.js"></script>
+	<?php if(in_array('page_catunit',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/cat_unit_assets.js"></script>
 	<?php } ?>	
 
 	<!-- Page Add Product -->
-	<?php if(in_array('page_addprd',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/addprd_assets.js"></script>
+	<?php if(in_array('page_product',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/prd_assets.js"></script>
 	<?php } ?>	
 
 	<!-- Page Add Product -->
@@ -46,6 +57,11 @@
 		<script type="text/javascript">
 			autocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct') ?>";
 		</script>
+	<?php } ?>
+
+	<!-- Page Konfirmasi Delete -->
+	<?php if(in_array('f_confirm', $assets)){ ?>
+		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/f_confirm.js"></script>
 	<?php } ?>
 
 	<!-- Untuk session input -->

@@ -33,25 +33,25 @@
 
                   <!-- Form-part input Kode Produk : Otomatis -->
                     <div class="form-group row">
-                      <label for="inputBarcodeBrg" class="col-sm-3 col-form-label">Barcode Produk <a class="float-right"> : </a></label>
+                      <label for="inputBarcodePrd" class="col-sm-3 col-form-label">Barcode Produk <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control float-right" name="postBarcodeBrg" id="inputBarcodeBrg" placeholder="Kosongkan jika produk tidak memiliki barcode">
+                        <input type="text" class="form-control float-right" name="postBarcodePrd" id="inputBarcodePrd" placeholder="Kosongkan jika produk tidak memiliki barcode">
                       </div>
                     </div>
 
                   <!-- Form-part input Nama Produk -->
                     <div class="form-group row">
-                      <label for="inputNamaBrg" class="col-sm-3 col-form-label">Nama Produk<a class="float-right"> : </a></label>
+                      <label for="inputNamaPrd" class="col-sm-3 col-form-label">Nama Produk<a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control float-right" name="postNamaBrg" id="inputNamaBrg" placeholder="Nama Produk" required>
+                        <input type="text" class="form-control float-right" name="postNamaPrd" id="inputNamaPrd" placeholder="Nama Produk" required>
                       </div>
                     </div>
 
                   <!-- Form-part input Kategori -->
                     <div class="form-group row">
-                      <label for="inputKategoriBrg" class="col-sm-3 col-form-label">Kategori <a class="float-right"> : </a></label>
+                      <label for="inputKategoriPrd" class="col-sm-3 col-form-label">Kategori <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <select class="form-control float-right" name="postKategoriBrg" id="inputKategoriBrg">
+                        <select class="form-control float-right" name="postKategoriPrd" id="inputKategoriPrd">
                           <option> -- Pilih Kategori -- </option>
                           <?php foreach ($optKtgr as $showKtgr): ?>
                             <option value="<?php echo $showKtgr['ktgr_id'] ?>"> <?php echo $showKtgr['ktgr_nama'] ?> </option>
@@ -99,9 +99,9 @@
 
                   <!-- Form-part input Deskripsi Produk -->
                     <div class="form-group row">
-                      <label for="inputDeskripsiBrg" class="col-sm-3 col-form-label">Deskripsi <a class="float-right"> : </a></label>
-                      <div class="col-sm-3">
-                        <textarea class="form-control" name="postDeskripsiBrg" id="inputDeskripsiBrg" placeholder="Deskripsi Produk (optional)" height="3"></textarea>
+                      <label for="inputDeskripsiPrd" class="col-sm-3 col-form-label">Deskripsi <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <textarea class="form-control" rows="3" name="postDeskripsiPrd" id="inputDeskripsiPrd" placeholder="Deskripsi Produk (optional)"></textarea>
                       </div>
                     </div>
                 </div>

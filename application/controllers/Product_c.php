@@ -29,7 +29,7 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Input Product',
-			'assets'  => array('sweetalert2', 'page_addprd'),
+			'assets'  => array('sweetalert2', 'page_product'),
 			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
 			'optSatuan' => $this->Product_m->getSatuan() // Get semua satuan untuk option
 		);
@@ -56,7 +56,7 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Edit Product',
-			'assets'  => array('sweetalert2', 'page_addprd'),
+			'assets'  => array('sweetalert2', 'page_product'),
 			'detailPrd' => $this->Product_m->getProductOnID($prdID), // Get data berdasar produk id
 			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
 			'optSatuan' => $this->Product_m->getSatuan() // Get semua satuan untuk option
@@ -69,14 +69,14 @@ Class Product_c extends MY_Controller {
 	function addProductProses(){
 	  /* Get post data dari form */
 		$postData = array(
-			'prd_barcode'		 => $this->input->post('postBarcodeBrg'),
-			'prd_nama' 			 => $this->input->post('postNamaBrg'),
-			'prd_kategori_id_fk' => $this->input->post('postKategoriBrg'),
-			'prd_harga_beli'     => $this->input->post('postHargaBeli'),
-			'prd_harga_jual'   	 => $this->input->post('postHargaJual'),
-			'prd_satuan_id_fk' 	 => $this->input->post('postSatuan'),
-			'prd_isi_per_satuan' => $this->input->post('postIsi'),
-			'prd_deskripsi' 	 => $this->input->post('postDeskripsiBrg')
+			'prd_barcode'		 => $this->input->post('postBarcodePrd'),
+			'prd_name' 			 => $this->input->post('postNamaPrd'),
+			'prd_category_id_fk' => $this->input->post('postKategoriPrd'),
+			'prd_purchase_price' => $this->input->post('postHargaBeli'),
+			'prd_selling_price'	 => $this->input->post('postHargaJual'),
+			'prd_unit_id_fk' 	 => $this->input->post('postSatuan'),
+			'prd_containts' 	 => $this->input->post('postIsi'),
+			'prd_description' 	 => $this->input->post('postDeskripsiPrd')
 		);
 
 	  /* Insert ke Database */
@@ -100,13 +100,13 @@ Class Product_c extends MY_Controller {
 	  /* Get post data dari form */
 	  	$prdID = base64_decode(urldecode($this->input->post('postId')));
 		$postData = array(
-			'prd_nama' 			 => $this->input->post('postNamaBrg'),
-			'prd_kategori_id_fk' => $this->input->post('postKategoriBrg'),
-			'prd_harga_beli'     => $this->input->post('postHargaBeli'),
-			'prd_harga_jual'   	 => $this->input->post('postHargaJual'),
-			'prd_satuan_id_fk' 	 => $this->input->post('postSatuan'),
-			'prd_isi_per_satuan' => $this->input->post('postIsi'),
-			'prd_deskripsi' 	 => $this->input->post('postDeskripsiBrg')
+			'prd_name' 			 => $this->input->post('postNamaPrd'),
+			'prd_category_id_fk' => $this->input->post('postKategoriPrd'),
+			'prd_purchase_price' => $this->input->post('postHargaBeli'),
+			'prd_selling_price'  => $this->input->post('postHargaJual'),
+			'prd_unit_id_fk' 	 => $this->input->post('postSatuan'),
+			'prd_containts'		 => $this->input->post('postIsi'),
+			'prd_description' 	 => $this->input->post('postDeskripsiPrd')
 		);
 
 	  /* Update ke database */
@@ -131,10 +131,10 @@ Class Product_c extends MY_Controller {
 			if(count($data) > 0){
 				foreach($data as $row)
 					$prdData[] = array(
-						'label' => $row['prd_nama'],
+						'label' => $row['prd_name'],
 						'prd_id' => $row['prd_id'],
 						'prd_barcode' => $row['prd_barcode'],
-						'prd_harga_beli' => $row['prd_harga_beli']
+						'prd_harga_beli' => $row['prd_purchase_price']
 					);
 					echo json_encode($prdData);
 			}
@@ -144,69 +144,84 @@ Class Product_c extends MY_Controller {
 
   /* Function CRUD Kategori & Satuan */
 	/* Function : List kategori dan satuan */
-	public function listKatSatPage(){
+	public function listCatUnitPage(){
 	  /* Get data kategori dan Satuan dari database */
-		$dataKategori = $this->Product_m->getKategori();
-		$dataSatuan = $this->Product_m->getSatuan();
+		$dataCategory = $this->Product_m->getCategory();
+		$dataUnit 	  = $this->Product_m->getUnit();
 
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'  => 'PoS | List Kategori',
-			'assets' => array('datatables', 'page_katsat', 'sweetalert2'),
-			'dataKategori' => $dataKategori,
-			'dataSatuan' => $dataSatuan
+			'assets' => array('datatables', 'sweetalert2', 'page_catunit', 'f_confirm'),
+			'dataCtgr' => $dataCategory,
+			'dataUnit' => $dataUnit
 		);
-		$this->page = 'product/list_kategori_satuan_v';
+		$this->page = 'product/list_category_unit_v';
 		$this->layout();
 	}
 
 	/* Function : Add Kategori Proses */
-	function addKategoriProses(){
+	function addCategoryProses(){
 	  /* Get data post dari form */
 	  	$postData = array(
-	  		'ktgr_nama' => $this->input->post('postKategoriNama')
+	  		'ctgr_name' => $this->input->post('postCtgrName')
 	  	);
 
 	  /* Insert proses */
-	  	$inputKategori = $this->Product_m->insertKategori($postData);
+	  	$inputCategory = $this->Product_m->insertCategory($postData);
 
 	  /* return & redirect */ 
 	  	/* Set Session untuk alert */
-	  	if($inputKategori > 0){
+	  	if($inputCategory > 0){
 	  		$this->session->set_flashdata('flashStatus', 'successInsert');
 	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan kategori');
 	  	} else {
 	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
 	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan kategori');
 	  	}
-	  		$this->session->set_flashdata('flashInput', 'kategori');
+	  		$this->session->set_flashdata('flashInput', 'category');
 
 	  	/* Redirect list kategori dan satuan */
-	  	redirect('Product_c/listKatSatPage');
+	  	redirect('Product_c/listCatUnitPage');
 	}
 
 	/* Function : Edit Kategori Proses */
-	function editKategoriProses(){
+	function editCategoryProses(){
 		$editData = array(
-			'ktgr_id' 	=> $this->input->post('postID'),
-			'ktgr_nama' => $this->input->post('postNama')
+			'ctgr_id' 	=> $this->input->post('postID'),
+			'ctgr_name' => $this->input->post('postName')
 		);
-		//print("<pre>".print_r($editData, true)."</pre>");
 		
-		$editKategori = $this->Product_m->updateKategori($editData);
+		$editCategori = $this->Product_m->updateCategory($editData);
 
 	  /* return & redirect */ 
 	  	/* Set Session untuk alert */
-	  	if($inputKategori > 0){
+	  	if($editCategori > 0){
 	  		$this->session->set_flashdata('flashStatus', 'successUpdate');
-	  		$this->session->set_flashdata('flashMsg', 'Success insert kategori');
+	  		$this->session->set_flashdata('flashMsg', 'Success mengubah data kategori !');
 	  	} else {
 	  		$this->session->set_flashdata('flashStatus', 'failedUpdate');
-	  		$this->session->set_flashdata('flashMsg', 'Failed insert kategori');
+	  		$this->session->set_flashdata('flashMsg', 'Failed mengubah data kategori !');
 	  	}
 
 	  	/* Redirect list kategori dan satuan */
-	  	redirect('Product_c/listKatSatPage');
+	  	redirect('Product_c/listCatUnitPage');
+	}
+
+	/* Function : Delete Kategori */
+	function deleteCategoryProses(){
+	  /* Get posted id and decode */
+		$ctgrID = base64_decode(urldecode($this->input->post('postID')));
+
+	  /* Proses delete data di database */
+	  	$delCtgr = $this->Product_m->deleteCategory($ctgrID);
+
+	  /* return value */
+	  	if($delCtgr > 0){
+	  		echo 'successDelete';
+	  	} else {
+	  		echo 'failedDelete';
+	  	}
 	}
 
 	/* Function : add Satuan Proses */

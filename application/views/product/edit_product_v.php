@@ -36,20 +36,20 @@
 
                   <!-- Form-part input Nama Produk -->
                     <div class="form-group row">
-                      <label for="editNamaBrg" class="col-sm-3 col-form-label">Nama Produk<a class="float-right"> : </a></label>
+                      <label for="editNamaPrd" class="col-sm-3 col-form-label">Nama Produk<a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control float-right" name="postNamaBrg" id="editNamaBrg" value="<?php echo $detailPrd[0]['prd_nama'] ?>" placeholder="Nama Produk" required>
+                        <input type="text" class="form-control float-right" name="postNamaPrd" id="editNamaPrd" value="<?php echo $detailPrd[0]['prd_name'] ?>" placeholder="Nama Produk" required>
                       </div>
                     </div>
 
                   <!-- Form-part input Kategori -->
                     <div class="form-group row">
-                      <label for="editKategoriBrg" class="col-sm-3 col-form-label">Kategori <a class="float-right"> : </a></label>
+                      <label for="editKategoriPrd" class="col-sm-3 col-form-label">Kategori <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <select class="form-control float-right" name="postKategoriBrg" id="editKategoriBrg">
+                        <select class="form-control float-right" name="postKategoriPrd" id="editKategoriPrd">
                           <option> -- Pilih Kategori -- </option>
                           <?php foreach ($optKtgr as $showKtgr): ?>
-                            <option value="<?php echo $showKtgr['ktgr_id'] ?>" <?php echo ($detailPrd[0]['prd_kategori_id_fk'] === $showKtgr['ktgr_id'])? 'selected="selected"' : '' ?>> 
+                            <option value="<?php echo $showKtgr['ktgr_id'] ?>" <?php echo ($detailPrd[0]['prd_category_id_fk'] === $showKtgr['ktgr_id'])? 'selected="selected"' : '' ?>> 
                             	<?php echo $showKtgr['ktgr_nama'] ?> 
                             </option>
                           <?php endforeach; ?>
@@ -61,7 +61,7 @@
                     <div class="form-group row">
                       <label for="editHargaBeli" class="col-sm-3 col-form-label">Harga Beli <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postHargaBeli" id="editHargaBeli" value="<?php echo $detailPrd[0]['prd_harga_beli'] ?>" placeholder="Harga Beli Produk" required>
+                        <input type="number" class="form-control float-right" step="0.01" name="postHargaBeli" id="editHargaBeli" value="<?php echo $detailPrd[0]['prd_purchase_price'] ?>" placeholder="Harga Beli Produk" required>
                       </div>
                     </div>
 
@@ -69,7 +69,7 @@
                     <div class="form-group row">
                       <label for="editHargaJual" class="col-sm-3 col-form-label">Harga Jual <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postHargaJual" id="editHargaJual" value="<?php echo $detailPrd[0]['prd_harga_jual'] ?>" placeholder="Harga Jual Produk" required>
+                        <input type="number" class="form-control float-right" step="0.01" name="postHargaJual" id="editHargaJual" value="<?php echo $detailPrd[0]['prd_selling_price'] ?>" placeholder="Harga Jual Produk" required>
                       </div>
                     </div>
 
@@ -80,7 +80,7 @@
                         <select class="form-control float-right" name="postSatuan" id="editSatuan">
                           <option> -- Pilih Satuan -- </option>
                           <?php foreach ($optSatuan as $showSatuan): ?>
-                            <option value="<?php echo $showSatuan['satuan_id'] ?>" <?php echo ($detailPrd[0]['prd_satuan_id_fk'] === $showSatuan['satuan_id'])? 'selected="selected"' : '' ?>> 
+                            <option value="<?php echo $showSatuan['satuan_id'] ?>" <?php echo ($detailPrd[0]['prd_unit_id_fk'] === $showSatuan['satuan_id'])? 'selected="selected"' : '' ?>> 
                             	<?php echo $showSatuan['satuan_nama'] ?> 
                             </option>
                           <?php endforeach; ?>
@@ -92,15 +92,15 @@
                     <div class="form-group row">
                       <label for="editIsi" class="col-sm-3 col-form-label">Isi tiap satuan <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postIsi" id="editIsi" value="<?php echo $detailPrd[0]['prd_isi_per_satuan'] ?>" placeholder="Isi Produk tiap satuan" required>
+                        <input type="number" class="form-control float-right" name="postIsi" id="editIsi" value="<?php echo $detailPrd[0]['prd_containts'] ?>" placeholder="Isi Produk tiap satuan" required>
                       </div>
                     </div>
 
                   <!-- Form-part input Deskripsi Produk -->
                     <div class="form-group row">
-                      <label for="editDeskripsiBrg" class="col-sm-3 col-form-label">Deskripsi <a class="float-right"> : </a></label>
-                      <div class="col-sm-3">
-                        <textarea class="form-control" name="postDeskripsiBrg" id="editDeskripsiBrg" placeholder="Deskripsi Produk (optional)"><?php echo $detailPrd[0]['prd_nama'] ?></textarea>
+                      <label for="editDeskripsiPrd" class="col-sm-3 col-form-label">Deskripsi <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <textarea class="form-control" rows="3" name="postDeskripsiPrd" id="editDeskripsiPrd" placeholder="Deskripsi Produk (optional)"><?php echo $detailPrd[0]['prd_description'] ?></textarea>
                       </div>
                     </div>
                 </div>
