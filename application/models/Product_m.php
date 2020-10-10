@@ -29,7 +29,7 @@ Class Product_m extends CI_Model {
     var $unit_tb = 'tb_unit';
     var $unit_f  = array(
    		'0' => 'unit_id',
-   		'1' => 'unit_nama'
+   		'1' => 'unit_name'
     );
 
   /* Function CRUD Product */
@@ -114,7 +114,7 @@ Class Product_m extends CI_Model {
 
   /* Function CRUD Satuan */
    /* Function : Insert Satuan */
-  	function insertSatuan($data){
+  	function insertUnit($data){
   		$resultInsert = $this->db->insert($this->unit_tb, $data);
   		return $resultInsert;
   	}
@@ -127,10 +127,17 @@ Class Product_m extends CI_Model {
   	}
 
    /* Function : Update Satuan */
-    function updateSatuan($data){
-      $this->db->set($this->unit_f[1], $data['satuan_nama']);
-      $this->db->where($this->unit_f[0], $data['satuan_id']);
+    function updateUnit($data){
+      $this->db->set($this->unit_f[1], $data['unit_nama']);
+      $this->db->where($this->unit_f[0], $data['unit_id']);
       $resultUpdate = $this->db->update($this->unit_tb);
       return $resultUpdate;
+    }
+
+   /* Function : Delete Satuan */
+    function deleteUnit($id){
+      $this->db->where($this->unit_f[0], $id);
+      $resultDelete = $this->db->delete($this->unit_tb);
+      return $resultDelete;
     }
 }

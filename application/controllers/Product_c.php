@@ -31,7 +31,7 @@ Class Product_c extends MY_Controller {
 			'title'   => 'PoS | Input Product',
 			'assets'  => array('sweetalert2', 'page_product'),
 			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
-			'optSatuan' => $this->Product_m->getSatuan() // Get semua satuan untuk option
+			'optSatuan' => $this->Product_m->getUnit() // Get semua satuan untuk option
 		);
 		$this->page = 'product/add_product_v';
 		$this->layout();
@@ -59,7 +59,7 @@ Class Product_c extends MY_Controller {
 			'assets'  => array('sweetalert2', 'page_product'),
 			'detailPrd' => $this->Product_m->getProductOnID($prdID), // Get data berdasar produk id
 			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
-			'optSatuan' => $this->Product_m->getSatuan() // Get semua satuan untuk option
+			'optSatuan' => $this->Product_m->getUnit() // Get semua satuan untuk option
 		);
 		$this->page = 'product/edit_product_v';
 		$this->layout();
@@ -125,6 +125,7 @@ Class Product_c extends MY_Controller {
 		redirect('Product_c/editProductPage/'.$this->input->post('postId'));
 	}
 
+	/* Function : AutoComplete untuk page transaksi */
 	public function autocompleteProduct(){
 		if($this->input->get('term')){
 			$data = $this->Product_m->searchProduct($this->input->get('term'));
@@ -203,6 +204,7 @@ Class Product_c extends MY_Controller {
 	  		$this->session->set_flashdata('flashStatus', 'failedUpdate');
 	  		$this->session->set_flashdata('flashMsg', 'Failed mengubah data kategori !');
 	  	}
+	  		$this->session->set_flashdata('flashInput', 'category');
 
 	  	/* Redirect list kategori dan satuan */
 	  	redirect('Product_c/listCatUnitPage');
@@ -225,14 +227,14 @@ Class Product_c extends MY_Controller {
 	}
 
 	/* Function : add Satuan Proses */
-	function addSatuanProses(){
+	function addUnitProses(){
 	  /* Get data post dari form */
 	  	$postData = array(
-	  		'satuan_nama' => $this->input->post('postSatuanNama')
+	  		'unit_name' => $this->input->post('postSatuanNama')
 	  	);
 
 	  /* Insert proses */
-	  	$inputSatuan = $this->Product_m->insertSatuan($postData);
+	  	$inputSatuan = $this->Product_m->insertUnit($postData);
 
 	  /* return & redirect */ 
 	  	/* Set Session untuk alert */
@@ -243,33 +245,50 @@ Class Product_c extends MY_Controller {
 	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
 	  		$this->session->set_flashdata('flashMsg', 'Failed insert satuan');
 	  	}
-	  		$this->session->set_flashdata('flashInput', 'satuan');
+	  		$this->session->set_flashdata('flashInput', 'unit');
 
 	  	/* Redirect list kategori dan satuan */
-	  	redirect('Product_c/listKatSatPage');
+	  	redirect('Product_c/listCatUnitPage');
 	}
 
 	/* Function : edit Satuan Proses */
-	function editSatuanProses(){
+	function editUnitProses(){
+	  /* Get data dari form */
 		$editData = array(
-			'satuan_id' 	=> $this->input->post('postID'),
-			'satuan_nama' => $this->input->post('postNama')
+			'unit_id' 	=> $this->input->post('postID'),
+			'unit_nama' => $this->input->post('postName')
 		);
-		print("<pre>".print_r($editData, true)."</pre>");
 
-		$editSatuan = $this->Product_m->updateSatuan($editData);
+		$editUnit = $this->Product_m->updateUnit($editData);
 
 	  /* return & redirect */ 
 	  	/* Set Session untuk alert */
-	  	if($inputKategori > 0){
+	  	if($editUnit > 0){
 	  		$this->session->set_flashdata('flashStatus', 'successUpdate');
-	  		$this->session->set_flashdata('flashMsg', 'Success update satuan');
+	  		$this->session->set_flashdata('flashMsg', 'Berhasil mengubah data satuan');
 	  	} else {
 	  		$this->session->set_flashdata('flashStatus', 'failedUpdate');
-	  		$this->session->set_flashdata('flashMsg', 'Failed update satuan');
+	  		$this->session->set_flashdata('flashMsg', 'Gagal mengubah data satuan');
 	  	}
+	  		$this->session->set_flashdata('flashInput', 'unit');
 
 	  	/* Redirect list kategori dan satuan */
-	  	redirect('Product_c/listKatSatPage');
+	  	redirect('Product_c/listCatUnitPage');
+	}
+
+	/* Function : Delete Satuan */
+	function deleteUnitProses(){
+	  /* Get posted id and decode */
+		$unitID = base64_decode(urldecode($this->input->post('postID')));
+
+	  /* Proses delete data di database */
+	  	$delUnit = $this->Product_m->deleteUnit($unitID);
+
+	  /* return value */
+	  	if($delUnit > 0){
+	  		echo 'successDelete';
+	  	} else {
+	  		echo 'failedDelete';
+	  	}
 	}
 }

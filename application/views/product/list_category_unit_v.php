@@ -26,10 +26,10 @@
               <div class="card-header">
                 <ul class="nav nav-justified nav-tabs ml-auto p-2" role="tablist">
                   <li class="nav-item">
-                      <a class="tabs-nav nav-link active" id="tab-category" href="#category" data-toggle="tab">Kategori</a>
+                      <a class="tabs-nav nav-link active" id="nav-category" href="#category" data-toggle="tab">Kategori</a>
                   </li>
                   <li class="nav-item">
-                      <a class="tabs-nav nav-link" id="tab-unit" href="#unit" data-toggle="tab">Satuan</a>
+                      <a class="tabs-nav nav-link" id="nav-unit" href="#unit" data-toggle="tab">Satuan</a>
                   </li>
                 </ul>
               </div>
@@ -87,17 +87,17 @@
                     <div class="row">
                       <h5 class="col-sm-6 m-0">Daftar Satuan</h5>
                       <div class="col-sm-6">
-                        <a class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#modal-satuan">
+                        <a class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#modal-unit">
                           <i class="fas fa-plus"></i> Tambah Satuan</a>
                       </div>
                     </div>
                     <hr>
-                    <div id="alert-satuan"></div>
+                    <div id="alert-unit"></div>
                    <?php if($dataUnit == NULL ){ ?>
                     <div class="alert alert-danger text-center"> Data Satuan belum tersedia !</div>
                    <?php } else { ?>
                     <div class="table-responsive">
-                      <table id="table-barang" class="table table-bordered table-striped table-catunit">
+                      <table id="table-unit" class="table table-bordered table-striped table-catunit">
                         <thead>
                           <th>No.</th>
                           <th>Satuan</th>
@@ -111,8 +111,8 @@
                                 <td><?php echo $no++ ?></td>
                                 <td><?php echo $showUnit['unit_name'] ?></td>
                                 <td class="text-center">
-                                  <a class="btn btn-xs btn-warning satuanEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showUnit['unit_id'] ?>" data-nama="<?php echo $showUnit['unit_name'] ?>"><i class="fas fa-edit"></i></a>
-                                  <a class="btn btn-xs btn-danger" href=""><i class="fas fa-trash"></i></a>
+                                  <a class="btn btn-xs btn-warning unitEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showUnit['unit_id'] ?>" data-name="<?php echo $showUnit['unit_name'] ?>"><i class="fas fa-edit"></i></a>
+                                  <a class="btn btn-xs btn-danger" onclick="confirmDelete('unit', '<?php echo urlencode(base64_encode($showUnit['unit_id'])) ?>', '<?php echo site_url('Product_c/deleteUnitProses') ?>')"><i class="fas fa-trash"></i></a>
                                 </td>
                               </tr>
                             <?php } ?>
@@ -169,7 +169,7 @@
       </div>
 
      <!-- Modal Satuan -->
-      <div class="modal fade" id="modal-satuan">
+      <div class="modal fade" id="modal-unit">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -178,7 +178,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Product_c/addSatuanProses') ?>" id="formSatuan">
+            <form method="POST" action="<?php echo site_url('Product_c/addUnitProses') ?>" id="formSatuan">
               <div class="modal-body">
                 <!-- Form-part input Kategori -->
                   <div class="form-group row">
@@ -204,7 +204,7 @@
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title"></h4>
+              <h4 class="modal-title">Ubah Data</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>

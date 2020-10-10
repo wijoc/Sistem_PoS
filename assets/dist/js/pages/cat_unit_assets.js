@@ -14,7 +14,6 @@ $(document).ready(function(){
     $("#table-ctgr tbody").on("click", ".ctgrEdit" ,function(){
     	var ctgr_id   = $(this).data("id");
     	var ctgr_name = $(this).data("name");
-        $("#modal-edit").find(".modal-title").append("<p>Ubah data kategori</p>")
         $("#editID").prop("required", true);
         $("#editID").prop("disabled", false);
     	$("#modal-edit").find("#editID").val(ctgr_id);
@@ -23,14 +22,14 @@ $(document).ready(function(){
     })
 
     /* Function saat edit satuan di click */
-    $(".satuanEdit").click(function(){
-    	var id   = $(this).data("id");
-    	var nama = $(this).data("nama");
+    $("#table-unit tbody").on("click", ".unitEdit" ,function(){
+    	var unit_id   = $(this).data("id");
+    	var unit_name = $(this).data("name");
         $("#editID").prop("required", true);
         $("#editID").prop("disabled", false);
-    	$("#modal-edit").find("#editID").val(id);
-    	$("#modal-edit").find("#editNama").val(nama);
-    	$("#formEdit").attr("action", "editSatuanProses");
+        $("#modal-edit").find("#editID").val(unit_id);
+        $("#modal-edit").find("#editName").val(unit_name);
+        $("#formEdit").attr("action", "editUnitProses");
     })
 
     /* Sweetalert */
@@ -46,15 +45,15 @@ $(document).ready(function(){
                 if(flashInput == "category"){
                     $(".tab-content").find(".tab-pane").removeClass("active");
                     $(".tabs-nav").removeClass("active");
-                    $("#pilihan-category").addClass("active");
+                    $("#nav-category").addClass("active");
                     $("#category").addClass("active");
                     $("#alert-category").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">'+ flashMsg +' <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-                } else if (flashInput === "satuan"){
+                } else if (flashInput === "unit"){
                     $(".tab-content").find(".tab-pane").removeClass("active");
                     $(".tabs-nav").removeClass("active");
-                    $("#pilihan-satuan").addClass("active");
-                    $("#satuan").addClass("active");
-                    $("#alert-satuan").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">Berhasil menambahkan data satuan <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                    $("#nav-unit").addClass("active");
+                    $("#unit").addClass("active");
+                    $("#alert-unit").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">'+ flashMsg +' <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                 }
             })
         }
