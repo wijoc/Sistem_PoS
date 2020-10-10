@@ -15,7 +15,8 @@ Class Product_m extends CI_Model {
   		'5' => 'prd_selling_price',
   		'6' => 'prd_unit_id_fk',
   		'7' => 'prd_containts',
-  		'8' => 'prd_description'
+      '8' => 'prd_initial_stock',
+  		'9' => 'prd_description'
   	);
 
    /* Table Kategori */

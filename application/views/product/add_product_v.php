@@ -53,8 +53,8 @@
                       <div class="col-sm-8">
                         <select class="form-control float-right" name="postKategoriPrd" id="inputKategoriPrd">
                           <option> -- Pilih Kategori -- </option>
-                          <?php foreach ($optKtgr as $showKtgr): ?>
-                            <option value="<?php echo $showKtgr['ktgr_id'] ?>"> <?php echo $showKtgr['ktgr_nama'] ?> </option>
+                          <?php foreach ($optCtgr as $showCtgr): ?>
+                            <option value="<?php echo $showCtgr['ctgr_id'] ?>"> <?php echo $showCtgr['ctgr_name'] ?> </option>
                           <?php endforeach; ?>
                         </select>
                       </div>
@@ -82,8 +82,8 @@
                       <div class="col-sm-5">
                         <select class="form-control float-right" name="postSatuan" id="inputSatuan">
                           <option> -- Pilih Satuan -- </option>
-                          <?php foreach ($optSatuan as $showSatuan): ?>
-                            <option value="<?php echo $showSatuan['satuan_id'] ?>"> <?php echo $showSatuan['satuan_nama'] ?> </option>
+                          <?php foreach ($optUnit as $showUnit): ?>
+                            <option value="<?php echo $showUnit['unit_id'] ?>"> <?php echo $showUnit['unit_name'] ?> </option>
                           <?php endforeach; ?>
                         </select>
                       </div>
@@ -94,6 +94,14 @@
                       <label for="inputIsi" class="col-sm-3 col-form-label">Isi tiap satuan <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
                         <input type="number" class="form-control float-right" name="postIsi" id="inputIsi" placeholder="Isi Produk tiap satuan" required>
+                      </div>
+                    </div>
+
+                  <!-- Form-part input stok awal -->
+                    <div class="form-group row">
+                      <label for="inputStokAwal" class="col-sm-3 col-form-label">Stok awal <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <input type="number" class="form-control float-right" name="postStokAwal" id="inputStokAwal" placeholder="Stok awal produk, stok akan berisi 0 jika tidak terisi">
                       </div>
                     </div>
 

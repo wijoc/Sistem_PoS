@@ -30,8 +30,8 @@ Class Product_c extends MY_Controller {
 		$this->pageData = array(
 			'title'   => 'PoS | Input Product',
 			'assets'  => array('sweetalert2', 'page_product'),
-			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
-			'optSatuan' => $this->Product_m->getUnit() // Get semua satuan untuk option
+			'optCtgr' => $this->Product_m->getCategory(), // Get semua kategori untuk option
+			'optUnit' => $this->Product_m->getUnit() // Get semua satuan untuk option
 		);
 		$this->page = 'product/add_product_v';
 		$this->layout();
@@ -41,7 +41,7 @@ Class Product_c extends MY_Controller {
 	public function listProductPage(){
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
-			'assets' => array('datatables'),
+			'assets' => array('datatables', 'f_confirm'),
 			'dataProduct' => $this->Product_m->getAllProduct() 
 		);
 		$this->page = 'product/list_product_v';
@@ -58,8 +58,8 @@ Class Product_c extends MY_Controller {
 			'title'   => 'PoS | Edit Product',
 			'assets'  => array('sweetalert2', 'page_product'),
 			'detailPrd' => $this->Product_m->getProductOnID($prdID), // Get data berdasar produk id
-			'optKtgr' => $this->Product_m->getKategori(), // Get semua kategori untuk option
-			'optSatuan' => $this->Product_m->getUnit() // Get semua satuan untuk option
+			'optCtgr' => $this->Product_m->getCategory(), // Get semua kategori untuk option
+			'optUnit' => $this->Product_m->getUnit() // Get semua satuan untuk option
 		);
 		$this->page = 'product/edit_product_v';
 		$this->layout();
@@ -76,6 +76,7 @@ Class Product_c extends MY_Controller {
 			'prd_selling_price'	 => $this->input->post('postHargaJual'),
 			'prd_unit_id_fk' 	 => $this->input->post('postSatuan'),
 			'prd_containts' 	 => $this->input->post('postIsi'),
+			'prd_initial_stock'	 => $this->input->post('postStokAwal'),
 			'prd_description' 	 => $this->input->post('postDeskripsiPrd')
 		);
 
@@ -106,6 +107,7 @@ Class Product_c extends MY_Controller {
 			'prd_selling_price'  => $this->input->post('postHargaJual'),
 			'prd_unit_id_fk' 	 => $this->input->post('postSatuan'),
 			'prd_containts'		 => $this->input->post('postIsi'),
+			'prd_initial_stock'	 => $this->input->post('postStokAwal'),
 			'prd_description' 	 => $this->input->post('postDeskripsiPrd')
 		);
 

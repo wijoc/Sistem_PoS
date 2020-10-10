@@ -48,9 +48,9 @@
                       <div class="col-sm-8">
                         <select class="form-control float-right" name="postKategoriPrd" id="editKategoriPrd">
                           <option> -- Pilih Kategori -- </option>
-                          <?php foreach ($optKtgr as $showKtgr): ?>
-                            <option value="<?php echo $showKtgr['ktgr_id'] ?>" <?php echo ($detailPrd[0]['prd_category_id_fk'] === $showKtgr['ktgr_id'])? 'selected="selected"' : '' ?>> 
-                            	<?php echo $showKtgr['ktgr_nama'] ?> 
+                          <?php foreach ($optCtgr as $showCtgr): ?>
+                            <option value="<?php echo $showCtgr['ctgr_id'] ?>" <?php echo ($detailPrd[0]['prd_category_id_fk'] === $showCtgr['ctgr_id'])? 'selected="selected"' : '' ?>> 
+                            	<?php echo $showCtgr['ctgr_name'] ?> 
                             </option>
                           <?php endforeach; ?>
                         </select>
@@ -79,9 +79,9 @@
                       <div class="col-sm-5">
                         <select class="form-control float-right" name="postSatuan" id="editSatuan">
                           <option> -- Pilih Satuan -- </option>
-                          <?php foreach ($optSatuan as $showSatuan): ?>
-                            <option value="<?php echo $showSatuan['satuan_id'] ?>" <?php echo ($detailPrd[0]['prd_unit_id_fk'] === $showSatuan['satuan_id'])? 'selected="selected"' : '' ?>> 
-                            	<?php echo $showSatuan['satuan_nama'] ?> 
+                          <?php foreach ($optUnit as $showUnit): ?>
+                            <option value="<?php echo $showUnit['unit_id'] ?>" <?php echo ($detailPrd[0]['prd_unit_id_fk'] === $showUnit['unit_id'])? 'selected="selected"' : '' ?>> 
+                            	<?php echo $showUnit['unit_name'] ?> 
                             </option>
                           <?php endforeach; ?>
                         </select>
@@ -93,6 +93,15 @@
                       <label for="editIsi" class="col-sm-3 col-form-label">Isi tiap satuan <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
                         <input type="number" class="form-control float-right" name="postIsi" id="editIsi" value="<?php echo $detailPrd[0]['prd_containts'] ?>" placeholder="Isi Produk tiap satuan" required>
+                      </div>
+                    </div>
+
+                  <!-- Form-part input stok awal -->
+                    <div class="form-group row">
+                      <label for="editStokAwal" class="col-sm-3 col-form-label">Stok awal <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <input type="number" class="form-control float-right" name="postStokAwal" id="editStokAwal" value="<?php echo $detailPrd[0]['prd_initial_stock'] ?>" placeholder="Stok awal produk, stok akan berisi 0 jika tidak terisi">
+                        <small style="color: red">* <em>mengubah stok awal tidak akan mengubah stok saat ini</em></small>
                       </div>
                     </div>
 
