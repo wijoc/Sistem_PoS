@@ -41,7 +41,7 @@ Class Product_c extends MY_Controller {
 	public function listProductPage(){
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
-			'assets' => array('datatables', 'f_confirm'),
+			'assets' => array('datatables', 'sweetalert2', 'f_confirm'),
 			'dataProduct' => $this->Product_m->getAllProduct() 
 		);
 		$this->page = 'product/list_product_v';
@@ -125,6 +125,22 @@ Class Product_c extends MY_Controller {
 	  	$this->session->set_flashdata('flashRedirect', 'Product_c/listProductPage');
 
 		redirect('Product_c/editProductPage/'.$this->input->post('postId'));
+	}
+
+	/* Function : Proses hapus / delete product */
+	function deleteProductProses(){
+	  /* Get posted id and decode proses */
+	  	$prdID = base64_decode(urldecode($this->input->post('postID')));
+
+	  /* Proses delete data di database */
+	  	$delPrd = $this->Product_m->deleteProduct($prdID);
+
+	  /* Return Value */
+	  	if($delPrd > 0){
+	  		echo "successDelete";
+	  	} else {
+	  		echo "failedDelete";
+	  	}
 	}
 
 	/* Function : AutoComplete untuk page transaksi */

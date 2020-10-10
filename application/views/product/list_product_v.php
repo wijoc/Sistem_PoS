@@ -52,7 +52,7 @@
                             <td>0</td>
                             <td>
                               <a class="btn btn-xs btn-warning" href="<?php echo site_url('Product_c/editProductPage').'/'.urlencode(base64_encode($showPrd['prd_id'])) ?>"><i class="fas fa-edit"></i></a>
-                              <a class="btn btn-xs btn-danger" href=""><i class="fas fa-trash"></i></a>
+                              <a class="btn btn-xs btn-danger" onclick="confirmDelete('prd', '<?php echo urlencode(base64_encode($showPrd['prd_id'])) ?>', '<?php echo site_url('Product_c/deleteProductProses') ?>')"><i class="fas fa-trash"></i></a>
                             </td>
                           </tr>
                         <?php endforeach; ?>

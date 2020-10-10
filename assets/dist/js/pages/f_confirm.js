@@ -3,12 +3,16 @@ function confirmDelete(item, getid, url, msg){
 	
 	switch(item){
 		case "ctgr":
-			var warningMsg = "Penghapusan data bersifat permanen !  Menghapus data kategori akan mengubah detail data product dengan kategori ini !"
+			var warningMsg = "Penghapusan data bersifat permanen !  Menghapus data kategori akan mengubah detail data product dengan kategori ini !";
 			var cancelMsg  = "Batal menghapus data kategori !";
 			break;
 		case "unit":
-			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data satuan akan mengubah detail data product dengan satuan ini !"
+			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data satuan akan mengubah detail data product dengan satuan ini !";
 			var cancelMsg  = "Batal menghapus data satuan !";
+			break;
+		case "prd":
+			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data product tidak berpengaruh terhadap transaksi yang sudah dilakukan !";
+			var cancelMsg  = "Batal menghapus data product !";
 			break;
 		default :
 			var warningMsg = msg;

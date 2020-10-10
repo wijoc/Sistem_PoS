@@ -76,6 +76,13 @@ Class Product_m extends CI_Model {
       return $resultUpdate;
     }
 
+   /* Function : Delete Product */
+    function deleteProduct($id){
+      $this->db->where($this->prd_f[0], $id);
+      $resultDelete = $this->db->delete($this->prd_tb);
+      return $resultDelete;
+    }
+
     /* Query search product */
     function searchProduct($term){
       $this->db->like($this->prd_f[1], $term);
