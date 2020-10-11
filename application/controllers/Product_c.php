@@ -76,15 +76,19 @@ Class Product_c extends MY_Controller {
 			'prd_selling_price'	 => $this->input->post('postHargaJual'),
 			'prd_unit_id_fk' 	 => $this->input->post('postSatuan'),
 			'prd_containts' 	 => $this->input->post('postIsi'),
-			'prd_initial_stock'	 => $this->input->post('postStokAwal'),
+			'prd_initial_g_stock'	 	=> $this->input->post('postStokAwalG'),
+			'prd_initial_ng_stock'	 	=> $this->input->post('postStokAwalNG'),
+			'prd_initial_return_stock'	=> $this->input->post('postStokAwalR'),
 			'prd_description' 	 => $this->input->post('postDeskripsiPrd')
 		);
+
 
 	  /* Insert ke Database */
 		$inputPrd = $this->Product_m->insertProduct($postData);
 
 	  /* Return dan redirect */
-	  	if($inputPrd > 0){
+	  	if($inputPrd['resultInsert'] > 0){
+			$inputStock = $this->Product_m->insertProductStock($postData, $inputPrd['insertID']); // Insert ke table stok
 	  		$this->session->set_flashdata('flashStatus', 'successInsert');
 	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan produk !');
 	  	} else {

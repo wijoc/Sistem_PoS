@@ -15,9 +15,21 @@ Class Product_m extends CI_Model {
   		'5' => 'prd_selling_price',
   		'6' => 'prd_unit_id_fk',
   		'7' => 'prd_containts',
-      '8' => 'prd_initial_stock',
-  		'9' => 'prd_description'
+      '8' => 'prd_initial_g_stock',
+      '9' => 'prd_initial_ng_stock',
+      '10' => 'prd_initial_return_stock',
+  		'11' => 'prd_description'
   	);
+
+   /* Table Stock */
+    var $stk_tb = 'det_product_stock';
+    var $stk_f  = array(
+      '0' => 'stk_id',
+      '1' => 'stk_product_id_fk',
+      '2' => 'stk_good',
+      '3' => 'stk_not_good',
+      '4' => 'stk_return'
+    );
 
    /* Table Kategori */
     var $cat_tb = 'tb_category';
@@ -47,7 +59,18 @@ Class Product_m extends CI_Model {
     /* Query insert product */
     function insertProduct($data){
       $resultInsert = $this->db->insert($this->prd_tb, $data);
-      return $resultInsert;
+      if($resultInsert > 0){
+        $dataReturn = array(
+          'resultInsert' => $resultInsert,
+          'insertID'     => $this->db->insert_id() 
+        );
+      } else {
+        $dataReturn = array(
+          'resultInsert' => $resultInsert,
+          'insertID'     => null 
+        );
+      }
+      return $dataReturn;
     }
 
     /* Query select semua data product */
@@ -76,11 +99,23 @@ Class Product_m extends CI_Model {
       return $resultUpdate;
     }
 
-   /* Function : Delete Product */
+    /* Query delete Product */
     function deleteProduct($id){
       $this->db->where($this->prd_f[0], $id);
       $resultDelete = $this->db->delete($this->prd_tb);
       return $resultDelete;
+    }
+
+    /* Query insert stock */
+    function insertProductStock($data, $id){
+      $insertData = array(
+        $this->stk_f[1] => $id,
+        $this->stk_f[2] => $data['prd_initial_g_stock'],
+        $this->stk_f[3] => $data['prd_initial_ng_stock'],
+        $this->stk_f[4] => $data['prd_initial_return_stock']
+      );
+      $resultInsert = $this->db->insert($this->stk_tb, $insertData);
+      return $resultInsert;
     }
 
     /* Query search product */

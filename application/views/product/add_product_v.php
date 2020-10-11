@@ -97,11 +97,27 @@
                       </div>
                     </div>
 
+                  <!-- Form-part input stok awal good / rusak -->
+                    <div class="form-group row">
+                      <label for="inputStokAwalG" class="col-sm-3 col-form-label">Stok awal <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <input type="number" class="form-control float-right" name="postStokAwalG" id="inputStokAwalG" placeholder="Stok awal produk, stok akan berisi 0 jika tidak terisi">
+                      </div>
+                    </div>
+
+                  <!-- Form-part input stok awal damaged / not good / rusak -->
+                    <div class="form-group row">
+                      <label for="inputStokAwalNG" class="col-sm-3 col-form-label">Stok awal damaged / rusak <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <input type="number" class="form-control float-right" name="postStokAwalNG" id="inputStokAwalNG" placeholder="Stok awal produk rusak / damaged , stok akan berisi 0 jika tidak terisi">
+                      </div>
+                    </div>
+
                   <!-- Form-part input stok awal -->
                     <div class="form-group row">
-                      <label for="inputStokAwal" class="col-sm-3 col-form-label">Stok awal <a class="float-right"> : </a></label>
+                      <label for="inputStokAwalR" class="col-sm-3 col-form-label">Stok awal return <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postStokAwal" id="inputStokAwal" placeholder="Stok awal produk, stok akan berisi 0 jika tidak terisi">
+                        <input type="number" class="form-control float-right" name="postStokAwalR" id="inputStokAwalR" placeholder="Stok awal produk retur pelanggan, stok akan berisi 0 jika tidak terisi">
                       </div>
                     </div>
 
