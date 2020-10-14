@@ -28,11 +28,11 @@ Class Supplier_c extends MY_Controller{
   function addSupplierProses(){
     /* Get data post dari form */
       $postData = array(
-    		'supp_nama_supplier' => $this->input->post('postSuppNama'),
-    		'supp_nama_kontak'   => $this->input->post('postSuppKontak'),
+    		'supp_name' => $this->input->post('postSuppNama'),
+    		'supp_contact_name'   => $this->input->post('postSuppKontak'),
     		'supp_email'  => $this->input->post('postSuppEmail'),
     		'supp_telp'   => $this->input->post('postSuppTelp'),
-    		'supp_alamat' => $this->input->post('postSuppAlamat'),
+    		'supp_address' => $this->input->post('postSuppAlamat'),
       );
 
     /* Insert ke database */

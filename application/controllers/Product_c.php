@@ -42,7 +42,7 @@ Class Product_c extends MY_Controller {
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
 			'assets' => array('datatables', 'sweetalert2', 'f_confirm'),
-			'dataProduct' => $this->Product_m->getAllProduct() 
+			'dataProduct' => $this->Product_m->getAllowedProduct() 
 		);
 		$this->page = 'product/list_product_v';
 		$this->layout();
@@ -138,6 +138,22 @@ Class Product_c extends MY_Controller {
 
 	  /* Proses delete data di database */
 	  	$delPrd = $this->Product_m->deleteProduct($prdID);
+
+	  /* Return Value */
+	  	if($delPrd > 0){
+	  		echo "successDelete";
+	  	} else {
+	  		echo "failedDelete";
+	  	}
+	}
+
+	/* Function : Proses soft delete product (hide product dari user, namun masih tersimpan di database) */
+	function softdeleteProductProses(){
+	  /* Get posted id and decode proses */
+	  	$prdID = base64_decode(urldecode($this->input->post('postID')));
+
+	  /* Proses delete data di database */
+	  	$delPrd = $this->Product_m->softdeleteProduct($prdID);
 
 	  /* Return Value */
 	  	if($delPrd > 0){

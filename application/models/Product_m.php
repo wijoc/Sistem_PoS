@@ -3,6 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed !');
 
 Class Product_m extends CI_Model {
 
+  /* Note :
+      1. prd status => 1 untuk deleted, 0 untuk allowed
+  */
+
   /* Declare Table */
    /* Table Product */
   	var $prd_tb = 'tb_product';
@@ -18,7 +22,8 @@ Class Product_m extends CI_Model {
       '8' => 'prd_initial_g_stock',
       '9' => 'prd_initial_ng_stock',
       '10' => 'prd_initial_return_stock',
-  		'11' => 'prd_description'
+  		'11' => 'prd_description',
+      '12' => 'prd_status'
   	);
 
    /* Table Stock */
@@ -73,12 +78,24 @@ Class Product_m extends CI_Model {
       return $dataReturn;
     }
 
-    /* Query select semua data product */
+    /* Query select semua data product, Semua product, termasuk prd_status 1 */
     function getAllProduct(){
       $this->db->select('prd.*, kat.'.$this->cat_f[1].', sat.'.$this->unit_f[1]);
       $this->db->from($this->prd_tb.' as prd');
       $this->db->join($this->cat_tb.' as kat', 'kat.'.$this->cat_f[0].'=prd.'.$this->prd_f[3]);
       $this->db->join($this->unit_tb.' as sat', 'sat.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
+      $this->db->order_by($this->prd_f[0], 'ASC');
+      $resultSelect = $this->db->get();
+      return $resultSelect->result_array();
+    }
+
+    /* Query select semua data product, Product tanpa prd_status == 0 */
+    function getAllowedProduct(){ 
+      $this->db->select('prd.*, kat.'.$this->cat_f[1].', sat.'.$this->unit_f[1]);
+      $this->db->from($this->prd_tb.' as prd');
+      $this->db->join($this->cat_tb.' as kat', 'kat.'.$this->cat_f[0].'=prd.'.$this->prd_f[3]);
+      $this->db->join($this->unit_tb.' as sat', 'sat.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
+      $this->db->where($this->prd_f[12], '0');
       $this->db->order_by($this->prd_f[0], 'ASC');
       $resultSelect = $this->db->get();
       return $resultSelect->result_array();
@@ -104,6 +121,14 @@ Class Product_m extends CI_Model {
       $this->db->where($this->prd_f[0], $id);
       $resultDelete = $this->db->delete($this->prd_tb);
       return $resultDelete;
+    }
+
+    /* Query soft delete Product */
+    function softdeleteProduct($id){
+      $this->db->set($this->prd_f[12], '1');
+      $this->db->where($this->prd_f[0], $id);
+      $resultUpdate = $this->db->update($this->prd_tb);
+      return $resultUpdate;
     }
 
     /* Query insert stock */

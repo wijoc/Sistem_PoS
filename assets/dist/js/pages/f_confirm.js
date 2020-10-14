@@ -10,10 +10,14 @@ function confirmDelete(item, getid, url, msg){
 			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data satuan akan mengubah detail data product dengan satuan ini !";
 			var cancelMsg  = "Batal menghapus data satuan !";
 			break;
-		case "prd":
-			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data product tidak berpengaruh terhadap transaksi yang sudah dilakukan !";
+		case "soft-prd":
+			var warningMsg = "Menghapus data product tidak berpengaruh terhadap transaksi yang sudah dilakukan !";
 			var cancelMsg  = "Batal menghapus data product !";
 			break;
+        case "hard-prd":
+            var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data product akan menghapus transaksi yang sudah dilakukan !";
+            var cancelMsg  = "Batal menghapus data product !";
+            break;
 		default :
 			var warningMsg = msg;
 			var cancelMsg  = "Batal menghapus data !";

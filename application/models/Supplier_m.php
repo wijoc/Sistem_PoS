@@ -7,11 +7,11 @@ Class Supplier_m extends CI_Model{
   	var $supp_tb = 'tb_supplier';
   	var $supp_f  = array(
   		'0' => 'supp_id',
-  		'1' => 'supp_nama_supplier',
-  		'2' => 'supp_nama_kontak',
+  		'1' => 'supp_name',
+  		'2' => 'supp_contact_name',
   		'3' => 'supp_email',
   		'4' => 'supp_telp',
-  		'5' => 'supp_alamat'
+  		'5' => 'supp_address'
   	);
 
   /* Query */

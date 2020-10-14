@@ -31,15 +31,15 @@
                 <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
                   <div class="card bg-light">
                     <div class="card-header text-muted border-bottom-0">
-                      <?php echo $showSupp['supp_nama_kontak'] ?>
+                      <?php echo $showSupp['supp_contact_name'] ?>
                     </div>
                     <div class="card-body pt-0">
                       <div class="row">
                         <div class="col-7">
-                          <h2 class="lead"><b><?php echo $showSupp['supp_nama_supplier'] ?></b></h2>
+                          <h2 class="lead"><b><?php echo $showSupp['supp_name'] ?></b></h2>
                           <ul class="ml-4 mb-0 fa-ul text-muted">
                             <li class="small">
-                              <span class="fa-li"><i class="fas fa-md fa-building"></i></span> Alamat: <?php echo $showSupp['supp_alamat'] ?>
+                              <span class="fa-li"><i class="fas fa-md fa-building"></i></span> Alamat: <?php echo $showSupp['supp_address'] ?>
                             </li>
                             <li class="small">
                               <span class="fa-li"><i class="fas fa-md fa-phone"></i></span> Phone : <?php echo $showSupp['supp_telp'] ?>
@@ -162,7 +162,3 @@
         </div>
         <!-- /.modal-dialog -->
       </div>
-
-      <?php 
-        print("<pre>".print_r($dataSupplier, true)."</pre>");
-      ?>
