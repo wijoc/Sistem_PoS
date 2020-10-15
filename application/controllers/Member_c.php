@@ -13,8 +13,8 @@ Class Member_c extends MY_Controller{
     	/* Proses tampil halaman */
     	$this->pageData = array(
     		'title' => 'PoS | Member',
-      'assets' => array('sweetalert2', 'page_contact'),
-    		'dataMember' => $this->Member_m->getAllMember()
+      'assets' => array('sweetalert2', 'f_confirm', 'page_contact'),
+    		'dataMember' => $this->Member_m->getAllowedMember()
     	);
     	$this->page = "contact/list_member_v";
     	$this->layout();
@@ -45,23 +45,23 @@ Class Member_c extends MY_Controller{
     }
 
     /* Function : Delete member */
-    function delMember($id){
+    function deleteMember($deltype){
       /* Decode id */
-    	$mbrID = base64_decode(urldecode($id));
+        $mbrID = base64_decode(urldecode($this->input->post('postID')));
 
       /* Delete dari database */
-      	$delMbr = $this->Member_m->deleteMember($mbrID);
+        if($deltype === 'hard'){
+         $delMbr = $this->Member_m->deleteMember($mbrID);
+        } else if ($deltype === 'soft'){
+         $delMbr = $this->Member_m->softdeleteMember($mbrID);
+        }
 
-      /* Set session & redirect */
-      	if($delMbr > 0){
-  	  		$this->session->set_flashdata('flashStatus', 'successDelete');
-  	  		$this->session->set_flashdata('flashMsg', 'Berhasil menghapus member !');
-  	  	} else {
-  	  		$this->session->set_flashdata('flashStatus', 'failedDelete');
-  	  		$this->session->set_flashdata('flashMsg', 'Gagal menghapus member !');
-  	  	}
-
-  		redirect('Member_c');
+      /* Set return value */
+        if($delMbr > 0){
+          echo 'successDelete';
+        } else {
+          echo 'failedDelete';
+        }
     }
 
 }

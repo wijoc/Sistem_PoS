@@ -59,7 +59,8 @@
                         <a href="" class="btn btn-sm btn-warning">
                           <i class="fas fa-edit"></i>
                         </a>
-                        <a href="" class="btn btn-sm btn-danger">
+                        <!-- Soft Delete -->
+                        <a class="btn btn-sm btn-danger" onclick="confirmDelete('soft-member', '<?php echo urlencode(base64_encode($showMember['member_id'])) ?>', '<?php echo site_url('Member_c/deleteMember/soft') ?>')">
                           <i class="fas fa-trash"></i>
                         </a>
                       </div>
