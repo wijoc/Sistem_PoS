@@ -18,6 +18,14 @@ function confirmDelete(item, getid, url, msg){
             var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data product akan menghapus transaksi yang sudah dilakukan !";
             var cancelMsg  = "Batal menghapus data product !";
             break;
+        case "soft-supp":
+            var warningMsg = "Menghapus data supplier tidak berpengaruh terhadap transaksi yang sudah dilakukan !";
+            var cancelMsg  = "Batal menghapus data supplier !";
+            break;
+        case "hard-supp":
+            var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data supplier akan menghapus transaksi yang sudah dilakukan !";
+            var cancelMsg  = "Batal menghapus data supplier !";
+            break;
 		default :
 			var warningMsg = msg;
 			var cancelMsg  = "Batal menghapus data !";

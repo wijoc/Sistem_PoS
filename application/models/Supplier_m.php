@@ -2,6 +2,10 @@
 defined('BASEPATH') OR exit('No direct script access allowed !');
 
 Class Supplier_m extends CI_Model{
+
+  /* Note
+    supp_status : 1 for deleted data, 0 for allowed data 
+  */
 	
   /* Declare table */
   	var $supp_tb = 'tb_supplier';
@@ -11,7 +15,8 @@ Class Supplier_m extends CI_Model{
   		'2' => 'supp_contact_name',
   		'3' => 'supp_email',
   		'4' => 'supp_telp',
-  		'5' => 'supp_address'
+  		'5' => 'supp_address',
+      '6' => 'supp_status'
   	);
 
   /* Query */
@@ -21,6 +26,14 @@ Class Supplier_m extends CI_Model{
   		$resultGet = $this->db->get($this->supp_tb);
   		return $resultGet->result_array();
   	}
+
+    /* Query select row data supplier dengan supp_status 0 */
+    function getAllowedSupplier(){
+      $this->db->where($this->supp_f[6], '0');
+      $this->db->order_by($this->supp_f[1], 'ASC');
+      $resultGet = $this->db->get($this->supp_tb);
+      return $resultGet->result_array();
+    }
 
   	/* Query insert data supplier */
   	function insertSupplier($data){
@@ -33,4 +46,12 @@ Class Supplier_m extends CI_Model{
   		$resultDelete = $this->db->delete($this->supp_tb, array($this->supp_f[0] => $id));
   		return $resultDelete;
   	}
+
+    /* Query soft delete data supplier, change supp_status to 1 for deleted rowdata */
+    function softdeleteSupplier($id){
+      $this->db->set($this->supp_f[6], '1');
+      $this->db->where($this->supp_f[0], $id);
+      $resultUpdate = $this->db->update($this->supp_tb);
+      return $resultUpdate;
+    }
 }

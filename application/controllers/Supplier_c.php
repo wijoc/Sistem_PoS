@@ -13,8 +13,8 @@ Class Supplier_c extends MY_Controller{
     /* Data yang akan dikirim ke view */
     $this->pageData = array(
     	'title' => 'PoS | Supplier',
-    	'assets' => array('sweetalert2', 'page_contact'),
-    	'dataSupplier' => $this->Supplier_m->getAllSupplier()
+    	'assets' => array('sweetalert2', 'f_confirm', 'page_contact'),
+    	'dataSupplier' => $this->Supplier_m->getAllowedSupplier()
     );
 
     /* View file */
@@ -51,23 +51,23 @@ Class Supplier_c extends MY_Controller{
   }
 
   /* Function : Delete supplier */
-  function delSupplier($id){
+  function deleteSupplier($deltype){
     /* Decode id */
-      $suppID = base64_decode(urldecode($id));
+      $suppID = base64_decode(urldecode($this->input->post('postID')));
 
     /* Delete dari database */
-      $delSupp = $this->Supplier_m->deleteSupplier($suppID);
+      if($deltype === 'soft'){
+        $delSupp = $this->Supplier_m->softdeleteSupplier($suppID);
+      } else if ($deltype === 'hard'){
+        $delSupp = $this->Supplier_m->deleteSupplier($suppID);
+      }
 
     /* Set session & redirect */
       if($delSupp > 0){
-	  		$this->session->set_flashdata('flashStatus', 'successDelete');
-	  		$this->session->set_flashdata('flashMsg', 'Berhasil menghapus kontak Supplier !');
-	  	} else {
-	  		$this->session->set_flashdata('flashStatus', 'failedDelete');
-	  		$this->session->set_flashdata('flashMsg', 'Gagal menghapus kontak Supplier !');
-	  	}
-
-		  redirect('Supplier_c');
+        echo 'successDelete';
+      } else {
+        echo 'failedDelete';
+      }
   }
 
 }

@@ -65,7 +65,8 @@
                         <a href="" class="btn btn-sm btn-warning">
                           <i class="fas fa-edit"></i>
                         </a>
-                        <a href="<?php echo site_url('Supplier_c/deleteSupplier').'/'.urlencode(base64_encode($showSupp['supp_id'])) ?>" class="btn btn-sm btn-danger">
+                        <!-- Soft Delete -->
+                        <a class="btn btn-sm btn-danger" onclick="confirmDelete('soft-supp', '<?php echo urlencode(base64_encode($showSupp['supp_id'])) ?>', '<?php echo site_url('Supplier_c/deleteSupplier/soft') ?>')">
                           <i class="fas fa-trash"></i>
                         </a>
                       </div>
