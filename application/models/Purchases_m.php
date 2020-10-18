@@ -93,6 +93,17 @@ Class Purchases_m extends CI_Model{
       return $resultInsert;
     }
 
+    /* Query insert on update */
+    function UpdateTemp($data){
+      $this->db->set($this->temp_f[1], $data['tp_product_fk']);
+      $this->db->set($this->temp_f[2], $data['tp_product_amount']);
+      $this->db->set($this->temp_f[3], $data['tp_purchase_price']);
+      $this->db->set($this->temp_f[4], $data['tp_total_paid']);
+      $this->db->where($this->temp_f[0], $data['tp_id']);
+      $resultInsert = $this->db->update($this->temp_tp);
+      return $resultInsert;
+    }
+
     /* Query get temp product pembelian */
     function getTemp(){
       $this->db->select($this->temp_tp.'.*, tb_product.prd_name');

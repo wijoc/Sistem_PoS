@@ -111,7 +111,7 @@ Class Product_c extends MY_Controller {
 			'prd_selling_price'  => $this->input->post('postHargaJual'),
 			'prd_unit_id_fk' 	 => $this->input->post('postSatuan'),
 			'prd_containts'		 => $this->input->post('postIsi'),
-			'prd_initial_stock'	 => $this->input->post('postStokAwal'),
+			'prd_initial_g_stock'	 => $this->input->post('postStokAwalG'),
 			'prd_description' 	 => $this->input->post('postDeskripsiPrd')
 		);
 

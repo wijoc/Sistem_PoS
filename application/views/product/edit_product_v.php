@@ -98,9 +98,9 @@
 
                   <!-- Form-part input stok awal -->
                     <div class="form-group row">
-                      <label for="editStokAwal" class="col-sm-3 col-form-label">Stok awal <a class="float-right"> : </a></label>
+                      <label for="editStokAwalG" class="col-sm-3 col-form-label">Stok awal (Good) <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postStokAwal" id="editStokAwal" value="<?php echo $detailPrd[0]['prd_initial_stock'] ?>" placeholder="Stok awal produk, stok akan berisi 0 jika tidak terisi">
+                        <input type="number" class="form-control float-right" name="postStokAwalG" id="editStokAwalG" value="<?php echo $detailPrd[0]['prd_initial_g_stock'] ?>" placeholder="Stok awal produk, stok akan berisi 0 jika tidak terisi">
                         <small style="color: red">* <em>mengubah stok awal tidak akan mengubah stok saat ini</em></small>
                       </div>
                     </div>

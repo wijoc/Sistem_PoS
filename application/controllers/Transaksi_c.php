@@ -36,12 +36,22 @@ Class Transaksi_c extends MY_Controller{
 		if($trans === 'Purchase'){
 			/* Cek product di keranjang */
 			$checkTemp = $this->Purchases_m->getTemponPrdId($this->input->post('postIdPrd'));
-			if(count($checkTemp) > 0){
-				print("<pre>".$checkTemp."</pre>");
+			if(count($checkTemp) > 0 && $checkTemp[0]['tp_purchase_price'] == $postData['post_harga_satuan']){
+				$newAmount = $checkTemp[0]['tp_product_amount'] + $postData['post_product_jumlah'];
+				$newTotal  = $checkTemp[0]['tp_total_paid'] + $postData['post_total_bayar'];
+
+				$newInputData = array(
+					'tp_id' 		=> $checkTemp[0]['tp_id'],
+					'tp_product_fk'	=> $checkTemp[0]['tp_product_fk'],
+					'tp_product_amount' => $newAmount,
+					'tp_purchase_price' => $checkTemp[0]['tp_purchase_price'],
+					'tp_total_paid'		=> $newTotal
+				);
+				$inputTemp = $this->Purchases_m->UpdateTemp($newInputData);
 			} else {
 				$inputTemp = $this->Purchases_m->insertTemp($postData);
 			}
-			//redirect('Transaksi_c/addPurchasePage');
+			redirect('Transaksi_c/addPurchasePage');
 		} else if ($trans === 'Sales'){
 			$postData['post_potongan'] = $this->input->post('postPotonganPrd');
 			$inputTemp = $this->Sales_m->insertTemp($postData);
