@@ -29,7 +29,7 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Input Product',
-			'assets'  => array('sweetalert2', 'page_product'),
+			'assets'  => array('sweetalert2', 'page_add_product'),
 			'optCtgr' => $this->Product_m->getCategory(), // Get semua kategori untuk option
 			'optUnit' => $this->Product_m->getUnit() // Get semua satuan untuk option
 		);
@@ -41,7 +41,7 @@ Class Product_c extends MY_Controller {
 	public function listProductPage(){
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
-			'assets' => array('datatables', 'sweetalert2', 'f_confirm'),
+			'assets' => array('datatables', 'sweetalert2', 'f_confirm', 'page_product'),
 			'dataProduct' => $this->Product_m->getAllowedProduct() 
 		);
 		$this->page = 'product/list_product_v';
@@ -56,7 +56,7 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Edit Product',
-			'assets'  => array('sweetalert2', 'page_product'),
+			'assets'  => array('sweetalert2'),
 			'detailPrd' => $this->Product_m->getProductOnID($prdID), // Get data berdasar produk id
 			'optCtgr' => $this->Product_m->getCategory(), // Get semua kategori untuk option
 			'optUnit' => $this->Product_m->getUnit() // Get semua satuan untuk option

@@ -42,6 +42,11 @@
 	<?php } ?>	
 
 	<!-- Page Add Product -->
+	<?php if(in_array('page_add_product',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_prd_assets.js"></script>
+	<?php } ?>	
+
+	<!-- Page List Product -->
 	<?php if(in_array('page_product',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/prd_assets.js"></script>
 	<?php } ?>	

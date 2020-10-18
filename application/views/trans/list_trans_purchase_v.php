@@ -47,7 +47,7 @@
                             <td><?php echo $no++ ?></td>
                             <td><?php echo $showTP['tp_no_trans'] ?></td>
                             <td><?php echo date('d-m-Y', strtotime($showTP['tp_date'])) ?></td>
-                            <td><?php echo $showTP['supp_nama_supplier'] ?></td>
+                            <td><?php echo $showTP['supp_name'] ?></td>
                             <td><?php echo $showTP['tp_purchase_price'] ?></td>
                             <td><?php echo $showTP['tp_insufficient'] ?></td>
                             <td><?php echo ($showTP['tp_status'] === 'L')? 'Lunas' : 'Belum Lunas' ?></td>

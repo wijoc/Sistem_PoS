@@ -1,7 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed !');
 
-Class Pembelian_m extends CI_Model{
+Class Purchases_m extends CI_Model{
+  /* Note
+      tp_delete => 1 untuk data dihapus, 0 untuk dapat ditampilkan 
+  */
 
   /* Declare var table transaksi barang masuk */
   	var $tp_tb = 'trans_purchase';
@@ -18,7 +21,8 @@ Class Pembelian_m extends CI_Model{
   		'9' => 'tp_status',
   		'10' => 'tp_tenor', // Allow Null
   		'11' => 'tp_tenor_periode', // Allow Null
-      '12' => 'tp_due_date' // Allow Null
+      '12' => 'tp_due_date', // Allow Null
+      '13' => 'tp_delete' // as defined 0
   	);
 
   /* Declare var table detail trans masuk */
@@ -61,7 +65,7 @@ Class Pembelian_m extends CI_Model{
 
     /* Query select semua data trans pembelian */
     function getAllTransPurchase(){
-      $this->db->select('tp.*, supp.supp_nama_supplier');
+      $this->db->select('tp.*, supp.supp_name');
       $this->db->from($this->tp_tb.' as tp');
       $this->db->join('tb_supplier as supp', 'supp.supp_id = tp.'.$this->tp_f['3']);
       $this->db->order_by($this->tp_f['2'], 'DESC');
@@ -91,11 +95,25 @@ Class Pembelian_m extends CI_Model{
 
     /* Query get temp product pembelian */
     function getTemp(){
-      $this->db->select($this->temp_tp.'.*, tb_product.prd_nama');
+      $this->db->select($this->temp_tp.'.*, tb_product.prd_name');
       $this->db->from($this->temp_tp);
       $this->db->join('tb_product', 'tb_product.prd_id = '.$this->temp_tp.'.tp_product_fk');
       $resultSelect = $this->db->get();
       return $resultSelect->result_array();
+    }
+
+    /* Query get temp berdasar product id */
+    function getTemponPrdId($prdId){
+      $this->db->where($this->temp_f[1], $prdId);
+      $resultSelect = $this->db->get($this->temp_tp);
+      return $resultSelect->result_array();
+    }
+
+    /* Query delete temp product berdasar product_id */
+    function deleteTemp($prdId){
+      $this->db->where($this->temp_f[1], $prdId);
+      $resultDelete = $this->db->delete($this->temp_tp);
+      return $resultDelete;
     }
 
     /* Query Truncate / Hapus semua data di table temp */

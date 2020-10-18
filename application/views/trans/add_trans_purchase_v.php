@@ -85,12 +85,12 @@
                           ?>
                           <tr>
                             <td><?php echo $no++ ?></td>
-                            <td><?php echo $row['prd_nama']; ?></td>
+                            <td><?php echo $row['prd_name']; ?></td>
                             <td><?php echo $row['tp_product_amount'] ?></td>
                             <td><?php echo $row['tp_purchase_price'] ?></td>
                             <td><?php echo $row['tp_total_paid'] ?></td>
-                            <td>
-                              <a href=""><i class="fas fa-trash"></i></a>
+                            <td class="text-center">
+                              <a href="<?php echo site_url('Transaksi_c/deleteTransProduct/Purchases') ?>/<?php echo urlencode(base64_encode($row['tp_product_fk'])) ?>" class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></a>
                             </td>
                           </tr>
                         <?php endforeach; ?>
@@ -130,7 +130,7 @@
                         <select class="form-control float-right" name="postTransSupp" id="inputTransSupp">
                           <option> -- Pilih Supplier -- </option>
                           <?php foreach ($optSupp as $showOpt): ?>
-                            <option value="<?php echo $showOpt['supp_id'] ?>"> <?php echo $showOpt['supp_nama_supplier'] ?> </option>
+                            <option value="<?php echo $showOpt['supp_id'] ?>"> <?php echo $showOpt['supp_name'] ?> </option>
                           <?php endforeach; ?>
                         </select>
                       </div>

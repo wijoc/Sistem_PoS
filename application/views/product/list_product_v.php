@@ -29,7 +29,7 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                    <table id="table-barang" class="table table-bordered table-striped">
+                    <table id="table-product" class="table table-bordered table-striped">
                       <thead>
                         <th>No.</th>
                         <th>Nama Produk</th>

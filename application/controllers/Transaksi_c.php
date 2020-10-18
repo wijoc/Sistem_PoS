@@ -6,7 +6,7 @@ Class Transaksi_c extends MY_Controller{
 	function __construct(){
 		parent::__construct();
 		$this->load->model('Sales_m');
-		$this->load->model('Pembelian_m');
+		$this->load->model('Purchases_m');
 		$this->load->model('Rekening_m');
 	}
 
@@ -34,12 +34,28 @@ Class Transaksi_c extends MY_Controller{
 		);
 
 		if($trans === 'Purchase'){
-			$inputTemp = $this->Pembelian_m->insertTemp($postData);
-			redirect('Transaksi_c/addPurchasePage');
+			/* Cek product di keranjang */
+			$checkTemp = $this->Purchases_m->getTemponPrdId($this->input->post('postIdPrd'));
+			if(count($checkTemp) > 0){
+				print("<pre>".$checkTemp."</pre>");
+			} else {
+				$inputTemp = $this->Purchases_m->insertTemp($postData);
+			}
+			//redirect('Transaksi_c/addPurchasePage');
 		} else if ($trans === 'Sales'){
 			$postData['post_potongan'] = $this->input->post('postPotonganPrd');
 			$inputTemp = $this->Sales_m->insertTemp($postData);
 			redirect('Transaksi_c/addSalesPage');
+		}
+	}
+
+	public function deleteTransProduct($trans, $encoded_prd_id){
+		$prdID = base64_decode(urldecode($encoded_prd_id));
+		if($trans === 'Purchases'){
+			$delTemp = $this->Purchases_m->deleteTemp($prdID);
+			redirect('Transaksi_c/addPurchasePage');
+		} else if ($trans === 'Sales') {
+			$delTemp = $this->Sales_m->deleteTemp($prdID);
 		}
 	}
 
@@ -50,7 +66,7 @@ Class Transaksi_c extends MY_Controller{
 	  	$this->load->model('Supplier_m');
 
 	  /* Set no transaksi seanjutnya */
-	  	$nextAI = $this->Pembelian_m->getNextIncrement(); // Get next auto increment table transaksi masuk
+	  	$nextAI = $this->Purchases_m->getNextIncrement(); // Get next auto increment table transaksi masuk
 	  	switch(strlen($nextAI['0']['AUTO_INCREMENT'])){
 	  		case ($nextAI['0']['AUTO_INCREMENT'] > 5):
 	  			$nol = '';
@@ -79,7 +95,7 @@ Class Transaksi_c extends MY_Controller{
 			'optSupp' => $this->Supplier_m->getAllSupplier(),
 			'optRek'  => $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
-			'daftarPrd' 	=> $this->Pembelian_m->getTemp(),
+			'daftarPrd' 	=> $this->Purchases_m->getTemp(),
 		);
 		$this->page = 'trans/add_trans_purchase_v';
 		$this->layout();
@@ -91,7 +107,7 @@ Class Transaksi_c extends MY_Controller{
 		$this->pageData = array(
 			'title' => 'PoS | Trans Pembelian',
 			'assets' => array('datatables'),
-			'dataTrans' => $this->Pembelian_m->getAllTransPurchase()
+			'dataTrans' => $this->Purchases_m->getAllTransPurchase()
 		);
 		$this->page = 'trans/list_trans_purchase_v';
 		$this->layout();
@@ -100,6 +116,9 @@ Class Transaksi_c extends MY_Controller{
 	/* Function : Form update pembelian */
 	/* Function : Proses tambah trans pembelian */
 	function addPurchaseProses(){
+	  /* Set Var purchases product */
+	  	$dataDetail = array();
+
 	  /* Get posted data dari form */ 
 		$postData = array(
 			'tp_no_trans' => $this->input->post('postTransKode'),
@@ -117,43 +136,22 @@ Class Transaksi_c extends MY_Controller{
 		);
 
 	  /* Get data dari temp table dan insert ke det trans purchase table */
-		$tempPrd = $this->Pembelian_m->getTemp();
+		$tempPrd = $this->Purchases_m->getTemp();
 		foreach ($tempPrd as $row) {
-			$dataDetail[] = array(
+
+			$dataDetail[$row['tp_product_fk']] = array(
 		  		'dtp_tp_fk'			 => $this->input->post('postTransKode'),
-		  		'dtp_product_fk'	 => $row['tp_product_fk'],
-		  		'dtp_product_amount' => $row['tp_product_amount'],
-		  		'dtp_purchase_price' => $row['tp_purchase_price'],
-		    	'dtp_total_price'	 => $row['tp_total_paid']
-			); 
+		  		'dtp_product_fk'	 => $row['tp_product_fk']
+
+			);
+			/*
+			$dataDetail[$row['tp_product_fk']]['dtp_product_amount'] += $row['tp_product_amount']; 
+			$dataDetail[$row['tp_product_fk']]['dtp_purchase_price'] += $row['tp_purchase_price']; 
+			$dataDetail[$row['tp_product_fk']]['dtp_total_price'] += $row['tp_total_paid'];
+			*/
 		}
 
-	  /* Cek jika barang sudah ditambahkan */
-	  	if(count($tempPrd) > 0){
-		  /* Input data transaksi ke database */
-		  	$inputTP = $this->Pembelian_m->insertTransPurchase($postData);
-
-		  /* Input data product ke table det trans purchase */
-		  	$inputDetTP = $this->Pembelian_m->insertBatchDetTP($dataDetail);
-	  	} else {
-	  		$inputTP = 0;
-	  		$inputDetTP = 0;
-	  	}
-
-	  /* Cek proses insert, Set session dan redirect */
-	  	if($inputTP > 0 && $inputDetTP > 0){
-	  		/* hapus data di table temp */
-	  		$this->Pembelian_m->truncateTemp();
-
-  	  		$this->session->set_flashdata('flashStatus', 'successInsert');
-  	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan transaksi pembelian !');
-	  	} else {
-  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-  	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan transaksi pembelian !');
-	  	}
-  	  		$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listPurchasePage');
-
-	  	redirect('Transaksi_c/addPurchasePage');
+		print("<pre>".print_r($dataDetail, true)."</pre>");
 	}
 
 	/* Function : Proses update trans pembelian */
@@ -208,7 +206,7 @@ Class Transaksi_c extends MY_Controller{
 		$this->pageData = array(
 			'title' => 'PoS | Trans Penjualan',
 			'assets' => array('datatables'),
-			'dataTrans' => $this->Sales_m->getAllTransSales()
+			'dataTrans' => $this->Sales_m->getAvailableTransSales()
 		);
 		$this->page = 'trans/list_trans_sales_v';
 		$this->layout();
@@ -279,4 +277,5 @@ Class Transaksi_c extends MY_Controller{
 
   /* Fungsi untuk CRUD Biaya Operasional */
   /* Fungsi untuk CRUD Pemasukan Lainnya */
+  /* Function untuk manipulasi stok */
 }

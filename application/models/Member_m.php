@@ -13,7 +13,7 @@ Class Member_m extends CI_Model{
   	var $member_tb = 'tb_member';
   	var $member_f  = array(
   		'0' => 'member_id',
-  		'1' => 'member_nama',
+  		'1' => 'member_name',
   		'2' => 'member_status',
   		'3' => 'member_discount'
   	);

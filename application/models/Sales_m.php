@@ -18,7 +18,8 @@ Class Sales_m extends CI_Model{
 		'9' => 'ts_status',
 		'10' => 'ts_tenor',
 		'11' => 'ts_tenor_periode',
-		'12' => 'ts_due_date'
+		'12' => 'ts_due_date',
+    '13' => 'ts_delete'
 	);
 
   /* Declare table Detail Trans Penjualan */
@@ -61,12 +62,23 @@ Class Sales_m extends CI_Model{
       return $resultInsert;
     }
 
-    /* Query select semua data trans pembelian */
+    /* Query select semua data trans penjualan */
     function getAllTransSales(){
       $this->db->select('ts.*, mbr.member_nama');
       $this->db->from($this->ts_tb.' as ts');
       $this->db->join('tb_member as mbr', 'mbr.member_id = ts.'.$this->ts_f['3']);
       $this->db->order_by($this->ts_f['2'], 'DESC');
+      $resultSelect = $this->db->get();
+      return $resultSelect->result_array();
+    }
+
+    /* Query select data trans penjualan dengan ts_delete = 0 */
+    function getAvailableTransSales(){
+      $this->db->select('ts.*, mbr.member_name');
+      $this->db->from($this->ts_tb.' as ts');
+      $this->db->where($this->ts_f[13], '0');
+      $this->db->join('tb_member as mbr', 'mbr.member_id = ts.'.$this->ts_f['3']);
+      $this->db->order_by($this->ts_f[2], 'DESC');
       $resultSelect = $this->db->get();
       return $resultSelect->result_array();
     }
@@ -94,7 +106,7 @@ Class Sales_m extends CI_Model{
 
     /* Query get temp product penjualan */
     function getTemp(){
-      $this->db->select($this->temp_ts.'.*, tb_product.prd_nama');
+      $this->db->select($this->temp_ts.'.*, tb_product.prd_name');
       $this->db->from($this->temp_ts);
       $this->db->join('tb_product', 'tb_product.prd_id = '.$this->temp_ts.'.'.$this->temp_f[1]);
       $resultSelect = $this->db->get();

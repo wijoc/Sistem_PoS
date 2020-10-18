@@ -57,7 +57,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo site_url('Product_c/listKatSatPage') ?>" class="nav-link">
+                <a href="<?php echo site_url('Product_c/listCatUnitPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Kategori & Satuan</p>
                 </a>
