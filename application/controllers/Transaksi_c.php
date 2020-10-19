@@ -148,20 +148,41 @@ Class Transaksi_c extends MY_Controller{
 	  /* Get data dari temp table dan insert ke det trans purchase table */
 		$tempPrd = $this->Purchases_m->getTemp();
 		foreach ($tempPrd as $row) {
-
-			$dataDetail[$row['tp_product_fk']] = array(
+			$dataDetail[] = array(
 		  		'dtp_tp_fk'			 => $this->input->post('postTransKode'),
-		  		'dtp_product_fk'	 => $row['tp_product_fk']
-
-			);
-			/*
-			$dataDetail[$row['tp_product_fk']]['dtp_product_amount'] += $row['tp_product_amount']; 
-			$dataDetail[$row['tp_product_fk']]['dtp_purchase_price'] += $row['tp_purchase_price']; 
-			$dataDetail[$row['tp_product_fk']]['dtp_total_price'] += $row['tp_total_paid'];
-			*/
+		  		'dtp_product_fk'	 => $row['tp_product_fk'],
+		  		'dtp_product_amount' => $row['tp_product_amount'],
+		  		'dtp_purchase_price' => $row['tp_purchase_price'],
+		    	'dtp_total_price'	 => $row['tp_total_paid']
+			); 
 		}
 
-		print("<pre>".print_r($dataDetail, true)."</pre>");
+	  /* Cek jika barang sudah ditambahkan */
+	  	if(count($tempPrd) > 0){
+		  /* Input data transaksi ke database */
+		  	$inputTP = $this->Purchases_m->insertTransPurchase($postData);
+
+		  /* Input data product ke table det trans purchase */
+		  	$inputDetTP = $this->Purchases_m->insertBatchDetTP($dataDetail);
+	  	} else {
+	  		$inputTP = 0;
+	  		$inputDetTP = 0;
+	  	}
+
+	  /* Cek proses insert, Set session dan redirect */
+	  	if($inputTP > 0 && $inputDetTP > 0){
+	  		/* hapus data di table temp */
+	  		$this->Purchases_m->truncateTemp();
+
+  	  		$this->session->set_flashdata('flashStatus', 'successInsert');
+  	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan transaksi pembelian !');
+	  	} else {
+  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
+  	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan transaksi pembelian !');
+	  	}
+  	  		$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listPurchasePage');
+
+	  	redirect('Transaksi_c/addPurchasePage');
 	}
 
 	/* Function : Proses update trans pembelian */
