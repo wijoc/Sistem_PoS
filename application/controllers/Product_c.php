@@ -48,6 +48,20 @@ Class Product_c extends MY_Controller {
 		$this->layout();
 	}
 
+	/* Function : List stock product */
+	public function listStockProductPage(){
+		/* set data yang akan ditampilkan */
+		$this->pageData = array(
+			'title' 	=> 'PoS | Stock Product',
+			'assets'	=> array('datatables', 'sweetalert2', 'page_product'),
+			'dataStock' => $this->Product_m->getStockProduct()
+		);
+
+		/* Set view file */
+		$this->page = 'product/list_stock_product_v';
+		$this->layout();
+	}
+
 	/* Function : Form edit product */
 	public function editProductPage($id){
 	  /* Decode produk id */
@@ -56,7 +70,7 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Edit Product',
-			'assets'  => array('sweetalert2'),
+			'assets'  => array('sweetalert2', 'page_add_product'),
 			'detailPrd' => $this->Product_m->getProductOnID($prdID), // Get data berdasar produk id
 			'optCtgr' => $this->Product_m->getCategory(), // Get semua kategori untuk option
 			'optUnit' => $this->Product_m->getUnit() // Get semua satuan untuk option
@@ -111,7 +125,9 @@ Class Product_c extends MY_Controller {
 			'prd_selling_price'  => $this->input->post('postHargaJual'),
 			'prd_unit_id_fk' 	 => $this->input->post('postSatuan'),
 			'prd_containts'		 => $this->input->post('postIsi'),
-			'prd_initial_g_stock'	 => $this->input->post('postStokAwalG'),
+			'prd_initial_g_stock'	   => $this->input->post('postStokAwalG'),
+			'prd_initial_ng_stock'	   => $this->input->post('postStokAwalNG'),
+			'prd_initial_return_stock' => $this->input->post('postStokAwalR'),
 			'prd_description' 	 => $this->input->post('postDeskripsiPrd')
 		);
 

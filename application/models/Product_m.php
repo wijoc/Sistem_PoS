@@ -101,6 +101,17 @@ Class Product_m extends CI_Model {
       return $resultSelect->result_array();
     }
 
+    /* Query select stock product */
+    function getStockProduct(){
+      $this->db->select('prd.'.$this->prd_f[1].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[8].', prd.'.$this->prd_f[9].', prd.'.$this->prd_f[10].', stk.*');
+      $this->db->from($this->stk_tb.' as stk');
+      $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].'=stk.'.$this->stk_f[1]);
+      $this->db->where('prd.'.$this->prd_f[12], '0');
+      $this->db->order_by('prd.'.$this->prd_f[0], 'ASC');
+      $resultSelect = $this->db->get();
+      return $resultSelect->result_array();
+    }
+
     /* Query select 1 data product berdasar product id */
     function getProductOnID($id){
       $this->db->where($this->prd_f[0], $id);

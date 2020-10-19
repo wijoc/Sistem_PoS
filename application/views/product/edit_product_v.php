@@ -36,16 +36,16 @@
 
                   <!-- Form-part input Nama Produk -->
                     <div class="form-group row">
-                      <label for="editNamaPrd" class="col-sm-3 col-form-label">Nama Produk<a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                      <label for="editNamaPrd" class="col-sm-4 col-form-label">Nama Produk<a class="float-right"> : </a></label>
+                      <div class="col-sm-7">
                         <input type="text" class="form-control float-right" name="postNamaPrd" id="editNamaPrd" value="<?php echo $detailPrd[0]['prd_name'] ?>" placeholder="Nama Produk" required>
                       </div>
                     </div>
 
                   <!-- Form-part input Kategori -->
                     <div class="form-group row">
-                      <label for="editKategoriPrd" class="col-sm-3 col-form-label">Kategori <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                      <label for="editKategoriPrd" class="col-sm-4 col-form-label">Kategori <a class="float-right"> : </a></label>
+                      <div class="col-sm-7">
                         <select class="form-control float-right" name="postKategoriPrd" id="editKategoriPrd">
                           <option> -- Pilih Kategori -- </option>
                           <?php foreach ($optCtgr as $showCtgr): ?>
@@ -59,24 +59,24 @@
 
                   <!-- Form-part input Harga Beli -->
                     <div class="form-group row">
-                      <label for="editHargaBeli" class="col-sm-3 col-form-label">Harga Beli <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                      <label for="editHargaBeli" class="col-sm-4 col-form-label">Harga Beli <a class="float-right"> : </a></label>
+                      <div class="col-sm-7">
                         <input type="number" class="form-control float-right" step="0.01" name="postHargaBeli" id="editHargaBeli" value="<?php echo $detailPrd[0]['prd_purchase_price'] ?>" placeholder="Harga Beli Produk" required>
                       </div>
                     </div>
 
                   <!-- Form-part input Harga Jual -->
                     <div class="form-group row">
-                      <label for="editHargaJual" class="col-sm-3 col-form-label">Harga Jual <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                      <label for="editHargaJual" class="col-sm-4 col-form-label">Harga Jual <a class="float-right"> : </a></label>
+                      <div class="col-sm-7">
                         <input type="number" class="form-control float-right" step="0.01" name="postHargaJual" id="editHargaJual" value="<?php echo $detailPrd[0]['prd_selling_price'] ?>" placeholder="Harga Jual Produk" required>
                       </div>
                     </div>
 
                   <!-- Form-part input Satuan Produk -->
                     <div class="form-group row">
-                      <label for="editSatuan" class="col-sm-3 col-form-label">Satuan <a class="float-right"> : </a></label>
-                      <div class="col-sm-5">
+                      <label for="editSatuan" class="col-sm-4 col-form-label">Satuan <a class="float-right"> : </a></label>
+                      <div class="col-sm-7">
                         <select class="form-control float-right" name="postSatuan" id="editSatuan">
                           <option> -- Pilih Satuan -- </option>
                           <?php foreach ($optUnit as $showUnit): ?>
@@ -90,41 +90,43 @@
 
                   <!-- Form-part input Isi -->
                     <div class="form-group row">
-                      <label for="editIsi" class="col-sm-3 col-form-label">Isi tiap satuan <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                      <label for="editIsi" class="col-sm-4 col-form-label">Isi tiap satuan <a class="float-right"> : </a></label>
+                      <div class="col-sm-7">
                         <input type="number" class="form-control float-right" name="postIsi" id="editIsi" value="<?php echo $detailPrd[0]['prd_containts'] ?>" placeholder="Isi Produk tiap satuan" required>
                       </div>
                     </div>
 
                   <!-- Form-part input stok awal -->
                     <div class="form-group row">
-                      <label for="editStokAwalG" class="col-sm-3 col-form-label">Stok awal (Good) <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                      <label for="editStokAwalG" class="col-sm-4 col-form-label">Stok awal Good <a class="float-right"> : </a></label>
+                      <div class="col-sm-7">
                         <input type="number" class="form-control float-right" name="postStokAwalG" id="editStokAwalG" value="<?php echo $detailPrd[0]['prd_initial_g_stock'] ?>" placeholder="Stok awal produk, stok akan berisi 0 jika tidak terisi">
-                        <small style="color: red">* <em>mengubah stok awal tidak akan mengubah stok saat ini</em></small>
+                        <small style="color: red">* <em>mengubah stok awal akan mengubah stok saat ini !</em></small>
                       </div>
                     </div>
 
                   <!-- Form-part input stok awal damaged / not good / rusak -->
                     <div class="form-group row">
-                      <label for="editStokAwalNG" class="col-sm-3 col-form-label">Stok awal damaged / rusak <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                      <label for="editStokAwalNG" class="col-sm-4 col-form-label">Stok awal Damaged / rusak <a class="float-right"> : </a></label>
+                      <div class="col-sm-7">
                         <input type="number" class="form-control float-right" name="postStokAwalNG" id="editStokAwalNG" value="<?php echo $detailPrd[0]['prd_initial_ng_stock'] ?>" placeholder="Stok awal produk rusak / damaged , stok akan berisi 0 jika tidak terisi">
+                        <small style="color: red">* <em>mengubah stok awal akan mengubah stok saat ini !</em></small>
                       </div>
                     </div>
 
                   <!-- Form-part input stok awal -->
                     <div class="form-group row">
-                      <label for="editStokAwalR" class="col-sm-3 col-form-label">Stok awal return <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                      <label for="editStokAwalR" class="col-sm-4 col-form-label">Stok awal return <a class="float-right"> : </a></label>
+                      <div class="col-sm-7">
                         <input type="number" class="form-control float-right" name="postStokAwalR" id="editStokAwalR" value="<?php echo $detailPrd[0]['prd_initial_return_stock'] ?>" placeholder="Stok awal produk retur pelanggan, stok akan berisi 0 jika tidak terisi">
+                        <small style="color: red">* <em>mengubah stok awal akan mengubah stok saat ini !</em></small>
                       </div>
                     </div>
 
                   <!-- Form-part input Deskripsi Produk -->
                     <div class="form-group row">
-                      <label for="editDeskripsiPrd" class="col-sm-3 col-form-label">Deskripsi <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                      <label for="editDeskripsiPrd" class="col-sm-4 col-form-label">Deskripsi <a class="float-right"> : </a></label>
+                      <div class="col-sm-7">
                         <textarea class="form-control" rows="3" name="postDeskripsiPrd" id="editDeskripsiPrd" placeholder="Deskripsi Produk (optional)"><?php echo $detailPrd[0]['prd_description'] ?></textarea>
                       </div>
                     </div>
