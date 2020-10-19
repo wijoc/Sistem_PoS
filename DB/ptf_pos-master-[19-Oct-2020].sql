@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 19, 2020 at 08:39 AM
+-- Generation Time: Oct 19, 2020 at 09:12 AM
 -- Server version: 10.5.5-MariaDB
 -- PHP Version: 7.4.10
 
@@ -56,9 +56,10 @@ CREATE TABLE `det_product_stock` (
 INSERT INTO `det_product_stock` (`stk_id`, `stk_product_id_fk`, `stk_good`, `stk_not_good`, `stk_return`) VALUES
 (1, 1, 0, 0, 0),
 (2, 2, 0, 0, 0),
-(3, 3, 1, 0, 0),
+(3, 3, 0, 0, 0),
 (4, 4, 0, 0, 0),
-(5, 5, 0, 0, 0);
+(5, 5, 0, 0, 0),
+(6, 6, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -185,7 +186,21 @@ INSERT INTO `tb_product` (`prd_id`, `prd_barcode`, `prd_name`, `prd_category_id_
 (2, '', 'C75 0.75 G-NET', 1, '74550.00', '82000.00', '1', 1, 0, 0, 0, 'Deskripsi C75', 0),
 (3, '', 'C75 0.75 WIRAMA', 1, '68500.00', '77000.00', '1', 1, 0, 0, 0, 'Deskripsi WIRAMA', 0),
 (4, '', 'C75 0.75 MAXI', 1, '66500.00', '73000.00', '1', 1, 0, 0, 0, '', 0),
-(5, '', 'C75 0.75 A-PLUS (motif)', 1, '71700.00', '78000.00', '1', 1, 0, 0, 0, '', 0);
+(5, '', 'C75 0.75 A-PLUS (motif)', 1, '71700.00', '78000.00', '1', 1, 0, 0, 0, '', 0),
+(6, '', 'C75 0.70 A-PLUS (motif)', 1, '66000.00', '72000.00', '1', 1, 0, 0, 0, 'Deskripsi C75 0.70 A-PLUS (motif)', 0);
+
+--
+-- Triggers `tb_product`
+--
+DELIMITER $$
+CREATE TRIGGER `TG_UpdateStock_Initialstock` AFTER UPDATE ON `tb_product` FOR EACH ROW UPDATE `det_product_stock` 
+SET 
+stk_good = stk_good + (NEW.prd_initial_g_stock - OLD.prd_initial_g_stock),
+stk_not_good = stk_not_good + (NEW.prd_initial_ng_stock - OLD.prd_initial_ng_stock),
+stk_return = stk_return + (NEW.prd_initial_return_stock - OLD.prd_initial_return_stock)
+WHERE stk_product_id_fk = NEW.prd_id
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -436,7 +451,7 @@ ALTER TABLE `det_installment_purchase`
 -- AUTO_INCREMENT for table `det_product_stock`
 --
 ALTER TABLE `det_product_stock`
-  MODIFY `stk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `stk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `det_trans_purchase`
@@ -472,7 +487,7 @@ ALTER TABLE `tb_member`
 -- AUTO_INCREMENT for table `tb_product`
 --
 ALTER TABLE `tb_product`
-  MODIFY `prd_id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `prd_id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tb_rekening_bank`

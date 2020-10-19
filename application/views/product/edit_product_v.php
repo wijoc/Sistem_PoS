@@ -105,6 +105,22 @@
                       </div>
                     </div>
 
+                  <!-- Form-part input stok awal damaged / not good / rusak -->
+                    <div class="form-group row">
+                      <label for="editStokAwalNG" class="col-sm-3 col-form-label">Stok awal damaged / rusak <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <input type="number" class="form-control float-right" name="postStokAwalNG" id="editStokAwalNG" value="<?php echo $detailPrd[0]['prd_initial_ng_stock'] ?>" placeholder="Stok awal produk rusak / damaged , stok akan berisi 0 jika tidak terisi">
+                      </div>
+                    </div>
+
+                  <!-- Form-part input stok awal -->
+                    <div class="form-group row">
+                      <label for="editStokAwalR" class="col-sm-3 col-form-label">Stok awal return <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <input type="number" class="form-control float-right" name="postStokAwalR" id="editStokAwalR" value="<?php echo $detailPrd[0]['prd_initial_return_stock'] ?>" placeholder="Stok awal produk retur pelanggan, stok akan berisi 0 jika tidak terisi">
+                      </div>
+                    </div>
+
                   <!-- Form-part input Deskripsi Produk -->
                     <div class="form-group row">
                       <label for="editDeskripsiPrd" class="col-sm-3 col-form-label">Deskripsi <a class="float-right"> : </a></label>
