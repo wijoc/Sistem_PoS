@@ -62,6 +62,21 @@ Class Product_c extends MY_Controller {
 		$this->layout();
 	}
 
+	/* Function : Detail product page */
+	public function detailProductPage($id){
+	  /* Decode produk id */
+		$prdID = base64_decode(urldecode($id));
+	  
+	  /* Proses tampil halaman */
+		$this->pageData = array(
+			'title'   => 'PoS | Detail Product',
+			'assets'  => array(),
+			'detailPrd' => $this->Product_m->getProductOnID($prdID), // Get data berdasar produk id
+		);
+		$this->page = 'product/detail_product_v';
+		$this->layout();
+	}
+
 	/* Function : Form edit product */
 	public function editProductPage($id){
 	  /* Decode produk id */

@@ -114,8 +114,13 @@ Class Product_m extends CI_Model {
 
     /* Query select 1 data product berdasar product id */
     function getProductOnID($id){
+      $this->db->select('prd.*, stk.*, kat.'.$this->cat_f[1].', sat.'.$this->unit_f[1]);
+      $this->db->from($this->prd_tb.' as prd');
       $this->db->where($this->prd_f[0], $id);
-      $resultSelect = $this->db->get($this->prd_tb);
+      $this->db->join($this->cat_tb.' as kat', 'kat.'.$this->cat_f[0].'=prd.'.$this->prd_f[3]);
+      $this->db->join($this->unit_tb.' as sat', 'sat.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
+      $this->db->join($this->stk_tb.' as stk', 'stk.'.$this->stk_f[1].'=prd.'.$this->prd_f[6]);
+      $resultSelect = $this->db->get();
       return $resultSelect->result_array();
     }
 
