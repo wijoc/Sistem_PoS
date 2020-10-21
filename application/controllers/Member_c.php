@@ -10,11 +10,37 @@ Class Member_c extends MY_Controller{
 
     /* Fuction : List member */
     public function index(){
+      /* Load Library */
+      $this->load->library('pagination'); // Lib pagination
+
+      /* Konfigurasi tambahan untuk pagination */
+      $config['base_url']   = site_url('Member_c/index');
+      $config['total_rows'] = $this->Member_m->getAllowedMember(0, 0)->num_rows(); // limit (param1), offset (param2)
+      $config['per_page']         = 9;
+      $config['full_tag_open']    = '<ul class="pagination justify-content-center m-0">';
+      $config['full_tag_close']   = '</ul>';
+      $config['num_tag_open']     = '<li class="page-item"><span class="page-link">';
+      $config['num_tag_close']    = '</span></li>';
+      $config['cur_tag_open']     = '<li class="page-item active"><a class="page-link" href="#">';
+      $config['cur_tag_close']    = '</a></li>';
+      $config['prev_tag_open']    = '<li class="page-item"><span class="page-link">';
+      $config['prev_tag_close']   = '</span></li>';
+      $config['next_tag_open']    = '<li class="page-item"><span class="page-link">';
+      $config['next_tag_close']   = '</span></li>';
+      $config['prev_link']        = '<i class="fas fa-backward"></i>';
+      $config['next_link']        = '<i class="fas fa-forward"></i>';
+      $config['last_tag_open']    = '<li class="page-item"><span class="page-link">';
+      $config['last_tag_close']   = '</span></li>';
+      $config['first_tag_open']   = '<li class="page-item"><span class="page-link">';
+      $config['first_tag_close']  = '</span></li>';
+      $startfrom = $this->uri->segment(3);
+      $this->pagination->initialize($config);
+
     	/* Proses tampil halaman */
     	$this->pageData = array(
     		'title' => 'PoS | Member',
-      'assets' => array('sweetalert2', 'f_confirm', 'page_contact'),
-    		'dataMember' => $this->Member_m->getAllowedMember()
+        'assets' => array('sweetalert2', 'f_confirm', 'page_contact'),
+    		'dataMember' => $this->Member_m->getAllowedMember($config['per_page'], $startfrom)->result_array()
     	);
     	$this->page = "contact/list_member_v";
     	$this->layout();

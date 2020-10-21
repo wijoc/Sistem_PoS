@@ -27,19 +27,11 @@ Class Member_m extends CI_Model{
   	}
 
     /* Query select row data member, dengan status 0 */
-    function getAllowedMember(){
+    function getAllowedMember($amount, $offset){
       $this->db->not_like($this->member_f[2], 'D');
       $this->db->order_by($this->member_f[1], 'ASC');
-      $resultGet = $this->db->get($this->member_tb);
-      return $resultGet->result_array();
-    }
-
-    /* Query select aktif member */
-    function getAktifMember(){
-      $this->db->where($this->member_f[2], 'Y');
-      $this->db->order_by($this->member_f[1], 'ASC');
-      $resultGet = $this->db->get($this->member_tb);
-      return $resultGet->result_array();
+      $resultGet = $this->db->get($this->member_tb, $amount, $offset);
+      return $resultGet;
     }
 
   	/* Query insert data member */

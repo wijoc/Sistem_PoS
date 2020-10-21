@@ -36,7 +36,7 @@
                     <div class="card-body pt-0">
                       <div class="row">
                         <div class="col-7">
-                          <h2 class="lead"><b><?php echo $showMember['member_nama'] ?></b></h2>
+                          <h2 class="lead"><b><?php echo $showMember['member_name'] ?></b></h2>
                           <ul class="ml-4 mb-0 fa-ul text-muted">
                             <li class="small">
                               <span class="fa-li"><i class="fas fa-md fa-percent"></i></span> Discount : <?php echo $showMember['member_discount'] ?> %
@@ -73,16 +73,7 @@
           <!-- /.card-body -->
           <div class="card-footer">
             <nav aria-label="Contacts Page Navigation">
-              <ul class="pagination justify-content-center m-0">
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                <li class="page-item"><a class="page-link" href="#">5</a></li>
-                <li class="page-item"><a class="page-link" href="#">6</a></li>
-                <li class="page-item"><a class="page-link" href="#">7</a></li>
-                <li class="page-item"><a class="page-link" href="#">8</a></li>
-              </ul>
+              <?php echo $this->pagination->create_links(); ?>
             </nav>
           </div>
           <!-- /.card-footer -->
