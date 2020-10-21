@@ -62,7 +62,7 @@
                         		<td class="text-center"><?php echo $showStk['prd_initial_return_stock'] ?></td>
                         		<td class="text-center"><?php echo $showStk['stk_return'] ?></td>
                         		<td class="text-center">
-                        			<a class="btn btn-xs btn-info" href=""><i class="fas fa-search"></i></a>
+                        			<a class="btn btn-xs btn-info" href="<?php echo site_url('Product_c/detailProductPage').'/'.urlencode(base64_encode($showPrd['prd_id'])) ?> ?>"><i class="fas fa-search"></i></a>
                         		</td>
                         	</tr>
                         <?php endforeach; ?>

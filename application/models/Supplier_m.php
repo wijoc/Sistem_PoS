@@ -28,11 +28,11 @@ Class Supplier_m extends CI_Model{
   	}
 
     /* Query select row data supplier dengan supp_status 0 */
-    function getAllowedSupplier(){
+    function getAllowedSupplier($amount, $offset){
       $this->db->where($this->supp_f[6], '0');
       $this->db->order_by($this->supp_f[1], 'ASC');
-      $resultGet = $this->db->get($this->supp_tb);
-      return $resultGet->result_array();
+      $resultGet = $this->db->get($this->supp_tb, $amount, $offset);
+      return $resultGet;
     }
 
   	/* Query insert data supplier */

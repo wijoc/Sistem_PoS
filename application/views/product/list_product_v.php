@@ -51,7 +51,7 @@
                             <td><?php echo $showPrd['unit_name'] ?></td>
                             <td>0</td>
                             <td>
-                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Product_c/listStockProductPage') ?>"><i class="fas fa-search"></i></a>
+                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Product_c/detailProductPage').'/'.urlencode(base64_encode($showPrd['prd_id'])) ?> ?>"><i class="fas fa-search"></i></a>
                               <a class="btn btn-xs btn-warning" href="<?php echo site_url('Product_c/editProductPage').'/'.urlencode(base64_encode($showPrd['prd_id'])) ?>"><i class="fas fa-edit"></i></a>
                               <!-- Hard Delete 
                               <a class="btn btn-xs btn-danger" onclick="confirmDelete('hard-prd', '<?php echo urlencode(base64_encode($showPrd['prd_id'])) ?>', '<?php echo site_url('Product_c/deleteProductProses') ?>')"><i class="fas fa-trash"></i></a>
