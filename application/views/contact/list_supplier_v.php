@@ -62,7 +62,7 @@
                         <a href="#" class="btn btn-sm bg-teal">
                           <i class="fas fa-search"></i>
                         </a>
-                        <a href="" class="btn btn-sm btn-warning">
+                        <a class="btn btn-sm btn-warning contactEdit" data-toggle="modal" data-target="#modal-edit-supplier" data-id="<?php echo urlencode(base64_encode($showSupp['supp_id'])) ?>" data-href="<?php echo site_url('Supplier_c/getSupplierProses') ?>">
                           <i class="fas fa-edit"></i>
                         </a>
                         <!-- Soft Delete -->
@@ -141,6 +141,71 @@
                     <label for="inputSuppAlamat" class="col-sm-3 col-form-label">Alamat <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control float-right" name="postSuppAlamat" id="inputSuppAlamat" placeholder="Alamat">
+                    </div>
+                  </div>
+              </div>
+              <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+              </div>
+            </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+      <!-- Modal Edit Supplier -->
+      <div class="modal fade" id="modal-edit-supplier">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit Kontak Supplier</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form method="POST" action="<?php echo site_url('Supplier_c/editSupplierProses') ?>" id="formEditSupplier">
+              <div class="modal-body">
+                <input type="text" name="postSuppID" id="editSuppID" required readonly>
+                
+                <!-- Form-part input Supplier nama -->
+                  <div class="form-group row">
+                    <label for="editSuppNama" class="col-sm-3 col-form-label">Nama Supplier <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control float-right" name="postSuppNama" id="editSuppNama" placeholder="Nama Supplier" required>
+                    </div>
+                  </div>
+
+                <!-- Form-part input Supplier nama Kontak-->
+                  <div class="form-group row">
+                    <label for="editSuppKontak" class="col-sm-3 col-form-label">Nama Kontak <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control float-right" name="postSuppKontak" id="editSuppKontak" placeholder="Nama untuk kontak supplier" required>
+                    </div>
+                  </div>
+
+                <!-- Form-part input Supplier telp -->
+                  <div class="form-group row">
+                    <label for="editSuppTelp" class="col-sm-3 col-form-label">No. Telp <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control float-right" name="postSuppTelp" id="editSuppTelp" placeholder="Nomor Telephone">
+                    </div>
+                  </div>
+
+                <!-- Form-part input Supplier email -->
+                  <div class="form-group row">
+                    <label for="editSuppEmail" class="col-sm-3 col-form-label">E-mail <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control float-right" name="postSuppEmail" id="editSuppEmail" placeholder="Alamat email">
+                    </div>
+                  </div>
+
+                <!-- Form-part input Supplier alamat -->
+                  <div class="form-group row">
+                    <label for="editSuppAlamat" class="col-sm-3 col-form-label">Alamat <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control float-right" name="postSuppAlamat" id="editSuppAlamat" placeholder="Alamat">
                     </div>
                   </div>
               </div>

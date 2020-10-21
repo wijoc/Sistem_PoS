@@ -27,6 +27,13 @@ Class Supplier_m extends CI_Model{
   		return $resultGet->result_array();
   	}
 
+    /* Query select row data supplier berdasar supp_id */
+    function getSupplierOnID($id){
+      $this->db->where($this->supp_f[0], $id);
+      $resultGet = $this->db->get($this->supp_tb);
+      return $resultGet->result_array();
+    }
+
     /* Query select row data supplier dengan supp_status 0 */
     function getAllowedSupplier($amount, $offset){
       $this->db->where($this->supp_f[6], '0');
@@ -40,6 +47,14 @@ Class Supplier_m extends CI_Model{
   		$resultInsert = $this->db->insert($this->supp_tb, $data);
   		return $resultInsert;
   	}
+
+    /* Query update data supplier */
+    function updateSupplier($data, $id){
+      $this->db->set($data);
+      $this->db->where($this->supp_f[0], $id);
+      $resultUpdate = $this->db->update($this->supp_tb);
+      return $resultUpdate;
+    }
 
   	/* Query delete data supplier */
   	function deleteSupplier($id){

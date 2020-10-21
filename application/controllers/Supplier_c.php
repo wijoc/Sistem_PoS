@@ -50,6 +50,23 @@ Class Supplier_c extends MY_Controller{
     $this->layout();
   }
 
+  /* Function : get supplier data berdsar supp_id */
+  function getSupplierProses(){
+    $suppID = base64_decode(urldecode($this->input->post('id')));
+
+    $suppData = $this->Supplier_m->getSupplierOnID($suppID);
+    $returnData = array(
+      'edit_id'      => $this->input->post('id'),
+      'edit_name'    => $suppData[0]['supp_name'],
+      'edit_contact' => $suppData[0]['supp_contact_name'],
+      'edit_email'   => $suppData[0]['supp_email'],
+      'edit_telp'    => $suppData[0]['supp_telp'],
+      'edit_address' => $suppData[0]['supp_address']
+    );
+
+    echo json_encode($returnData);
+  }
+
   /* Function : Input supplier proses */
   function addSupplierProses(){
     /* Get data post dari form */
@@ -74,6 +91,32 @@ Class Supplier_c extends MY_Controller{
 	  	}
 
 		  redirect('Supplier_c');
+  }
+
+  /* Function : Edit supplier proses */
+  function editSupplierProses(){
+    $suppID = base64_decode(urldecode($this->input->post('postSuppID')));
+    $postData = array(
+        'supp_name' => $this->input->post('postSuppNama'),
+        'supp_contact_name'   => $this->input->post('postSuppKontak'),
+        'supp_email'  => $this->input->post('postSuppEmail'),
+        'supp_telp'   => $this->input->post('postSuppTelp'),
+        'supp_address' => $this->input->post('postSuppAlamat'),
+    );
+
+    /* Insert ke database */
+      $editSupp = $this->Supplier_m->updateSupplier($postData, $suppID);
+
+    /* Set session dan redirect */
+      if($editSupp > 0){
+        $this->session->set_flashdata('flashStatus', 'successUpdate');
+        $this->session->set_flashdata('flashMsg', 'Berhasil mengubah kontak Supplier !');
+      } else {
+        $this->session->set_flashdata('flashStatus', 'failedUpdate');
+        $this->session->set_flashdata('flashMsg', 'Gagal mengubah kontak Supplier !');
+      }
+
+      redirect('Supplier_c');
   }
 
   /* Function : Delete supplier */

@@ -1,5 +1,25 @@
 $(document).ready(function(){
 
+    /* Function saat edit satuan di click */
+    $(".contactEdit").on("click", function(){
+        var contact_id   = $(this).data("id");
+        var url = $(this).data("href");
+        $.ajax({
+            url : url,
+            method : "POST",
+            data   : {id : contact_id},
+            dataType : 'json',
+            success : function(data){
+                $('#formEditSupplier').find('#editSuppID').val(data.edit_id);
+                $('#formEditSupplier').find('#editSuppNama').val(data.edit_name);
+                $('#formEditSupplier').find('#editSuppKontak').val(data.edit_contact);
+                $('#formEditSupplier').find('#editSuppTelp').val(data.edit_telp);
+                $('#formEditSupplier').find('#editSuppEmail').val(data.edit_email);
+                $('#formEditSupplier').find('#editSuppAlamat').val(data.edit_address);
+            }
+        })
+    })
+
     /* Alert */
     if(typeof flashStatus !== "undefined" && flashMsg !== "undefined" ){
         if(flashStatus == "successInsert"){
