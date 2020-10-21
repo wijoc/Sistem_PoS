@@ -23,15 +23,15 @@ Class Supplier_m extends CI_Model{
   	/* Query select semua row data supplier */
   	function getAllSupplier(){
   		$this->db->order_by($this->supp_f[1], 'ASC');
-  		$resultGet = $this->db->get($this->supp_tb);
-  		return $resultGet->result_array();
+  		$resultSelect = $this->db->get($this->supp_tb);
+  		return $resultSelect->result_array();
   	}
 
     /* Query select row data supplier berdasar supp_id */
     function getSupplierOnID($id){
       $this->db->where($this->supp_f[0], $id);
-      $resultGet = $this->db->get($this->supp_tb);
-      return $resultGet->result_array();
+      $resultSelect = $this->db->get($this->supp_tb);
+      return $resultSelect->result_array();
     }
 
     /* Query select row data supplier dengan supp_status 0 */

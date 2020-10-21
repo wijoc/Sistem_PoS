@@ -50,7 +50,7 @@ Class Member_c extends MY_Controller{
     function addMemberProses(){
       /* Get data post dari form */
       	$postData = array(
-      		'member_nama' => $this->input->post('postMemberNama'),
+      		'member_name' => $this->input->post('postMemberNama'),
       		'member_status'   => $this->input->post('postMemberStatus'),
       		'member_discount'  => $this->input->post('postMemberDiscount')
       	);
@@ -68,6 +68,48 @@ Class Member_c extends MY_Controller{
   	  	}
 
 		  redirect('Member_c');
+    }
+
+    /* Function : get member berdasar member id */
+    function getMember(){
+      $memberID = base64_decode(urldecode($this->input->post('id')));
+
+      $memberData = $this->Member_m->getMemberOnID($memberID);
+      $returnData = array(
+        'edit_id'      => $this->input->post('id'),
+        'edit_name'    => $memberData[0]['member_name'],
+        'edit_status'  => $memberData[0]['member_status'],
+        'edit_discount' => $memberData[0]['member_discount']
+      );
+
+      echo json_encode($returnData);
+    }
+
+    /* Function : Proses Edit member */
+    function editMemberProses(){
+      /* Get data post id & decode */
+        $memberID = base64_decode(urldecode($this->input->post('postMemberID')));
+      
+      /* Get data post dari form */
+        $postData = array(
+          'member_name' => $this->input->post('postMemberNama'),
+          'member_status'   => $this->input->post('postMemberStatus'),
+          'member_discount'  => $this->input->post('postMemberDiscount')
+        );
+
+      /* Insert ke database */
+        $editMember = $this->Member_m->updateMember($postData, $memberID);
+
+      /* Set session dan redirect */
+        if($editMember > 0){
+          $this->session->set_flashdata('flashStatus', 'successUpdate');
+          $this->session->set_flashdata('flashMsg', 'Berhasil mengubah kontak Member !');
+        } else {
+          $this->session->set_flashdata('flashStatus', 'failedUpdate');
+          $this->session->set_flashdata('flashMsg', 'Gagal mengubah kontak Member !');
+        }
+
+        redirect('Member_c');
     }
 
     /* Function : Delete member */

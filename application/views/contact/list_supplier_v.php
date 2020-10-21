@@ -28,7 +28,7 @@
           <div class="card-body pb-0">
             <div class="row d-flex align-items-stretch">
               <?php foreach($dataSupplier as $showSupp) : ?>
-                <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
+                <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
                   <div class="card bg-light">
                     <div class="card-header text-muted border-bottom-0">
                       <?php echo $showSupp['supp_contact_name'] ?>
@@ -62,7 +62,7 @@
                         <a href="#" class="btn btn-sm bg-teal">
                           <i class="fas fa-search"></i>
                         </a>
-                        <a class="btn btn-sm btn-warning contactEdit" data-toggle="modal" data-target="#modal-edit-supplier" data-id="<?php echo urlencode(base64_encode($showSupp['supp_id'])) ?>" data-href="<?php echo site_url('Supplier_c/getSupplierProses') ?>">
+                        <a class="btn btn-sm btn-warning contactEdit" data-toggle="modal" data-target="#modal-edit-supplier" data-type="supp" data-id="<?php echo urlencode(base64_encode($showSupp['supp_id'])) ?>" data-href="<?php echo site_url('Supplier_c/getSupplier') ?>">
                           <i class="fas fa-edit"></i>
                         </a>
                         <!-- Soft Delete -->
@@ -167,7 +167,7 @@
             </div>
             <form method="POST" action="<?php echo site_url('Supplier_c/editSupplierProses') ?>" id="formEditSupplier">
               <div class="modal-body">
-                <input type="text" name="postSuppID" id="editSuppID" required readonly>
+                <input type="hidden" name="postSuppID" id="editSuppID" required readonly>
                 
                 <!-- Form-part input Supplier nama -->
                   <div class="form-group row">

@@ -34,11 +34,26 @@ Class Member_m extends CI_Model{
       return $resultGet;
     }
 
+    /* Query select row data member berdasar member_id */
+    function getMemberOnID($id){
+      $this->db->where($this->member_f[0], $id);
+      $resultSelect = $this->db->get($this->member_tb);
+      return $resultSelect->result_array();
+    }
+
   	/* Query insert data member */
   	function insertMember($data){
   		$resultInsert = $this->db->insert($this->member_tb, $data);
   		return $resultInsert;
   	}
+
+    /* Query update data member */
+    function updateMember($data, $id){
+      $this->db->set($data);
+      $this->db->where($this->member_f[0], $id);
+      $resultUpdate = $this->db->update($this->member_tb);
+      return $resultUpdate;
+    }
 
   	/* Query delete data member */
   	function deleteMember($id){

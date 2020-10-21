@@ -51,7 +51,7 @@ Class Supplier_c extends MY_Controller{
   }
 
   /* Function : get supplier data berdsar supp_id */
-  function getSupplierProses(){
+  function getSupplier(){
     $suppID = base64_decode(urldecode($this->input->post('id')));
 
     $suppData = $this->Supplier_m->getSupplierOnID($suppID);

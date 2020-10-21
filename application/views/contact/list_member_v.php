@@ -28,7 +28,7 @@
           <div class="card-body pb-0">
             <div class="row d-flex align-items-stretch">
               <?php foreach($dataMember as $showMember) : ?>
-                <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
+                <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
                   <div class="card bg-light">
                     <div class="card-header text-muted border-bottom-0">
                       <?php echo ($showMember['member_status'] === 'Y')? 'Aktif' : 'Non-Aktif' ?>
@@ -56,7 +56,7 @@
                         <a href="#" class="btn btn-sm bg-teal">
                           <i class="fas fa-search"></i>
                         </a>
-                        <a href="" class="btn btn-sm btn-warning">
+                        <a class="btn btn-sm btn-warning contactEdit" data-toggle="modal" data-target="#modal-edit-member" data-type="member" data-id="<?php echo urlencode(base64_encode($showMember['member_id'])) ?>" data-href="<?php echo site_url('Member_c/getMember') ?>">
                           <i class="fas fa-edit"></i>
                         </a>
                         <!-- Soft Delete -->
@@ -85,7 +85,7 @@
     <!-- /.content -->
 
     <!-- Modal -->
-      <!-- Modal Tambah Supplier -->
+      <!-- Modal Tambah Member -->
       <div class="modal fade" id="modal-tambah-member">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -122,6 +122,58 @@
                     <label for="inputMemberDiscount" class="col-sm-3 col-form-label">Discount <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="number" class="form-control float-right" name="postMemberDiscount" id="inputMemberDiscount" placeholder="Besaran Discount">
+                    </div>
+                  </div>
+              </div>
+              <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+              </div>
+            </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+      <!-- Modal Edit Member -->
+      <div class="modal fade" id="modal-edit-member">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Ubah Member</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form method="POST" action="<?php echo site_url('Member_c/editMemberProses') ?>" id="formEditMember">
+              <div class="modal-body">
+                <input type="hidden" name="postMemberID" id="editMemberID" required readonly>
+                
+                <!-- Form-part input Member nama -->
+                  <div class="form-group row">
+                    <label for="editMemberNama" class="col-sm-3 col-form-label">Nama Member <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control float-right" name="postMemberNama" id="editMemberNama" placeholder="Nama Member" required>
+                    </div>
+                  </div>
+
+                <!-- Form-part input Member status -->
+                  <div class="form-group row">
+                    <label for="editMemberStatus" class="col-sm-3 col-form-label">Status <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <select class="form-control" name="postMemberStatus" id="editMemberStatus">
+                        <option value="Y">Aktif</option>
+                        <option value="N">Tidak Aktif</option>
+                      </select>
+                    </div>
+                  </div>
+
+                <!-- Form-part input Member discount -->
+                  <div class="form-group row">
+                    <label for="editMemberDiscount" class="col-sm-3 col-form-label">Discount <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <input type="number" class="form-control float-right" name="postMemberDiscount" id="editMemberDiscount" placeholder="Besaran Discount Total Pembayaran">
                     </div>
                   </div>
               </div>

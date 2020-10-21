@@ -3,6 +3,7 @@ $(document).ready(function(){
     /* Function saat edit satuan di click */
     $(".contactEdit").on("click", function(){
         var contact_id   = $(this).data("id");
+        var contact_type = $(this).data("type");
         var url = $(this).data("href");
         $.ajax({
             url : url,
@@ -10,12 +11,19 @@ $(document).ready(function(){
             data   : {id : contact_id},
             dataType : 'json',
             success : function(data){
-                $('#formEditSupplier').find('#editSuppID').val(data.edit_id);
-                $('#formEditSupplier').find('#editSuppNama').val(data.edit_name);
-                $('#formEditSupplier').find('#editSuppKontak').val(data.edit_contact);
-                $('#formEditSupplier').find('#editSuppTelp').val(data.edit_telp);
-                $('#formEditSupplier').find('#editSuppEmail').val(data.edit_email);
-                $('#formEditSupplier').find('#editSuppAlamat').val(data.edit_address);
+                if(contact_type === 'supp'){
+                    $('#formEditSupplier').find('#editSuppID').val(data.edit_id);
+                    $('#formEditSupplier').find('#editSuppNama').val(data.edit_name);
+                    $('#formEditSupplier').find('#editSuppKontak').val(data.edit_contact);
+                    $('#formEditSupplier').find('#editSuppTelp').val(data.edit_telp);
+                    $('#formEditSupplier').find('#editSuppEmail').val(data.edit_email);
+                    $('#formEditSupplier').find('#editSuppAlamat').val(data.edit_address);
+                } else if(contact_type === 'member'){
+                    $('#formEditMember').find('#editMemberID').val(data.edit_id);
+                    $('#formEditMember').find('#editMemberNama').val(data.edit_name);
+                    $('#formEditMember').find('#editMemberStatus').val(data.edit_status);
+                    $('#formEditMember').find('#editMemberDiscount').val(data.edit_discount);
+                }
             }
         })
     })
