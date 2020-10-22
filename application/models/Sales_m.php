@@ -113,6 +113,21 @@ Class Sales_m extends CI_Model{
       return $resultSelect->result_array();
     }
 
+    /* Query get temp berdasar product id */
+    function getTemponPrdId($prdId){
+      $this->db->where($this->temp_f[1], $prdId);
+      $resultSelect = $this->db->get($this->temp_ts);
+      return $resultSelect->result_array();
+    }
+
+    /* Query insert on update */
+    function updateTemp($data, $id){
+      $this->db->set($data);
+      $this->db->where($this->temp_f[0], $id);
+      $resultInsert = $this->db->update($this->temp_ts);
+      return $resultInsert;
+    }
+
     /* Query Truncate / Hapus semua data di table temp */
     function truncateTemp(){
       $resultTruncate = $this->db->truncate($this->temp_ts);

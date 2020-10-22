@@ -40,21 +40,41 @@ Class Transaksi_c extends MY_Controller{
 				$newAmount = $checkTemp[0]['tp_product_amount'] + $postData['post_product_jumlah'];
 				$newTotal  = $checkTemp[0]['tp_total_paid'] + $postData['post_total_bayar'];
 
+				$updateId = $checkTemp[0]['tp_id'];
 				$newInputData = array(
-					'tp_id' 		=> $checkTemp[0]['tp_id'],
 					'tp_product_fk'	=> $checkTemp[0]['tp_product_fk'],
 					'tp_product_amount' => $newAmount,
 					'tp_purchase_price' => $checkTemp[0]['tp_purchase_price'],
 					'tp_total_paid'		=> $newTotal
 				);
-				$inputTemp = $this->Purchases_m->UpdateTemp($newInputData);
+				$inputTemp = $this->Purchases_m->updateTemp($newInputData, $updateId);
 			} else {
 				$inputTemp = $this->Purchases_m->insertTemp($postData);
 			}
 			redirect('Transaksi_c/addPurchasePage');
 		} else if ($trans === 'Sales'){
+			/* Input khusus untuk keranjang penjualan */
 			$postData['post_potongan'] = $this->input->post('postPotonganPrd');
-			$inputTemp = $this->Sales_m->insertTemp($postData);
+
+			/* Cek product di keranjang */
+			$checkTemp = $this->Sales_m->getTemponPrdId($this->input->post('postIdPrd'));
+			//print("<pre>".print_r($checkTemp, true)."</pre>");
+
+			if(count($checkTemp) > 0 && $checkTemp[0]['temps_sale_price'] == $postData['post_harga_satuan'] && $checkTemp[0]['temps_discount'] == $postData['post_potongan']){
+				$newAmount = $checkTemp[0]['temps_product_amount'] + $postData['post_product_jumlah'];
+				$newTotal  = $checkTemp[0]['temps_total_paid'] + $postData['post_total_bayar'];
+
+				$updateId 	  = $checkTemp[0]['temps_id'];
+				$newInputData = array(
+					'temps_product_fk'	=> $checkTemp[0]['temps_product_fk'],
+					'temps_product_amount' => $newAmount,
+					'temps_sale_price'	=> $checkTemp[0]['temps_sale_price'],
+					'temps_total_paid'	=> $newTotal
+				);
+				$inputTemp = $this->Sales_m->updateTemp($newInputData, $updateId);
+			} else {
+				$inputTemp = $this->Sales_m->insertTemp($postData);
+			}
 			redirect('Transaksi_c/addSalesPage');
 		}
 	}
@@ -224,11 +244,10 @@ Class Transaksi_c extends MY_Controller{
 			'optRek'	=> $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
 			'daftarPrd' => $this->Sales_m->getTemp(),
-			'optMember'	=> $this->Member_m->getAktifMember()
+			'optMember'	=> $this->Member_m->getActiveMember()
 	  	);
 	  	$this->page = 'trans/add_trans_sales_v';
 	  	$this->layout();
-
 	}
 
 	/* Function : List trans penjualan */

@@ -26,12 +26,20 @@ Class Member_m extends CI_Model{
   		return $resultGet->result_array();
   	}
 
-    /* Query select row data member, dengan status 0 */
+    /* Query select row data member, dengan status <> D (D untuk data member deleted) */
     function getAllowedMember($amount, $offset){
       $this->db->not_like($this->member_f[2], 'D');
       $this->db->order_by($this->member_f[1], 'ASC');
       $resultGet = $this->db->get($this->member_tb, $amount, $offset);
       return $resultGet;
+    }
+
+    /* Query select row data member, dengan status Y */
+    function getActiveMember(){
+      $this->db->not_like($this->member_f[2], 'Y');
+      $this->db->order_by($this->member_f[1], 'ASC');
+      $resultSelect = $this->db->get($this->member_tb);
+      return $resultSelect->result_array();
     }
 
     /* Query select row data member berdasar member_id */

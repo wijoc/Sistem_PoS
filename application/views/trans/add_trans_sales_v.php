@@ -91,7 +91,7 @@
                           ?>
                           <tr>
                             <td><?php echo $no++ ?></td>
-                            <td><?php echo $row['prd_nama']; ?></td>
+                            <td><?php echo $row['prd_name']; ?></td>
                             <td><?php echo $row['temps_product_amount'] ?></td>
                             <td><?php echo $row['temps_sale_price'] ?></td>
                             <td><?php echo $row['temps_discount'] ?></td>
@@ -137,7 +137,7 @@
                         <select class="form-control float-right" name="postTransSupp" id="inputTransSupp">
                           <option> -- Pilih Pembeli -- </option>
                           <?php foreach ($optMember as $showOpt): ?>
-                            <option value="<?php echo $showOpt['member_id'] ?>"> <?php echo $showOpt['member_nama'] ?> </option>
+                            <option value="<?php echo $showOpt['member_id'] ?>"> <?php echo $showOpt['member_name'] ?> </option>
                           <?php endforeach; ?>
                         </select>
                       </div>
@@ -248,4 +248,3 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    <?php print("<pre>".print_r($daftarPrd, true)."</pre>") ?>

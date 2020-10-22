@@ -103,7 +103,7 @@ Class Product_m extends CI_Model {
 
     /* Query select stock product */
     function getStockProduct(){
-      $this->db->select('prd.'.$this->prd_f[1].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[8].', prd.'.$this->prd_f[9].', prd.'.$this->prd_f[10].', stk.*');
+      $this->db->select('prd.'.$this->prd_f[0].', prd.'.$this->prd_f[1].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[8].', prd.'.$this->prd_f[9].', prd.'.$this->prd_f[10].', stk.*');
       $this->db->from($this->stk_tb.' as stk');
       $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].'=stk.'.$this->stk_f[1]);
       $this->db->where('prd.'.$this->prd_f[12], '0');
