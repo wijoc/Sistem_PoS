@@ -29,15 +29,14 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                    <table id="table-barang" class="table table-bordered table-striped">
+                    <table id="table-trans" class="table table-bordered table-striped">
                       <thead>
                         <th>No.</th>
-                        <th>No. Transaksi</th>
                         <th>Tanggal</th>
+                        <th>Nota</th>
                         <th>Supplier</th>
                         <th>Total Bayar</th>
-                        <th>Kurangan</th>
-                        <th>Status</th>
+                        <th>Status Pembayaran</th>
                         <th>Jatuh Tempo</th>
                         <th>Aksi</th>
                       </thead>
@@ -45,13 +44,22 @@
                         <?php $no = 1; foreach($dataTrans as $showTP): ?>
                           <tr>
                             <td><?php echo $no++ ?></td>
-                            <td><?php echo $showTP['tp_no_trans'] ?></td>
                             <td><?php echo date('d-m-Y', strtotime($showTP['tp_date'])) ?></td>
+                            <td><?php echo $showTP['tp_invoice_code'] ?></td>
                             <td><?php echo $showTP['supp_name'] ?></td>
                             <td><?php echo $showTP['tp_purchase_price'] ?></td>
-                            <td><?php echo $showTP['tp_insufficient'] ?></td>
-                            <td><?php echo ($showTP['tp_status'] === 'L')? 'Lunas' : 'Belum Lunas' ?></td>
-                            <td><?php echo ($showTP['tp_status'] === 'L')? '-' : date('d-m-Y', strtotime($showTP['tp_due_date']));?></td>
+                            <td>
+                              <?php 
+                                if ($showTP['tp_status'] === 'K'){
+                                  echo 'Kredit - Belum Lunas';
+                                } else if ($showTP['tp_status'] === 'T'){
+                                  echo 'Tunai';
+                                } else if ($showTP['tp_status'] === 'L'){
+                                  echo 'Kredit - Lunas';
+                                }
+                              ?>
+                            </td>
+                            <td><?php echo ($showTP['tp_status'] === 'T')? '-' : date('d-m-Y', strtotime($showTP['tp_due_date']));?></td>
                             <td class="text-center">
                               <a href="" class="btn btn-xs btn-info"><i class="fas fa-search"></i></a>
                               <a href="" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
@@ -62,11 +70,10 @@
                       </tbody>
                       <tfoot>
                         <th>No.</th>
-                        <th>No. Transaksi</th>
                         <th>Tanggal</th>
+                        <th>Nota</th>
                         <th>Supplier</th>
                         <th>Total Bayar</th>
-                        <th>Kurangan</th>
                         <th>Status</th>
                         <th>Jatuh Tempo</th>
                         <th>Aksi</th>

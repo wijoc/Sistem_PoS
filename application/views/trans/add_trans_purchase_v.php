@@ -115,6 +115,14 @@
                       </div>
                     </div>
 
+                  <!-- Form-part input Nomor Nota -->
+                    <div class="form-group row">
+                      <label for="inputTransNota" class="col-sm-3 col-form-label">Nomor Nota Pembelian <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control float-right" name="postTransNota" id="inputTransNota" placeholder="Masukkan nomor nota pembelian" required>
+                      </div>
+                    </div>
+
                   <!-- Form-part input tanggal transaksi -->
                     <div class="form-group row">
                       <label for="inputTransTgl" class="col-sm-3 col-form-label">Tanggal Transaksi<a class="float-right"> : </a></label>
@@ -136,11 +144,15 @@
                       </div>
                     </div>
 
-                  <!-- Form-part input total harga beli -->
+                  <!-- Form-part input Status Pembayaran -->
                     <div class="form-group row">
-                      <label for="inputTransTotalBayar" class="col-sm-3 col-form-label">Total Pembelian <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postTransTotalBayar" id="inputTransTotalBayar" value="<?php echo $totalBayar ?>" readonly required>
+                      <label for="inputTransStatus" class="col-sm-3 col-form-label">Status Pembayaran <a class="float-right"> : </a></label>
+                      <div class="col-sm-5">
+                        <select class="form-control float-right" name="postTransStatus" id="inputTransStatus">
+                          <option> -- Pilih Status -- </option>
+                          <option value="K"> Kredit / Angsur </option>
+                          <option value="T"> Tunai </option>
+                        </select>
                       </div>
                     </div>
 
@@ -169,6 +181,14 @@
                       </div>
                     </div>
 
+                  <!-- Form-part input total harga beli -->
+                    <div class="form-group row">
+                      <label for="inputTransTotalBayar" class="col-sm-3 col-form-label">Total Pembelian <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <input type="number" class="form-control float-right" step="0.01" name="postTransTotalBayar" id="inputTransTotalBayar" value="<?php echo $totalBayar ?>" readonly required>
+                      </div>
+                    </div>
+
                   <!-- Form-part input Dibayar -->
                     <div class="form-group row">
                       <label for="inputTransPembayaran" class="col-sm-3 col-form-label">Pembayaran Pertama <a class="float-right"> : </a></label>
@@ -182,18 +202,6 @@
                       <label for="inputTransKurang" class="col-sm-3 col-form-label">Kurangan <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
                         <input type="number" class="form-control float-right" name="postTransKurang" id="inputTransKurang" readonly required>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input Status Pembayaran -->
-                    <div class="form-group row">
-                      <label for="inputTransStatus" class="col-sm-3 col-form-label">Status Pembayaran <a class="float-right"> : </a></label>
-                      <div class="col-sm-5">
-                        <select class="form-control float-right" name="postTransStatus" id="inputTransStatus" readonly>
-                          <option> -- Pilih Status -- </option>
-                          <option value="L"> Lunas </option>
-                          <option value="BL"> Belum Lunas </option>
-                        </select>
                       </div>
                     </div>
 
@@ -215,6 +223,14 @@
                           <option value="M">Bulanan</option>
                           <option value="Y">Tahunan</option>
                         </select>
+                      </div>
+                    </div>
+
+                  <!-- Form-part input Angsuran -->
+                    <div class="form-group row">
+                      <label for="inputTransAngsuran" class="col-sm-3 col-form-label">Besar Angsuran <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <input type="number" class="form-control float-right" name="postTransAngsuran" id="inputTransAngsuran" required="" disabled>
                       </div>
                     </div>
 

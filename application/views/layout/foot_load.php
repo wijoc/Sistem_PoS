@@ -56,12 +56,25 @@
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/contact_assets.js"></script>
 	<?php } ?>	
 
-	<!-- Page Add Trans Pembelian -->
+	<!-- Page Add Trans -->
 	<?php if(in_array('page_addtrans',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/addtransaction_assets.js"></script>
 		<script type="text/javascript">
 			autocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct') ?>";
 		</script>
+	<?php } ?>	
+
+	<!-- Page Add Trans -->
+	<?php if(in_array('page_add_purchase',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_purchase_assets.js"></script>
+		<script type="text/javascript">
+			autocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct') ?>";
+		</script>
+	<?php } ?>
+
+	<!-- Page List Trans -->
+	<?php if(in_array('page_list_trans',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/list_transaction_assets.js"></script>
 	<?php } ?>
 
 	<!-- Page Konfirmasi Delete -->

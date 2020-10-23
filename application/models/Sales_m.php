@@ -128,6 +128,13 @@ Class Sales_m extends CI_Model{
       return $resultInsert;
     }
 
+    /* Query delete temp product berdasar product_id */
+    function deleteTemp($prdId){
+      $this->db->where($this->temp_f[1], $prdId);
+      $resultDelete = $this->db->delete($this->temp_ts);
+      return $resultDelete;
+    }
+
     /* Query Truncate / Hapus semua data di table temp */
     function truncateTemp(){
       $resultTruncate = $this->db->truncate($this->temp_ts);

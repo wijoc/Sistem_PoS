@@ -30,7 +30,7 @@ Class Transaksi_c extends MY_Controller{
 			'post_product_id' => $this->input->post('postIdPrd'),
 			'post_harga_satuan' => $this->input->post('postHargaPrd'),
 			'post_product_jumlah' => $this->input->post('postJumlahPrd'),
-			'post_total_bayar' => $this->input->post('postTotalPrd')
+			'post_total_bayar' => ($this->input->post('postTotalPrd') > 0)? $this->input->post('postTotalPrd') : $this->input->post('postHargaPrd')*$this->input->post('postJumlahPrd')
 		);
 
 		if($trans === 'Purchase'){
@@ -86,6 +86,7 @@ Class Transaksi_c extends MY_Controller{
 			redirect('Transaksi_c/addPurchasePage');
 		} else if ($trans === 'Sales') {
 			$delTemp = $this->Sales_m->deleteTemp($prdID);
+			redirect('Transaksi_c/addSalesPage');
 		}
 	}
 
@@ -121,7 +122,7 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pembelian',
-			'assets'  => array('jqueryui', 'page_addtrans', 'sweetalert2'),
+			'assets'  => array('jqueryui', 'page_add_purchase', 'sweetalert2'),
 			'optSupp' => $this->Supplier_m->getAllSupplier(),
 			'optRek'  => $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
@@ -136,7 +137,7 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title' => 'PoS | Trans Pembelian',
-			'assets' => array('datatables'),
+			'assets' => array('datatables', 'page_list_trans'),
 			'dataTrans' => $this->Purchases_m->getAllTransPurchase()
 		);
 		$this->page = 'trans/list_trans_purchase_v';
@@ -151,8 +152,9 @@ Class Transaksi_c extends MY_Controller{
 
 	  /* Get posted data dari form */ 
 		$postData = array(
-			'tp_no_trans' => $this->input->post('postTransKode'),
-			'tp_date'	  => $this->input->post('postTransTgl'),
+			'tp_trans_code'		=> $this->input->post('postTransKode'),
+			'tp_invoice_code'	=> $this->input->post('postTransNota'),
+			'tp_date'	  		=> $this->input->post('postTransTgl'),
 			'tp_supplier_fk' 	=> $this->input->post('postTransSupp'),
 			'tp_payment_metode' => $this->input->post('postTransMetode'),
 			'tp_purchase_price' => $this->input->post('postTransTotalBayar'),
@@ -160,9 +162,10 @@ Class Transaksi_c extends MY_Controller{
 			'tp_paid' 			=> $this->input->post('postTransPembayaran'),
 			'tp_insufficient' 	=> $this->input->post('postTransKurang'),
 			'tp_status' 		=> $this->input->post('postTransStatus'),
-			'tp_tenor' 			=> ($this->input->post('postTransStatus') == 'BL')? $this->input->post('postTransTenor') : '',
-			'tp_tenor_periode' 	=> ($this->input->post('postTransStatus') == 'BL')? $this->input->post('postTransTenorPeriode') : '',
-			'tp_due_date' 		=> ($this->input->post('postTransStatus') == 'BL')? $this->input->post('postTransTempo') : ''
+			'tp_tenor' 			=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTenor') : '',
+			'tp_tenor_periode' 	=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTenorPeriode') : '',
+			'tp_installment'	=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransAngsuran') : '',
+			'tp_due_date' 		=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTempo') : ''
 		);
 
 	  /* Get data dari temp table dan insert ke det trans purchase table */
@@ -200,9 +203,10 @@ Class Transaksi_c extends MY_Controller{
   	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
   	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan transaksi pembelian !');
 	  	}
-  	  		$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listPurchasePage');
+  	  	$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listPurchasePage');
 
 	  	redirect('Transaksi_c/addPurchasePage');
+
 	}
 
 	/* Function : Proses update trans pembelian */
@@ -240,7 +244,7 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 	  	$this->pageData = array(
 	  		'title'		=> 'PoS | Trans Penjualan',
-	  		'assets'	=> array('jqueryui', 'sweetalert2', 'page_addtrans'),
+	  		'assets'	=> array('jqueryui', 'sweetalert2', 'datatables', 'page_addtrans'),
 			'optRek'	=> $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
 			'daftarPrd' => $this->Sales_m->getTemp(),
@@ -255,14 +259,27 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title' => 'PoS | Trans Penjualan',
-			'assets' => array('datatables'),
+			'assets' => array('datatables', 'page_list_trans'),
 			'dataTrans' => $this->Sales_m->getAvailableTransSales()
 		);
 		$this->page = 'trans/list_trans_sales_v';
 		$this->layout();
 	}
 
-	/* Function : Form update penjualan */
+	/* Function : Form detail penjualan */
+	public function detailSalesPage($encoded_trans_id){
+		/* Decode id */
+		$transSaleId = base64_decode(urldecode($encoded_trans_id));
+
+		/* Get data trans */
+	}
+
+	/* Function : Form bayar cicilan penjualan */
+	public function paymentInstallmentPage($encoded_trans_id){
+		/* Decode id */
+		$transSaleId = base64_decode(urldecode($encoded_trans_id));
+	}
+
 	/* Function : Proses tambah trans penjualan */
 	function addSalesProses(){
 	  /* Get posted data dari form */ 
@@ -327,5 +344,18 @@ Class Transaksi_c extends MY_Controller{
 
   /* Fungsi untuk CRUD Biaya Operasional */
   /* Fungsi untuk CRUD Pemasukan Lainnya */
-  /* Function untuk manipulasi stok */
+  /* Function : Invoice Page */
+  public function invoicePage(){
+	  /* Data yang akan dikirim ke view */
+	  	$this->pageData = array(
+	  		'title' => 'PoS | Transaksi',
+	  		'assets' =>array()
+	  	);
+
+	  /* Load file view */
+	  	$this->page = 'trans/invoice_v';
+
+	  /* Call function layout dari my controller */
+	  	$this->layout();
+  }
 }

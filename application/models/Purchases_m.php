@@ -10,7 +10,7 @@ Class Purchases_m extends CI_Model{
   	var $tp_tb = 'trans_purchase';
   	var $tp_f  = array(
   		'0' => 'tp_id',
-  		'1' => 'tp_no_trans',
+  		'1' => 'tp_trans_code',
   		'2' => 'tp_date',
   		'3' => 'tp_supplier_fk',
   		'4' => 'tp_payment_metode',
@@ -22,7 +22,9 @@ Class Purchases_m extends CI_Model{
   		'10' => 'tp_tenor', // Allow Null
   		'11' => 'tp_tenor_periode', // Allow Null
       '12' => 'tp_due_date', // Allow Null
-      '13' => 'tp_delete' // as defined 0
+      '13' => 'tp_delete', // as defined 0
+      '14' => 'tp_invoice_code',
+      '15' => 'tp_installment'
   	);
 
   /* Declare var table detail trans masuk */

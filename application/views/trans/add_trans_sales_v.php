@@ -97,7 +97,7 @@
                             <td><?php echo $row['temps_discount'] ?></td>
                             <td><?php echo $row['temps_total_paid'] ?></td>
                             <td>
-                              <a href=""><i class="fas fa-trash"></i></a>
+                              <a href="<?php echo site_url('Transaksi_c/deleteTransProduct/Sales') ?>/<?php echo urlencode(base64_encode($row['temps_product_fk'])) ?>" class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></a>
                             </td>
                           </tr>
                         <?php endforeach; ?>

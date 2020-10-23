@@ -29,7 +29,7 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                    <table id="table-barang" class="table table-bordered table-striped">
+                    <table id="table-trans" class="table table-bordered table-striped">
                       <thead>
                         <th>No.</th>
                         <th>No. Transaksi</th>
@@ -47,15 +47,16 @@
                             <td><?php echo $no++ ?></td>
                             <td><?php echo $showTS['ts_trans_code'] ?></td>
                             <td><?php echo date('d-m-Y', strtotime($showTS['ts_date'])) ?></td>
-                            <td><?php echo $showTS['member_nama'] ?></td>
+                            <td><?php echo $showTS['member_name'] ?></td>
                             <td><?php echo $showTS['ts_sales_price'] ?></td>
                             <td><?php echo $showTS['ts_insufficient'] ?></td>
                             <td><?php echo ($showTS['ts_status'] === 'L')? 'Lunas' : 'Belum Lunas' ?></td>
                             <td><?php echo ($showTS['ts_status'] === 'L')? '-' : date('d-m-Y', strtotime($showTS['ts_due_date']));?></td>
                             <td class="text-center">
-                              <a href="" class="btn btn-xs btn-info"><i class="fas fa-search"></i></a>
-                              <a href="" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
-                              <a href="" class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></a>
+                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailSalesPage') ?>"><i class="fas fa-search"></i></a>
+                              <a class="btn btn-xs btn-warning" href=""><i class="fas fa-credit-card"></i></a>
+                              <a class="btn btn-xs btn-success" href=""><i class="fas fa-exchange-alt"></i></a>
+                              <a class="btn btn-xs btn-primary" href="<?php echo site_url('Transaksi_c/invoicePage') ?>"><i class="fas fa-file-invoice-dollar"></i></a>
                             </td>
                           </tr>
                         <?php endforeach; ?>
