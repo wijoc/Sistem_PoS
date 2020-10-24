@@ -105,7 +105,7 @@
                 </form>
 
                 <!-- Form Transaksi -->
-                <form class="form-horizontal" method="POST" action="<?php echo site_url('Transaksi_c/addPurchaseProses') ?>">
+                <form class="form-horizontal" method="POST" enctype="multipart/form-data" action="<?php echo site_url('Transaksi_c/addPurchaseProses') ?>">
 
                   <!-- Form-part input Kode Transaksi : Otomatis -->
                     <div class="form-group row">
@@ -120,6 +120,17 @@
                       <label for="inputTransNota" class="col-sm-3 col-form-label">Nomor Nota Pembelian <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
                         <input type="text" class="form-control float-right" name="postTransNota" id="inputTransNota" placeholder="Masukkan nomor nota pembelian" required>
+                      </div>
+                    </div>
+
+                  <!-- Form-part input File Nota -->
+                    <div class="form-group row">
+                      <label for="inputTransFileNota" class="col-sm-3 col-form-label">File Pembelian <a class="float-right"> : </a></label>
+                      <div class="col-sm-6">
+                        <div class="custom-file">
+                          <input type="file" class="form-control float-right custom-file-input" name="postTransFileNota" id="inputTransFileNota" required>
+                          <label class="custom-file-label" for="inputTransFileNota"><p>Pilih File Nota Pembelian</p></label>
+                        </div>
                       </div>
                     </div>
 

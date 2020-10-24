@@ -122,7 +122,7 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pembelian',
-			'assets'  => array('jqueryui', 'page_add_purchase', 'sweetalert2'),
+			'assets'  => array('jqueryui', 'custominput', 'sweetalert2', 'page_add_purchase'),
 			'optSupp' => $this->Supplier_m->getAllSupplier(),
 			'optRek'  => $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
@@ -144,9 +144,23 @@ Class Transaksi_c extends MY_Controller{
 		$this->layout();
 	}
 
-	/* Function : Form update pembelian */
+	/* Function : Form pembayaran angsuran transaksi pembelian */
+	public function payPurchaseInstallmentPage($encoded_trans_id){
+		/* Decode id */
+		$transId = base64_decode(urldecode($encoded_trans_id));
+
+		/* get detail data transaksi purchase berdasr id */
+		$dataTrans = $this->Purchases_m->getTransPurchaseonID($transId);
+
+		print("<pre>".print_r($dataTrans, true)."</pre>");
+	}
+
 	/* Function : Proses tambah trans pembelian */
 	function addPurchaseProses(){
+	  /* Load lib dan helper untuk upload */
+		$this->load->helper('file');
+		$this->load->library('upload');
+
 	  /* Set Var purchases product */
 	  	$dataDetail = array();
 
@@ -154,6 +168,7 @@ Class Transaksi_c extends MY_Controller{
 		$postData = array(
 			'tp_trans_code'		=> $this->input->post('postTransKode'),
 			'tp_invoice_code'	=> $this->input->post('postTransNota'),
+			'tp_invoice_file'	=> NULL,
 			'tp_date'	  		=> $this->input->post('postTransTgl'),
 			'tp_supplier_fk' 	=> $this->input->post('postTransSupp'),
 			'tp_payment_metode' => $this->input->post('postTransMetode'),
@@ -168,45 +183,76 @@ Class Transaksi_c extends MY_Controller{
 			'tp_due_date' 		=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTempo') : ''
 		);
 
-	  /* Get data dari temp table dan insert ke det trans purchase table */
-		$tempPrd = $this->Purchases_m->getTemp();
-		foreach ($tempPrd as $row) {
-			$dataDetail[] = array(
-		  		'dtp_tp_fk'			 => $this->input->post('postTransKode'),
-		  		'dtp_product_fk'	 => $row['tp_product_fk'],
-		  		'dtp_product_amount' => $row['tp_product_amount'],
-		  		'dtp_purchase_price' => $row['tp_purchase_price'],
-		    	'dtp_total_price'	 => $row['tp_total_paid']
-			); 
-		}
+	  /* Check posted file */
+	  	if(!empty($_FILES['postTransFileNota']['name'])){
+	  	  /* Prepare config tambahan */
+            $config['upload_path']   = 'assets/imported_files/purchase_nota/'; // Path folder untuk upload file
+            $config['allowed_types'] = 'jpeg|jpg|png|pdf|doc|docx'; // Allowed types 
+            $config['encrypt_name']  = TRUE; // Encrypt nama file ketika diupload
 
-	  /* Cek jika barang sudah ditambahkan */
-	  	if(count($tempPrd) > 0){
-		  /* Input data transaksi ke database */
-		  	$inputTP = $this->Purchases_m->insertTransPurchase($postData);
+		  /* Get file format / file extention */
+            $arrayFile = explode('.', $_FILES['postTransFileNota']['name']); //Ubah nama file menjadi array
+            $extension = end($arrayFile); // Get ext dari array nama file, index terakhir array
+            $this->upload->initialize($config);
 
-		  /* Input data product ke table det trans purchase */
-		  	$inputDetTP = $this->Purchases_m->insertBatchDetTP($dataDetail);
-	  	} else {
-	  		$inputTP = 0;
-	  		$inputDetTP = 0;
-	  	}
+          /* Upload proses dan Simpan file ke database */
+            $upload = $this->upload->do_upload('postTransFileNota');
+            if($upload){
+              /* Get data upload file */
+            	$uploadData = $this->upload->data();
 
-	  /* Cek proses insert, Set session dan redirect */
-	  	if($inputTP > 0 && $inputDetTP > 0){
-	  		/* hapus data di table temp */
-	  		$this->Purchases_m->truncateTemp();
+              /* Set path untuk trans purchase */
+            	$postData['tp_invoice_file'] = $config['upload_path'].$uploadData['file_name'];
 
-  	  		$this->session->set_flashdata('flashStatus', 'successInsert');
-  	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan transaksi pembelian !');
+              /* Get data dari temp table dan insert ke det trans purchase table */
+				$tempPrd = $this->Purchases_m->getTemp();
+				foreach ($tempPrd as $row) {
+					$dataDetail[] = array(
+				  		'dtp_tp_fk'			 => $this->input->post('postTransKode'),
+				  		'dtp_product_fk'	 => $row['tp_product_fk'],
+				  		'dtp_product_amount' => $row['tp_product_amount'],
+				  		'dtp_purchase_price' => $row['tp_purchase_price'],
+				    	'dtp_total_price'	 => $row['tp_total_paid']
+					); 
+				}
+
+			  /* Cek jika barang sudah ditambahkan */
+			  	if(count($tempPrd) > 0){
+				  /* Input data transaksi ke database */
+				  	$inputTP = $this->Purchases_m->insertTransPurchase($postData);
+
+				  /* Input data product ke table det trans purchase */
+				  	$inputDetTP = $this->Purchases_m->insertBatchDetTP($dataDetail);
+			  	} else {
+			  		$inputTP = 0;
+			  		$inputDetTP = 0;
+			  	}
+			  	
+			  /* Cek proses insert, Set session dan redirect */
+			  	if($inputTP > 0 && $inputDetTP > 0){
+			  		/* hapus data di table temp */
+			  		$this->Purchases_m->truncateTemp();
+
+		  	  		$this->session->set_flashdata('flashStatus', 'successInsert');
+		  	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan transaksi pembelian !');
+			  	} else {
+		  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
+		  	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan transaksi pembelian !');
+			  	}
+            } else {
+	  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
+	  	  		$this->session->set_flashdata('flashMsg', $this->upload->display_errors());
+            }
 	  	} else {
   	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-  	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan transaksi pembelian !');
+  	  		$this->session->set_flashdata('flashMsg', 'File Nota Pembelian tidak boleh kosong !');
 	  	}
+
+	  	/* Link redirect ke list Transaksi Purchase */
   	  	$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listPurchasePage');
 
+  	  	/* redirect ke page add purchase */
 	  	redirect('Transaksi_c/addPurchasePage');
-
 	}
 
 	/* Function : Proses update trans pembelian */
@@ -275,7 +321,7 @@ Class Transaksi_c extends MY_Controller{
 	}
 
 	/* Function : Form bayar cicilan penjualan */
-	public function paymentInstallmentPage($encoded_trans_id){
+	public function payInstallmentPage($encoded_trans_id){
 		/* Decode id */
 		$transSaleId = base64_decode(urldecode($encoded_trans_id));
 	}

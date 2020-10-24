@@ -24,7 +24,8 @@ Class Purchases_m extends CI_Model{
       '12' => 'tp_due_date', // Allow Null
       '13' => 'tp_delete', // as defined 0
       '14' => 'tp_invoice_code',
-      '15' => 'tp_installment'
+      '15' => 'tp_installment',
+      '16' => 'tp_invoice_file'
   	);
 
   /* Declare var table detail trans masuk */
@@ -71,6 +72,17 @@ Class Purchases_m extends CI_Model{
       $this->db->from($this->tp_tb.' as tp');
       $this->db->join('tb_supplier as supp', 'supp.supp_id = tp.'.$this->tp_f['3']);
       $this->db->order_by($this->tp_f['2'], 'DESC');
+      $resultSelect = $this->db->get();
+      return $resultSelect->result_array();
+    }
+
+    /* Query select data trans pembelian berdasar id */
+    function getTransPurchaseonID($trans_id){
+      $this->db->select('tp.*, det_tp.*');
+      $this->db->from($this->tp_tb.' as tp');
+      $this->db->join($this->dtp_tb.' as det_tp', 'tp.'.$this->tp_f[1].' = det_tp.'.$this->dtp_f[1]);
+      $this->db->where('tp.'.$this->tp_f[0], $trans_id);
+
       $resultSelect = $this->db->get();
       return $resultSelect->result_array();
     }

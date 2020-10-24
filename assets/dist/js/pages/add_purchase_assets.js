@@ -45,6 +45,38 @@ $(document).ready(function(){
         }
     }
 
+    /* Check file */
+    $("#inputTransFileNota").bind('change', function(){
+    	var allowed_ext = ['jpeg', 'jpg', 'png', 'pdf', 'doc', 'docx'];
+    	if(this.files[0].size <= 2000000){ // 2000000 Byte = 2 MB
+	    	if($.inArray($(this).val().split('.').pop().toLowerCase(), allowed_ext) == -1){
+	           Swal.fire({
+	                position: "center",
+	                showConfirmButton: true,
+	                timer: 2500,
+	                icon: "error",
+	                title: "Format yang diijinkan : "+allowed_ext.join(", ")+" !"
+	            }).then((result) => {
+	            	$(this).val('');
+	            	$(".custom-file-label").find("p").remove();
+	            	$(".custom-file-label").append("<p>Pilih File Nota Pembelian</p>");
+	            })
+	        }
+	    } else {
+	            Swal.fire({
+	                position: "center",
+	                showConfirmButton: true,
+	                timer: 2500,
+	                icon: "error",
+	                title: "Ukuran File Maksimal 2 MB !"
+	            }).then((result) => {
+	            	$(this).val('');
+	            	$(".custom-file-label").find("p").remove();
+	            	$(".custom-file-label").append("<p>Pilih File Nota Pembelian</p>");
+	            })
+	    }
+    })
+
 	/* Perubahan Status pembayaran */
 	$("#inputTransStatus").change(function(){
 		if($(this).val() == "K"){
