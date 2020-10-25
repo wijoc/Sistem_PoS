@@ -78,9 +78,11 @@ Class Purchases_m extends CI_Model{
 
     /* Query select data trans pembelian berdasar id */
     function getTransPurchaseonID($trans_id){
-      $this->db->select('tp.*, det_tp.*');
+      $this->db->select('tp.*, det_tp.*, supp.supp_name, tb_product.prd_name');
       $this->db->from($this->tp_tb.' as tp');
       $this->db->join($this->dtp_tb.' as det_tp', 'tp.'.$this->tp_f[1].' = det_tp.'.$this->dtp_f[1]);
+      $this->db->join('tb_supplier as supp', 'supp.supp_id = tp.'.$this->tp_f[3]);
+      $this->db->join('tb_product', 'tb_product.prd_id = det_tp.'.$this->dtp_f[2]);
       $this->db->where('tp.'.$this->tp_f[0], $trans_id);
 
       $resultSelect = $this->db->get();

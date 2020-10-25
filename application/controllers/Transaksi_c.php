@@ -144,6 +144,21 @@ Class Transaksi_c extends MY_Controller{
 		$this->layout();
 	}
 
+	/* Function : Detail trans pembelian */
+	public function detailPurchasePage($encoded_trans_id){
+	  /* Decode id */
+		$transId = base64_decode(urldecode($encoded_trans_id));
+
+	  /* Data yang ditampilkan ke view */
+		$this->pageData = array(
+			'title' => 'PoS | Trans Pembelian',
+			'assets' => array('datatables', 'page_list_trans'),
+			'detailTrans' => $this->Purchases_m->getTransPurchaseonID($transId)
+		);
+		$this->page = 'trans/detail_trans_purchase_v';
+		$this->layout();
+	}
+
 	/* Function : Form pembayaran angsuran transaksi pembelian */
 	public function payPurchaseInstallmentPage($encoded_trans_id){
 		/* Decode id */
@@ -188,6 +203,7 @@ Class Transaksi_c extends MY_Controller{
 	  	  /* Prepare config tambahan */
             $config['upload_path']   = 'assets/imported_files/purchase_nota/'; // Path folder untuk upload file
             $config['allowed_types'] = 'jpeg|jpg|png|pdf|doc|docx'; // Allowed types 
+            $config['max_size']		 = '2048'; // Max size in KiloBytes
             $config['encrypt_name']  = TRUE; // Encrypt nama file ketika diupload
 
 		  /* Get file format / file extention */
