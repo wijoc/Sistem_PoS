@@ -72,6 +72,11 @@
 		</script>
 	<?php } ?>
 
+	<!-- Page Add Trans -->
+	<?php if(in_array('page_installment',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_installment_assets.js"></script>
+	<?php } ?>
+
 	<!-- Page List Trans -->
 	<?php if(in_array('page_list_trans',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/list_transaction_assets.js"></script>

@@ -89,6 +89,14 @@ Class Purchases_m extends CI_Model{
       return $resultSelect->result_array();
     }
 
+    /* Query update trans purchase */
+    function updateTransPurchase($data, $trans_id){
+      $this->db->set($data);
+      $this->db->where($this->tp_f[0], $trans_id);
+      $resultUpdate = $this->db->update($this->tp_tb);
+      return $resultUpdate;
+    }
+
   /* Start Query Table Detail Trans Purchase */
     function insertBatchDetTP($data){
       $resultInsert = $this->db->insert_batch($this->dtp_tb, $data);

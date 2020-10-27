@@ -42,7 +42,9 @@
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">File Pembelian<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
-                    <p class="col-form-label"><a href="<?php echo $detailTrans[0]['tp_invoice_file'] ?>" class="btn btn-sm btn-success"><i class="fas fa-download"></i>&nbsp; Download</a></p>
+                    <a class="btn btn-sm btn-success" target="_blank" href="<?php echo base_url().$detailTrans[0]['tp_invoice_file'] ?>">
+                      <i class="fas fa-download"></i>&nbsp; Download
+                    </a>
                   </div>
                 </div>
                 <div class="form-group row">

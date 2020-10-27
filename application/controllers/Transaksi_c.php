@@ -8,6 +8,7 @@ Class Transaksi_c extends MY_Controller{
 		$this->load->model('Sales_m');
 		$this->load->model('Purchases_m');
 		$this->load->model('Rekening_m');
+		$this->load->model('Installment_m');
 	}
 
 	public function index(){
@@ -161,13 +162,21 @@ Class Transaksi_c extends MY_Controller{
 
 	/* Function : Form pembayaran angsuran transaksi pembelian */
 	public function payPurchaseInstallmentPage($encoded_trans_id){
-		/* Decode id */
+	  /* Decode id */
 		$transId = base64_decode(urldecode($encoded_trans_id));
 
-		/* get detail data transaksi purchase berdasr id */
-		$dataTrans = $this->Purchases_m->getTransPurchaseonID($transId);
+	  /* Get detail Data */
+	  	$detailData = $this->Purchases_m->getTransPurchaseonID($transId);
 
-		print("<pre>".print_r($dataTrans, true)."</pre>");
+	  /* Data yang ditampilkan ke view */
+		$this->pageData = array(
+			'title' => 'PoS | Trans Pembelian',
+			'assets' => array('datatables', 'custominput', 'sweetalert2', 'page_installment'),
+			'detailTrans' => $detailData,
+			'detailPayment' => $this->Installment_m->getInstallmentPurchase($detailData[0]['tp_trans_code']),
+		);
+		$this->page = 'trans/pay_installment_purchase_v';
+		$this->layout();
 	}
 
 	/* Function : Proses tambah trans pembelian */
@@ -271,7 +280,84 @@ Class Transaksi_c extends MY_Controller{
 	  	redirect('Transaksi_c/addPurchasePage');
 	}
 
-	/* Function : Proses update trans pembelian */
+	/* Function : Proses pay installment trans pembelian */
+	function installmentPurchaseProses($encoded_trans_id){
+	  /* Load lib dan helper untuk upload */
+		$this->load->helper('file');
+		$this->load->library('upload');
+
+	  /* Get posted data */
+	  	/* untuk disimpan ke table installment_purchase */
+		$postData = array(
+			'ip_trans_code_fk'  => $this->input->post('postTransCode'),
+			'ip_periode' 	  => $this->input->post('postAngsuranAwal'),
+			'ip_periode_end'  => (!empty($this->input->post('postAngsuranAkhir')))? $this->input->post('postAngsuranAkhir') : '0',
+			'ip_date' 		  => $this->input->post('postTglBayar'),
+			'ip_payment' 	  => $this->input->post('postBayar'),
+			'ip_invoice_code' => $this->input->post('postTransNota'),
+			'ip_invoice_file' => NULL
+		);
+
+		/* Untuk update data di table tb_purchase */
+		$updateData = array(
+			'tp_due_date' => $this->input->post('postNextTempo')
+		);
+		$transId = base64_decode(urldecode($encoded_trans_id));
+
+		if(!empty($_FILES['postTransFileNota']['name'])){
+	  	  /* Prepare config tambahan */
+            $config['upload_path']   = 'assets/imported_files/purchase_nota/installment/'; // Path folder untuk upload file
+            $config['allowed_types'] = 'jpeg|jpg|png|pdf|doc|docx'; // Allowed types 
+            $config['max_size']		 = '2048'; // Max size in KiloBytes
+            $config['encrypt_name']  = TRUE; // Encrypt nama file ketika diupload
+
+		  /* Get file format / file extention */
+            $arrayFile = explode('.', $_FILES['postTransFileNota']['name']); //Ubah nama file menjadi array
+            $extension = end($arrayFile); // Get ext dari array nama file, index terakhir array
+            $this->upload->initialize($config);
+
+          /* Upload proses dan Simpan file ke database */
+            $upload = $this->upload->do_upload('postTransFileNota');
+            if($upload){
+              /* Get data upload file */
+            	$uploadData = $this->upload->data();
+
+              	/* Set path untuk simpan ke table installment_purchase */
+            	$postData['ip_invoice_file'] = $config['upload_path'].$uploadData['file_name'];
+
+            	/* Proses simpan ke table intallment_purchase */
+            	$inputIP = $this->Installment_m->insertInstallmentPurchase($postData);
+
+            	if($inputIP > 0){
+	            	/* Proses update tempo_selanjutnya table tb_purchase */
+	            	$updatePurchase = $this->Purchases_m->updateTransPurchase($updateData, $transId);
+	            	if($updatePurchase > 0){
+			  	  		$this->session->set_flashdata('flashStatus', 'successInsert');
+			  	  		$this->session->set_flashdata('flashMsg', 'Berhasil menyimpan histori pembayaran angsuran !');
+	            	} else {
+			  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
+			  	  		$this->session->set_flashdata('flashMsg', 'Gagal memperbarui tempo selanjutnya !');
+		  	  		}
+            	} else {
+		  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
+		  	  		$this->session->set_flashdata('flashMsg', 'Gagal menyimpan histori pembayaran angsuran !');
+            	}
+            } else {
+	  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
+	  	  		$this->session->set_flashdata('flashMsg', $this->upload->display_errors());
+	  	  	}
+		} else {
+  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
+  	  		$this->session->set_flashdata('flashMsg', 'File Nota Pembelian tidak boleh kosong !');
+  	  	}
+
+	  	/* Link redirect ke list Transaksi Purchase */
+  	  	$this->session->set_flashdata('flashRedirect', 'Transaksi_c/detailPurchasePage/'.$encoded_trans_id.'');
+
+  	  	/* redirect ke page add purchase */
+	  	redirect('Transaksi_c/payPurchaseInstallmentPage/'.$encoded_trans_id);
+	}
+
 	/* Function : Proses delete trans pembelian */
 
   /* Fungsi untuk CRUD Penjualan */

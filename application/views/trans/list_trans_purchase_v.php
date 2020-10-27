@@ -61,7 +61,7 @@
                             </td>
                             <td><?php echo ($showTP['tp_status'] === 'T')? '-' : date('d-m-Y', strtotime($showTP['tp_due_date']));?></td>
                             <td class="text-center">
-                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailPurchasePage') ?>"><i class="fas fa-search"></i></a>
+                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailPurchasePage').'/'.urlencode(base64_encode($showTP['tp_id'])) ?>"><i class="fas fa-search"></i></a>
                               <a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/payPurchaseInstallmentPage').'/'.urlencode(base64_encode($showTP['tp_id'])) ?>"><i class="fas fa-cash-register"></i></a>
                               <a class="btn btn-xs btn-success" href=""><i class="fas fa-exchange-alt"></i></a>
                             </td>
