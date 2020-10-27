@@ -154,7 +154,8 @@ Class Transaksi_c extends MY_Controller{
 		$this->pageData = array(
 			'title' => 'PoS | Trans Pembelian',
 			'assets' => array('datatables', 'page_list_trans'),
-			'detailTrans' => $this->Purchases_m->getTransPurchaseonID($transId)
+			'detailTrans' => $this->Purchases_m->getTransPurchaseonID($transId),
+			'detailPayment' => $this->Installment_m->getInstallmentPurchase($transId),
 		);
 		$this->page = 'trans/detail_trans_purchase_v';
 		$this->layout();
@@ -165,15 +166,12 @@ Class Transaksi_c extends MY_Controller{
 	  /* Decode id */
 		$transId = base64_decode(urldecode($encoded_trans_id));
 
-	  /* Get detail Data */
-	  	$detailData = $this->Purchases_m->getTransPurchaseonID($transId);
-
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title' => 'PoS | Trans Pembelian',
 			'assets' => array('datatables', 'custominput', 'sweetalert2', 'page_installment'),
-			'detailTrans' => $detailData,
-			'detailPayment' => $this->Installment_m->getInstallmentPurchase($detailData[0]['tp_trans_code']),
+			'detailTrans' => $this->Purchases_m->getTransPurchaseonID($transId),
+			'detailPayment' => $this->Installment_m->getInstallmentPurchase($transId),
 		);
 		$this->page = 'trans/pay_installment_purchase_v';
 		$this->layout();
@@ -286,10 +284,13 @@ Class Transaksi_c extends MY_Controller{
 		$this->load->helper('file');
 		$this->load->library('upload');
 
+	  /* Decode */
+		$transId = base64_decode(urldecode($encoded_trans_id));
+
 	  /* Get posted data */
 	  	/* untuk disimpan ke table installment_purchase */
 		$postData = array(
-			'ip_trans_code_fk'  => $this->input->post('postTransCode'),
+			'ip_trans_id_fk'  => $transId,
 			'ip_periode' 	  => $this->input->post('postAngsuranAwal'),
 			'ip_periode_end'  => (!empty($this->input->post('postAngsuranAkhir')))? $this->input->post('postAngsuranAkhir') : '0',
 			'ip_date' 		  => $this->input->post('postTglBayar'),
@@ -302,7 +303,6 @@ Class Transaksi_c extends MY_Controller{
 		$updateData = array(
 			'tp_due_date' => $this->input->post('postNextTempo')
 		);
-		$transId = base64_decode(urldecode($encoded_trans_id));
 
 		if(!empty($_FILES['postTransFileNota']['name'])){
 	  	  /* Prepare config tambahan */

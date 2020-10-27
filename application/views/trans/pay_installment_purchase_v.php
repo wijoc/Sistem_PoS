@@ -84,7 +84,7 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Angsuran Terbayar<a class="float-right"> : </a></label>
+                  <label class="col-sm-3 col-form-label">Riwayat Angsuran<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
                     <div class="table-responsive">
                       <table class="table table-bordered">
@@ -118,8 +118,6 @@
                 </div>
                 <?php if ($detailTrans[0]['tp_status'] == 'K'){ ?>
                 <form method="POST" enctype="multipart/form-data" action="<?php echo site_url('Transaksi_c/installmentPurchaseProses').'/'.urlencode(base64_encode($detailTrans[0]['tp_id'])) ?>">
-                  <!-- Form-part kode transaksi :hidden -->
-                  <input type="hidden" name="postTransCode" value="<?php echo $detailTrans[0]['tp_trans_code'] ?>">
 
                   <!-- Form-part angsuran -->
                   <div class="form-group row">

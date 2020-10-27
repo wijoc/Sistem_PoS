@@ -164,20 +164,36 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Angsuran<a class="float-right"> : </a></label>
+                  <label class="col-sm-3 col-form-label">Riwayat angsuran<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
-                    <table class="table table-bordered">
-                      <thead>
-                        <tr class="text-center">
-                          <th>Angsuran ke -</th>
-                          <th>Tempo</th>
-                          <th>Tanggal Bayar</th>
-                          <th>Besar pembayaran</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      </tbody>
-                    </table>
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr class="text-center">
+                            <th>Angsuran ke -</th>
+                            <th>Tgl Bayar</th>
+                            <th>Biaya</th>
+                            <th>No Nota</th>
+                            <th>File Nota</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php foreach($detailPayment as $row): ?>
+                          <tr>
+                            <td class="text-center">
+                              <?php 
+                                echo ($row['ip_periode_end'] != 0)? $row['ip_periode'].' sampai '.$row['ip_periode_end'] : $row['ip_periode'];  
+                              ?>    
+                            </td>
+                            <td><?php echo date('d-m-Y', strtotime($row['ip_date'])) ?></td>
+                            <td><?php echo 'Rp '.number_format($row['ip_payment']) ?></td>
+                            <td><?php echo $row['ip_invoice_code'] ?></td>
+                            <td class="text-center"><a class="btn btn-xs btn-success" target="_blank" href="<?php echo $row['ip_invoice_code'] ?>"><i class="fas fa-download"></i> </a></td>
+                          </tr>
+                          <?php endforeach; ?>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>

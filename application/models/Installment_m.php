@@ -7,7 +7,7 @@ Class Installment_m extends CI_Model {
 	var $ip_tb = 'intallment_purchase';
 	var $ip_f  = array(
 		'0' => 'ip_id',
-		'1' => 'ip_trans_code_fk',
+		'1' => 'ip_trans_id_fk',
 		'2' => 'ip_periode',
 		'3' => 'ip_periode_end',
 		'4' => 'ip_date',
@@ -23,9 +23,9 @@ Class Installment_m extends CI_Model {
   		return $resultInsert;
   	}
 
-  	/* Query select data installment berdasar trans_code */
-  	function getInstallmentPurchase($trans_code){
-  		$this->db->where($this->ip_f[1], $trans_code);
+  	/* Query select data installment berdasar trans_id */
+  	function getInstallmentPurchase($trans_id){
+  		$this->db->where($this->ip_f[1], $trans_id);
   		$resultSelect = $this->db->get($this->ip_tb);
   		return $resultSelect->result_array();
   	}

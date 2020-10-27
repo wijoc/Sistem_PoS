@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 27, 2020 at 06:24 AM
+-- Generation Time: Oct 27, 2020 at 10:45 AM
 -- Server version: 10.5.5-MariaDB
 -- PHP Version: 7.4.10
 
@@ -40,17 +40,17 @@ CREATE TABLE `det_product_stock` (
 --
 
 INSERT INTO `det_product_stock` (`stk_id`, `stk_product_id_fk`, `stk_good`, `stk_not_good`, `stk_return`) VALUES
-(1, 1, -2, 0, 0),
-(2, 2, 2, 0, 0),
-(3, 3, 1, 0, 0),
+(1, 1, 1, 0, 0),
+(2, 2, 0, 0, 0),
+(3, 3, 0, 0, 0),
 (4, 4, 0, 0, 0),
 (5, 5, 0, 0, 0),
 (6, 6, 0, 0, 0),
 (7, 7, 0, 0, 0),
-(8, 8, 1, 0, 0),
+(8, 8, 0, 0, 0),
 (9, 9, 0, 0, 0),
 (10, 10, 0, 0, 0),
-(11, 11, 2, 0, 0),
+(11, 11, 0, 0, 0),
 (12, 12, 0, 0, 0),
 (13, 13, 0, 0, 0),
 (14, 14, 0, 0, 0);
@@ -75,12 +75,7 @@ CREATE TABLE `det_trans_purchase` (
 --
 
 INSERT INTO `det_trans_purchase` (`dtp_id`, `dtp_tp_fk`, `dtp_product_fk`, `dtp_product_amount`, `dtp_purchase_price`, `dtp_total_price`) VALUES
-(1, 'TM2020102300001', 1, 1, '70000.00', '70000.00'),
-(2, 'TM2020102300002', 2, 2, '74500.00', '149000.00'),
-(3, 'TM2020102400003', 1, 1, '70000.00', '70000.00'),
-(4, 'TM2020102400003', 11, 2, '184000.00', '368000.00'),
-(5, 'TM2020102400003', 8, 1, '67000.00', '67000.00'),
-(6, 'TM2020102400004', 3, 1, '68500.00', '68500.00');
+(1, 'TM2020102700001', 1, 1, '70000.00', '70000.00');
 
 --
 -- Triggers `det_trans_purchase`
@@ -109,14 +104,6 @@ CREATE TABLE `det_trans_sales` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `det_trans_sales`
---
-
-INSERT INTO `det_trans_sales` (`dts_id`, `dts_ts_fk`, `dts_product_fk`, `dts_product_amount`, `dts_sale_price`, `dts_discount`, `dts_total_price`) VALUES
-(1, 'TK2020102200001', 1, 3, '70000.00', '0.00', '210000.00'),
-(2, 'TK2020102200001', 1, 1, '70000.00', '20000.00', '50000.00');
-
---
 -- Triggers `det_trans_sales`
 --
 DELIMITER $$
@@ -134,7 +121,7 @@ DELIMITER ;
 
 CREATE TABLE `intallment_purchase` (
   `ip_id` int(5) NOT NULL,
-  `ip_trans_code_fk` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip_trans_id_fk` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ip_periode` int(3) NOT NULL,
   `ip_periode_end` int(11) NOT NULL,
   `ip_date` datetime NOT NULL,
@@ -147,8 +134,8 @@ CREATE TABLE `intallment_purchase` (
 -- Dumping data for table `intallment_purchase`
 --
 
-INSERT INTO `intallment_purchase` (`ip_id`, `ip_trans_code_fk`, `ip_periode`, `ip_periode_end`, `ip_date`, `ip_payment`, `ip_invoice_code`, `ip_invoice_file`) VALUES
-(1, 'TM2020102400003', 1, 0, '2020-10-27 00:00:00', '45000.00', 'Nota123455', 'assets/imported_files/purchase_nota/installment234874cfe68d8a518162ab0effef29d9.png');
+INSERT INTO `intallment_purchase` (`ip_id`, `ip_trans_id_fk`, `ip_periode`, `ip_periode_end`, `ip_date`, `ip_payment`, `ip_invoice_code`, `ip_invoice_file`) VALUES
+(1, '1', 1, 0, '2020-11-26 00:00:00', '10000.00', 'Bayar16112020', 'assets/imported_files/purchase_nota/installment/658327e6914d0adb887f66694797d553.jpeg');
 
 -- --------------------------------------------------------
 
@@ -398,13 +385,6 @@ CREATE TABLE `temp_sales` (
   `temps_total_paid` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `temp_sales`
---
-
-INSERT INTO `temp_sales` (`temps_id`, `temps_product_fk`, `temps_product_amount`, `temps_sale_price`, `temps_discount`, `temps_total_paid`) VALUES
-(2, 1, 1, '70000.00', '0.00', '70000.00');
-
 -- --------------------------------------------------------
 
 --
@@ -436,10 +416,7 @@ CREATE TABLE `trans_purchase` (
 --
 
 INSERT INTO `trans_purchase` (`tp_id`, `tp_trans_code`, `tp_invoice_code`, `tp_invoice_file`, `tp_date`, `tp_supplier_fk`, `tp_payment_metode`, `tp_purchase_price`, `tp_account_fk`, `tp_paid`, `tp_insufficient`, `tp_status`, `tp_tenor`, `tp_tenor_periode`, `tp_installment`, `tp_due_date`, `tp_delete`) VALUES
-(1, 'TM2020102300001', 'NN987654', '', '2020-10-22 17:00:00', 2, 'TN', '70000.00', 0, '10000.00', '60000.00', 'K', '3', 'W', '20000.00', '2020-11-02', 0),
-(2, 'TM2020102300002', 'NN1234', '', '2020-10-01 17:00:00', 1, 'TN', '149000.00', 0, '140000.00', '9000.00', 'K', '1', 'D', '9000.00', '2020-10-30', 0),
-(3, 'TM2020102400003', 'Nota123455', '', '2020-10-23 17:00:00', 13, 'TN', '505000.00', 0, '5000.00', '500000.00', 'K', '12', 'M', '45000.00', '2020-11-27', 0),
-(4, 'TM2020102400004', 'Nota11111', 'assets/imported_files/purchase_nota/c5c5dafd3c74eaa916503902e53033c3.png', '2020-10-01 17:00:00', 2, 'TN', '68500.00', 0, '500.00', '68000.00', 'K', '10', 'D', '68800.00', '2020-11-03', 0);
+(1, 'TM2020102700001', 'NOTA111111', 'assets/imported_files/purchase_nota/b0dc1738b78d0c76bb25ca6155b0739c.jpeg', '2020-10-26 17:00:00', 1, 'TN', '70000.00', 0, '10000.00', '60000.00', 'K', '6', 'M', '10000.00', '2020-12-27', 0);
 
 -- --------------------------------------------------------
 
@@ -463,13 +440,6 @@ CREATE TABLE `trans_sales` (
   `ts_due_date` date DEFAULT NULL,
   `ts_delete` int(2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `trans_sales`
---
-
-INSERT INTO `trans_sales` (`ts_id`, `ts_trans_code`, `ts_date`, `ts_member_fk`, `ts_payment_metode`, `ts_sales_price`, `ts_account_fk`, `ts_paid`, `ts_insufficient`, `ts_status`, `ts_tenor`, `ts_tenor_periode`, `ts_due_date`, `ts_delete`) VALUES
-(1, 'TK2020102200001', '2020-10-22 17:00:00', 33, 'TN', '260000.00', 0, '260000.00', '0.00', 'L', '', '', '0000-00-00', 0);
 
 --
 -- Indexes for dumped tables
@@ -583,13 +553,13 @@ ALTER TABLE `det_product_stock`
 -- AUTO_INCREMENT for table `det_trans_purchase`
 --
 ALTER TABLE `det_trans_purchase`
-  MODIFY `dtp_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `dtp_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `det_trans_sales`
 --
 ALTER TABLE `det_trans_sales`
-  MODIFY `dts_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `dts_id` int(3) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `intallment_purchase`
@@ -649,19 +619,19 @@ ALTER TABLE `temp_purchase`
 -- AUTO_INCREMENT for table `temp_sales`
 --
 ALTER TABLE `temp_sales`
-  MODIFY `temps_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `temps_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `trans_purchase`
 --
 ALTER TABLE `trans_purchase`
-  MODIFY `tp_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `tp_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `trans_sales`
 --
 ALTER TABLE `trans_sales`
-  MODIFY `ts_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ts_id` int(5) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
