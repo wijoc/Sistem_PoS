@@ -136,6 +136,7 @@
                       <div class="col-sm-8">
                         <select class="form-control float-right" name="postTransSupp" id="inputTransSupp">
                           <option> -- Pilih Pembeli -- </option>
+                          <option value="0">General Costumer</option>
                           <?php foreach ($optMember as $showOpt): ?>
                             <option value="<?php echo $showOpt['member_id'] ?>"> <?php echo $showOpt['member_name'] ?> </option>
                           <?php endforeach; ?>
@@ -198,8 +199,8 @@
                       <div class="col-sm-5">
                         <select class="form-control float-right" name="postTransStatus" id="inputTransStatus" readonly>
                           <option> -- Pilih Status -- </option>
-                          <option value="L"> Lunas </option>
-                          <option value="BL"> Belum Lunas </option>
+                          <option value="T"> Lunas / Cash / Tunai </option>
+                          <option value="K"> Kredit </option>
                         </select>
                       </div>
                     </div>
@@ -222,6 +223,14 @@
                           <option value="M">Bulanan</option>
                           <option value="Y">Tahunan</option>
                         </select>
+                      </div>
+                    </div>
+
+                  <!-- Form-part input Angsuran -->
+                    <div class="form-group row">
+                      <label for="inputTransAngsuran" class="col-sm-3 col-form-label"> Biaya angsuran <a class="float-right"> : </a></label>
+                      <div class="col-sm-3">
+                        <input type="number" class="form-control float-right tenortempo" name="postTransAngsuran" id="inputTransAngsuran" value="" required="" disabled>
                       </div>
                     </div>
 

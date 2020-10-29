@@ -3,13 +3,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Page Produk</h1>
+            <h1 class="m-0 text-dark">Halaman Transaksi Pembelian</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?php echo site_url('Page_c') ?>"><i class="fas fa-home"></i></a></li>
-              <li class="breadcrumb-item"><a href="<?php echo site_url('Product_c') ?>"><i class="fas fa-cubes"></i> Produk</a></li>
-              <li class="breadcrumb-item active">Detail Produk</li>
+              <li class="breadcrumb-item"><a href="<?php echo site_url('Transaksi_c') ?>"><i class="fas fa-cubes"></i> Transaksi</a></li>
+              <li class="breadcrumb-item active">Detail Pembelian</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -24,7 +24,7 @@
           <div class="col-lg-10">
             <div class="card card-orange card-outline">
               <div class="card-header">
-                <h5 class="m-0">Detail Produk</h5>
+                <h5 class="m-0">Detail Transaksi</h5>
               </div>
               <div class="card-body">
                 <div class="form-group row">

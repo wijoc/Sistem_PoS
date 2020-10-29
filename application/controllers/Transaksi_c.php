@@ -123,7 +123,7 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pembelian',
-			'assets'  => array('jqueryui', 'custominput', 'sweetalert2', 'page_add_purchase'),
+			'assets'  => array('jqueryui', 'custominput', 'sweetalert2', 'page_add_trans', 'page_add_purchase'),
 			'optSupp' => $this->Supplier_m->getAllSupplier(),
 			'optRek'  => $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
@@ -169,7 +169,7 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title' => 'PoS | Trans Pembelian',
-			'assets' => array('datatables', 'custominput', 'sweetalert2', 'page_installment'),
+			'assets' => array('datatables', 'custominput', 'sweetalert2', 'page_add_trans'),
 			'detailTrans' => $this->Purchases_m->getTransPurchaseonID($transId),
 			'detailPayment' => $this->Installment_m->getInstallmentPurchase($transId),
 		);
@@ -392,7 +392,7 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 	  	$this->pageData = array(
 	  		'title'		=> 'PoS | Trans Penjualan',
-	  		'assets'	=> array('jqueryui', 'sweetalert2', 'datatables', 'page_addtrans'),
+	  		'assets'	=> array('jqueryui', 'sweetalert2', 'datatables', 'page_add_trans'), //, 'page_add_trans'
 			'optRek'	=> $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
 			'daftarPrd' => $this->Sales_m->getTemp(),
@@ -441,16 +441,20 @@ Class Transaksi_c extends MY_Controller{
 			'ts_paid' 			=> $this->input->post('postTransPembayaran'),
 			'ts_insufficient' 	=> $this->input->post('postTransKurang'),
 			'ts_status' 		=> $this->input->post('postTransStatus'),
-			'ts_tenor' 			=> ($this->input->post('postTransStatus') == 'BL')? $this->input->post('postTransTenor') : '',
-			'ts_tenor_periode' 	=> ($this->input->post('postTransStatus') == 'BL')? $this->input->post('postTransTenorPeriode') : '',
-			'ts_due_date' 		=> ($this->input->post('postTransStatus') == 'BL')? $this->input->post('postTransTempo') : ''
+			'ts_tenor' 			=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTenor') : '',
+			'ts_tenor_periode' 	=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTenorPeriode') : '',
+			'ts_installment' 	=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransAngsuran') : '',
+			'ts_due_date' 		=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTempo') : ''
 		);
+
+	  /* Input data transaksi ke database */
+		$inputTS = $this->Sales_m->insertTransSales($postData);
 
 	  /* Get data dari temp table dan insert ke det trans purchase table */
 		$tempPrd = $this->Sales_m->getTemp();
 		foreach ($tempPrd as $row) {
 			$dataDetail[] = array(
-		  		'dts_ts_fk'			 => $this->input->post('postTransKode'),
+		  		'dts_ts_id_fk'		 => $inputTS['insertID'],
 		  		'dts_product_fk'	 => $row['temps_product_fk'],
 		  		'dts_product_amount' => $row['temps_product_amount'],
 		  		'dts_sale_price' 	 => $row['temps_sale_price'],
@@ -459,13 +463,100 @@ Class Transaksi_c extends MY_Controller{
 			); 
 		}
 
+	  /* Set data angsuran */
+	  	if ($this->input->post('postTransStatus') == 'K'){
+	  		/* Get angsuran pertama */
+	  		$stDueDate	= date('Y-m-d', strtotime($postData['ts_due_date']));
+	  		$stYear 	= date('Y', strtotime($postData['ts_due_date']));
+	  		$stMonth	= date('m', strtotime($postData['ts_due_date']));
+	  		$stDate		= date('d', strtotime($postData['ts_due_date']));
+
+	  		/* check periode tenor. D = Daily/Harian, W = Weekly/Mingguan, M = Monthly/Bulanan, Y = Annual/Tahunan */
+	  		if($postData['ts_tenor_periode'] == 'D'){
+	  			for($prd = 1; $prd <= $postData['ts_tenor']; $prd++){
+					$installmentData[$prd]['is_trans_id_fk'] = $inputTS['insertID'];
+					$installmentData[$prd]['is_periode']	 = $prd;
+
+	  				if($prd > 1){
+	  					$lastIndex = $prd-1;
+	  					$installmentData[$prd]['is_due_date'] = date('Y-m-d', strtotime('+1 days', strtotime($installmentData[$lastIndex]['is_due_date'])));
+	  				} else {
+	  					$installmentData[$prd]['is_due_date'] = $stDueDate;
+	  				}
+	  			}
+
+	  		} else if($postData['ts_tenor_periode'] == 'W'){
+	  			for($prd = 1; $prd <= $postData['ts_tenor']; $prd++){
+					$installmentData[$prd]['is_trans_id_fk'] = $inputTS['insertID'];
+					$installmentData[$prd]['is_periode']	 = $prd;
+
+	  				if($prd > 1){
+	  					$lastIndex = $prd-1;
+	  					$installmentData[$prd]['is_due_date'] = date('Y-m-d', strtotime('+1 weeks', strtotime($installmentData[$lastIndex]['is_due_date'])));	  					
+	  				} else {
+	  					$installmentData[$prd]['is_due_date'] = $stDueDate;
+	  				}
+	  			}
+
+	  		} else if($postData['ts_tenor_periode'] == 'M'){
+				for($prd = 1; $prd <= $postData['ts_tenor']; $prd++){
+					$installmentData[$prd]['is_trans_id_fk'] = $inputTS['insertID'];
+					$installmentData[$prd]['is_periode']	 = $prd;
+					
+					if($prd > 1){
+						$lastIndex = $prd-1;
+
+						/* Var ini berisi duw date saat ini */
+						$newDueDate = date('Y-m-d', strtotime('+1 month', strtotime($installmentData[$lastIndex]['is_due_date'])));
+
+						/* Get data di index sebelumnya */
+						$monthBefore = date('m', strtotime($installmentData[$lastIndex]['is_due_date']));
+						$dateBefore = date('d', strtotime($installmentData[$lastIndex]['is_due_date']));
+
+						if($monthBefore == 1){
+							if($stDate == 29 || $stDate == 30 || $stDate == 31){
+								/* Check data untuk menentukan due date khusus bulan february */
+								$newYear	= date('Y', strtotime($newDueDate));
+								$installmentData[$prd]['is_due_date']	= date('Y-m-t', strtotime($newYear.'-02-01'));	
+							} else {
+								$installmentData[$prd]['is_due_date'] = $newDueDate;
+							}
+						} else if ($dateBefore == 31){ 
+							/* Check data untuk menentukan due date khusus bulan dengan tanggal sampai 30 */
+				        	$newYear	= date('Y', strtotime($newDueDate));
+				        	$newMonth	= ($monthBefore < 12)? $monthBefore+1 : 1;
+							$installmentData[$prd]['is_due_date']	= date('Y-m-t', strtotime($newYear.'-'.$newMonth.'-01'));
+				        } else {
+							$installmentData[$prd]['is_due_date'] = $newDueDate;
+				        }
+					} else {
+						$installmentData[$prd]['is_due_date'] = $stDueDate;
+					}
+
+				}
+
+	  		} else if($postData['ts_tenor_periode'] == 'Y'){
+	  			for($prd = 1; $prd <= $postData['ts_tenor']; $prd++){
+					$installmentData[$prd]['is_trans_id_fk'] = $inputTS['insertID'];
+					$installmentData[$prd]['is_periode']	 = $prd;
+
+	  				if($prd > 1){
+	  					$lastIndex = $prd-1;
+	  					$installmentData[$prd]['is_due_date'] = date('Y-m-d', strtotime('+1 years', strtotime($installmentData[$lastIndex]['is_due_date'])));	  					
+	  				} else {
+	  					$installmentData[$prd]['is_due_date'] = $stDueDate;
+	  				}
+	  			}	  			
+	  		}
+	  	}
+
 	  /* Cek jika barang sudah ditambahkan */
 	  	if(count($tempPrd) > 0){
-		  /* Input data transaksi ke database */
-		  	$inputTS = $this->Sales_m->insertTransSales($postData);
-
 		  /* Input data product ke table det trans purchase */
 		  	$inputDetTS = $this->Sales_m->insertBatchDetTS($dataDetail);
+
+		  /* Input data transaksi ke database */
+		  	$inputIS = $this->Installment_m->insertInstallmentSales($installmentData);
 	  	} else {
 	  		$inputTS = 0;
 	  		$inputDetTS = 0;
@@ -485,6 +576,9 @@ Class Transaksi_c extends MY_Controller{
   	  		$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listSalesPage');
 
 	  	redirect('Transaksi_c/addSalesPage');
+
+	  	//var_dump($installmentData);
+		//print("<pre>".print_r($installmentData, true)."</pre>");
 	}
 
 	/* Function : Proses update trans penjualan */

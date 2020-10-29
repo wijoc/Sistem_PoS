@@ -57,8 +57,8 @@
 	<?php } ?>	
 
 	<!-- Page Add Trans -->
-	<?php if(in_array('page_addtrans',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/addtransaction_assets.js"></script>
+	<?php if(in_array('page_add_trans',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_transaction_assets.js"></script>
 		<script type="text/javascript">
 			autocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct') ?>";
 		</script>

@@ -18,15 +18,16 @@ Class Sales_m extends CI_Model{
 		'9' => 'ts_status',
 		'10' => 'ts_tenor',
 		'11' => 'ts_tenor_periode',
-		'12' => 'ts_due_date',
-    '13' => 'ts_delete'
+    '12' => 'ts_installment',
+		'13' => 'ts_due_date',
+    '14' => 'ts_delete'
 	);
 
   /* Declare table Detail Trans Penjualan */
 	var $dts_tb = 'det_trans_sales';
 	var $dts_f  = array(
 		'0' => 'dts_id',
-		'1' => 'dts_ts_fk',
+		'1' => 'dts_ts_id_fk',
 		'2' => 'dts_product_fk',
 		'3' => 'dts_product_amount',
 		'4' => 'dts_sale_price',
@@ -59,7 +60,18 @@ Class Sales_m extends CI_Model{
     /* Query insert table transaksi penjualan */
     function insertTransSales($data){
       $resultInsert = $this->db->insert($this->ts_tb, $data);
-      return $resultInsert;
+      if($resultInsert > 0){
+        $dataReturn = array(
+          'resultInsert' => $resultInsert,
+          'insertID'     => $this->db->insert_id() 
+        );
+      } else {
+        $dataReturn = array(
+          'resultInsert' => $resultInsert,
+          'insertID'     => null 
+        );
+      }
+      return $dataReturn;
     }
 
     /* Query select semua data trans penjualan */

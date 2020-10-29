@@ -14,7 +14,7 @@ $(document).ready(function(){
                 icon: "success",
                 title: flashMsg
             }).then((result) => {
-            	$("#alert-trans").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">Berhasil menambahkan transaksi ! <a class="alert-link" href="'+ site_url +'">Klik untuk melihat data transaksi.</a> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            	$("#alert-trans").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">'+ flashMsg +' <a class="alert-link" href="'+ site_url +'">Klik untuk melihat data transaksi.</a> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
             })
         } else if(flashStatus == "failedInsert"){
             Swal.fire({
@@ -24,7 +24,7 @@ $(document).ready(function(){
                 icon: "error",
                 title: flashMsg
             }).then((result) => {
-            	$("#alert-trans").append('<div class="alert alert-danger text-center" style="opacity: 0.8" role="alert">Gagal menambahkan transaksi ! Silahkan ulangi proses input, atau <a class="alert-link" href="'+ site_url +'">Klik untuk melihat data transaksi.</a> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            	$("#alert-trans").append('<div class="alert alert-danger text-center" style="opacity: 0.8" role="alert">'+ flashMsg +' Silahkan ulangi proses input, atau <a class="alert-link" href="'+ site_url +'">Klik untuk melihat data transaksi.</a> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
             })
         } else if(flashStatus == "successUpdate"){
             Swal.fire({
@@ -101,14 +101,14 @@ function hitungPayment(){
 		$("#inputTransKurang").val(totalBayar);
 	} else {
 		if(kurangan > 0){
-			$("#inputTransStatus option[value=BL]").attr("selected", "selected");
-			$("#inputTransStatus option[value=L]").removeAttr("selected");
+			$("#inputTransStatus option[value=K]").attr("selected", "selected");
+			$("#inputTransStatus option[value=T]").removeAttr("selected");
 			$(".tenortempo").prop("disabled", false);
 	        $(".tenortempo").prop("required", true);
 			$("#inputTransKurang").val(kurangan);
 		} else {
-			$("#inputTransStatus option[value=L]").attr("selected", "selected");
-			$("#inputTransStatus option[value=BL]").removeAttr("selected");
+			$("#inputTransStatus option[value=T]").attr("selected", "selected");
+			$("#inputTransStatus option[value=K]").removeAttr("selected");
 			$(".tenortempo").prop("disabled", true);
 	        $(".tenortempo").prop("required", false);
 			$("#inputTransKurang").val(0);
