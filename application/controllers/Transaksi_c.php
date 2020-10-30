@@ -421,21 +421,30 @@ Class Transaksi_c extends MY_Controller{
 
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
-			'title' => 'PoS | Trans Pembelian',
-			'assets' => array('datatables', 'page_list_trans'),
+			'title'		=> 'PoS | Trans Pembelian',
+			'assets'	=> array('datatables', 'page_list_trans'),
 			'detailTrans' => $this->Sales_m->getTransSalesonID($transSaleId),
 			'detailPayment' => $this->Installment_m->getInstallmentSales($transSaleId)
 		);
 		$this->page = 'trans/detail_trans_sales_v';
 		$this->layout();
-
-		//print("<pre>".print_r($installmentData, true)."</pre>");
 	}
 
 	/* Function : Form bayar cicilan penjualan */
-	public function payInstallmentPage($encoded_trans_id){
-		/* Decode id */
+	public function paySalesInstallmentPage($encoded_trans_id){
+	  /* Decode id */
 		$transSaleId = base64_decode(urldecode($encoded_trans_id));
+
+	  /* Data yang ditampilkan ke view */
+		$this->pageData = array(
+			'title'		=> 'PoS | Trans Pembelian',
+			'assets'	=> array('datatables', 'page_list_trans'),
+			'paymentCode'	=> 'IS'.$transSaleId.date('Ydmhis'),
+			'detailTrans'	=> $this->Sales_m->getTransSalesonID($transSaleId),
+			'detailPayment' => $this->Installment_m->getInstallmentSales($transSaleId)
+		);
+		$this->page = 'trans/pay_installment_sales_v';
+		$this->layout();
 	}
 
 	/* Function : Proses tambah trans penjualan */
@@ -590,7 +599,33 @@ Class Transaksi_c extends MY_Controller{
 	  	redirect('Transaksi_c/addSalesPage');
 	}
 
-	/* Function : Proses update trans penjualan */
+	/* Function : Proses pay installment trans penjualan */
+	function installmentSalesProses($encoded_trans_id){
+	  /* Decode id */
+		$transSaleId = base64_decode(urldecode($encoded_trans_id));
+
+	  /* Get post data form */
+		$postData = array(
+			'post_code' => $this->input->post('postPayCode'),
+			'post_periode' => $this->input->post('postAngsuranAwal'),
+			'post_periode_end' => $this->input->post('postAngsuranAkhir'),
+			'post_payment_date' => $this->input->post('postTglBayar'),
+			'post_payment' => $this->input->post('postBayar'),
+		);
+
+		for($i = $postData['post_periode']; $i <= $postData['post_periode_end']; $i++ ){
+			$updateData[$i]['is_code']	= $postData['post_code'];
+			$updateData[$i]['is_payment'] = $postData['post_payment'];
+			$updateData[$i]['is_payment_date'] = $postData['post_payment_date'];
+			$updateData[$i]['is_status']	= 1;
+			
+			$updateIS[$i] = $this->Installment_m->updateInstallmentSales($updateData[$i], $i, $transSaleId);
+		}
+
+
+		print("<pre>".print_r($updateIS, true)."</pre>");
+
+	}
 	/* Function : Proses delete trans penjualan */
 
   /* Fungsi untuk CRUD Biaya Operasional */

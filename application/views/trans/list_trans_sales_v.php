@@ -62,7 +62,7 @@
                             <td><?php echo ($showTS['ts_status'] === 'T')? '-' : date('d-m-Y', strtotime($showTS['ts_due_date']));?></td>
                             <td class="text-center">
                               <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailSalesPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>"><i class="fas fa-search"></i></a>
-                              <a class="btn btn-xs btn-warning" href=""><i class="fas fa-credit-card"></i></a>
+                              <a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/paySalesInstallmentPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>"><i class="fas fa-credit-card"></i></a>
                               <a class="btn btn-xs btn-success" href=""><i class="fas fa-exchange-alt"></i></a>
                               <a class="btn btn-xs btn-primary" href="<?php echo site_url('Transaksi_c/invoicePage') ?>"><i class="fas fa-file-invoice-dollar"></i></a>
                             </td>

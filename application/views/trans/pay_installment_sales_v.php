@@ -9,7 +9,7 @@
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?php echo site_url('Page_c') ?>"><i class="fas fa-home"></i></a></li>
               <li class="breadcrumb-item"><a href="<?php echo site_url('Transaksi_c') ?>"><i class="fas fa-cubes"></i> Transaksi</a></li>
-              <li class="breadcrumb-item active">Detail Penjualan</li>
+              <li class="breadcrumb-item active">Angsuran Penjualan</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -24,11 +24,11 @@
           <div class="col-lg-10">
             <div class="card card-orange card-outline">
               <div class="card-header">
-                <h5 class="m-0 card-title">Detail Transaksi Penjualan</h5>
+                <h5 class="m-0 card-title">Angsuran Transaksi Penjualan</h5>
                 <div class="float-right">
                 	<a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/listSalesPage') ?>"><i class="fas fa-list"></i></a>
                 	<?php if($detailTrans[0]['ts_status'] != 'T') { ?>
-                	<a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/paySalesInstallmentPage').'/'.urlencode(base64_encode($detailTrans[0]['ts_id'])) ?>"><i class="fas fa-credit-card"></i></a>
+                	<a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailSalesPage').'/'.urlencode(base64_encode($detailTrans[0]['ts_id'])) ?>"><i class="fas fa-search"></i></a>
                 	<?php } ?>
                 </div>
               </div>
@@ -46,51 +46,9 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Produk<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <div class="table-responsive">
-                      <table class="table table-bordered">
-                        <thead>
-                          <th>No.</th>
-                          <th>Product</th>
-                          <th>Jumlah</th>
-                          <th>Harga satuan</th>
-                          <th>Total</th>
-                        </thead>
-                        <tbody>
-                          <?php 
-                          $no = 1;
-                          $totalBayar = 0; 
-                          foreach ($detailTrans as $row): 
-                            $totalBayar += $row['dts_total_price'];
-                          ?>
-                          <tr>
-                            <td><?php echo $no++ ?></td>
-                            <td><?php echo $row['prd_name']; ?></td>
-                            <td><?php echo $row['dts_product_amount'] ?></td>
-                            <td class="text-right"><?php echo number_format($row['dts_sale_price']) ?></td>
-                            <td class="text-right"><?php echo number_format($row['dts_total_price']) ?></td>
-                          </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                        <tfoot>
-                          <th colspan="4" class="text-right">Total : </th>
-                          <th class="text-right"><?php echo number_format($totalBayar) ?></th>
-                        </tfoot>
-                      </table>
-                    </div>    
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Pembeli<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
                     <p class="col-form-label"><?php echo ($detailTrans[0]['ts_member_fk'] == 0)? 'General Customer / Pelanggan Umum' : $detailTrans[0]['member_name'] ?></p>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Metode Pembayaran<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo ($detailTrans[0]['ts_payment_metode'] == 'TN')? 'Tunai' : 'Bank Transfer' ?> </p>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -132,27 +90,15 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Angsuran<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo ($detailTrans[0]['ts_status'] == 'T')? '-' : $detailTrans[0]['ts_installment'] ?> </p>
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Total Penjualan<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
                     <p class="col-form-label"><?php echo 'Rp. '.number_format($detailTrans[0]['ts_sales_price']) ?> </p>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Total dibayar<a class="float-right"> : </a></label>
+                  <label class="col-sm-3 col-form-label">Angsuran<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo 'Rp. '.number_format($detailTrans[0]['ts_paid']) ?> </p>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Total Kurangan<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo 'Rp. '.number_format($detailTrans[0]['ts_insufficient']) ?> </p>
+                    <p class="col-form-label"><?php echo ($detailTrans[0]['ts_status'] == 'T')? '-' : 'Rp. '.number_format($detailTrans[0]['ts_installment']) ?> </p>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -190,6 +136,68 @@
                     </div>
                   </div>
                 </div>
+                <?php if ($detailTrans[0]['ts_status'] == 'K'){ ?>
+                <form method="POST" enctype="multipart/form-data" action="<?php echo site_url('Transaksi_c/installmentSalesProses').'/'.urlencode(base64_encode($detailTrans[0]['ts_id'])) ?>">
+
+                  <!-- Form-part input Nomor Nota -->
+                  <div class="form-group row">
+                    <label for="inputPayCode" class="col-sm-3 col-form-label">Nomor Nota Pembayaran <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control float-right" name="postPayCode" id="inputPayCode" value="<?php echo $paymentCode ?>" placeholder="Nomor nota otomatis terisi oleh sistem" readonly required>
+                    </div>
+                  </div>
+
+                  <!-- Form-part angsuran -->
+                  <div class="form-group row">
+                    <label for="inputAngsuran" class="col-sm-3 col-form-label">Angsuran ke -<a class="float-right"> : </a></label>
+                    <div class="col-sm-9 row">
+                      <div class="col-sm-4">
+                        <select class="form-control" name="postAngsuranAwal" id="inputAngsuranAwal">
+                          <?php 
+                          for($angsuran = 1; $angsuran <= $detailTrans[0]['ts_tenor']; $angsuran++){ ?>
+                            <option value="<?php echo $angsuran ?>"><?php echo $angsuran ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                      <div class="col-sm-2 text-center">
+                        <font><b>Sampai</b></font>
+                      </div>
+                      <div class="col-sm-5">
+                        <select class="form-control" name="postAngsuranAkhir" id="inputAngsuranAkhir">
+                          <option> -- Pilih periode angsuran --</option>
+                          <?php 
+                          for($angsuran = 1; $angsuran <= $detailTrans[0]['ts_tenor']; $angsuran++){ ?>
+                            <option value="<?php echo $angsuran ?>"><?php echo $angsuran ?></option>
+                          <?php } ?>
+                        </select>
+                        <small style="color:red"><em>*kosongkan jika hanya 1x periode angsuran</em></small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Form-part Bayar -->
+                  <div class="form-group row">
+                    <label for="inputTglBayar" class="col-sm-3 col-form-label">Tanggal Pembayaran<a class="float-right"> : </a></label>
+                    <div class="col-sm-4">
+                      <input type="date" class="form-control" name="postTglBayar">
+                    </div>
+                  </div>
+
+                  <!-- Form-part Bayar -->
+                  <div class="form-group row">
+                    <label for="inputBayar" class="col-sm-3 col-form-label">Biaya Pembayaran<a class="float-right"> : </a></label>
+                    <div class="col-sm-4">
+                      <input type="number" class="form-control" name="postBayar">
+                    </div>
+                  </div>
+
+                  <!-- Form Submit Button -->
+                  <div class="float-right">
+                    <button type="reset" class="btn btn-secondary"><b> Reset </b></button>
+                    <button type="submit" class="btn btn-success"><b> Simpan </b></button>
+                  </div>
+                </form>
+                <?php } ?>
               </div>
             </div>
           </div>
