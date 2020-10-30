@@ -416,10 +416,20 @@ Class Transaksi_c extends MY_Controller{
 
 	/* Function : Form detail penjualan */
 	public function detailSalesPage($encoded_trans_id){
-		/* Decode id */
+	  /* Decode id */
 		$transSaleId = base64_decode(urldecode($encoded_trans_id));
 
-		/* Get data trans */
+	  /* Data yang ditampilkan ke view */
+		$this->pageData = array(
+			'title' => 'PoS | Trans Pembelian',
+			'assets' => array('datatables', 'page_list_trans'),
+			'detailTrans' => $this->Sales_m->getTransSalesonID($transSaleId),
+			'detailPayment' => $this->Installment_m->getInstallmentSales($transSaleId)
+		);
+		$this->page = 'trans/detail_trans_sales_v';
+		$this->layout();
+
+		//print("<pre>".print_r($installmentData, true)."</pre>");
 	}
 
 	/* Function : Form bayar cicilan penjualan */
@@ -555,8 +565,10 @@ Class Transaksi_c extends MY_Controller{
 		  /* Input data product ke table det trans purchase */
 		  	$inputDetTS = $this->Sales_m->insertBatchDetTS($dataDetail);
 
-		  /* Input data transaksi ke database */
+		  /* Input data angsurang ke database */
+		  if ($this->input->post('postTransStatus') == 'K'){
 		  	$inputIS = $this->Installment_m->insertInstallmentSales($installmentData);
+		  }
 	  	} else {
 	  		$inputTS = 0;
 	  		$inputDetTS = 0;
@@ -576,9 +588,6 @@ Class Transaksi_c extends MY_Controller{
   	  		$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listSalesPage');
 
 	  	redirect('Transaksi_c/addSalesPage');
-
-	  	//var_dump($installmentData);
-		//print("<pre>".print_r($installmentData, true)."</pre>");
 	}
 
 	/* Function : Proses update trans penjualan */

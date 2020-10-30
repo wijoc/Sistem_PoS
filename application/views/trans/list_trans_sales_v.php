@@ -36,7 +36,6 @@
                         <th>Tanggal</th>
                         <th>Customer</th>
                         <th>Total Bayar</th>
-                        <th>Kurangan</th>
                         <th>Status</th>
                         <th>Jatuh Tempo</th>
                         <th>Aksi</th>
@@ -49,11 +48,20 @@
                             <td><?php echo date('d-m-Y', strtotime($showTS['ts_date'])) ?></td>
                             <td><?php echo $showTS['member_name'] ?></td>
                             <td><?php echo $showTS['ts_sales_price'] ?></td>
-                            <td><?php echo $showTS['ts_insufficient'] ?></td>
-                            <td><?php echo ($showTS['ts_status'] === 'L')? 'Lunas' : 'Belum Lunas' ?></td>
-                            <td><?php echo ($showTS['ts_status'] === 'L')? '-' : date('d-m-Y', strtotime($showTS['ts_due_date']));?></td>
+                            <td>
+                              <?php 
+                                if ($showTS['ts_status'] === 'K'){
+                                  echo 'Kredit - Belum Lunas';
+                                } else if ($showTS['ts_status'] === 'T'){
+                                  echo 'Tunai';
+                                } else if ($showTS['ts_status'] === 'L'){
+                                  echo 'Kredit - Lunas';
+                                }
+                              ?>
+                            </td>
+                            <td><?php echo ($showTS['ts_status'] === 'T')? '-' : date('d-m-Y', strtotime($showTS['ts_due_date']));?></td>
                             <td class="text-center">
-                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailSalesPage') ?>"><i class="fas fa-search"></i></a>
+                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailSalesPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>"><i class="fas fa-search"></i></a>
                               <a class="btn btn-xs btn-warning" href=""><i class="fas fa-credit-card"></i></a>
                               <a class="btn btn-xs btn-success" href=""><i class="fas fa-exchange-alt"></i></a>
                               <a class="btn btn-xs btn-primary" href="<?php echo site_url('Transaksi_c/invoicePage') ?>"><i class="fas fa-file-invoice-dollar"></i></a>
@@ -67,7 +75,6 @@
                         <th>Tanggal</th>
                         <th>Customer</th>
                         <th>Total Bayar</th>
-                        <th>Kurangan</th>
                         <th>Status</th>
                         <th>Jatuh Tempo</th>
                         <th>Aksi</th>

@@ -88,9 +88,21 @@ Class Sales_m extends CI_Model{
     function getAvailableTransSales(){
       $this->db->select('ts.*, mbr.member_name');
       $this->db->from($this->ts_tb.' as ts');
-      $this->db->where($this->ts_f[13], '0');
+      $this->db->where($this->ts_f[14], '0');
       $this->db->join('tb_member as mbr', 'mbr.member_id = ts.'.$this->ts_f['3']);
       $this->db->order_by($this->ts_f[2], 'DESC');
+      $resultSelect = $this->db->get();
+      return $resultSelect->result_array();
+    }
+
+    /* Query select data trans penjualan berdasar trans id */
+    function getTransSalesonID($trans_id){
+      $this->db->select('ts.*, dts.*, mbr.member_name, tb_product.prd_name');
+      $this->db->from($this->ts_tb.' as ts');
+      $this->db->join($this->dts_tb.' as dts', 'dts.'.$this->dts_f[1].'= ts.'.$this->ts_f[0]);
+      $this->db->join('tb_member as mbr', 'mbr.member_id = ts.'.$this->ts_f[3]);
+      $this->db->join('tb_product', 'tb_product.prd_id = dts.'.$this->dts_f[2]);
+      $this->db->where('ts.'.$this->ts_f[0], $trans_id);
       $resultSelect = $this->db->get();
       return $resultSelect->result_array();
     }

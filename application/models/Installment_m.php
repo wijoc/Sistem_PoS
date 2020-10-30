@@ -49,5 +49,11 @@ Class Installment_m extends CI_Model {
   	}
 
   /* Installment Sales */
+    /* Query select data installment berdasar trans_sale_id */
+    function getInstallmentSales($trans_id){
+      $this->db->where($this->is_f[1], $trans_id);
+      $resultSelect = $this->db->get($this->is_tb);
+      return $resultSelect->result_array();
+    }
 
 }
