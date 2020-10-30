@@ -422,7 +422,7 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title'		=> 'PoS | Trans Pembelian',
-			'assets'	=> array('datatables', 'page_list_trans'),
+			'assets'	=> array('datatables', 'sweetalert2', 'page_list_trans'),
 			'detailTrans' => $this->Sales_m->getTransSalesonID($transSaleId),
 			'detailPayment' => $this->Installment_m->getInstallmentSales($transSaleId)
 		);
@@ -438,7 +438,7 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title'		=> 'PoS | Trans Pembelian',
-			'assets'	=> array('datatables', 'page_list_trans'),
+			'assets'	=> array('datatables', 'sweetalert2', 'page_list_trans'),
 			'paymentCode'	=> 'IS'.$transSaleId.date('Ydmhis'),
 			'detailTrans'	=> $this->Sales_m->getTransSalesonID($transSaleId),
 			'detailPayment' => $this->Installment_m->getInstallmentSales($transSaleId)
@@ -608,11 +608,12 @@ Class Transaksi_c extends MY_Controller{
 		$postData = array(
 			'post_code' => $this->input->post('postPayCode'),
 			'post_periode' => $this->input->post('postAngsuranAwal'),
-			'post_periode_end' => $this->input->post('postAngsuranAkhir'),
+			'post_periode_end' => ($this->input->post('postAngsuranAkhir') != 0)? $this->input->post('postAngsuranAkhir') : $this->input->post('postAngsuranAwal'),
 			'post_payment_date' => $this->input->post('postTglBayar'),
 			'post_payment' => $this->input->post('postBayar'),
 		);
 
+	  /* Update data angsuran */
 		for($i = $postData['post_periode']; $i <= $postData['post_periode_end']; $i++ ){
 			$updateData[$i]['is_code']	= $postData['post_code'];
 			$updateData[$i]['is_payment'] = $postData['post_payment'];
@@ -622,8 +623,20 @@ Class Transaksi_c extends MY_Controller{
 			$updateIS[$i] = $this->Installment_m->updateInstallmentSales($updateData[$i], $i, $transSaleId);
 		}
 
+	  /* Set session dan redirect */
+		if(count($updateIS) == count(range($postData['post_periode'], $postData['post_periode_end']))){
+			$this->session->set_flashdata('flashStatus', 'successInsert');
+			$this->session->set_flashdata('flashMsg', 'Berhasil melakukan proses pembayaran angsuran !');
+		} else {
+			$this->session->set_flashdata('flashStatus', 'failedInsert');
+			$this->session->set_flashdata('flashMsg', 'Gagal melakukan proses pembayaran angsuran !');
+		}
 
-		print("<pre>".print_r($updateIS, true)."</pre>");
+	  	/* Link redirect ke list Transaksi Purchase */
+  	  	$this->session->set_flashdata('flashRedirect', 'Transaksi_c/detailSalesPage/'.$encoded_trans_id.'');
+
+  	  	/* redirect ke page add purchase */
+	  	redirect('Transaksi_c/paySalesInstallmentPage/'.$encoded_trans_id);
 
 	}
 	/* Function : Proses delete trans penjualan */

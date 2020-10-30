@@ -164,7 +164,7 @@
                       </div>
                       <div class="col-sm-5">
                         <select class="form-control" name="postAngsuranAkhir" id="inputAngsuranAkhir">
-                          <option> -- Pilih periode angsuran --</option>
+                          <option value="0"> -- Pilih periode angsuran --</option>
                           <?php 
                           for($angsuran = 1; $angsuran <= $detailTrans[0]['ts_tenor']; $angsuran++){ ?>
                             <option value="<?php echo $angsuran ?>"><?php echo $angsuran ?></option>
