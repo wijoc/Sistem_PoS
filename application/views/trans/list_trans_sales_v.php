@@ -46,7 +46,7 @@
                             <td><?php echo $no++ ?></td>
                             <td><?php echo $showTS['ts_trans_code'] ?></td>
                             <td><?php echo date('d-m-Y', strtotime($showTS['ts_date'])) ?></td>
-                            <td><?php echo $showTS['member_name'] ?></td>
+                            <td><?php echo ($showTS['ts_member_fk'] == 0)? 'Pelanggan non member' : $showTS['member_name'] ?></td>
                             <td><?php echo $showTS['ts_sales_price'] ?></td>
                             <td>
                               <?php 
@@ -64,7 +64,7 @@
                               <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailSalesPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>"><i class="fas fa-search"></i></a>
                               <a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/paySalesInstallmentPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>"><i class="fas fa-credit-card"></i></a>
                               <a class="btn btn-xs btn-success" href=""><i class="fas fa-exchange-alt"></i></a>
-                              <a class="btn btn-xs btn-primary" href="<?php echo site_url('Transaksi_c/invoicePage') ?>"><i class="fas fa-file-invoice-dollar"></i></a>
+                              <a class="btn btn-xs btn-primary" href="<?php echo site_url('Transaksi_c/invoicePage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>"><i class="fas fa-file-invoice-dollar"></i></a>
                             </td>
                           </tr>
                         <?php endforeach; ?>

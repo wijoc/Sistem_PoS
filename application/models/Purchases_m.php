@@ -7,7 +7,7 @@ Class Purchases_m extends CI_Model{
   */
 
   /* Declare var table transaksi barang masuk */
-  	var $tp_tb = 'trans_purchase';
+  	var $tp_tb = 'trans_purchases';
   	var $tp_f  = array(
   		'0' => 'tp_id',
   		'1' => 'tp_trans_code',
@@ -17,19 +17,18 @@ Class Purchases_m extends CI_Model{
   		'5' => 'tp_purchase_price',
   		'6' => 'tp_account_fk', // Allow Null
   		'7' => 'tp_paid',
-  		'8' => 'tp_insufficient',
-  		'9' => 'tp_status',
-  		'10' => 'tp_tenor', // Allow Null
-  		'11' => 'tp_tenor_periode', // Allow Null
-      '12' => 'tp_due_date', // Allow Null
-      '13' => 'tp_delete', // as defined 0
-      '14' => 'tp_invoice_code',
-      '15' => 'tp_installment',
-      '16' => 'tp_invoice_file'
+  		'10' => 'tp_status',
+  		'11' => 'tp_tenor', // Allow Null
+  		'12' => 'tp_tenor_periode', // Allow Null
+      '13' => 'tp_due_date', // Allow Null
+      '14' => 'tp_delete', // as defined 0
+      '15' => 'tp_invoice_code',
+      '16' => 'tp_installment',
+      '17' => 'tp_invoice_file'
   	);
 
   /* Declare var table detail trans masuk */
-  	var $dtp_tb = 'det_trans_purchase';
+  	var $dtp_tb = 'det_trans_purchases';
   	var $dtp_f  = array(
   		'0' => 'dtp_id',
   		'1' => 'dtp_tp_fk',
@@ -40,7 +39,7 @@ Class Purchases_m extends CI_Model{
   	);
 
   /* Declare var table temp */
-    var $temp_tp = 'temp_purchase';
+    var $temp_tp = 'temp_purchases';
     var $temp_f  = array(
       '0' => 'tp_id', 
       '1' => 'tp_product_fk', 

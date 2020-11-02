@@ -25,7 +25,7 @@
             <div class="card card-orange card-outline">
               <div class="card-header">
                 <h5 class="m-0 card-title">Daftar Transaksi Pembelian</h5>
-                <a class="btn btn-sm btn-success float-right" href="<?php echo site_url('Transaksi_c/addPurchasePage') ?>"> <i class="fas fa-plus"></i> Tambah Transaksi</a>
+                <a class="btn btn-sm btn-success float-right" href="<?php echo site_url('Transaksi_c/addPurchasesPage') ?>"> <i class="fas fa-plus"></i> Tambah Transaksi</a>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
@@ -53,16 +53,18 @@
                                 if ($showTP['tp_status'] === 'K'){
                                   echo 'Kredit - Belum Lunas';
                                 } else if ($showTP['tp_status'] === 'T'){
-                                  echo 'Tunai';
+                                  echo 'Tunai - Lunas';
                                 } else if ($showTP['tp_status'] === 'L'){
                                   echo 'Kredit - Lunas';
                                 }
                               ?>
                             </td>
-                            <td><?php echo ($showTP['tp_status'] === 'T')? '-' : date('d-m-Y', strtotime($showTP['tp_due_date']));?></td>
+                            <td><?php echo ($showTP['tp_status'] != 'K')? '-' : date('d-m-Y', strtotime($showTP['tp_due_date']));?></td>
                             <td class="text-center">
-                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailPurchasePage').'/'.urlencode(base64_encode($showTP['tp_id'])) ?>"><i class="fas fa-search"></i></a>
-                              <a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/payPurchaseInstallmentPage').'/'.urlencode(base64_encode($showTP['tp_id'])) ?>"><i class="fas fa-cash-register"></i></a>
+                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailPurchasesPage').'/'.urlencode(base64_encode($showTP['tp_id'])) ?>"><i class="fas fa-search"></i></a>
+                              <?php if ($showTP['tp_status'] === 'K'){ ?>
+                              <a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/payPurchasesInstallmentPage').'/'.urlencode(base64_encode($showTP['tp_id'])) ?>"><i class="fas fa-cash-register"></i></a>
+                              <?php } ?>
                               <a class="btn btn-xs btn-success" href=""><i class="fas fa-exchange-alt"></i></a>
                             </td>
                           </tr>

@@ -76,4 +76,14 @@ $(document).ready(function(){
 	            })
 	    }
     })
+
+    /* Status Change */
+    $("#inputStatus").change(function (){
+        if ($(this).val() == 'BL') {
+            $("#inputNextTempo").prop("disabled", false);
+        } else {
+            $("#inputNextTempo").prop("required", false);
+            $("#inputNextTempo").prop("disabled", true);
+        }
+    })
 });

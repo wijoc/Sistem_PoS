@@ -24,7 +24,13 @@
           <div class="col-lg-10">
             <div class="card card-orange card-outline">
               <div class="card-header">
-                <h5 class="m-0">Detail Transaksi</h5>
+                <h5 class="m-0 card-title">Detail Transaksi</h5>
+                <div class="float-right">
+                  <a class="btn btn-xs btn-success" href="<?php echo site_url('Transaksi_c/listPurchasesPage') ?>"><i class="fas fa-list"></i></a>
+                  <?php if($detailTrans[0]['tp_status'] == 'K') { ?>
+                  <a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/payPurchasesInstallmentPage').'/'.urlencode(base64_encode($detailTrans[0]['tp_id'])) ?>"><i class="fas fa-credit-card"></i></a>
+                  <?php } ?>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-group row">
@@ -111,7 +117,7 @@
                         } else if ($detailTrans[0]['tp_status'] == 'K') {
                           echo '<font color="red"> Pembayaran Kredit - Belum Lunas </font>';
                         } else if ($detailTrans[0]['tp_status'] == 'L'){
-                          echo '<font color="red"> Pembayaran Kredit - Lunas </font>';
+                          echo '<font color="green"> Pembayaran Kredit - Lunas </font>';
                         }
                       ?> 
                     </p>
@@ -158,12 +164,6 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Total Kurangan<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo $detailTrans[0]['tp_insufficient'] ?> </p>
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Riwayat angsuran<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
                     <div class="table-responsive">
@@ -182,7 +182,7 @@
                           <tr>
                             <td class="text-center">
                               <?php 
-                                echo ($row['ip_periode_end'] != 0)? $row['ip_periode'].' sampai '.$row['ip_periode_end'] : $row['ip_periode'];  
+                                echo ($row['ip_periode_end'] != 0 && $row['ip_periode'] != $row['ip_periode_end'])? $row['ip_periode'].' sampai '.$row['ip_periode_end'] : $row['ip_periode'];  
                               ?>    
                             </td>
                             <td><?php echo date('d-m-Y', strtotime($row['ip_date'])) ?></td>

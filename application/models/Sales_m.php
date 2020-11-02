@@ -89,7 +89,7 @@ Class Sales_m extends CI_Model{
       $this->db->select('ts.*, mbr.member_name');
       $this->db->from($this->ts_tb.' as ts');
       $this->db->where($this->ts_f[14], '0');
-      $this->db->join('tb_member as mbr', 'mbr.member_id = ts.'.$this->ts_f['3']);
+      $this->db->join('tb_member as mbr', 'mbr.member_id = ts.'.$this->ts_f['3'], 'LEFT');
       $this->db->order_by($this->ts_f[2], 'DESC');
       $resultSelect = $this->db->get();
       return $resultSelect->result_array();

@@ -29,7 +29,7 @@
               <div class="card-body">
                 <div id="alert-trans"></div>
                 <!-- Form daftar barang -->
-                <form method="POST" action="<?php echo site_url('Transaksi_c/addTransProduct/Purchase') ?>">
+                <form method="POST" action="<?php echo site_url('Transaksi_c/addTransProduct/Purchases') ?>">
                   <!-- Autocomplete product -->
                     <div class="row">
                       <div class="col-md-4 col-sm-6">
@@ -105,7 +105,7 @@
                 </form>
 
                 <!-- Form Transaksi -->
-                <form class="form-horizontal" method="POST" enctype="multipart/form-data" action="<?php echo site_url('Transaksi_c/addPurchaseProses') ?>">
+                <form class="form-horizontal" method="POST" enctype="multipart/form-data" action="<?php echo site_url('Transaksi_c/addPurchasesProses') ?>">
 
                   <!-- Form-part input Kode Transaksi : Otomatis -->
                     <div class="form-group row">
@@ -204,15 +204,7 @@
                     <div class="form-group row">
                       <label for="inputTransPembayaran" class="col-sm-3 col-form-label">Pembayaran Pertama <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postTransPembayaran" id="inputTransPembayaran" onkeyup="hitungPayment()" placeholder="Pembayaran pertama" required>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input Kurang -->
-                    <div class="form-group row">
-                      <label for="inputTransKurang" class="col-sm-3 col-form-label">Kurangan <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postTransKurang" id="inputTransKurang" readonly required>
+                        <input type="number" class="form-control float-right" step="0.01" name="postTransPembayaran" id="inputTransPembayaran" placeholder="Pembayaran pertama" required>
                       </div>
                     </div>
 

@@ -86,47 +86,35 @@
 		              <!-- Table row -->
 		              <div class="row">
 		                <div class="col-12 table-responsive">
-		                  <table class="table table-striped">
-		                    <thead>
-		                    <tr>
-		                      <th>Qty</th>
-		                      <th>Product</th>
-		                      <th>Serial #</th>
-		                      <th>Description</th>
-		                      <th>Subtotal</th>
-		                    </tr>
-		                    </thead>
-		                    <tbody>
-		                    <tr>
-		                      <td>1</td>
-		                      <td>Call of Duty</td>
-		                      <td>455-981-221</td>
-		                      <td>El snort testosterone trophy driving gloves handsome</td>
-		                      <td>$64.50</td>
-		                    </tr>
-		                    <tr>
-		                      <td>1</td>
-		                      <td>Need for Speed IV</td>
-		                      <td>247-925-726</td>
-		                      <td>Wes Anderson umami biodiesel</td>
-		                      <td>$50.00</td>
-		                    </tr>
-		                    <tr>
-		                      <td>1</td>
-		                      <td>Monsters DVD</td>
-		                      <td>735-845-642</td>
-		                      <td>Terry Richardson helvetica tousled street art master</td>
-		                      <td>$10.70</td>
-		                    </tr>
-		                    <tr>
-		                      <td>1</td>
-		                      <td>Grown Ups Blue Ray</td>
-		                      <td>422-568-642</td>
-		                      <td>Tousled lomo letterpress</td>
-		                      <td>$25.99</td>
-		                    </tr>
-		                    </tbody>
-		                  </table>
+	                      <table class="table table-bordered">
+	                        <thead>
+	                          <th>No.</th>
+	                          <th>Product</th>
+	                          <th>Jumlah</th>
+	                          <th>Harga satuan</th>
+	                          <th>Total</th>
+	                        </thead>
+	                        <tbody>
+	                          <?php 
+	                          $no = 1;
+	                          $totalBayar = 0; 
+	                          foreach ($detailTrans as $row): 
+	                            $totalBayar += $row['dtp_total_price'];
+	                          ?>
+	                          <tr>
+	                            <td><?php echo $no++ ?></td>
+	                            <td><?php echo $row['prd_name']; ?></td>
+	                            <td><?php echo $row['dtp_product_amount'] ?></td>
+	                            <td class="text-right"><?php echo number_format($row['dtp_purchase_price']) ?></td>
+	                            <td class="text-right"><?php echo number_format($row['dtp_total_price']) ?></td>
+	                          </tr>
+	                        <?php endforeach; ?>
+	                        </tbody>
+	                        <tfoot>
+	                          <th colspan="4" class="text-right">Total : </th>
+	                          <th><?php echo number_format($totalBayar) ?></th>
+	                        </tfoot>
+	                      </table>
 		                </div>
 		                <!-- /.col -->
 		              </div>
@@ -203,3 +191,4 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
+    <?php print("<pre>".print_r($detailTrans, true)."</pre>"); ?>

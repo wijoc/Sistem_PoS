@@ -65,11 +65,8 @@
 	<?php } ?>	
 
 	<!-- Page Add Trans -->
-	<?php if(in_array('page_add_purchase',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_purchase_assets.js"></script>
-		<script type="text/javascript">
-			autocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct') ?>";
-		</script>
+	<?php if(in_array('page_add_purchases',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_purchases_assets.js"></script>
 	<?php } ?>
 
 	<!-- Page Add Trans -->

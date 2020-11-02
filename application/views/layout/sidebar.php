@@ -107,15 +107,15 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="<?php echo site_url('Transaksi_c/listSalesPage') ?>" class="nav-link">
+                <a href="<?php echo site_url('Transaksi_c/listPurchasesPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Trans Penjualan</p>
+                  <p>Trans Pembelian</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo site_url('Transaksi_c/listPurchasePage') ?>" class="nav-link">
+                <a href="<?php echo site_url('Transaksi_c/listSalesPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Trans Pembelian</p>
+                  <p>Trans Penjualan</p>
                 </a>
               </li>
               <li class="nav-item">
