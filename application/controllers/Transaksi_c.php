@@ -650,7 +650,10 @@ Class Transaksi_c extends MY_Controller{
   /* Fungsi untuk CRUD Biaya Operasional */
   /* Fungsi untuk CRUD Pemasukan Lainnya */
   /* Function : Invoice Page */
-  public function invoicePage(){
+  public function invoicePage($encoded_trans_id){
+	  /* Decode id */
+		$transSaleId = base64_decode(urldecode($encoded_trans_id));
+		
 	  /* Data yang akan dikirim ke view */
 	  	$this->pageData = array(
 	  		'title' => 'PoS | Transaksi',

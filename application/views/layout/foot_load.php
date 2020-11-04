@@ -74,6 +74,11 @@
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_installment_assets.js"></script>
 	<?php } ?>
 
+	<!-- Page setting profile -->
+	<?php if(in_array('page_profile', $assets)){ ?>
+		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/setting_profile_assets.js"></script>
+	<?php } ?>
+
 	<!-- Page List Trans -->
 	<?php if(in_array('page_list_trans',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/list_transaction_assets.js"></script>

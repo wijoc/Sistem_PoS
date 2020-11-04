@@ -99,14 +99,14 @@
 	                          $no = 1;
 	                          $totalBayar = 0; 
 	                          foreach ($detailTrans as $row): 
-	                            $totalBayar += $row['dtp_total_price'];
+	                            $totalBayar += $row['dts_total_price'];
 	                          ?>
 	                          <tr>
 	                            <td><?php echo $no++ ?></td>
 	                            <td><?php echo $row['prd_name']; ?></td>
-	                            <td><?php echo $row['dtp_product_amount'] ?></td>
-	                            <td class="text-right"><?php echo number_format($row['dtp_purchase_price']) ?></td>
-	                            <td class="text-right"><?php echo number_format($row['dtp_total_price']) ?></td>
+	                            <td><?php echo $row['dts_product_amount'] ?></td>
+	                            <td class="text-right"><?php echo number_format($row['dts_sale_price']) ?></td>
+	                            <td class="text-right"><?php echo number_format($row['dts_total_price']) ?></td>
 	                          </tr>
 	                        <?php endforeach; ?>
 	                        </tbody>
