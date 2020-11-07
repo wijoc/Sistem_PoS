@@ -5,7 +5,6 @@ Class Setting_c extends MY_Controller{
 
 	public function __construct(){
 		parent::__construct();
-    $this->load->model('Setting_m');
 	}
 
 	public function index(){
@@ -74,14 +73,14 @@ Class Setting_c extends MY_Controller{
   /* Functions Management Profil Toko */
     /* Function : management profil toko */
     public function settingProfile(){
-      /* Load model setting */
-      $this->load->model("Setting_m");
+      /* Load model Profile */
+    $this->load->model('Profile_m');
 
       /* Data untuk view */
       $this->pageData = array(
         'title'   => 'PoS | Profile',
         'assets'  => array('sweetalert2', 'custominput', 'page_profile'),
-        'dataProfile'   => $this->Setting_m->getProfile(1)
+        'dataProfile'   => $this->Profile_m->getProfile(1)
       );
       $this->page = 'setting/stg_profile_v';
       $this->layout();
@@ -104,7 +103,7 @@ Class Setting_c extends MY_Controller{
 
       /* Proses Update */
         if(empty($_FILES['postPflLogo']['name'])){
-          $updateProfile = $this->Setting_m->updateProfile($postData, $pflID);
+          $updateProfile = $this->Profile_m->updateProfile($postData, $pflID);
         } else {
           /* Load lib dan helper untuk upload */
             $this->load->helper('file');
@@ -129,7 +128,7 @@ Class Setting_c extends MY_Controller{
 
               /* Set new update logo */
               $postData['pfl_logo'] = $config['upload_path'].$uploadData['file_name']; // Logo Baru / Pengganti
-              $updateProfile = $this->Setting_m->updateProfile($postData, $pflID);
+              $updateProfile = $this->Profile_m->updateProfile($postData, $pflID);
             } else {
               $this->session->set_flashdata('flashStatus', 'failedInsert');
               $this->session->set_flashdata('flashMsg', $this->upload->display_errors());

@@ -40,35 +40,35 @@
 		            <div class="invoice p-3 mb-3">
 		              <!-- title row -->
 		              <div class="row">
-		                <div class="col-12">
+		                <div class="col-8">
 		                  <h4>
-		                    <i class="fas fa-globe"></i> AdminLTE, Inc.
-		                    <small class="float-right">Date: 2/10/2014</small>
+		                    <img style="width: 75px" src="<?php echo base_url().$dataProfile[0]['pfl_logo'] ?>">
+		                    &nbsp; <strong><?php echo $dataProfile[0]['pfl_name'] ?></strong>
 		                  </h4>
+		                </div>
+		                <div class="col-4">
+		                	<small>
+		                		<?php echo $dataProfile[0]['pfl_address'] ?><br>
+			                	Telp : <?php echo $dataProfile[0]['pfl_telp'] ?> / Fax : <?php echo $dataProfile[0]['pfl_fax'] ?><br>
+			                	Email : <?php echo $dataProfile[0]['pfl_email'] ?>
+			                </small>
 		                </div>
 		                <!-- /.col -->
 		              </div>
+		              <hr>
 		              <!-- info row -->
 		              <div class="row invoice-info">
-		                <div class="col-sm-4 invoice-col">
-		                  From
+		                <div class="col-sm-8 invoice-col">
+		                  Ditagihkan kepada
 		                  <address>
-		                    <strong>Admin, Inc.</strong><br>
-		                    795 Folsom Ave, Suite 600<br>
-		                    San Francisco, CA 94107<br>
-		                    Phone: (804) 123-5432<br>
-		                    Email: info@almasaeedstudio.com
-		                  </address>
-		                </div>
-		                <!-- /.col -->
-		                <div class="col-sm-4 invoice-col">
-		                  To
-		                  <address>
-		                    <strong>John Doe</strong><br>
-		                    795 Folsom Ave, Suite 600<br>
-		                    San Francisco, CA 94107<br>
-		                    Phone: (555) 539-1037<br>
-		                    Email: john.doe@example.com
+		                    <strong>
+		                    	<?php echo ($detailTrans[0]['ts_member_fk'] == 0)? 'General Customer / Pelanggan Umum' : $detailTrans[0]['member_name'] ?>
+		                    </strong><br>
+		                    <?php if($detailTrans[0]['ts_member_fk'] != 0){ ?>
+		                    	Alamat:<br>
+			                    Phone: <br>
+			                    Email: 
+		                	<?php } ?>
 		                  </address>
 		                </div>
 		                <!-- /.col -->
@@ -191,4 +191,4 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    <?php print("<pre>".print_r($detailTrans, true)."</pre>"); ?>
+    <?php print("<pre>".print_r($dataProfile, true)."</pre>"); ?>

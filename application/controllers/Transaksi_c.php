@@ -452,6 +452,29 @@ Class Transaksi_c extends MY_Controller{
 		$this->page = 'trans/pay_installment_sales_v';
 		$this->layout();
 	}
+	  
+	/* Function : Invoice Page */
+	public function invoicePage($encoded_trans_id){
+	  /* Load Model Setting */
+	  	$this->load->model('Profile_m');
+
+	  /* Decode id */
+		$transSaleId = base64_decode(urldecode($encoded_trans_id));
+			
+	  /* Data yang akan dikirim ke view */
+		$this->pageData = array(
+		  	'title' => 'PoS | Transaksi',
+		  	'assets' =>array(),
+			'detailTrans' => $this->Sales_m->getTransSalesonID($transSaleId),
+			'dataProfile' => $this->Profile_m->getProfile(1)
+	 	);
+
+	  /* Load file view */
+		$this->page = 'trans/invoice_v';
+
+	  /* Call function layout dari my controller */
+		$this->layout();
+	  }
 
 	/* Function : Proses tambah trans penjualan */
 	function addSalesProses(){
@@ -647,24 +670,113 @@ Class Transaksi_c extends MY_Controller{
 	}
 	/* Function : Proses delete trans penjualan */
 
-  /* Fungsi untuk CRUD Biaya Operasional */
+  /* Fungsi untuk CRUD Pengeluaran Lainnya */
+  	/* Function : Page add pengeluaran lainnya */
+  	public function addExpensePage(){
+  	  /* Load Model pengeluaran / expense */
+  	  	$this->load->model('Expense_m');
+
+	  /* Data yang ditampilkan ke view */
+		$this->pageData = array(
+			'title'   => 'PoS | Trans Pengeluaran',
+			'assets'  => array('jqueryui', 'custominput', 'sweetalert2', 'page_add_trans'),
+			'optRek'  => $this->Rekening_m->getAllRekening(),
+			//'nextTransCode' => $nextTransCode
+		);
+		$this->page = 'trans/add_expense_v';
+		$this->layout();
+	}
+
+  	/* Function : Page list pengeluaran lainnya */
+  	public function listExpensePage(){
+  	  /* Load Model pengeluaran / expense */
+  	  	$this->load->model('Expense_m');
+
+	  /* Data yang ditampilkan ke view */
+		$this->pageData = array(
+			'title'   => 'PoS | Trans Pengeluaran',
+			'assets'  => array('datatables'),
+			'dataTrans' => $this->Expense_m->getExpense()
+		);
+		$this->page = 'trans/list_expense_v';
+		$this->layout();
+	}
+
+  	/* Function : proses add pengeluaran lainnya */
+  	function addExpenseProses(){
+  	  /* Load Model pengeluaran / expense */
+  	  	$this->load->model('Expense_m');
+
+  		/* Post data dari form */
+  		$postData = array(
+  			'te_date' 			=> $this->input->post('postTransTgl'),
+  			'te_necessity'		=> $this->input->post('postTransKeperluan'),
+  			'te_payment_method' => $this->input->post('postTransMetode'),
+  			'te_payment'		=> $this->input->post('postTransTotalBayar'),
+  			'te_note' 			=> $this->input->post('postTransNote'),
+  			'te_rek_id_fk'		=> ($this->input->post('postTransMetode') == "TF")? $this->input->post('postTransRek') : NULL,
+  			'te_invoice' 		=> NULL,
+  		);
+
+  		if (!empty($_FILES['postTransFileNota']['name'])){
+		  /* Load lib dan helper untuk upload */
+			$this->load->helper('file');
+			$this->load->library('upload');
+
+	  	  /* Prepare config tambahan */
+            $config['upload_path']   = 'assets/imported_files/expense_nota/'; // Path folder untuk upload file
+            $config['allowed_types'] = 'jpeg|jpg|png|pdf|doc|docx'; // Allowed types 
+            $config['max_size']		 = '2048'; // Max size in KiloBytes
+            $config['encrypt_name']  = TRUE; // Encrypt nama file ketika diupload
+
+		  /* Get file format / file extention */
+            $arrayFile = explode('.', $_FILES['postTransFileNota']['name']); //Ubah nama file menjadi array
+            $extension = end($arrayFile); // Get ext dari array nama file, index terakhir array
+            $this->upload->initialize($config);
+
+          /* Upload proses dan Simpan file ke database */
+            $upload = $this->upload->do_upload('postTransFileNota');
+
+            if($upload){
+              	/* Get data upload file */
+            	$uploadData = $this->upload->data();
+
+              	/* Set path untuk simpan ke table installment_purchase */
+            	$postData['te_invoice'] = $config['upload_path'].$uploadData['file_name'];
+            } else {
+            	$uploadError = 'Yes';
+            	$uploadMsg	 = $this->upload->display_errors();
+	  	  	}
+  		}
+
+  		/* Proses Insert */
+  		if(isset($uploadError) && $uploadError == 'Yes') {
+  			$this->session->set_flashdata('flashStatus', 'failedInsert');
+	  	  	$this->session->set_flashdata('flashMsg', $uploadMsg);
+  		} else {
+  			/* Insert ke database */
+  			$inputExpense = $this->Expense_m->insertExpense($postData);
+
+  			if($inputExpense > 0){
+	  			$this->session->set_flashdata('flashStatus', 'successInsert');
+		  	  	$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan data transaksi pengeluaran');
+  			} else {
+	  			$this->session->set_flashdata('flashStatus', 'successInsert');
+		  	  	$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan data transaksi pengeluaran');
+		  	  	if ($postData['te_invoice'] != NULL){ unlink(base_url().$postData['te_invoice']); };
+  			}
+  		}
+
+	  	/* Link redirect ke list Transaksi Purchase */
+  	  	$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listExpensePage');
+
+  	  	/* redirect ke page add purchase */
+	  	redirect('Transaksi_c/addExpensePage');
+
+  		//print("<pre>".print_r($postData, true)."</pre>");
+  	}
+
+  	/* Function :   */
+
   /* Fungsi untuk CRUD Pemasukan Lainnya */
-  /* Function : Invoice Page */
-  public function invoicePage($encoded_trans_id){
-	  /* Decode id */
-		$transSaleId = base64_decode(urldecode($encoded_trans_id));
-		
-	  /* Data yang akan dikirim ke view */
-	  	$this->pageData = array(
-	  		'title' => 'PoS | Transaksi',
-	  		'assets' =>array(),
-			'detailTrans' => $this->Sales_m->getTransSalesonID($transSaleId),
-	  	);
-
-	  /* Load file view */
-	  	$this->page = 'trans/invoice_v';
-
-	  /* Call function layout dari my controller */
-	  	$this->layout();
-  }
 }

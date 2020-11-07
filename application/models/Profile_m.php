@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed !');
 
-Class Setting_m extends CI_Model {
+Class Profile_m extends CI_Model {
 
   /* Declare table profile */
 	var $pfl_tb = "tb_profile";

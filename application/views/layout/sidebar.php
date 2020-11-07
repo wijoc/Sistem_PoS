@@ -131,13 +131,13 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo site_url('Transaksi_c/listBopPage') ?>" class="nav-link">
+                <a href="<?php echo site_url('Transaksi_c/listExpensePage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Biaya Operasional</p>
+                  <p>Pengeluaran Lainnya</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../charts/flot.html" class="nav-link">
+                <a href="<?php echo site_url('Trans_c/listRevenuePage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pendapatan Lainnya</p>
                 </a>
@@ -156,13 +156,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="../charts/inline.html" class="nav-link">
+                <a href="<?php echo site_url('User_c/listUserPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengaturan Pengguna</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../charts/inline.html" class="nav-link">
+                <a href="<?php echo site_url('Setting_c/settingProfile') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengaturan Profil Toko</p>
                 </a>
