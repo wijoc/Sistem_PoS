@@ -3,13 +3,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Halaman Pengeluaran Lainnya</h1>
+            <h1 class="m-0 text-dark">Halaman Transaksi Pendapatan Lain</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?php echo site_url('Page_c') ?>"><i class="fas fa-home"></i></a></li>
               <li class="breadcrumb-item"><a href="<?php echo site_url('Transaksi_c') ?>"><i class="fas fa-cubes"></i> Transaksi</a></li>
-              <li class="breadcrumb-item active">Tambah Pengeluaran</li>
+              <li class="breadcrumb-item active">Tambah Pendapatan</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -24,30 +24,27 @@
           <div class="col-lg-12">
             <div class="card card-orange card-outline">
               <div class="card-header">
-                <h5 class="m-0">Form tambah pengeluaran</h5>
+                <h5 class="m-0">Form Tambah Pendapatan</h5>
               </div>
               <div class="card-body">
                 <div id="alert-trans"></div>
 
                 <!-- Form Transaksi -->
-                <form class="form-horizontal" method="POST" enctype="multipart/form-data" action="<?php echo site_url('Transaksi_c/addExpenseProses') ?>">
+                <form class="form-horizontal" method="POST" enctype="multipart/form-data" action="<?php echo site_url('Transaksi_c/addRevenuesProses') ?>">
 
-                  <!-- Form-part input Keperluan -->
+                  <!-- Form-part input Kode Transaksi : Otomatis -->
                     <div class="form-group row">
-                      <label for="inputTransKeperluan" class="col-sm-3 col-form-label">Keperluan <font color="red" style="font-weight: italic">*</font><a class="float-right"> : </a></label>
+                      <label for="inputTransKode" class="col-sm-3 col-form-label">Kode Transaksi <a class="float-right"> : </a></label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control float-right" name="postTransKeperluan" id="inputTransKeperluan" required>
+                        <input type="text" class="form-control float-right" name="postTransKode" id="inputTransKode" value="<?php echo $nextTransCode ?>" placeholder="Kode transaksi terisi otomatis oleh sistem" required readonly>
                       </div>
                     </div>
 
-                  <!-- Form-part input File Nota -->
+                  <!-- Form-part input Asal pendapatan -->
                     <div class="form-group row">
-                      <label for="inputTransFileNota" class="col-sm-3 col-form-label">File Nota <a class="float-right"> : </a></label>
-                      <div class="col-sm-6">
-                        <div class="custom-file">
-                          <input type="file" class="form-control float-right custom-file-input" name="postTransFileNota" id="inputTransFileNota">
-                          <label class="custom-file-label" for="inputTransFileNota"><p>Pilih File Nota Pengeluaran</p></label>
-                        </div>
+                      <label for="inputTransSumber" class="col-sm-3 col-form-label">Asal Pendapatan <font color="red" style="font-weight: italic">*</font><a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control float-right" name="postTransSumber" id="inputTransSumber" placeholder="Asal pemasukan" required>
                       </div>
                     </div>
 
@@ -76,7 +73,7 @@
                       <label for="inputTransRek" class="col-sm-3 col-form-label">Rekening <font color="red" style="font-weight: italic">*</font><a class="float-right"> : </a></label>
                       <div class="col-sm-5">
                         <select class="form-control float-right" name="postTransRek" id="inputTransRek" required>
-                          <option> -- Pilih Rekening -- </option>
+                          <option value="0"> -- Pilih Rekening -- </option>
                           <?php foreach($optRek as $showOpt): ?>
                           <option value="<?php echo $showOpt['rek_id'] ?>"> <?php echo '['.$showOpt['bank_name'].'] '.$showOpt['rek_nomor'].' - '.$showOpt['rek_atas_nama'] ?> </option>
                           <?php endforeach; ?>
@@ -84,9 +81,9 @@
                       </div>
                     </div>
 
-                  <!-- Form-part input total pengeluaran -->
+                  <!-- Form-part input total Pendapatan -->
                     <div class="form-group row">
-                      <label for="inputTransTotalBayar" class="col-sm-3 col-form-label">Total Pengeluaran <font color="red" style="font-weight: italic">*</font><a class="float-right"> : </a></label>
+                      <label for="inputTransTotalBayar" class="col-sm-3 col-form-label">Total Pendapatan <font color="red" style="font-weight: italic">*</font><a class="float-right"> : </a></label>
                       <div class="col-sm-8">
                         <input type="number" class="form-control float-right" step="0.01" name="postTransTotalBayar" id="inputTransTotalBayar" required>
                       </div>

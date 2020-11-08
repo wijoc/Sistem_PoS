@@ -12,7 +12,7 @@ Class Expense_m extends CI_Model {
 		'3' => 'te_payment_method',
 		'4' => 'te_payment',
 		'5' => 'te_note',
-		'6' => 'te_rek_id_fk',
+		'6' => 'te_account_id_fk',
 		'7' => 'te_invoice'
 	);
 
