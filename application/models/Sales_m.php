@@ -76,9 +76,9 @@ Class Sales_m extends CI_Model{
 
     /* Query select semua data trans penjualan */
     function getAllTransSales(){
-      $this->db->select('ts.*, mbr.member_nama');
+      $this->db->select('ts.*, ctm.ctm_nama');
       $this->db->from($this->ts_tb.' as ts');
-      $this->db->join('tb_member as mbr', 'mbr.member_id = ts.'.$this->ts_f['3']);
+      $this->db->join('tb_customer as ctm', 'ctm.ctm_id = ts.'.$this->ts_f['3']);
       $this->db->order_by($this->ts_f['2'], 'DESC');
       $resultSelect = $this->db->get();
       return $resultSelect->result_array();
@@ -86,10 +86,10 @@ Class Sales_m extends CI_Model{
 
     /* Query select data trans penjualan dengan ts_delete = 0 */
     function getAvailableTransSales(){
-      $this->db->select('ts.*, mbr.member_name');
+      $this->db->select('ts.*, ctm.ctm_name');
       $this->db->from($this->ts_tb.' as ts');
       $this->db->where($this->ts_f[14], '0');
-      $this->db->join('tb_member as mbr', 'mbr.member_id = ts.'.$this->ts_f['3'], 'LEFT');
+      $this->db->join('tb_customer as ctm', 'ctm.ctm_id = ts.'.$this->ts_f['3'], 'LEFT');
       $this->db->order_by($this->ts_f[2], 'DESC');
       $resultSelect = $this->db->get();
       return $resultSelect->result_array();
@@ -100,7 +100,7 @@ Class Sales_m extends CI_Model{
       $this->db->select('ts.*, dts.*, mbr.member_name, tb_product.prd_name');
       $this->db->from($this->ts_tb.' as ts');
       $this->db->join($this->dts_tb.' as dts', 'dts.'.$this->dts_f[1].'= ts.'.$this->ts_f[0]);
-      $this->db->join('tb_member as mbr', 'mbr.member_id = ts.'.$this->ts_f[3]);
+      $this->db->join('tb_customer as ctm', 'mbr.member_id = ts.'.$this->ts_f[3]);
       $this->db->join('tb_product', 'tb_product.prd_id = dts.'.$this->dts_f[2]);
       $this->db->where('ts.'.$this->ts_f[0], $trans_id);
       $resultSelect = $this->db->get();

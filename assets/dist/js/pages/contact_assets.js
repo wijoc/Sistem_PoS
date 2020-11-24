@@ -28,6 +28,11 @@ $(document).ready(function(){
         })
     })
 
+    /* Perubahan jenis discount pelanggan */
+    $("#inputPlgDiscountType").change(function(){
+        if ((this).val() == 'ptg') {}
+    })
+
     /* Alert */
     if(typeof flashStatus !== "undefined" && flashMsg !== "undefined" ){
         if(flashStatus == "successInsert"){

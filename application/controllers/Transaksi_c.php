@@ -370,7 +370,7 @@ Class Transaksi_c extends MY_Controller{
 	/* Function : Form tambah trans penjualan */
 	public function addSalesPage(){
 	  /* Load model member untuk option member */
-	  	$this->load->model('Member_m');
+	  	$this->load->model('Customer_m');
 
 	  /* Set nomor transaksi selanjutnya */
 	  	$nextAI = $this->Sales_m->getNextIncrement(); // Get next auto increment table transaksi penjualan
@@ -402,7 +402,7 @@ Class Transaksi_c extends MY_Controller{
 			'optRek'	=> $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
 			'daftarPrd' => $this->Sales_m->getTemp(),
-			'optMember'	=> $this->Member_m->getActiveMember()
+			'optMember'	=> $this->Customer_m->getActiveMember()
 	  	);
 	  	$this->page = 'trans/add_trans_sales_v';
 	  	$this->layout();

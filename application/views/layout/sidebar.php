@@ -88,9 +88,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo site_url('Member_c') ?>" class="nav-link">
+                <a href="<?php echo site_url('Customer_c') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Member</p>
+                  <p>Pelanggan</p>
                 </a>
               </li>
             </ul>

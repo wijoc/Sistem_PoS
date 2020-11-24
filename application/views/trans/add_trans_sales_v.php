@@ -130,20 +130,6 @@
                       </div>
                     </div>
 
-                  <!-- Form-part input supplier -->
-                    <div class="form-group row">
-                      <label for="inputTransSupp" class="col-sm-3 col-form-label">Pembeli <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <select class="form-control float-right" name="postTransSupp" id="inputTransSupp">
-                          <option> -- Pilih Pembeli -- </option>
-                          <option value="0">General Costumer</option>
-                          <?php foreach ($optMember as $showOpt): ?>
-                            <option value="<?php echo $showOpt['member_id'] ?>"> <?php echo $showOpt['member_name'] ?> </option>
-                          <?php endforeach; ?>
-                        </select>
-                      </div>
-                    </div>
-
                   <!-- Form-part input total harga beli -->
                     <div class="form-group row">
                       <label for="inputTransTotalBayar" class="col-sm-3 col-form-label">Total Pembelian <a class="float-right"> : </a></label>
@@ -239,6 +225,20 @@
                       <label for="inputTransTempo" class="col-sm-3 col-form-label"> Tempo selanjutnya <a class="float-right"> : </a></label>
                       <div class="col-sm-3">
                         <input type="date" class="form-control float-right tenortempo" name="postTransTempo" id="inputTransTempo" value="" required="" disabled>
+                      </div>
+                    </div>
+
+                  <!-- Form-part input supplier -->
+                    <div class="form-group row">
+                      <label for="inputTransSupp" class="col-sm-3 col-form-label">Pembeli <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <select class="form-control float-right" name="postTransSupp" id="inputTransSupp">
+                          <option> -- Pilih Pembeli -- </option>
+                          <option value="0">General Costumer</option>
+                          <?php foreach ($optMember as $showOpt): ?>
+                            <option value="<?php echo $showOpt['member_id'] ?>"> <?php echo $showOpt['member_name'] ?> </option>
+                          <?php endforeach; ?>
+                        </select>
                       </div>
                     </div>
 
