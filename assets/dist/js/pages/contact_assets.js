@@ -18,19 +18,26 @@ $(document).ready(function(){
                     $('#formEditSupplier').find('#editSuppTelp').val(data.edit_telp);
                     $('#formEditSupplier').find('#editSuppEmail').val(data.edit_email);
                     $('#formEditSupplier').find('#editSuppAlamat').val(data.edit_address);
-                } else if(contact_type === 'member'){
-                    $('#formEditMember').find('#editMemberID').val(data.edit_id);
-                    $('#formEditMember').find('#editMemberNama').val(data.edit_name);
-                    $('#formEditMember').find('#editMemberStatus').val(data.edit_status);
-                    $('#formEditMember').find('#editMemberDiscount').val(data.edit_discount);
+                } else if(contact_type === 'ctm'){
+                    $('#formEditCustomer').find('#editCtmID').val(data.edit_id);
+                    $('#formEditCustomer').find('#editCtmNama').val(data.edit_name);
+                    $('#formEditCustomer').find('#editCtmTelp').val(data.edit_phone);
+                    $('#formEditCustomer').find('#editCtmEmail').val(data.edit_email);
+                    $('#formEditCustomer').find('#editCtmAddress').val(data.edit_address);
+                    $('#formEditCustomer').find('#editCtmDiscountType').val(data.edit_discount_type);
+                    $('#formEditCustomer').find('#editCtmDiscount').val(data.edit_discount);
                 }
             }
         })
     })
 
     /* Perubahan jenis discount pelanggan */
-    $("#inputPlgDiscountType").change(function(){
-        if ((this).val() == 'ptg') {}
+    $(".disc-type").change(function(){
+        if($(this).val() == 'ptg'){
+            $(".disc").removeAttr("max");
+        } else if($(this).val() == 'prc'){
+            $(".disc").attr("max", "100");
+        } 
     })
 
     /* Alert */

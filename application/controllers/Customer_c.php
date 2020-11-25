@@ -8,7 +8,7 @@ Class Customer_c extends MY_Controller{
   		$this->load->model('Customer_m');
   	}
 
-    /* Fuction : List member */
+    /* Fuction : List customer */
     public function index(){
       /* Load Library */
       $this->load->library('pagination'); // Lib pagination
@@ -46,17 +46,17 @@ Class Customer_c extends MY_Controller{
     	$this->layout();
     }
 
-    /* Function : Input member proses */
+    /* Function : Input customer proses */
     function addCustomerProses(){
       /* Get data post dari form */
       	$postData = array(
-      		'ctm_name'  => $this->input->post('postPlgNama'),
-      		'ctm_phone'  => $this->input->post('postPlgTelp'),
-      		'ctm_email' => $this->input->post('postPlgEmail'),
-          'ctm_address' => $this->input->post('postPlgAddress'),
-          'ctm_discount_type' => $this->input->post('postPlgDiscountType'),
-          'ctm_discount_price' => ($this->input->post('postPlgDiscountType') == 'ptg')? $this->input->post('postPlgDiscount') : NULL,
-          'ctm_discount_percent' => ($this->input->post('postPlgDiscountType') == 'prc')? $this->input->post('postPlgDiscount') : NULL,
+      		'ctm_name'  => $this->input->post('postCtmNama'),
+      		'ctm_phone'  => $this->input->post('postCtmTelp'),
+      		'ctm_email' => $this->input->post('postCtmEmail'),
+          'ctm_address' => $this->input->post('postCtmAddress'),
+          'ctm_discount_type' => $this->input->post('postCtmDiscountType'),
+          'ctm_discount_price' => ($this->input->post('postCtmDiscountType') == 'ptg')? $this->input->post('postCtmDiscount') : NULL,
+          'ctm_discount_percent' => ($this->input->post('postCtmDiscountType') == 'prc')? $this->input->post('postCtmDiscount') : NULL,
           'ctm_status' => 'Y'
       	);
 
@@ -75,62 +75,69 @@ Class Customer_c extends MY_Controller{
       redirect('Customer_c');
     }
 
-    /* Function : get member berdasar member id */
-    function getMember(){
-      $memberID = base64_decode(urldecode($this->input->post('id')));
+    /* Function : get customer berdasar customer id */
+    function getCustomer(){
+      $ctmID = base64_decode(urldecode($this->input->post('id')));
 
-      $memberData = $this->Customer_m->getMemberOnID($memberID);
+      $ctmData = $this->Customer_m->getCustomerOnID($ctmID);
       $returnData = array(
         'edit_id'      => $this->input->post('id'),
-        'edit_name'    => $memberData[0]['member_name'],
-        'edit_status'  => $memberData[0]['member_status'],
-        'edit_discount' => $memberData[0]['member_discount']
+        'edit_name'    => $ctmData[0]['ctm_name'],
+        'edit_phone'   => $ctmData[0]['ctm_phone'],
+        'edit_email'   => $ctmData[0]['ctm_email'],
+        'edit_address' => $ctmData[0]['ctm_address'],
+        'edit_discount_type'    => $ctmData[0]['ctm_discount_type'],
+        'edit_discount'   => ($ctmData[0]['ctm_discount_type'] == 'prc')? $ctmData[0]['ctm_discount_percent'] : $ctmData[0]['ctm_discount_price']
       );
 
       echo json_encode($returnData);
     }
 
-    /* Function : Proses Edit member */
-    function editMemberProses(){
+    /* Function : Proses Edit customer */
+    function editCustomerProses(){
       /* Get data post id & decode */
-        $memberID = base64_decode(urldecode($this->input->post('postMemberID')));
+        $ctmID = base64_decode(urldecode($this->input->post('postCtmID')));
       
       /* Get data post dari form */
         $postData = array(
-          'member_name' => $this->input->post('postMemberNama'),
-          'member_status'   => $this->input->post('postMemberStatus'),
-          'member_discount'  => $this->input->post('postMemberDiscount')
+          'ctm_name'  => $this->input->post('postCtmNama'),
+          'ctm_phone'  => $this->input->post('postCtmTelp'),
+          'ctm_email' => $this->input->post('postCtmEmail'),
+          'ctm_address' => $this->input->post('postCtmAddress'),
+          'ctm_discount_type' => $this->input->post('postCtmDiscountType'),
+          'ctm_discount_price' => ($this->input->post('postCtmDiscountType') == 'ptg')? $this->input->post('postCtmDiscount') : NULL,
+          'ctm_discount_percent' => ($this->input->post('postCtmDiscountType') == 'prc')? $this->input->post('postCtmDiscount') : NULL
         );
 
-      /* Insert ke database */
-        $editMember = $this->Customer_m->updateMember($postData, $memberID);
+      /* update data di database */
+        $editCustomer = $this->Customer_m->updateCustomer($postData, $ctmID);
 
       /* Set session dan redirect */
-        if($editMember > 0){
+        if($editCustomer > 0){
           $this->session->set_flashdata('flashStatus', 'successUpdate');
-          $this->session->set_flashdata('flashMsg', 'Berhasil mengubah kontak Member !');
+          $this->session->set_flashdata('flashMsg', 'Berhasil mengubah kontak pelanggan !');
         } else {
           $this->session->set_flashdata('flashStatus', 'failedUpdate');
-          $this->session->set_flashdata('flashMsg', 'Gagal mengubah kontak Member !');
+          $this->session->set_flashdata('flashMsg', 'Gagal mengubah kontak pelanggan !');
         }
 
         redirect('Customer_c');
     }
 
-    /* Function : Delete member */
-    function deleteMember($deltype){
+    /* Function : Delete customer */
+    function deleteCustomer($deltype){
       /* Decode id */
-        $mbrID = base64_decode(urldecode($this->input->post('postID')));
+        $ctmID = base64_decode(urldecode($this->input->post('postID')));
 
       /* Delete dari database */
         if($deltype === 'hard'){
-         $delMbr = $this->Customer_m->deleteMember($mbrID);
+         $deleteCustomer = $this->Customer_m->deleteCustomer($ctmID);
         } else if ($deltype === 'soft'){
-         $delMbr = $this->Customer_m->softdeleteMember($mbrID);
+         $deleteCustomer = $this->Customer_m->softdeleteCustomer($ctmID);
         }
 
       /* Set return value */
-        if($delMbr > 0){
+        if($deleteCustomer > 0){
           echo 'successDelete';
         } else {
           echo 'failedDelete';

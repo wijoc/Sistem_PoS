@@ -26,13 +26,13 @@ function confirmDelete(item, getid, url, msg){
             var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data supplier akan menghapus transaksi yang sudah dilakukan !";
             var cancelMsg  = "Batal menghapus data supplier !";
             break;
-        case "soft-member":
-            var warningMsg = "Menghapus data member tidak berpengaruh terhadap transaksi yang sudah dilakukan !";
-            var cancelMsg  = "Batal menghapus data member !";
+        case "soft-ctm":
+            var warningMsg = "Menghapus data pelanggan tidak berpengaruh terhadap transaksi yang sudah dilakukan !";
+            var cancelMsg  = "Batal menghapus data pelanggan !";
             break;
-        case "hard-member":
-            var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data member akan menghapus transaksi yang sudah dilakukan !";
-            var cancelMsg  = "Batal menghapus data member !";
+        case "hard-ctm":
+            var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data pelanggan akan menghapus transaksi yang sudah dilakukan !";
+            var cancelMsg  = "Batal menghapus data pelanggan !";
             break;
 		default :
 			var warningMsg = msg;
@@ -50,7 +50,7 @@ function confirmDelete(item, getid, url, msg){
 
     /* Fire sweetAlert untuk konfirmasi */
     swalWithBootstrapButtons.fire({
-        title: 'ANDA YAKIN MENGHAPUS DATA ?',
+        title: 'ANDA YAKIN MENGHAPUS DATA A ?',
         text: warningMsg,
         icon: 'warning',
         showCancelButton: true,

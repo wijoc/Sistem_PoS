@@ -24,14 +24,14 @@ Class Customer_m extends CI_Model{
   	);
 
   /* Query */
-  	/* Query select semua row data member */
-  	function getAllMember(){
+  	/* Query select semua row data customer */
+  	function getAllCustomer(){
   		$this->db->order_by($this->ctm_f[1], 'ASC');
   		$resultGet = $this->db->get($this->ctm_tb);
   		return $resultGet->result_array();
   	}
 
-    /* Query select row data member, dengan status <> D (D untuk data member deleted) */
+    /* Query select row data customer, dengan status <> D (D untuk data customer deleted) */
     function getAllowedCustomer($amount, $offset){
       $this->db->where($this->ctm_f[5], 'Y');
       $this->db->order_by($this->ctm_f[1], 'ASC');
@@ -39,36 +39,36 @@ Class Customer_m extends CI_Model{
       return $resultGet;
     }
 
-    /* Query select row data member berdasar member_id */
-    function getMemberOnID($id){
+    /* Query select row data customer berdasar ctm_id */
+    function getCustomerOnID($id){
       $this->db->where($this->ctm_f[0], $id);
       $resultSelect = $this->db->get($this->ctm_tb);
       return $resultSelect->result_array();
     }
 
-  	/* Query insert data pelanggan */
+  	/* Query insert data customer */
   	function insertCustomer($data){
   		$resultInsert = $this->db->insert($this->ctm_tb, $data);
   		return $resultInsert;
   	}
 
-    /* Query update data member */
-    function updateMember($data, $id){
+    /* Query update data customer */
+    function updateCustomer($data, $id){
       $this->db->set($data);
       $this->db->where($this->ctm_f[0], $id);
       $resultUpdate = $this->db->update($this->ctm_tb);
       return $resultUpdate;
     }
 
-  	/* Query delete data member */
-  	function deleteMember($id){
+  	/* Query delete data customer */
+  	function deleteCustomer($id){
   		$resultDelete = $this->db->delete($this->ctm_tb, array($this->ctm_f[0] => $id));
   		return $resultDelete;
   	}
 
-    /* Query soft delete data supplier, change supp_status to 1 for deleted rowdata */
-    function softdeleteMember($id){
-      $this->db->set($this->ctm_f[2], 'D');
+    /* Query soft delete data customer, change ctm_status to D for deleted rowdata */
+    function softdeleteCustomer($id){
+      $this->db->set($this->ctm_f[5], 'D');
       $this->db->where($this->ctm_f[0], $id);
       $resultUpdate = $this->db->update($this->ctm_tb);
       return $resultUpdate;

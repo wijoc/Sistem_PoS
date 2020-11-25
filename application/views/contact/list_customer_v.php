@@ -34,7 +34,6 @@
                   <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
                     <div class="card bg-light">
                       <div class="card-header text-muted border-bottom-0">
-                        <?php echo ($showCtm['ctm_status'] === 'Y')? 'Aktif' : 'Non-Aktif' ?>
                       </div>
                       <div class="card-body pt-0">
                         <div class="row">
@@ -42,22 +41,22 @@
                             <h5 class="lead"><b><?php echo $showCtm['ctm_name'] ?></b></h5>
                             <ul class="ml-4 mb-0 fa-ul text-muted">
                               <li class="small">
-                                <small><span class="fa-li"><i class="fas fa-md fa-phone"></i></span> <?php echo $showCtm['ctm_phone'] ?></small>
+                                <span class="fa-li"><i class="fas fa-sm fa-phone"></i></span> <?php echo ($showCtm['ctm_phone'] != '')? $showCtm['ctm_phone'] : '-' ?>
                               </li>
                             </ul>
                             <ul class="ml-4 mb-0 fa-ul text-muted">
                               <li class="small">
-                                <span class="fa-li"><i class="fas fa-md fa-envelope"></i></span> Email : <?php echo $showCtm['ctm_email'] ?>
+                                <span class="fa-li"><i class="fas fa-md fa-envelope"></i></span> <?php echo ($showCtm['ctm_email'] != '')? $showCtm['ctm_email'] : '-' ?>
                               </li>
                             </ul>
                             <ul class="ml-4 mb-0 fa-ul text-muted">
                               <li class="small">
-                                <span class="fa-li"><i class="fas fa-md fa-map"></i></span> Alamat : <?php echo $showCtm['ctm_address'] ?>
+                                <span class="fa-li"><i class="fas fa-md fa-map"></i></span> <?php echo ($showCtm['ctm_address'] != '')? $showCtm['ctm_address'] : '-' ?>
                               </li>
                             </ul>
                             <ul class="ml-4 mb-0 fa-ul text-muted">
                               <li class="small">
-                                <span class="fa-li"><i class="fas fa-md fa-tag"></i></span> Discount : <?php echo ($showCtm['ctm_discount_type'] == 'ptg')? 'Rp. '.number_format($showCtm['ctm_discount_price']) : $showCtm['ctm_discount_percent'].' %' ?>
+                                <span class="fa-li"><i class="fas fa-md fa-tag"></i></span> Diskon : <?php echo ($showCtm['ctm_discount_type'] == 'ptg')? 'Rp. '.number_format($showCtm['ctm_discount_price']) : $showCtm['ctm_discount_percent'].' %' ?>
                               </li>
                             </ul>
                           </div>
@@ -74,11 +73,11 @@
                           <a href="#" class="btn btn-sm bg-teal">
                             <i class="fas fa-search"></i>
                           </a>
-                          <a class="btn btn-sm btn-warning contactEdit" data-toggle="modal" data-target="#modal-edit-member" data-type="member" data-id="<?php echo urlencode(base64_encode($showCtm['ctm_id'])) ?>" data-href="<?php echo site_url('Customer_c/getMember') ?>">
+                          <a class="btn btn-sm btn-warning contactEdit" data-toggle="modal" data-target="#modal-edit-pelanggan" data-type="ctm" data-id="<?php echo urlencode(base64_encode($showCtm['ctm_id'])) ?>" data-href="<?php echo site_url('Customer_c/getCustomer') ?>">
                             <i class="fas fa-edit"></i>
                           </a>
                           <!-- Soft Delete -->
-                          <a class="btn btn-sm btn-danger" onclick="confirmDelete('soft-member', '<?php echo urlencode(base64_encode($showCtm['ctm_id'])) ?>', '<?php echo site_url('Customer_c/deleteMember/soft') ?>')">
+                          <a class="btn btn-sm btn-danger" onclick="confirmDelete('soft-ctm', '<?php echo urlencode(base64_encode($showCtm['ctm_id'])) ?>', '<?php echo site_url('Customer_c/deleteCustomer/soft') ?>')">
                             <i class="fas fa-trash"></i>
                           </a>
                         </div>
@@ -119,47 +118,47 @@
                 
                 <!-- Form-part input Pelanggan nama -->
                   <div class="form-group row">
-                    <label for="inputPlgNama" class="col-sm-3 col-form-label">Nama Pelanggan <font color="red">*</font> <a class="float-right"> : </a></label>
+                    <label for="inputCtmNama" class="col-sm-3 col-form-label">Nama Pelanggan <font color="red">*</font> <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postPlgNama" id="inputPlgNama" placeholder="Nama Pelanggan" required>
+                      <input type="text" class="form-control float-right" name="postCtmNama" id="inputCtmNama" placeholder="Nama Pelanggan" required>
                     </div>
                   </div>
 
                 <!-- Form-part input Pelanggan Telp -->
                   <div class="form-group row">
-                    <label for="inputPlgTelp" class="col-sm-3 col-form-label">No. Telphone <a class="float-right"> : </a></label>
+                    <label for="inputCtmTelp" class="col-sm-3 col-form-label">No. Telphone <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postPlgTelp" id="inputPlgTelp" placeholder="Nomor telepone pelanggan">
+                      <input type="text" class="form-control float-right" name="postCtmTelp" id="inputCtmTelp" placeholder="Nomor telepone pelanggan">
                     </div>
                   </div>
 
                 <!-- Form-part input Pelanggan Email -->
                   <div class="form-group row">
-                    <label for="inputPlgEmail" class="col-sm-3 col-form-label">E - mail <a class="float-right"> : </a></label>
+                    <label for="inputCtmEmail" class="col-sm-3 col-form-label">E - mail <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="email" class="form-control float-right" name="postPlgEmail" id="inputPlgEmail" placeholder="Alamat E - mail">
+                      <input type="email" class="form-control float-right" name="postCtmEmail" id="inputCtmEmail" placeholder="Alamat E - mail">
                     </div>
                   </div>
 
                 <!-- Form-part input Pelanggan Alamat -->
                   <div class="form-group row">
-                    <label for="inputPlgEmail" class="col-sm-3 col-form-label">Alamat <a class="float-right"> : </a></label>
+                    <label for="inputCtmEmail" class="col-sm-3 col-form-label">Alamat <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <textarea class="form-control" name="postPlgAddress" rows="3"></textarea>
+                      <textarea class="form-control" name="postCtmAddress" rows="3"></textarea>
                     </div>
                   </div>
 
                 <!-- Form-part input Pelanggan Discount -->
                   <div class="form-group row">
-                    <label for="inputPlgDiscount" class="col-sm-3 col-form-label">Diskon <a class="float-right"> : </a></label>
+                    <label for="inputCtmDiscount" class="col-sm-3 col-form-label">Diskon <a class="float-right"> : </a></label>
                     <div class="col-sm-3">
-                      <select class="form-control float-right" name="postPlgDiscountType" id="inputPlgDiscountType">
+                      <select class="form-control float-right disc-type" name="postCtmDiscountType" id="inputCtmDiscountType">
                         <option value="prc">Persen</option>
                         <option value="ptg">Potongan Harga</option>
                       </select>
                     </div>
                     <div class="col-sm-5">
-                      <input type="number" class="form-control float-right" name="postPlgDiscount" id="inputPlgDiscount" placeholder="Besar diskon">
+                      <input type="number" class="form-control float-right disc" name="postCtmDiscount" id="inputCtmDiscount" step="0.01" max="100" placeholder="Besar diskon">
                       <small><font color="red" style="font-style: italic">kosongkan jika tidak ada diskon</font></small>
                     </div>
                   </div>
@@ -175,44 +174,64 @@
         <!-- /.modal-dialog -->
       </div>
 
-      <!-- Modal Edit Member -->
-      <div class="modal fade" id="modal-edit-member">
+      <!-- Modal Edit Pelanggan -->
+      <div class="modal fade" id="modal-edit-pelanggan">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Ubah Member</h4>
+              <h4 class="modal-title">Ubah Pelanggan</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Member_c/editMemberProses') ?>" id="formEditMember">
+            <form method="POST" action="<?php echo site_url('Customer_c/editCustomerProses') ?>" id="formEditCustomer">
               <div class="modal-body">
-                <input type="hidden" name="postMemberID" id="editMemberID" required readonly>
+                <input type="hidden" name="postCtmID" id="editCtmID" required readonly>
                 
-                <!-- Form-part input Member nama -->
+                <!-- Form-part input Pelanggan nama -->
                   <div class="form-group row">
-                    <label for="editMemberNama" class="col-sm-3 col-form-label">Nama Member <a class="float-right"> : </a></label>
+                    <label for="editCtmNama" class="col-sm-3 col-form-label">Nama Pelanggan <font color="red">*</font> <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postMemberNama" id="editMemberNama" placeholder="Nama Member" required>
+                      <input type="text" class="form-control float-right" name="postCtmNama" id="editCtmNama" placeholder="Nama Pelanggan" required>
                     </div>
                   </div>
 
-                <!-- Form-part input Member status -->
+                <!-- Form-part input Pelanggan Telp -->
                   <div class="form-group row">
-                    <label for="editMemberStatus" class="col-sm-3 col-form-label">Status <a class="float-right"> : </a></label>
+                    <label for="editCtmTelp" class="col-sm-3 col-form-label">No. Telphone <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <select class="form-control" name="postMemberStatus" id="editMemberStatus">
-                        <option value="Y">Aktif</option>
-                        <option value="N">Tidak Aktif</option>
+                      <input type="text" class="form-control float-right" name="postCtmTelp" id="editCtmTelp" placeholder="Nomor telepone pelanggan">
+                    </div>
+                  </div>
+
+                <!-- Form-part input Pelanggan Email -->
+                  <div class="form-group row">
+                    <label for="editCtmEmail" class="col-sm-3 col-form-label">E - mail <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <input type="email" class="form-control float-right" name="postCtmEmail" id="editCtmEmail" placeholder="Alamat E - mail">
+                    </div>
+                  </div>
+
+                <!-- Form-part input Pelanggan Alamat -->
+                  <div class="form-group row">
+                    <label for="editCtmEmail" class="col-sm-3 col-form-label">Alamat <a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <textarea class="form-control" name="postCtmAddress" id="editCtmAddress" rows="3"></textarea>
+                    </div>
+                  </div>
+
+                <!-- Form-part input Pelanggan Discount -->
+                  <div class="form-group row">
+                    <label for="inputCtmDiscount" class="col-sm-3 col-form-label">Diskon <a class="float-right"> : </a></label>
+                    <div class="col-sm-3">
+                      <select class="form-control float-right disc-type" name="postCtmDiscountType" id="editCtmDiscountType">
+                        <option value="prc">Persen</option>
+                        <option value="ptg">Potongan Harga</option>
                       </select>
                     </div>
-                  </div>
-
-                <!-- Form-part input Member discount -->
-                  <div class="form-group row">
-                    <label for="editMemberDiscount" class="col-sm-3 col-form-label">Discount <a class="float-right"> : </a></label>
-                    <div class="col-sm-8">
-                      <input type="number" class="form-control float-right" name="postMemberDiscount" id="editMemberDiscount" placeholder="Besaran Discount Total Pembayaran">
+                    <div class="col-sm-5">
+                      <input type="number" class="form-control float-right disc" name="postCtmDiscount" id="editCtmDiscount" step="0.01" placeholder="Besar diskon">
+                      <small><font color="red" style="font-style: italic">kosongkan jika tidak ada diskon</font></small>
                     </div>
                   </div>
               </div>
