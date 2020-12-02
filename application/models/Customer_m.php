@@ -46,6 +46,13 @@ Class Customer_m extends CI_Model{
       return $resultSelect->result_array();
     }
 
+    /* Query select data customer berdasar term nama */
+    function searchCustomer($field, $term){
+      $this->db->like($this->ctm_f[$field], $term);
+      $returnResult = $this->db->get($this->ctm_tb);
+      return $returnResult->result_array();
+    }
+
   	/* Query insert data customer */
   	function insertCustomer($data){
   		$resultInsert = $this->db->insert($this->ctm_tb, $data);

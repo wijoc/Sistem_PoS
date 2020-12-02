@@ -130,6 +130,31 @@
                       </div>
                     </div>
 
+                  <!-- Form-part input customer -->
+                    <div class="form-group row">
+                      <label for="inputTransCtm" class="col-sm-3 col-form-label">Pembeli <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <div class="input-group">
+                          <input type="text" class="form-control" readonly>
+                          <span class="input-group-append">
+                            <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#modal-pilih-pelanggan">Pilih Customer !</button>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                  <!-- Form-part input Pengiriman -->
+                    <div class="form-group row">
+                      <label for="inputTransOngkir" class="col-sm-3 col-form-label">Pengiriman <a class="float-right"> : </a></label>
+                      <div class="col-sm-8">
+                        <select class="form-control float-right" name="postTransOngkir" id="inputTransOngkir">
+                          <option value="N"> Tanpa jasa pengiriman </option>
+                          <option value="T"> Pengiriman Toko </option>
+                          <option value="E"> Ekspedisi </option>
+                        </select>
+                      </div>
+                    </div>
+
                   <!-- Form-part input total harga beli -->
                     <div class="form-group row">
                       <label for="inputTransTotalBayar" class="col-sm-3 col-form-label">Total Pembelian <a class="float-right"> : </a></label>
@@ -228,20 +253,6 @@
                       </div>
                     </div>
 
-                  <!-- Form-part input supplier -->
-                    <div class="form-group row">
-                      <label for="inputTransSupp" class="col-sm-3 col-form-label">Pembeli <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <select class="form-control float-right" name="postTransSupp" id="inputTransSupp">
-                          <option> -- Pilih Pembeli -- </option>
-                          <option value="0">General Costumer</option>
-                          <?php foreach ($optMember as $showOpt): ?>
-                            <option value="<?php echo $showOpt['member_id'] ?>"> <?php echo $showOpt['member_name'] ?> </option>
-                          <?php endforeach; ?>
-                        </select>
-                      </div>
-                    </div>
-
                   <!-- Form Submit Button -->
                   <div class="float-right">
                     <button type="reset" class="btn btn-secondary"><b> Reset </b></button>
@@ -257,3 +268,41 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
+
+    <!-- Modal -->
+      <!-- Modal Tambah Pelanggan -->
+      <div class="modal fade" id="modal-pilih-pelanggan">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Pilih Pelanggan</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="container row">
+                <div class="col-xs-12 col-lg-12" style="margin-bottom: 10px;">
+                  <div class="input-group input-group-sm">
+                    <input class="form-control" type="search" onkeyup="searchCtm()" placeholder="Search" aria-label="Search" id="ctm-search">
+                    <div class="input-group-append">
+                      <button class="btn btn-info" type="submit">
+                        <i class="fas fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="container row" id="ctm-data">
+                  <?php foreach ($optCtm as $row) : ?>
+                    <div class="col-lg-6">
+                      <button class="btn btn-block btn-flat btn-outline-info" data-dismiss="modal" style="margin: 5px;" onclick="ctmSelected('<?php echo urlencode(base64_encode($row['ctm_id'])) ?>')" value="<?php echo urlencode(base64_encode($row['ctm_id'])) ?>"><font style="font-weight: bold"><?php echo $row['ctm_name'] ?></font></button>
+                    </div>
+                  <?php endforeach ?>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>

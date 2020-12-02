@@ -369,7 +369,7 @@ Class Transaksi_c extends MY_Controller{
   /* Fungsi untuk CRUD Penjualan */
 	/* Function : Form tambah trans penjualan */
 	public function addSalesPage(){
-	  /* Load model member untuk option member */
+	  /* Load model customer untuk option customer */
 	  	$this->load->model('Customer_m');
 
 	  /* Set nomor transaksi selanjutnya */
@@ -398,11 +398,11 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang ditampilkan ke view */
 	  	$this->pageData = array(
 	  		'title'		=> 'PoS | Trans Penjualan',
-	  		'assets'	=> array('jqueryui', 'sweetalert2', 'datatables', 'page_add_trans'), //, 'page_add_trans'
+	  		'assets'	=> array('jqueryui', 'sweetalert2', 'datatables', 'page_add_trans', 'page_add_sales'), //, 'page_add_trans'
 			'optRek'	=> $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
 			'daftarPrd' => $this->Sales_m->getTemp(),
-			'optMember'	=> $this->Customer_m->getActiveMember()
+			'optCtm'	=> $this->Customer_m->getAllowedCustomer(0, 0)->result_array()
 	  	);
 	  	$this->page = 'trans/add_trans_sales_v';
 	  	$this->layout();

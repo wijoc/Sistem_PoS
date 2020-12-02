@@ -29,7 +29,7 @@
 		<script src="<?php echo base_url() ?>assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function () {
-			  bsCustomFileInput.init();
+			  bsCustomFileInput.init()
 			});
 		</script>
 	<?php } ?>
@@ -60,16 +60,24 @@
 	<?php if(in_array('page_add_trans',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_transaction_assets.js"></script>
 		<script type="text/javascript">
-			autocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct') ?>";
+			prdAutocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct') ?>"
 		</script>
 	<?php } ?>	
 
-	<!-- Page Add Trans -->
+	<!-- Page Add Trans Purchase / Pembelian -->
 	<?php if(in_array('page_add_purchases',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_purchases_assets.js"></script>
 	<?php } ?>
 
 	<!-- Page Add Trans -->
+	<?php if(in_array('page_add_sales',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_sales_assets.js"></script>
+		<script type="text/javascript">
+			var ctmSearchUrl = "<?php echo site_url('Customer_c/searchCustomer/1') ?>"
+		</script>
+	<?php } ?>	
+
+	<!-- Page Add Trans Installment / Angsuran -->
 	<?php if(in_array('page_installment',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_installment_assets.js"></script>
 	<?php } ?>

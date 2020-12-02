@@ -64,7 +64,7 @@ $(document).ready(function(){
 
 	/* Autocomplete on Nama atau Barcode Product */
 	$("#inputNamaPrd").autocomplete({
-		source: autocompleteUrl,
+		source: prdAutocompleteUrl,
 
 		select: function(event, ui){
 			$('[name="postIdPrd"]').val(ui.item.prd_id);

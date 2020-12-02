@@ -37,11 +37,11 @@
                       </div>
                       <div class="card-body pt-0">
                         <div class="row">
-                          <div class="col-7">
+                          <div class="col-12">
                             <h5 class="lead"><b><?php echo $showCtm['ctm_name'] ?></b></h5>
                             <ul class="ml-4 mb-0 fa-ul text-muted">
                               <li class="small">
-                                <span class="fa-li"><i class="fas fa-sm fa-phone"></i></span> <?php echo ($showCtm['ctm_phone'] != '')? $showCtm['ctm_phone'] : '-' ?>
+                                <span class="fa-li"><i class="fas fa-md fa-phone"></i></span> <?php echo ($showCtm['ctm_phone'] != '')? $showCtm['ctm_phone'] : '-' ?>
                               </li>
                             </ul>
                             <ul class="ml-4 mb-0 fa-ul text-muted">
@@ -59,9 +59,6 @@
                                 <span class="fa-li"><i class="fas fa-md fa-tag"></i></span> Diskon : <?php echo ($showCtm['ctm_discount_type'] == 'ptg')? 'Rp. '.number_format($showCtm['ctm_discount_price']) : $showCtm['ctm_discount_percent'].' %' ?>
                               </li>
                             </ul>
-                          </div>
-                          <div class="col-5 text-center">
-                            <img src="<?php echo base_url() ?>assets/dist/img/user1-128x128.jpg" alt="" class="img-circle img-fluid">
                           </div>
                         </div>
                       </div>
@@ -245,4 +242,3 @@
         </div>
         <!-- /.modal-dialog -->
       </div>
-      <?php print("<pre>".print_r($dataCtm, true)."</pre>") ?>

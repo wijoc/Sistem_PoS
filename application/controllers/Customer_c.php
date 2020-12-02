@@ -75,11 +75,11 @@ Class Customer_c extends MY_Controller{
       redirect('Customer_c');
     }
 
-    /* Function : get customer berdasar customer id */
+    /* Function : get customer berdasar customer id / customer nama */
     function getCustomer(){
       $ctmID = base64_decode(urldecode($this->input->post('id')));
-
       $ctmData = $this->Customer_m->getCustomerOnID($ctmID);
+
       $returnData = array(
         'edit_id'      => $this->input->post('id'),
         'edit_name'    => $ctmData[0]['ctm_name'],
@@ -91,6 +91,38 @@ Class Customer_c extends MY_Controller{
       );
 
       echo json_encode($returnData);
+    }
+
+    /* Function : Autocomplete customer */
+    function searchCustomer($field){
+      /* Decalare variable */
+        $output = '';
+
+      /* Check kata yang dicari */
+        if($this->input->post('term')){
+          $data = $this->Customer_m->searchCustomer($field, $this->input->post('term'));
+        } else { 
+          $data = $this->Customer_m->getAllowedCustomer(0, 0)->result_array();
+        }
+
+      /* set output */
+        if(count($data) > 0){
+          foreach($data as $row){
+            $output .= 
+              '<div class="col-lg-6">
+                <button class="btn btn-block btn-flat btn-outline-info ctm-btn" data-dismiss="modal" style="margin: 5px;" onclick="ctmSelected(\''.urlencode(base64_encode($row['ctm_id'])).'\')" value="'.urlencode(base64_encode($row['ctm_id'])).'">
+                  <font style="font-weight: bold">'.$row['ctm_name'].'</font>
+                </button>
+              </div>';
+          }
+        } else {
+          $output .= 
+            '<div class="col-lg-12 text-center">
+              <div class="alert alert-danger" style="margin: 5px;"><b> Data pelanggan tidak ditemukan ! </b></div>
+            </div>';
+        }
+
+        echo $output;
     }
 
     /* Function : Proses Edit customer */
