@@ -54,11 +54,6 @@
                                 <span class="fa-li"><i class="fas fa-md fa-map"></i></span> <?php echo ($showCtm['ctm_address'] != '')? $showCtm['ctm_address'] : '-' ?>
                               </li>
                             </ul>
-                            <ul class="ml-4 mb-0 fa-ul text-muted">
-                              <li class="small">
-                                <span class="fa-li"><i class="fas fa-md fa-tag"></i></span> Diskon : <?php echo ($showCtm['ctm_discount_type'] == 'ptg')? 'Rp. '.number_format($showCtm['ctm_discount_price']) : $showCtm['ctm_discount_percent'].' %' ?>
-                              </li>
-                            </ul>
                           </div>
                         </div>
                       </div>
@@ -144,21 +139,6 @@
                       <textarea class="form-control" name="postCtmAddress" rows="3"></textarea>
                     </div>
                   </div>
-
-                <!-- Form-part input Pelanggan Discount -->
-                  <div class="form-group row">
-                    <label for="inputCtmDiscount" class="col-sm-3 col-form-label">Diskon <a class="float-right"> : </a></label>
-                    <div class="col-sm-3">
-                      <select class="form-control float-right disc-type" name="postCtmDiscountType" id="inputCtmDiscountType">
-                        <option value="prc">Persen</option>
-                        <option value="ptg">Potongan Harga</option>
-                      </select>
-                    </div>
-                    <div class="col-sm-5">
-                      <input type="number" class="form-control float-right disc" name="postCtmDiscount" id="inputCtmDiscount" step="0.01" max="100" placeholder="Besar diskon">
-                      <small><font color="red" style="font-style: italic">kosongkan jika tidak ada diskon</font></small>
-                    </div>
-                  </div>
               </div>
               <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -214,21 +194,6 @@
                     <label for="editCtmEmail" class="col-sm-3 col-form-label">Alamat <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <textarea class="form-control" name="postCtmAddress" id="editCtmAddress" rows="3"></textarea>
-                    </div>
-                  </div>
-
-                <!-- Form-part input Pelanggan Discount -->
-                  <div class="form-group row">
-                    <label for="inputCtmDiscount" class="col-sm-3 col-form-label">Diskon <a class="float-right"> : </a></label>
-                    <div class="col-sm-3">
-                      <select class="form-control float-right disc-type" name="postCtmDiscountType" id="editCtmDiscountType">
-                        <option value="prc">Persen</option>
-                        <option value="ptg">Potongan Harga</option>
-                      </select>
-                    </div>
-                    <div class="col-sm-5">
-                      <input type="number" class="form-control float-right disc" name="postCtmDiscount" id="editCtmDiscount" step="0.01" placeholder="Besar diskon">
-                      <small><font color="red" style="font-style: italic">kosongkan jika tidak ada diskon</font></small>
                     </div>
                   </div>
               </div>

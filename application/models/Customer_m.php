@@ -17,10 +17,7 @@ Class Customer_m extends CI_Model{
       '2' => 'ctm_phone',
       '3' => 'ctm_email',
       '4' => 'ctm_address',
-  		'5' => 'ctm_status',
-  		'6' => 'ctm_discount_type',
-      '7' => 'ctm_discount_percent',
-      '8' => 'ctm_discount_price'
+  		'5' => 'ctm_status'
   	);
 
   /* Query */

@@ -21,10 +21,11 @@
     <div class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-12">
+          <!-- Shopping Chart -->
+          <div class="col-12">
             <div class="card card-orange card-outline">
               <div class="card-header">
-                <h5 class="m-0">Form transaksi pembelian</h5>
+                <h5 class="m-0">Keranjang belanja</h5>
               </div>
               <div class="card-body">
                 <div id="alert-trans"></div>
@@ -36,37 +37,37 @@
                         <div class="form-group">
                           <label>Product</label>
                           <input type="hidden" name="postIdPrd">
-                          <input type="text" class="form-control" name="postNamaPrd" id="inputNamaPrd" placeholder="Nama / barcode product">
+                          <input type="text" class="form-control form-control-sm" name="postNamaPrd" id="inputNamaPrd" placeholder="Nama / barcode product">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-6">
                         <div class="form-group">
                           <label>Jumlah</label>
-                          <input type="text" class="form-control" name="postJumlahPrd" id="inputJumlahPrd" onkeyup="totalBayar('sales')" placeholder="Enter ...">
+                          <input type="text" class="form-control form-control-sm" name="postJumlahPrd" id="inputJumlahPrd" onkeyup="totalBayar('sales')" placeholder="Enter ...">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-6">
                         <div class="form-group">
                           <label>Harga Beli Satuan</label>
-                          <input type="text" class="form-control" name="postHargaPrd" id="inputHargaPrd" placeholder="Harga satuan...">
+                          <input type="text" class="form-control form-control-sm" name="postHargaPrd" id="inputHargaPrd" placeholder="Harga satuan...">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-6">
                         <div class="form-group">
                           <label>Potongan</label>
-                          <input type="text" class="form-control" name="postPotonganPrd" id="inputPotonganPrd" value="0" onkeyup="totalBayar('sales')" placeholder="Potongan harga...">
+                          <input type="text" class="form-control form-control-sm" name="postPotonganPrd" id="inputPotonganPrd" value="0" onkeyup="totalBayar('sales')" placeholder="Potongan harga...">
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-6">
                         <div class="form-group">
                           <label>Total</label>
-                          <input type="text" class="form-control" name="postTotalPrd" id="inputTotalPrd" placeholder="Harga total" readonly>
+                          <input type="text" class="form-control form-control-sm" name="postTotalPrd" id="inputTotalPrd" placeholder="Harga total" readonly>
                         </div>
                       </div>
                       <div class="col-md-1 col-sm-6">
                         <div class="form-group">
                           <label> &nbsp; </label>
-                          <input type="submit" class="form-control btn btn-sm btn-success" value="Tambah">
+                          <input type="submit" class="form-control form-control-sm btn btn-sm btn-success" value="Tambah">
                         </div>
                       </div> 
                     </div>
@@ -103,164 +104,219 @@
                         <?php endforeach; ?>
                         </tbody>
                         <tfoot>
-                          <th colspan="4" class="text-right">Total : </th>
+                          <th colspan="5" class="text-right">Total : </th>
                           <th><?php echo $totalBayar ?></th>
-                          <th>&nbsp;</th>
+                          <th>&nbsp;<input type="hidden" id="totalBayar" value="<?php echo $totalBayar ?>" disabled></th>
                         </tfoot>
                       </table>
                     </div>            
                 </form>
+              </div>
+            </div>
+          </div>
 
+          <!-- Trans Detail -->
+          <div class="col-12">
+            <div class="card card-orange card-outline">
+              <div class="card-header">
+                <h5 class="m-0">No. Transaksi : <b><?php echo $nextTransCode ?></b></h5>
+              </div>
+              <div class="card-body">
                 <!-- Form Transaksi -->
-                <form class="form-horizontal" method="POST" action="<?php echo site_url('Transaksi_c/addSalesProses') ?>">
+                <form class="form-horizontal row justify-content-between" method="POST" action="<?php echo site_url('Transaksi_c/addSalesProses') ?>">
 
-                  <!-- Form-part input Kode Transaksi : Otomatis -->
-                    <div class="form-group row">
-                      <label for="inputTransKode" class="col-sm-3 col-form-label">Kode Transaksi <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
+                  <div class="col-lg-7 col-md-12">
+
+                    <div class="row">
+                      <!-- Hidden Form -->
+                       <!-- Form-part input Kode Transaksi : Otomatis -->
                         <input type="text" class="form-control float-right" name="postTransKode" id="inputTransKode" value="<?php echo $nextTransCode ?>" placeholder="Kode transaksi terisi otomatis oleh sistem" required readonly>
-                      </div>
-                    </div>
+                       <!-- Form-part input tag id customer -->
+                        <input type="text" class="form-control float-right" name="postTransCtm" id="inputTransCtm" value="0000" readonly>
+                       <!-- Form-part input tag discount customer -->
+                        <input type="text" class="form-control float-right" name="postCtmDisType" id="inputCtmDisType" readonly>
+                       <!-- Form-part input tag id customer -->
+                        <input type="text" class="form-control float-right" name="postCtmDiscount" id="inputCtmDiscount" readonly>
 
-                  <!-- Form-part input tanggal transaksi -->
-                    <div class="form-group row">
-                      <label for="inputTransTgl" class="col-sm-3 col-form-label">Tanggal Transaksi<a class="float-right"> : </a></label>
-                      <div class="col-sm-3">
-                        <input type="date" class="form-control float-right" name="postTransTgl" id="inputTransTgl" required>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input customer -->
-                    <div class="form-group row">
-                      <label for="inputTransCtm" class="col-sm-3 col-form-label">Pembeli <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <div class="input-group">
-                          <input type="text" class="form-control" readonly>
-                          <span class="input-group-append">
-                            <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#modal-pilih-pelanggan">Pilih Customer !</button>
-                          </span>
+                      <!-- Form-part input tanggal transaksi -->
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+                          <div class="form-group">
+                            <label>Tgl Transaksi</label>
+                            <input type="date" class="form-control" name="postTransTgl" id="inputTransTgl" required>
+                          </div>
                         </div>
-                      </div>
-                    </div>
 
-                  <!-- Form-part input Pengiriman -->
-                    <div class="form-group row">
-                      <label for="inputTransOngkir" class="col-sm-3 col-form-label">Pengiriman <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <select class="form-control float-right" name="postTransOngkir" id="inputTransOngkir">
-                          <option value="N"> Tanpa jasa pengiriman </option>
-                          <option value="T"> Pengiriman Toko </option>
-                          <option value="E"> Ekspedisi </option>
-                        </select>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input total harga beli -->
-                    <div class="form-group row">
-                      <label for="inputTransTotalBayar" class="col-sm-3 col-form-label">Total Pembelian <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postTransTotalBayar" id="inputTransTotalBayar" value="<?php echo $totalBayar ?>" readonly required>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input Metode Pembayaran -->
-                    <div class="form-group row">
-                      <label for="inputTransMetode" class="col-sm-3 col-form-label">Metode Pembayaran <a class="float-right"> : </a></label>
-                      <div class="col-sm-5">
-                        <select class="form-control float-right" name="postTransMetode" id="inputTransMetode">
-                          <option> -- Pilih Metode -- </option>
-                          <option value="TF"> Transfer </option>
-                          <option value="TN"> Tunai </option>
-                        </select>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input Rekening -->
-                    <div class="form-group row" id="formpartRekening" style="display:none">
-                      <label for="inputTransRek" class="col-sm-3 col-form-label">Rekening <a class="float-right"> : </a></label>
-                      <div class="col-sm-5">
-                        <select class="form-control float-right" name="postTransRek" id="inputTransRek" required>
-                          <option> -- Pilih Rekening -- </option>
-                          <?php foreach($optRek as $showOpt): ?>
-                          <option value="<?php echo $showOpt['rek_id'] ?>"> <?php echo '['.$showOpt['bank_name'].'] '.$showOpt['rek_nomor'].' - '.$showOpt['rek_atas_nama'] ?> </option>
-                          <?php endforeach; ?>
-                        </select>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input Dibayar -->
-                    <div class="form-group row">
-                      <label for="inputTransPembayaran" class="col-sm-3 col-form-label">Pembayaran Pertama <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postTransPembayaran" id="inputTransPembayaran" onkeyup="hitungPayment()" placeholder="Pembayaran pertama" required>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input Kurang -->
-                    <div class="form-group row">
-                      <label for="inputTransKurang" class="col-sm-3 col-form-label">Kurangan <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postTransKurang" id="inputTransKurang" readonly required>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input Status Pembayaran -->
-                    <div class="form-group row">
-                      <label for="inputTransStatus" class="col-sm-3 col-form-label">Status Pembayaran <a class="float-right"> : </a></label>
-                      <div class="col-sm-5">
-                        <select class="form-control float-right" name="postTransStatus" id="inputTransStatus" readonly>
-                          <option> -- Pilih Status -- </option>
-                          <option value="T"> Lunas / Cash / Tunai </option>
-                          <option value="K"> Kredit </option>
-                        </select>
-                      </div>
-                    </div>
-
-                  <!-- Form-part input Tenor -->
-                    <div class="form-group row">
-                      <label for="inputTransTenor" class="col-sm-3 col-form-label">Tenor <a class="float-right"> : </a></label>
-                      <div class="col-sm-3">  
-                        <div class="input-group sm-3">
-                            <input type="number" class="form-control tenortempo" name="postTransTenor" id="inputTransTenor" min="0" required="" disabled>
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fa fa-times"></i></span>
+                      <!-- Form-part input customer -->
+                        <div class="col-md-8 col-sm-6 col-xs-12">
+                          <div class="form-group">
+                            <label>Pelanggan</label>
+                            <div class="input-group">
+                              <input type="text" class="form-control" id="inputCtmName" readonly>
+                              <span class="input-group-append">
+                                <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#modal-pilih-pelanggan">Pilih Customer</button>
+                              </span>
                             </div>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input customer -->
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+                          <div class="form-group">
+                            <label>Pengiriman</label>
+                            <select class="form-control" name="postTransDelivery" id="inputTransDelivery">
+                              <option value="N"> Tanpa jasa pengiriman </option>
+                              <option value="T"> Pengiriman Toko </option>
+                              <option value="E"> Ekspedisi </option>
+                            </select>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Ogkir -->
+                        <div class="col-md-4 col-sm-6 col-xs-12" id="divOngkir" style="display: none;">
+                          <div class="form-group">
+                            <label>Biaya kirim</label>
+                            <input type="number" class="form-control" min="0" name="postTransOngkir" id="inputTransOngkir" required="" disabled="">
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Status Pembayaran -->
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+                          <div class="form-group">
+                            <label>Status Pembayaran</label>
+                            <select class="form-control" name="postTransStatus" id="inputTransStatus" required>
+                              <option value="T"> Lunas / Cash / Tunai </option>
+                              <option value="K"> Kredit </option>
+                            </select>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Angsuran -->
+                        <div class="col-md-4 col-sm-6 col-xs-12" style="display: none;">
+                          <div class="form-group">
+                            <label>Angsuran</label>
+                            <input type="number" class="form-control float-right tenortempo" name="postTransAngsuran" id="inputTransAngsuran" value="" required="" disabled>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Tenor -->
+                        <div class="col-md-4 col-sm-6 col-xs-12" style="display: none;">
+                          <div class="form-group">
+                            <label>Tenor</label>
+                            <div class="input-group">
+                              <div class="input-group sm-3">
+                                  <input type="number" class="form-control tenortempo" name="postTransTenor" id="inputTransTenor" min="0" required="" disabled>
+                                  <div class="input-group-append">
+                                      <span class="input-group-text"><i class="fa fa-times"></i></span>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6 col-xs-12" style="display: none;">
+                          <div class="form-group">
+                            <label> Periode Tenor </label>
+                            <select class="form-control float-right tenortempo" name="postTransTenorPeriode" id="inputTransTenorPeriode" required="" disabled>
+                              <option value="D">Harian</option>
+                              <option value="W">Mingguan</option>
+                              <option value="M">Bulanan</option>
+                              <option value="Y">Tahunan</option>
+                            </select>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Metode Pembayaran -->
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+                          <div class="form-group">
+                            <label>Metode Pembayaran</label>
+                            <select class="form-control float-right" name="postTransMetode" id="inputTransMetode" required>
+                              <option> -- Pilih Metode -- </option>
+                              <option value="TF"> Transfer </option>
+                              <option value="TN"> Tunai </option>
+                            </select>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Rekening -->
+                        <div class="col-md-4 col-sm-6 col-xs-12" id="formpartRekening" style="display: none;">
+                          <div class="form-group">
+                            <label>Rekening</label>
+                            <select class="form-control float-right" name="postTransRek" id="inputTransRek" required>
+                              <option> -- Pilih Rekening -- </option>
+                              <?php foreach($optRek as $showOpt): ?>
+                              <option value="<?php echo $showOpt['rek_id'] ?>"> <?php echo '['.$showOpt['bank_name'].'] '.$showOpt['rek_nomor'].' - '.$showOpt['rek_atas_nama'] ?> </option>
+                              <?php endforeach; ?>
+                            </select>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Pembayaran -->
+                        <div class="col-12">
+                          <div class="form-group">
+                            <label>Pembayaran</label>
+                            <input type="number" class="form-control float-right" min="0" step="0.01" name="postTransPembayaran" id="inputTransPembayaran" onkeyup="countTotalSale()" placeholder="Pembayaran pertama" required>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-12 border border-success shadow p-3 mb-5 bg-white rounded">
+                    <div class="col-11">
+                      <div class="form-group row">
+                        <label class="col-sm-6 col-xs-2 col-form-label">Keranjang<a class="float-right"> : </a></label>
+                        <div class="col-sm-6 col-xs-9 text-right">
+                          <span><font style="font-weight: bold;"> Rp. 0.000,-</font></span>
                         </div>
                       </div>
-                      <div class="col-sm-3">
-                        <select class="form-control float-right tenortempo" name="postTransTenorPeriode" id="inputTransTenorPeriode" required="" disabled>
-                          <option value="D">Harian</option>
-                          <option value="W">Mingguan</option>
-                          <option value="M">Bulanan</option>
-                          <option value="Y">Tahunan</option>
-                        </select>
+                      <div class="form-group row">
+                        <label class="col-sm-6 col-xs-2 col-form-label">Ongkir<a class="float-right"> : </a></label>
+                        <div class="col-sm-6 col-xs-9 text-right">
+                          <span><font style="font-weight: bold;"> Rp. 0.000,-</font></span>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-6 col-xs-2 col-form-label">Diskon<a class="float-right"> : </a></label>
+                        <div class="col-sm-6 col-xs-9 text-right">
+                          <span><font style="font-weight: bold;"> Rp. <span id="divDiscount"></span>,-</font></span>
+                        </div>
+                      </div>
+                    </div> 
+                    <div class="col-12">
+                      <div class="row">
+                        <span class="col-11"><hr style="border: 1px solid grey"></span>
+                        <span class="col-1"><i class="fa fa-plus" style="color: green"></i></span>
                       </div>
                     </div>
-
-                  <!-- Form-part input Angsuran -->
-                    <div class="form-group row">
-                      <label for="inputTransAngsuran" class="col-sm-3 col-form-label"> Biaya angsuran <a class="float-right"> : </a></label>
-                      <div class="col-sm-3">
-                        <input type="number" class="form-control float-right tenortempo" name="postTransAngsuran" id="inputTransAngsuran" value="" required="" disabled>
+                    <div class="col-11">
+                      <div class="form-group row">
+                        <label class="col-sm-6 col-xs-2 col-form-label">Total<a class="float-right"> : </a></label>
+                        <div class="col-sm-6 col-xs-9 text-right">
+                          <font style="font-weight: bold;"> Rp. 0.000,-</font>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-6 col-xs-2 col-form-label">Dibayar<a class="float-right"> : </a></label>
+                        <div class="col-sm-6 col-xs-9 text-right">
+                          <font style="font-weight: bold;"> Rp. 0.000,-</font>
+                        </div>
                       </div>
                     </div>
-
-                  <!-- Form-part input Tempo -->
-                    <div class="form-group row">
-                      <label for="inputTransTempo" class="col-sm-3 col-form-label"> Tempo selanjutnya <a class="float-right"> : </a></label>
-                      <div class="col-sm-3">
-                        <input type="date" class="form-control float-right tenortempo" name="postTransTempo" id="inputTransTempo" value="" required="" disabled>
+                    <div class="col-12">
+                      <div class="row">
+                        <span class="col-11"><hr style="border: 1px solid grey"></span>
+                        <span class="col-1"><i class="fa fa-minus" style="color: red"></i></span>
                       </div>
                     </div>
-
-                  <!-- Form Submit Button -->
-                  <div class="float-right">
-                    <button type="reset" class="btn btn-secondary"><b> Reset </b></button>
-                    <button type="submit" class="btn btn-success"><b> Simpan </b></button>
+                    <div class="col-11">
+                      <div class="form-group row">
+                        <label class="col-sm-6 col-xs-2 col-form-label">Kembalian<a class="float-right"> : </a></label>
+                        <div class="col-sm-6 col-xs-9 text-right">
+                          <font style="font-weight: bold;"> Rp. 0.000,-</font>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                 </form>
-                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -284,7 +340,7 @@
               <div class="container row">
                 <div class="col-xs-12 col-lg-12" style="margin-bottom: 10px;">
                   <div class="input-group input-group-sm">
-                    <input class="form-control" type="search" onkeyup="searchCtm()" placeholder="Search" aria-label="Search" id="ctm-search">
+                    <input class="form-control" type="search" onkeyup="ctmSearch()" placeholder="Search" aria-label="Search" id="ctm-search">
                     <div class="input-group-append">
                       <button class="btn btn-info" type="submit">
                         <i class="fas fa-search"></i>

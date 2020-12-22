@@ -54,9 +54,6 @@ Class Customer_c extends MY_Controller{
       		'ctm_phone'  => $this->input->post('postCtmTelp'),
       		'ctm_email' => $this->input->post('postCtmEmail'),
           'ctm_address' => $this->input->post('postCtmAddress'),
-          'ctm_discount_type' => $this->input->post('postCtmDiscountType'),
-          'ctm_discount_price' => ($this->input->post('postCtmDiscountType') == 'ptg')? $this->input->post('postCtmDiscount') : NULL,
-          'ctm_discount_percent' => ($this->input->post('postCtmDiscountType') == 'prc')? $this->input->post('postCtmDiscount') : NULL,
           'ctm_status' => 'Y'
       	);
 
@@ -81,13 +78,11 @@ Class Customer_c extends MY_Controller{
       $ctmData = $this->Customer_m->getCustomerOnID($ctmID);
 
       $returnData = array(
-        'edit_id'      => $this->input->post('id'),
-        'edit_name'    => $ctmData[0]['ctm_name'],
-        'edit_phone'   => $ctmData[0]['ctm_phone'],
-        'edit_email'   => $ctmData[0]['ctm_email'],
-        'edit_address' => $ctmData[0]['ctm_address'],
-        'edit_discount_type'    => $ctmData[0]['ctm_discount_type'],
-        'edit_discount'   => ($ctmData[0]['ctm_discount_type'] == 'prc')? $ctmData[0]['ctm_discount_percent'] : $ctmData[0]['ctm_discount_price']
+        'data_id'      => $this->input->post('id'),
+        'data_name'    => $ctmData[0]['ctm_name'],
+        'data_phone'   => $ctmData[0]['ctm_phone'],
+        'data_email'   => $ctmData[0]['ctm_email'],
+        'data_address' => $ctmData[0]['ctm_address']
       );
 
       echo json_encode($returnData);
@@ -135,10 +130,7 @@ Class Customer_c extends MY_Controller{
           'ctm_name'  => $this->input->post('postCtmNama'),
           'ctm_phone'  => $this->input->post('postCtmTelp'),
           'ctm_email' => $this->input->post('postCtmEmail'),
-          'ctm_address' => $this->input->post('postCtmAddress'),
-          'ctm_discount_type' => $this->input->post('postCtmDiscountType'),
-          'ctm_discount_price' => ($this->input->post('postCtmDiscountType') == 'ptg')? $this->input->post('postCtmDiscount') : NULL,
-          'ctm_discount_percent' => ($this->input->post('postCtmDiscountType') == 'prc')? $this->input->post('postCtmDiscount') : NULL
+          'ctm_address' => $this->input->post('postCtmAddress')
         );
 
       /* update data di database */
