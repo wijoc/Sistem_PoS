@@ -51,9 +51,10 @@ Class Customer_m extends CI_Model{
     }
 
   	/* Query insert data customer */
-  	function insertCustomer($data){
+  	function insertCustomer($data, $return_value = null){
   		$resultInsert = $this->db->insert($this->ctm_tb, $data);
-  		return $resultInsert;
+      $returnResult = ($return_value == 'id') ? $this->db->insert_id() : $resultInsert;
+  		return $returnResult;
   	}
 
     /* Query update data customer */

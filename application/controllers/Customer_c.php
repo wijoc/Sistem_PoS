@@ -90,33 +90,54 @@ Class Customer_c extends MY_Controller{
 
     /* Function : Autocomplete customer */
     function searchCustomer($field){
-      /* Decalare variable */
+      /* Decalare variable untuk output */
         $output = '';
+      
+      /* Percabangan untuk jenis output
+        /* jika sales, output merupakan card untuk page list customer */
+        if($this->input->post('type') == 'ctm'){
+          /* Check kata yang dicari */
+            if($this->input->post('keyword')){
+              $data = $this->Customer_m->searchCustomer($field, $this->input->post('keyword'));
+            } else { 
+              $data = 0;
+            }
 
-      /* Check kata yang dicari */
-        if($this->input->post('term')){
-          $data = $this->Customer_m->searchCustomer($field, $this->input->post('term'));
-        } else { 
-          $data = $this->Customer_m->getAllowedCustomer(0, 0)->result_array();
+        /* jika ctm, output merupakan option untuk page add sales */
+        } else if($this->input->post('type') == 'sales') {
+          /* Check kata yang dicari */
+            if($this->input->post('keyword')){
+              $data = $this->Customer_m->searchCustomer($field, $this->input->post('keyword'));
+            }
+
+          /* set output */
+            if(count($data) > 0){
+              foreach($data as $row){
+                $output .= 
+                  '<div class="col-lg-6">
+                    <button class="btn btn-block btn-flat btn-outline-info ctm-btn" data-dismiss="modal" style="margin: 5px;" onclick="ctmSelected(\''.urlencode(base64_encode($row['ctm_id'])).'\')" value="'.urlencode(base64_encode($row['ctm_id'])).'">
+                      <font style="font-weight: bold">'.$row['ctm_name'].'</font>
+                    </button>
+                  </div>';
+              }
+            } else {
+              $output .= 
+                '<div class="col-lg-6">
+                  <button class="btn btn-block btn-flat btn-outline-info" data-dismiss="modal" style="margin: 5px;" onclick="ctmSelected(\'nctm\')" value="nctm"><font style="font-weight: bold">Pelanggan Baru</font></button>
+                </div>
+                <div class="col-lg-6">
+                  <button class="btn btn-block btn-flat btn-outline-info" data-dismiss="modal" style="margin: 5px;" onclick="ctmSelected(\'gctm\')" value="gctm"><font style="font-weight: bold">Pelanggan Umum</font></button>
+                </div>
+                <div class="col-lg-12">
+                  <div class="text-center alert alert-danger" style="margin: 10px;">
+                    <b> Data pelanggan tidak ditemukan ! </b>
+                  </div>
+                </div>';
+            }
+
         }
 
-      /* set output */
-        if(count($data) > 0){
-          foreach($data as $row){
-            $output .= 
-              '<div class="col-lg-6">
-                <button class="btn btn-block btn-flat btn-outline-info ctm-btn" data-dismiss="modal" style="margin: 5px;" onclick="ctmSelected(\''.urlencode(base64_encode($row['ctm_id'])).'\')" value="'.urlencode(base64_encode($row['ctm_id'])).'">
-                  <font style="font-weight: bold">'.$row['ctm_name'].'</font>
-                </button>
-              </div>';
-          }
-        } else {
-          $output .= 
-            '<div class="col-lg-12 text-center">
-              <div class="alert alert-danger" style="margin: 5px;"><b> Data pelanggan tidak ditemukan ! </b></div>
-            </div>';
-        }
-
+        /* Tampilkan output */
         echo $output;
     }
 

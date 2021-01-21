@@ -5,6 +5,8 @@
 	<script src="<?php echo base_url() ?>assets/plugins/bootstrap/js/bootstrap.bundle.js"></script>
 	<!-- AdminLTE App -->
 	<script src="<?php echo base_url() ?>assets/dist/js/adminlte.min.js"></script>
+	<!-- Regex format for float input -->
+	<script src="<?php echo base_url() ?>assets/dist/js/regex_format.js"></script>
 
 <!-- Addritional library needed -->
 	<!-- DataTables -->

@@ -46,7 +46,7 @@
                             <td><?php echo $no++ ?></td>
                             <td><?php echo $showTS['ts_trans_code'] ?></td>
                             <td><?php echo date('d-m-Y', strtotime($showTS['ts_date'])) ?></td>
-                            <td><?php echo ($showTS['ts_member_fk'] == 0)? 'Pelanggan non member' : $showTS['ctm_name'] ?></td>
+                            <td><?php echo ($showTS['ts_customer_fk'] == 0)? 'Pelanggan non member' : $showTS['ctm_name'] ?></td>
                             <td><?php echo $showTS['ts_sales_price'] ?></td>
                             <td>
                               <?php 

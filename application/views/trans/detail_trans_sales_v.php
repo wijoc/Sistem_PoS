@@ -84,7 +84,27 @@
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Pembeli<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo ($detailTrans[0]['ts_member_fk'] == 0)? 'General Customer / Pelanggan Umum' : $detailTrans[0]['member_name'] ?></p>
+                    <p class="col-form-label"><?php echo ($detailTrans[0]['ts_customer_fk'] == 0)? 'General Customer / Pelanggan Umum' : $detailTrans[0]['ctm_name'] ?></p>
+                  </div>
+                </div>
+                <?php if($detailTrans[0]['ts_delivery_metode'] != 'N'){ ?>
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Ongkir (<?php echo ($detailTrans[0]['ts_delivery_metode'] == 'T')? 'Toko' : 'Ekspedisi' ?>)<a class="float-right"> : </a></label>
+                  <div class="col-sm-8">
+                    <p class="col-form-label"><b><?php echo 'Rp'.number_format($detailTrans[0]['ts_delivery_payment'], 2) ?></b></p>
+                  </div>
+                </div>
+                <?php } ?>
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Total Penjualan<a class="float-right"> : </a></label>
+                  <div class="col-sm-8">
+                    <p class="col-form-label"><b><?php echo 'Rp'.number_format($detailTrans[0]['ts_sales_price'], 2) ?></b></p>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label"><?php echo ($detailTrans[0]['ts_status'] != 'T')? 'Uang Muka / DP' : 'Total dibayar'; ?><a class="float-right"> : </a></label>
+                  <div class="col-sm-8">
+                    <p class="col-form-label"><b><?php echo 'Rp'.number_format($detailTrans[0]['ts_paid'], 2) ?></b></p>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -97,6 +117,7 @@
                   <label class="col-sm-3 col-form-label">Status<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
                     <p class="col-form-label">
+                      <b>
                       <?php 
                         if($detailTrans[0]['ts_status'] == 'T'){
                           echo '<font color="green"> Pembayaran Tunai - Lunas </font>';
@@ -106,90 +127,75 @@
                           echo '<font color="red"> Pembayaran Kredit - Lunas </font>';
                         }
                       ?> 
+                      </b>
                     </p>
                   </div>
                 </div>
-                <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Tenor<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <p class="col-form-label">
-                      <?php if ($detailTrans[0]['ts_status'] == 'T'){
-                        echo '-';
-                      } else {
-                        echo '<b>'.$detailTrans[0]['ts_tenor'].'x </b> dengan periode ';
-                        if ($detailTrans[0]['ts_tenor_periode'] == 'D'){
-                          echo '<b>Harian</b>';
-                        } else if ($detailTrans[0]['ts_tenor_periode'] == 'W'){
-                          echo '<b>Mingguan</b>';
-                        } else if ($detailTrans[0]['ts_tenor_periode'] == 'M'){
-                          echo '<b>Bulanan</b>';
-                        } else if ($detailTrans[0]['ts_tenor_periode'] == 'Y'){
-                          echo '<b>Tahunan</b>';
+                <?php if($detailTrans[0]['ts_status'] != 'T'){ ?>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Tenor<a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <p class="col-form-label">
+                        <?php if ($detailTrans[0]['ts_status'] == 'T'){
+                          echo '-';
+                        } else {
+                          echo '<b>'.$detailTrans[0]['ts_tenor'].'x </b> dengan periode ';
+                          if ($detailTrans[0]['ts_tenor_periode'] == 'D'){
+                            echo '<b>Harian</b>';
+                          } else if ($detailTrans[0]['ts_tenor_periode'] == 'W'){
+                            echo '<b>Mingguan</b>';
+                          } else if ($detailTrans[0]['ts_tenor_periode'] == 'M'){
+                            echo '<b>Bulanan</b>';
+                          } else if ($detailTrans[0]['ts_tenor_periode'] == 'Y'){
+                            echo '<b>Tahunan</b>';
+                          }
                         }
-                      }
-                      ?> 
-                    </p>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Angsuran<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo ($detailTrans[0]['ts_status'] == 'T')? '-' : $detailTrans[0]['ts_installment'] ?> </p>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Total Penjualan<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo 'Rp. '.number_format($detailTrans[0]['ts_sales_price']) ?> </p>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Total dibayar<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo 'Rp. '.number_format($detailTrans[0]['ts_paid']) ?> </p>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Total Kurangan<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo 'Rp. '.number_format($detailTrans[0]['ts_insufficient']) ?> </p>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Riwayat angsuran<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <div class="table-responsive">
-                      <table class="table table-bordered">
-                        <thead>
-                          <tr class="text-center">
-                          	<th>#</th>
-                            <th>Angsuran ke -</th>
-                            <th>Tempo</th>
-                            <th>Tgl Bayar</th>
-                            <th>Biaya</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <?php foreach($detailPayment as $row): ?>
-                          <tr>
-                          	<td>
-                          		<?php echo ($row['is_status'] == 0)? '<i class="fas fa-times" style="color:red;"></i>' : '<i class="fas fa-check" style="color:green;"></i>' ?>
-                          	</td>
-                            <td class="text-center">
-                              <?php 
-                                echo $row['is_periode'];  
-                              ?>    
-                            </td>
-                            <td><?php echo date('d-m-Y', strtotime($row['is_due_date'])) ?></td>
-                            <td><?php echo ($row['is_payment_date'])? $row['is_payment_date'] : '-' ?></td>
-                            <td><?php echo 'Rp '.number_format($row['is_payment']) ?></td>
-                          </tr>
-                          <?php endforeach; ?>
-                        </tbody>
-                      </table>
+                        ?> 
+                      </p>
                     </div>
                   </div>
-                </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Angsuran<a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <p class="col-form-label"><b><font color="red"><?php echo ($detailTrans[0]['ts_status'] == 'T')? '-' : 'Rp'.number_format($detailTrans[0]['ts_installment'], 2) ?> </font></b></p>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Riwayat angsuran<a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <div class="table-responsive">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr class="text-center">
+                              <th>#</th>
+                              <th>Angsuran ke -</th>
+                              <th>Tempo</th>
+                              <th>Tgl Bayar</th>
+                              <th>Biaya</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php foreach($detailPayment as $row): ?>
+                            <tr>
+                              <td>
+                                <?php echo ($row['is_status'] == 0)? '<i class="fas fa-times" style="color:red;"></i>' : '<i class="fas fa-check" style="color:green;"></i>' ?>
+                              </td>
+                              <td class="text-center">
+                                <?php 
+                                  echo $row['is_periode'];  
+                                ?>    
+                              </td>
+                              <td><?php echo date('d-m-Y', strtotime($row['is_due_date'])) ?></td>
+                              <td><?php echo ($row['is_payment_date'])? $row['is_payment_date'] : '-' ?></td>
+                              <td><?php echo 'Rp '.number_format($row['is_payment']) ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                <?php } ?>
               </div>
             </div>
           </div>

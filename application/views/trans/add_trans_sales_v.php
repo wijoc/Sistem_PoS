@@ -106,7 +106,7 @@
                         <tfoot>
                           <th colspan="5" class="text-right">Total : </th>
                           <th><?php echo $totalBayar ?></th>
-                          <th>&nbsp;<input type="hidden" id="totalBayar" value="<?php echo $totalBayar ?>" disabled></th>
+                          <th>&nbsp;</th>
                         </tfoot>
                       </table>
                     </div>            
@@ -121,22 +121,22 @@
               <div class="card-header">
                 <h5 class="m-0">No. Transaksi : <b><?php echo $nextTransCode ?></b></h5>
               </div>
-              <div class="card-body">
-                <!-- Form Transaksi -->
-                <form class="form-horizontal row justify-content-between" method="POST" action="<?php echo site_url('Transaksi_c/addSalesProses') ?>">
+              <!-- Form Transaksi -->
+              <form class="form-horizontal" method="POST" action="<?php echo site_url('Transaksi_c/addSalesProses') ?>">
+                <div class="card-body row">
 
                   <div class="col-lg-7 col-md-12">
 
                     <div class="row">
                       <!-- Hidden Form -->
                        <!-- Form-part input Kode Transaksi : Otomatis -->
-                        <input type="text" class="form-control float-right" name="postTransKode" id="inputTransKode" value="<?php echo $nextTransCode ?>" placeholder="Kode transaksi terisi otomatis oleh sistem" required readonly>
+                        <input type="hidden" class="form-control float-right" name="postTransKode" id="inputTransKode" value="<?php echo $nextTransCode ?>" placeholder="Kode transaksi terisi otomatis oleh sistem" required readonly>
                        <!-- Form-part input tag id customer -->
-                        <input type="text" class="form-control float-right" name="postTransCtm" id="inputTransCtm" value="0000" readonly>
-                       <!-- Form-part input tag discount customer -->
-                        <input type="text" class="form-control float-right" name="postCtmDisType" id="inputCtmDisType" readonly>
-                       <!-- Form-part input tag id customer -->
-                        <input type="text" class="form-control float-right" name="postCtmDiscount" id="inputCtmDiscount" readonly>
+                        <input type="hidden" class="form-control float-right" name="postTransCtm" id="inputTransCtm" value="0000" readonly>
+                       <!-- Form-part input Total Sales -->
+                        <input type="hidden" class="form-control float-right" name="postTransTotalBayar" id="inputTransTotalBayar" readonly>
+                       <!-- Form-part total keranjang -->
+                        <input type="hidden" name="postTransTotalPrd" id="totalBayar" value="<?php echo $totalBayar ?>" disabled>
 
                       <!-- Form-part input tanggal transaksi -->
                         <div class="col-md-4 col-sm-6 col-xs-12">
@@ -175,7 +175,7 @@
                         <div class="col-md-4 col-sm-6 col-xs-12" id="divOngkir" style="display: none;">
                           <div class="form-group">
                             <label>Biaya kirim</label>
-                            <input type="number" class="form-control" min="0" name="postTransOngkir" id="inputTransOngkir" required="" disabled="">
+                            <input type="number" class="form-control" min="0" name="postTransOngkir" id="inputTransOngkir" onkeyup="countTotalSale()" required="" disabled="">
                           </div>
                         </div>
 
@@ -191,20 +191,20 @@
                         </div>
 
                       <!-- Form-part input Angsuran -->
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="display: none;">
+                        <div class="col-md-4 col-sm-6 col-xs-12 divKredit" style="display: none;">
                           <div class="form-group">
                             <label>Angsuran</label>
-                            <input type="number" class="form-control float-right tenortempo" name="postTransAngsuran" id="inputTransAngsuran" value="" required="" disabled>
+                            <input type="number" class="form-control float-right inputKredit" onkeyup="countPayment()" name="postTransAngsuran" id="inputTransAngsuran" required="" disabled>
                           </div>
                         </div>
 
                       <!-- Form-part input Tenor -->
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="display: none;">
+                        <div class="col-md-4 col-sm-6 col-xs-12 divKredit" style="display: none;">
                           <div class="form-group">
                             <label>Tenor</label>
                             <div class="input-group">
                               <div class="input-group sm-3">
-                                  <input type="number" class="form-control tenortempo" name="postTransTenor" id="inputTransTenor" min="0" required="" disabled>
+                                  <input type="number" class="form-control inputKredit" name="postTransTenor" id="inputTransTenor" onkeyup="countPayment()" min="0" required="" disabled>
                                   <div class="input-group-append">
                                       <span class="input-group-text"><i class="fa fa-times"></i></span>
                                   </div>
@@ -212,15 +212,23 @@
                             </div>
                           </div>
                         </div>
-                        <div class="col-md-4 col-sm-6 col-xs-12" style="display: none;">
+                        <div class="col-md-4 col-sm-6 col-xs-12 divKredit" style="display: none;">
                           <div class="form-group">
                             <label> Periode Tenor </label>
-                            <select class="form-control float-right tenortempo" name="postTransTenorPeriode" id="inputTransTenorPeriode" required="" disabled>
+                            <select class="form-control float-right inputKredit" name="postTransTenorPeriode" id="inputTransTenorPeriode" onchange="countPayment()" required="" disabled>
                               <option value="D">Harian</option>
                               <option value="W">Mingguan</option>
                               <option value="M">Bulanan</option>
                               <option value="Y">Tahunan</option>
                             </select>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Tempo -->
+                        <div class="col-md-4 col-sm-6 col-xs-12 divKredit" style="display: none;">
+                          <div class="form-group">
+                            <label>Tempo</label>
+                            <input type="date" class="form-control float-right inputKredit" name="postTransTempo" id="inputTransTempo" required="" disabled>
                           </div>
                         </div>
 
@@ -252,71 +260,93 @@
                       <!-- Form-part input Pembayaran -->
                         <div class="col-12">
                           <div class="form-group">
-                            <label>Pembayaran</label>
-                            <input type="number" class="form-control float-right" min="0" step="0.01" name="postTransPembayaran" id="inputTransPembayaran" onkeyup="countTotalSale()" placeholder="Pembayaran pertama" required>
+                            <label id="labelPayment">Pembayaran</label>
+                            <input type="number" class="form-control float-right" min="0" step="0.01" name="postTransPembayaran" id="inputTransPembayaran" onkeypress="preventNonNumericalInput(event)" onkeyup="countPayment()" placeholder="Pembayaran pertama" required>
                           </div>
                         </div>
                     </div>
+                    <div id="divNewCtm" style="display: none">
+                      <hr>
+                      <!-- Form-part input Pelanggan nama -->
+                        <div class="form-group row">
+                          <label for="inputCtmNama" class="col-sm-4 col-form-label">Nama Pelanggan <font color="red">*</font> <a class="float-right"> : </a></label>
+                          <div class="col-sm-8">
+                            <input type="text" class="inputNewCtm form-control float-right" name="postCtmNama" placeholder="Nama Pelanggan" required disabled>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Pelanggan Telp -->
+                        <div class="form-group row">
+                          <label for="inputCtmTelp" class="col-sm-4 col-form-label">No. Telphone <a class="float-right"> : </a></label>
+                          <div class="col-sm-8">
+                            <input type="text" class="inputNewCtm form-control float-right" name="postCtmTelp" placeholder="Nomor telepone pelanggan" disabled>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Pelanggan Email -->
+                        <div class="form-group row">
+                          <label for="inputCtmEmail" class="col-sm-4 col-form-label">E - mail <a class="float-right"> : </a></label>
+                          <div class="col-sm-8">
+                            <input type="email" class="inputNewCtm form-control float-right" name="postCtmEmail" placeholder="Alamat E - mail" disabled>
+                          </div>
+                        </div>
+
+                      <!-- Form-part input Pelanggan Alamat -->
+                        <div class="form-group row">
+                          <label for="inputCtmEmail" class="col-sm-4 col-form-label">Alamat <a class="float-right"> : </a></label>
+                          <div class="col-sm-8">
+                            <textarea class="inputNewCtm form-control" name="postCtmAddress" rows="3" disabled></textarea>
+                          </div>
+                        </div>
+                    </div>
+                    
                   </div>
-                  <div class="col-lg-4 col-md-12 border border-success shadow p-3 mb-5 bg-white rounded">
-                    <div class="col-11">
-                      <div class="form-group row">
-                        <label class="col-sm-6 col-xs-2 col-form-label">Keranjang<a class="float-right"> : </a></label>
-                        <div class="col-sm-6 col-xs-9 text-right">
-                          <span><font style="font-weight: bold;"> Rp. 0.000,-</font></span>
-                        </div>
+                  <div class="col-lg-5 col-md-12 col-sm-12">
+                    <hr>
+                    <div class="info-box mb-3">
+                      <span class="info-box-icon bg-success"><i class="fas fa-shopping-basket"></i></span>
+
+                      <div class="info-box-content">
+                        <span class="info-box-text">Total</span>
+                        <span class="info-box-number float-right"><h2 style="font-weight: bold">Rp. <span id="notaTotal"></span></h2></span>
                       </div>
-                      <div class="form-group row">
-                        <label class="col-sm-6 col-xs-2 col-form-label">Ongkir<a class="float-right"> : </a></label>
-                        <div class="col-sm-6 col-xs-9 text-right">
-                          <span><font style="font-weight: bold;"> Rp. 0.000,-</font></span>
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label class="col-sm-6 col-xs-2 col-form-label">Diskon<a class="float-right"> : </a></label>
-                        <div class="col-sm-6 col-xs-9 text-right">
-                          <span><font style="font-weight: bold;"> Rp. <span id="divDiscount"></span>,-</font></span>
-                        </div>
-                      </div>
-                    </div> 
-                    <div class="col-12">
-                      <div class="row">
-                        <span class="col-11"><hr style="border: 1px solid grey"></span>
-                        <span class="col-1"><i class="fa fa-plus" style="color: green"></i></span>
-                      </div>
+                      <!-- /.info-box-content -->
                     </div>
-                    <div class="col-11">
-                      <div class="form-group row">
-                        <label class="col-sm-6 col-xs-2 col-form-label">Total<a class="float-right"> : </a></label>
-                        <div class="col-sm-6 col-xs-9 text-right">
-                          <font style="font-weight: bold;"> Rp. 0.000,-</font>
+                    <div class="info-box mb-3">
+                      <span class="info-box-icon bg-warning"><i class="fas fa-cash-register"></i></span>
+
+                      <div class="info-box-content" id="infoCash">
+                        <span class="info-box-text" id="labelChange">Kembalian</span>
+                        <span class="info-box-number float-right"><h2 style="font-weight: bold">Rp. <span id="notaChange">0,00</span></h2></span>
+                      </div>
+                      <div class="info-box-content row divKredit" id="infoKredit" style="display: none">
+                        <div class="info-box-content col-12">
+                          <span class="info-box-text">Uang muka</span>
+                          <span class="info-box-number float-right">
+                            <h2 style="font-weight: bold">
+                                Rp. <span id="notaDP">0,00</span>
+                            </h2>
+                          </span>
+                        </div>
+                        <div class="col-12 ">
+                          <span class="float-right">
+                            <font style="font-weight: bold;" color="red">
+                              <span id="notaTenor"></span>
+                              , Angsuran : Rp. <span id="notaInstallment">0,00</span>
+                            </font>
+                          </span>
                         </div>
                       </div>
-                      <div class="form-group row">
-                        <label class="col-sm-6 col-xs-2 col-form-label">Dibayar<a class="float-right"> : </a></label>
-                        <div class="col-sm-6 col-xs-9 text-right">
-                          <font style="font-weight: bold;"> Rp. 0.000,-</font>
-                        </div>
-                      </div>
+                      <!-- /.info-box-content -->
                     </div>
-                    <div class="col-12">
-                      <div class="row">
-                        <span class="col-11"><hr style="border: 1px solid grey"></span>
-                        <span class="col-1"><i class="fa fa-minus" style="color: red"></i></span>
-                      </div>
-                    </div>
-                    <div class="col-11">
-                      <div class="form-group row">
-                        <label class="col-sm-6 col-xs-2 col-form-label">Kembalian<a class="float-right"> : </a></label>
-                        <div class="col-sm-6 col-xs-9 text-right">
-                          <font style="font-weight: bold;"> Rp. 0.000,-</font>
-                        </div>
-                      </div>
-                    </div>
+                    <!-- / -->
                   </div>
 
-                </form>
-              </div>
+                </div>
+                <div class="card-footer">
+                  <button type="submit" class="col-12 btn btn-primary">Simpan</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -348,12 +378,21 @@
                     </div>
                   </div>
                 </div>
-                <div class="container row" id="ctm-data">
+                <div class="container row" id="staticChoice">
+                  <div class="col-lg-6">
+                    <button class="btn btn-block btn-flat btn-outline-info" data-dismiss="modal" style="margin: 5px;" onclick="ctmSelected('nctm')" value="nctm"><font style="font-weight: bold">Pelanggan Baru</font></button>
+                  </div>
+                  <div class="col-lg-6">
+                    <button class="btn btn-block btn-flat btn-outline-info" data-dismiss="modal" style="margin: 5px;" onclick="ctmSelected('0000')" value="gctm"><font style="font-weight: bold">Pelanggan Umum</font></button>
+                  </div>
                   <?php foreach ($optCtm as $row) : ?>
                     <div class="col-lg-6">
                       <button class="btn btn-block btn-flat btn-outline-info" data-dismiss="modal" style="margin: 5px;" onclick="ctmSelected('<?php echo urlencode(base64_encode($row['ctm_id'])) ?>')" value="<?php echo urlencode(base64_encode($row['ctm_id'])) ?>"><font style="font-weight: bold"><?php echo $row['ctm_name'] ?></font></button>
                     </div>
                   <?php endforeach ?>
+                </div>
+                <div class="container row" id="ctm-data">
+                  <!-- ajax search customer option -->
                 </div>
               </div>
             </div>

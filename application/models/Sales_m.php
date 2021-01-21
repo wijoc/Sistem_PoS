@@ -9,18 +9,19 @@ Class Sales_m extends CI_Model{
 		'0' => 'ts_id',
 		'1' => 'ts_trans_code',
 		'2' => 'ts_date',
-		'3' => 'ts_member_fk',
+		'3' => 'ts_customer_fk',
 		'4' => 'ts_payment_metode',
 		'5' => 'ts_sales_price',
 		'6' => 'ts_account_fk',
 		'7' => 'ts_paid',
-		'8' => 'ts_insufficient',
-		'9' => 'ts_status',
-		'10' => 'ts_tenor',
-		'11' => 'ts_tenor_periode',
-    '12' => 'ts_installment',
-		'13' => 'ts_due_date',
-    '14' => 'ts_delete'
+		'8' => 'ts_status',
+		'9' => 'ts_tenor',
+		'10' => 'ts_tenor_periode',
+    '11' => 'ts_installment',
+		'12' => 'ts_due_date',
+    '13' => 'ts_delete',
+    '14' => 'ts_delivery_metode',
+    '15' => 'ts_delivery_payment'
 	);
 
   /* Declare table Detail Trans Penjualan */
@@ -88,7 +89,7 @@ Class Sales_m extends CI_Model{
     function getAvailableTransSales(){
       $this->db->select('ts.*, ctm.ctm_name');
       $this->db->from($this->ts_tb.' as ts');
-      $this->db->where($this->ts_f[14], '0');
+      $this->db->where($this->ts_f[13], '0');
       $this->db->join('tb_customer as ctm', 'ctm.ctm_id = ts.'.$this->ts_f['3'], 'LEFT');
       $this->db->order_by($this->ts_f[2], 'DESC');
       $resultSelect = $this->db->get();
@@ -98,13 +99,19 @@ Class Sales_m extends CI_Model{
     /* Query select data trans penjualan berdasar trans id */
     function getTransSalesonID($trans_id){
       $this->db->select('ts.*, dts.*, ctm.ctm_name, tb_product.prd_name');
-      $this->db->from($this->ts_tb.' as ts');
-      $this->db->join($this->dts_tb.' as dts', 'dts.'.$this->dts_f[1].'= ts.'.$this->ts_f[0]);
-      $this->db->join('tb_customer as ctm', 'ctm.ctm_id = ts.'.$this->ts_f[3]);
-      $this->db->join('tb_product', 'tb_product.prd_id = dts.'.$this->dts_f[2]);
+      $this->db->from($this->ts_tb.' as ts ');
+      $this->db->join($this->dts_tb.' as dts', 'ts.'.$this->ts_f[0].'=dts.'.$this->dts_f[1]);
+      $this->db->join('tb_customer as ctm', 'ts.'.$this->ts_f[3].'=ctm.ctm_id', 'LEFT');
+      $this->db->join('tb_product', 'dts.'.$this->dts_f[2].'=tb_product.prd_id');
       $this->db->where('ts.'.$this->ts_f[0], $trans_id);
       $resultSelect = $this->db->get();
       return $resultSelect->result_array();
+    }
+
+    /** Delete trans sales (permanent) */
+    function deleteTransSales($trans_id){
+  		$resultDelete = $this->db->delete($this->ts_tb, array($this->ts_f[0] => $trans_id));
+  		return $resultDelete;
     }
 
   /* Start Query Table Detail Trans Purchase */
