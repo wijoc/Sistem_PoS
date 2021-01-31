@@ -453,8 +453,8 @@ Class Transaksi_c extends MY_Controller{
 		$this->layout();
 	}
 	  
-	/* Function : Invoice Page */
-	public function invoicePage($encoded_trans_id){
+	/* Function : Receipt Page */
+	public function receiptPage($encoded_trans_id){
 	  /* Load Model Setting */
 	  	$this->load->model('Profile_m');
 
@@ -464,13 +464,13 @@ Class Transaksi_c extends MY_Controller{
 	  /* Data yang akan dikirim ke view */
 		$this->pageData = array(
 		  	'title' => 'PoS | Transaksi',
-		  	'assets' =>array(),
+		  	'assets' =>array('receipt'),
 			'detailTrans' => $this->Sales_m->getTransSalesonID($transSaleId),
 			'dataProfile' => $this->Profile_m->getProfile(1)
 	 	);
 
 	  /* Load file view */
-		$this->page = 'trans/invoice_v';
+		$this->page = 'trans/receipt_v';
 
 	  /* Call function layout dari my controller */
 		$this->layout();
@@ -536,7 +536,8 @@ Class Transaksi_c extends MY_Controller{
 			'ts_tenor' 			=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTenor') : '',
 			'ts_tenor_periode' 	=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTenorPeriode') : '',
 			'ts_installment' 	=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransAngsuran') : '',
-			'ts_due_date' 		=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTempo') : ''
+			'ts_due_date' 		=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTempo') : '',
+			'ts_inovice'		=> ($this->input->post('postTransStatus') == 'K')? 'Y' : ''
 		);
 
 	  /* Input data transaksi ke database */
@@ -722,7 +723,9 @@ Class Transaksi_c extends MY_Controller{
 	  	redirect('Transaksi_c/paySalesInstallmentPage/'.$encoded_trans_id);
 
 	}
-	/* Function : Proses delete trans penjualan */
+
+	/** Function : Proses delete trans penjualan */
+	/** Function : Proses input reciept */
 
   /* Fungsi untuk CRUD Pengeluaran Lainnya */
   	/* Function : Page add pengeluaran lainnya */

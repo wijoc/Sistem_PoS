@@ -1,0 +1,53 @@
+.fifty-eight-receipt {
+  box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+  padding:2mm;
+  margin: 0 auto;
+  width: 58mm;
+  background: #FFF;
+}
+
+.logo > h2{font-size: 1.0em;}
+
+.info > h1{
+    font-size: 1.5em;
+    color: #222;
+}
+
+.info > h3{
+    font-size: 1.2em;
+    font-weight: 300;
+    line-height: 2em;
+}
+.info > p{
+    font-size: .7em;
+    color: #666;
+    line-height: 1.2em;
+}
+
+#bot > table {
+    width: 100%;
+}
+
+#bot > table > .table-title {
+  font-size: .5em;
+  background: #EEE;
+}
+
+.item{
+    width: 24mm;
+}
+
+.item-text{
+    font-size: .5em;
+}
+
+
+#legalcopy{
+    margin-top: 5mm;
+}
+
+.legal{
+    font-size: .7em;
+    color: #666;
+    line-height: 1.2em;
+}

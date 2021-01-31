@@ -61,10 +61,24 @@
                             </td>
                             <td><?php echo ($showTS['ts_status'] === 'T')? '-' : date('d-m-Y', strtotime($showTS['ts_due_date']));?></td>
                             <td class="text-center">
-                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailSalesPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>"><i class="fas fa-search"></i></a>
-                              <a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/paySalesInstallmentPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>"><i class="fas fa-credit-card"></i></a>
-                              <a class="btn btn-xs btn-success" href=""><i class="fas fa-exchange-alt"></i></a>
-                              <a class="btn btn-xs btn-primary" href="<?php echo site_url('Transaksi_c/invoicePage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>"><i class="fas fa-file-invoice-dollar"></i></a>
+                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Transaksi_c/detailSalesPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>" data-toggle="tooltip" data-placement="top" title="Detail transaksi">
+                                <i class="fas fa-search"></i>
+                              </a>
+                              <a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/paySalesInstallmentPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>" data-toggle="tooltip" data-placement="top" title="Bayar angsuran">
+                                <i class="fas fa-credit-card"></i>
+                              </a>
+                              <a class="btn btn-xs btn-success" href="" data-toggle="tooltip" data-placement="top" title="Retur barang">
+                                <i class="fas fa-exchange-alt"></i>
+                              </a>
+                              <?php if ($showTS['ts_status'] === 'K') { ?>
+                                <a class="btn btn-xs btn-danger" href="<?php echo site_url('Transaksi_c/invoicePage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>" data-toggle="tooltip" data-placement="top" title="Cetak invoice">
+                                  <i class="fas fa-file-invoice-dollar"></i>
+                                </a>
+                              <?php } else { ?>
+                                <a class="btn btn-xs btn-primary" href="<?php echo site_url('Transaksi_c/receiptPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>" data-toggle="tooltip" data-placement="top" title="Cetak receipt">
+                                  <i class="fas fa-receipt"></i>
+                                </a>
+                              <?php } ?>
                             </td>
                           </tr>
                         <?php endforeach; ?>

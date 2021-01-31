@@ -8,6 +8,13 @@
 	<!-- Regex format for float input -->
 	<script src="<?php echo base_url() ?>assets/dist/js/regex_format.js"></script>
 
+	<!-- Tooltip -->
+	<script>
+		$(function () {
+			$('[data-toggle="tooltip"]').tooltip()
+		})
+	</script>
+
 <!-- Addritional library needed -->
 	<!-- DataTables -->
 	<?php if(in_array('datatables',$assets)){ ?>

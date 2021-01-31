@@ -22,3 +22,10 @@
   <?php if(in_array('jqueryui',$assets)){ ?>
     <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/jquery-ui/jquery-ui.css">
   <?php } ?>
+
+<!-- Additional page goes here -->
+
+  <!-- Receipt -->
+  <?php if(in_array('receipt',$assets)){ ?>
+    <link rel="stylesheet" href="<?php echo base_url() ?>assets/dist/css/pages/receipt_style.css">
+  <?php } ?>
