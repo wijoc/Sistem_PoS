@@ -9,6 +9,7 @@ Class Transaksi_c extends MY_Controller{
 		$this->load->model('Purchases_m');
 		$this->load->model('Rekening_m');
 		$this->load->model('Installment_m');
+		$this->load->model('Return_m');
 	}
 
 	public function index(){
@@ -425,12 +426,16 @@ Class Transaksi_c extends MY_Controller{
 	  /* Decode id */
 		$transSaleId = base64_decode(urldecode($encoded_trans_id));
 
+	  /** Get data transaksi sales */
+	  	$salesData = $this->Sales_m->getTransSalesonID($transSaleId);
+
 	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title'		=> 'PoS | Trans Pembelian',
-			'assets'	=> array('datatables', 'sweetalert2', 'page_list_trans'),
-			'detailTrans' => $this->Sales_m->getTransSalesonID($transSaleId),
-			'detailPayment' => $this->Installment_m->getInstallmentSales($transSaleId)
+			'assets'	=> array('datatables', 'sweetalert2', 'alert'),
+			'detailTrans' => $salesData,
+			'detailPayment' => $this->Installment_m->getInstallmentSales($transSaleId),
+			'detailReturn'	=> ($salesData[0]['ts_return'] == 'Y')? $this->Return_m->getReturnOnID($salesData[0]['ts_id']) : NULL
 		);
 		$this->page = 'trans/detail_trans_sales_v';
 		$this->layout();
@@ -725,7 +730,6 @@ Class Transaksi_c extends MY_Controller{
 	}
 
 	/** Function : Proses delete trans penjualan */
-	/** Function : Proses input reciept */
 
   /* Fungsi untuk CRUD Pengeluaran Lainnya */
   	/* Function : Page add pengeluaran lainnya */
@@ -922,5 +926,79 @@ Class Transaksi_c extends MY_Controller{
   	  /* redirect ke page add purchase */
 	  	redirect('Transaksi_c/addRevenuesPage');
   	}
-  	
+	  
+  /** Fungsi untuk CRUD Return */
+	/** Function : Page return penjualan */
+	public function returnSalesPage($encoded_trans_id){
+		/* Decode id */
+		  $transSaleId = base64_decode(urldecode($encoded_trans_id));
+  
+		/* Data yang ditampilkan ke view */
+		  $this->pageData = array(
+			  'title'		=> 'PoS | Trans Pembelian',
+			  'assets'	=> array('datatables', 'sweetalert2', 'page_list_trans'),
+			  'detailTrans' => $this->Sales_m->getTransSalesonID($transSaleId),
+			  'detailPayment' => $this->Installment_m->getInstallmentSales($transSaleId)
+		  );
+		  $this->page = 'trans/sales/return_sales_v';
+		  $this->layout();
+	}
+
+	/** Function : Proses return penjualan */
+	function returnSalesProses(){
+		/** Get semua prd id */
+		$id = $this->input->post('post_prd[]');
+
+		/** Get post data dari form */
+		$dataPost = array(
+			'ts_id_fk' 	=> base64_decode(urldecode($this->input->post('returnSalesID'))), 
+			'rc_date'	=> $this->input->post('returnDate'),
+			'rc_paid'	=> $this->input->post('returnPayment'),
+			'rc_note'	=> $this->input->post('returnNote')
+		);
+		
+		/** Cek product yang di return */
+		foreach ($id as $row){
+			if ($this->input->post('returnQty-'.$row) > 0 || $this->input->post('returnQty-'.$row) != ''){
+				$arrayPrd[] = array(
+					'rc_id_fk'		=> NULL,
+					'prd_id_fk'		=> base64_decode(urldecode($row)),
+					'drc_qty'		=> $this->input->post('returnQty-'.$row), 
+					'drc_status'	=> $this->input->post('returnStatus-'.$row)
+				);
+			}
+		}
+
+		/** Proses input data retur */
+			/** Cek inputan return product. Jika produk sudah diinput */
+			if (isset($arrayPrd) || $arrayPrd != null){
+				$inputReturn = $this->Return_m->insertRC($dataPost);
+
+				/** Input detail return product */
+				if ($inputReturn['resultInsert'] > 0){
+					for($i = 0; $i < count($arrayPrd); $i++){
+						$arrayPrd[$i]['rc_id_fk'] = $inputReturn['insertID'];
+					}
+
+					/** Set field ts_retur = Y, sebagai penanda bahwa sudah pernah return */
+					$returnData = array('ts_return' => 'Y');
+					$updateTS 	= $this->Sales_m->updateTransSales(base64_decode(urldecode($this->input->post('returnSalesID'))), $returnData);
+
+					/** Input detail product */
+					$inputPrd = $this->Return_m->insertDetailRC($arrayPrd);
+
+					if($inputPrd > 0 && $updateTS > 0) {
+						$this->session->set_flashdata('flashStatus', 'success');
+						$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan transaksi retur !');
+					}
+				}
+			} else {
+				$this->session->set_flashdata('flashStatus', 'failed');
+				$this->session->set_flashdata('flashMsg', 'Gagal menambahkan transaksi retur !');
+			}
+		
+		redirect('Transaksi_c/detailSalesPage/'.$this->input->post('returnSalesID'));
+		//print("<pre>".print_r($arrayPrd, true)."</pre>");
+	}
+
 }

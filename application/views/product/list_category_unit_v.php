@@ -65,6 +65,7 @@
                                 <td><?php echo $showCtgr['ctgr_name'] ?></td>
                                 <td><?php echo $showCtgr['ctgr_name'] ?></td>
                                 <td class="text-center">
+                                  <a class="btn btn-xs btn-info" href="<?php echo site_url('Product_c/listProductOnCatPage/').urlencode(base64_encode($showCtgr['ctgr_id'])) ?>"><i class="fas fa-search"></i></a>
                                   <a class="btn btn-xs btn-warning ctgrEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showCtgr['ctgr_id'] ?>" data-name="<?php echo $showCtgr['ctgr_name'] ?>"><i class="fas fa-edit"></i></a>
                                   <a class="btn btn-xs btn-danger" onclick="confirmDelete('ctgr', '<?php echo urlencode(base64_encode($showCtgr['ctgr_id'])) ?>', '<?php echo site_url('Product_c/deleteCategoryProses') ?>')"><i class="fas fa-trash"></i></a>
                                 </td>

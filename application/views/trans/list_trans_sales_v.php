@@ -67,7 +67,7 @@
                               <a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/paySalesInstallmentPage').'/'.urlencode(base64_encode($showTS['ts_id'])) ?>" data-toggle="tooltip" data-placement="top" title="Bayar angsuran">
                                 <i class="fas fa-credit-card"></i>
                               </a>
-                              <a class="btn btn-xs btn-success" href="" data-toggle="tooltip" data-placement="top" title="Retur barang">
+                              <a class="btn btn-xs btn-success" href="<?php echo site_url('Transaksi_c/returnSalesPage/').urlencode(base64_encode($showTS['ts_id']))  ?>" data-toggle="tooltip" data-placement="top" title="Retur barang">
                                 <i class="fas fa-exchange-alt"></i>
                               </a>
                               <?php if ($showTS['ts_status'] === 'K') { ?>

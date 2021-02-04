@@ -48,6 +48,19 @@ Class Product_c extends MY_Controller {
 		$this->layout();
 	}
 
+	/* Function : List product berdasar kategori */
+	public function listProductOnCatPage($encoded_cat_id){
+		$catID = base64_decode(urldecode($encoded_cat_id));
+		$this->pageData = array(
+			'title'  => 'PoS | List Product',
+			'assets' => array('datatables', 'sweetalert2', 'f_confirm', 'page_product'),
+			'dataProduct' => $this->Product_m->getProductOnCat($catID),
+			'dataKtgr'	=> $this->Product_m->getCategoryOnID($catID)
+		);
+		$this->page = 'product/list_product_v';
+		$this->layout();
+	}
+
 	/* Function : List stock product */
 	public function listStockProductPage(){
 		/* set data yang akan ditampilkan */

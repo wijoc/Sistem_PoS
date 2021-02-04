@@ -21,7 +21,8 @@ Class Sales_m extends CI_Model{
 		'12' => 'ts_due_date',
     '13' => 'ts_delete',
     '14' => 'ts_delivery_metode',
-    '15' => 'ts_delivery_payment'
+    '15' => 'ts_delivery_payment',
+    '16' => 'ts_return'
 	);
 
   /* Declare table Detail Trans Penjualan */
@@ -106,6 +107,14 @@ Class Sales_m extends CI_Model{
       $this->db->where('ts.'.$this->ts_f[0], $trans_id);
       $resultSelect = $this->db->get();
       return $resultSelect->result_array();
+    }
+
+    /** Query update sales */
+    function updateTransSales($id, $data){
+      $this->db->set($data);
+      $this->db->where($this->ts_f[0], $id);
+      $resultUpdate = $this->db->update($this->ts_tb);
+      return $resultUpdate;
     }
 
     /** Delete trans sales (permanent) */

@@ -101,6 +101,19 @@ Class Product_m extends CI_Model {
       return $resultSelect->result_array();
     }
 
+    /** Query select product berdasar kategori */
+    function getProductOnCat($ktgr_id){ 
+      $this->db->select('prd.*, kat.'.$this->cat_f[1].', sat.'.$this->unit_f[1]);
+      $this->db->from($this->prd_tb.' as prd');
+      $this->db->join($this->cat_tb.' as kat', 'kat.'.$this->cat_f[0].'=prd.'.$this->prd_f[3]);
+      $this->db->join($this->unit_tb.' as sat', 'sat.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
+      $this->db->where($this->prd_f[12], '0');
+      $this->db->where($this->cat_f[0], $ktgr_id);
+      $this->db->order_by($this->prd_f[0], 'ASC');
+      $resultSelect = $this->db->get();
+      return $resultSelect->result_array();
+    }
+
     /* Query select stock product */
     function getStockProduct(){
       $this->db->select('prd.'.$this->prd_f[0].', prd.'.$this->prd_f[1].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[8].', prd.'.$this->prd_f[9].', prd.'.$this->prd_f[10].', stk.*');
@@ -176,6 +189,14 @@ Class Product_m extends CI_Model {
 
    /* Function : Select semua kategori, dan sort berdasar ctgr_name */
     function getCategory(){
+      $this->db->order_by($this->cat_f[1], 'ASC');
+      $resultInsert = $this->db->get($this->cat_tb);
+      return $resultInsert->result_array();
+    }
+  
+   /** Query : Select kategori berdasar id */
+    function getCategoryOnID($id){
+      $this->db->where($this->cat_f[0], $id);
       $this->db->order_by($this->cat_f[1], 'ASC');
       $resultInsert = $this->db->get($this->cat_tb);
       return $resultInsert->result_array();

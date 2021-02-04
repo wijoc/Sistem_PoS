@@ -33,6 +33,7 @@
                 </div>
               </div>
               <div class="card-body">
+                <div id="alert-proses"></div>
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Nomor Transaksi<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
@@ -193,6 +194,57 @@
                           </tbody>
                         </table>
                       </div>
+                    </div>
+                  </div>
+                <?php } ?>
+                <?php if ($detailTrans[0]['ts_return'] == 'Y') { ?>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Tgl Retur<a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <p class="col-form-label"><?php echo date('d F Y H:i', strtotime($detailReturn[0]['rc_date'])) ?></p>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Detail Retur<a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <div class="table-responsive">
+                        <table class="table table-bordered">
+                          <thead>
+                            <th>No.</th>
+                            <th>Product</th>
+                            <th>Jumlah</th>
+                            <th>Harga satuan</th>
+                          </thead>
+                          <tbody>
+                            <?php 
+                            $no = 1;
+                            $totalBayar = 0; 
+                            foreach ($detailReturn as $row): 
+                            ?>
+                            <tr>
+                              <td><?php echo $no++ ?></td>
+                              <td><?php echo $row['prd_name']; ?></td>
+                              <td><?php echo $row['drc_qty'] ?></td>
+                              <td class="text-right">
+                                <?php 
+                                  if($row['drc_status'] == 'T'){
+                                    echo 'Tukar ( Barang rusak )';
+                                  } else if($row['drc_status'] == 'RU'){
+                                    echo 'Retur Uang';
+                                  }
+                                ?>
+                              </td>
+                            </tr>
+                          <?php endforeach; ?>
+                          </tbody>
+                        </table>
+                      </div>    
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Total biaya retur<a class="float-right"> : </a></label>
+                    <div class="col-sm-8">
+                      <p class="col-form-label"><?php echo 'Rp'.number_format($detailReturn[0]['rc_paid'], 2) ?></p>
                     </div>
                   </div>
                 <?php } ?>

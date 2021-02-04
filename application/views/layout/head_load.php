@@ -23,6 +23,14 @@
     <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/jquery-ui/jquery-ui.css">
   <?php } ?>
 
+  <!-- Datepicker -->
+  <?php if(in_array('daterangepicker', $assets)){ ?>
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/daterangepicker/daterangepicker.css">
+    <!-- Tempusdominus Bbootstrap 4 -->
+    <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+  <?php } ?>
+
 <!-- Additional page goes here -->
 
   <!-- Receipt -->

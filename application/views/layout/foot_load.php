@@ -43,6 +43,28 @@
 		</script>
 	<?php } ?>
 
+	<!-- Datepicker -->
+	<?php if(in_array('daterangepicker', $assets)){ ?>
+		<!-- moment js -->
+		<script src="<?php echo base_url() ?>assets/plugins/moment/moment.min.js"></script>
+		<!-- date-range-picker -->
+		<script src="<?php echo base_url() ?>assets/plugins/daterangepicker/daterangepicker.js"></script>
+		<!-- Tempusdominus Bootstrap 4 -->
+		<script src="<?php echo base_url() ?>assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+		<script>
+			$(function (){
+				//Date range picker with time picker
+				$('#datepicker').daterangepicker({
+					timePicker: true,
+					timePickerIncrement: 30,
+					locale: {
+						format: 'MM/DD/YYYY hh:mm A'
+					}
+				})
+			})
+		</script>	
+	<?php } ?>
+
 
 <!-- additional Page script goes here -->
 	<!-- Page Kategori & Satuan -->
@@ -105,6 +127,11 @@
 	<!-- Page Konfirmasi Delete -->
 	<?php if(in_array('f_confirm', $assets)){ ?>
 		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/f_confirm.js"></script>
+	<?php } ?>
+
+	<!-- Alert -->
+	<?php if(in_array('alert', $assets)){ ?>
+		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/alert.js"></script>
 	<?php } ?>
 
 	<!-- Untuk session input -->

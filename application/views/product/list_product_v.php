@@ -24,7 +24,7 @@
           <div class="col-lg-12">
             <div class="card card-orange card-outline">
               <div class="card-header">
-                <h5 class="m-0 card-title">Daftar Produk</h5>
+                <h5 class="m-0 card-title">Daftar Produk <?php echo (!empty($dataKtgr))? 'dalam kategori <b>'.$dataKtgr[0]['ctgr_name'].'</b>' : '' ?></h5>
                 <a class="btn btn-sm btn-success float-right" href="<?php echo site_url('Product_c/addProductPage') ?>"> <i class="fas fa-plus"></i> Tambah Produk</a>
               </div>
               <div class="card-body">
@@ -41,7 +41,14 @@
                         <th>Aksi</th>
                       </thead>
                       <tbody>
-                        <?php $no = 1; foreach ($dataProduct as $showPrd) : ?>
+                        <?php 
+                        $no = 1;
+                        if($dataProduct == NULL){ ?>
+                          <tr>
+                            <td colspan="8" class="text-center alert alert-danger" opacity="0.8">Data Kategori belum tersedia !</td>
+                          </tr>
+                        <?php } 
+                        foreach ($dataProduct as $showPrd) : ?>
                           <tr>
                             <td><?php echo $no++ ?></td>
                             <td><?php echo $showPrd['prd_name'] ?></td>

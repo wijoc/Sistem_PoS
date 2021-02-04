@@ -145,6 +145,31 @@
             </ul>
           </li>
 
+          <!-- Menu : Laporan -->
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-file-signature"></i>
+              <p>
+                Laporan
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="../charts/inline.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Laporan Penjualan</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../charts/inline.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Laporan Pembelian</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
           <!-- Menu : Setting -->
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
@@ -171,31 +196,6 @@
                 <a href="<?php echo site_url('Setting_c/listRekeningPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengaturan Rekening Bank</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <!-- Menu : Laporan -->
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-file-signature"></i>
-              <p>
-                Laporan
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="../charts/inline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Laporan Penjualan</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="../charts/inline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Laporan Pembelian</p>
                 </a>
               </li>
             </ul>
