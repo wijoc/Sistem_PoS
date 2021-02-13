@@ -23,7 +23,8 @@ Class Product_m extends CI_Model {
       '9' => 'prd_initial_ng_stock',
       '10' => 'prd_initial_return_stock',
   		'11' => 'prd_description',
-      '12' => 'prd_status'
+      '12' => 'prd_status',
+      '13' => 'prd_image'
   	);
 
    /* Table Stock */
@@ -33,7 +34,7 @@ Class Product_m extends CI_Model {
       '1' => 'stk_product_id_fk',
       '2' => 'stk_good',
       '3' => 'stk_not_good',
-      '4' => 'stk_return'
+      '4' => 'stk_opname'
     );
 
    /* Table Kategori */
@@ -166,7 +167,7 @@ Class Product_m extends CI_Model {
         $this->stk_f[1] => $id,
         $this->stk_f[2] => $data['prd_initial_g_stock'],
         $this->stk_f[3] => $data['prd_initial_ng_stock'],
-        $this->stk_f[4] => $data['prd_initial_return_stock']
+        $this->stk_f[4] => $data['prd_initial_op_stock']
       );
       $resultInsert = $this->db->insert($this->stk_tb, $insertData);
       return $resultInsert;

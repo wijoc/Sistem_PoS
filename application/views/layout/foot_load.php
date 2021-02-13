@@ -7,7 +7,6 @@
 	<script src="<?php echo base_url() ?>assets/dist/js/adminlte.min.js"></script>
 	<!-- Regex format for float input -->
 	<script src="<?php echo base_url() ?>assets/dist/js/regex_format.js"></script>
-
 	<!-- Tooltip -->
 	<script>
 		$(function () {
@@ -21,6 +20,8 @@
 		<script src="<?php echo base_url() ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
 		<script src="<?php echo base_url() ?>assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 		<script src="<?php echo base_url() ?>assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+		<!-- Default datatable -->
+		<script src="<?php echo base_url() ?>assets/extra/datatables_default.js"></script>
 	<?php } ?>
 
 	<!-- SweetAlert 2 -->
@@ -64,23 +65,64 @@
 			})
 		</script>	
 	<?php } ?>
+	
+	<!-- Dropify -->
+	<?php if(in_array('dropify', $assets)){ ?>
+        <script src="<?php echo base_url() ?>assets/plugins/dropify/js/dropify.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                // Basic
+                $('.dropify').dropify();
 
+                // Translated
+                $('.dropify-fr').dropify({
+                    messages: {
+                        default: 'Glissez-déposez un fichier ici ou cliquez',
+                        replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                        remove:  'Supprimer',
+                        error:   'Désolé, le fichier trop volumineux'
+                    }
+                });
+
+                // Used events
+                var drEvent = $('#input-file-events').dropify();
+
+                drEvent.on('dropify.beforeClear', function(event, element){
+                    return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+                });
+
+                drEvent.on('dropify.afterClear', function(event, element){
+                    alert('File deleted');
+                });
+
+                drEvent.on('dropify.errors', function(event, element){
+                    console.log('Has Errors');
+                });
+
+                var drDestroy = $('#input-file-to-destroy').dropify();
+                drDestroy = drDestroy.data('dropify')
+                $('#toggleDropify').on('click', function(e){
+                    e.preventDefault();
+                    if (drDestroy.isDropified()) {
+                        drDestroy.destroy();
+                    } else {
+                        drDestroy.init();
+                    }
+                })
+            });
+        </script>
+	<?php } ?>
 
 <!-- additional Page script goes here -->
+	<!-- Page Add Produk -->
+	<?php if(in_array('p_add_product',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_product_assets.js"></script>
+	<?php } ?>
+
 	<!-- Page Kategori & Satuan -->
 	<?php if(in_array('page_catunit',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/cat_unit_assets.js"></script>
-	<?php } ?>	
-
-	<!-- Page Add Product -->
-	<?php if(in_array('page_add_product',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_prd_assets.js"></script>
-	<?php } ?>	
-
-	<!-- Page List Product -->
-	<?php if(in_array('page_product',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/prd_assets.js"></script>
-	<?php } ?>	
+	<?php } ?>
 
 	<!-- Page Add Product -->
 	<?php if(in_array('page_contact',$assets)){ ?>

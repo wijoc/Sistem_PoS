@@ -944,6 +944,18 @@ Class Transaksi_c extends MY_Controller{
 		  $this->layout();
 	}
 
+	/** Function : Page daftar return customer */
+	public function listReturnSales(){
+		$this->pageData = array(
+			'title'		=> 'Retur | Sistem PoS',
+			'assets'	=> array('datatable'),
+			'dataReturn' => $this->Return_m->getAllRC()
+		);
+
+		$this->page = 'trans/sales/list_return_sales_v';
+		$this->layout();
+	}
+
 	/** Function : Proses return penjualan */
 	function returnSalesProses(){
 		/** Get semua prd id */

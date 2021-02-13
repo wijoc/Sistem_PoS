@@ -21,118 +21,147 @@
     <div class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-10">
+          <div class="col-lg-12">
             <div class="card card-orange card-outline">
-              <div class="card-header">
-                <h5 class="m-0">Tambah Produk Baru</h5>
-              </div>
-              <form class="form-horizontal" method="POST" action="<?php echo site_url('Product_c/addProductProses') ?>">
+              <form class="form-horizontal" id="formAddPrd" method="POST" action="<?php echo site_url('Product_c/addProductProses') ?>" enctype="multipart/form-data">
                 <div class="card-body">
                   <!-- Div ALert -->
-                  <div id="alert-product"></div>
-
-                  <!-- Form-part input Kode Produk : Otomatis -->
-                    <div class="form-group row">
-                      <label for="inputBarcodePrd" class="col-sm-3 col-form-label">Barcode Produk <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control float-right" name="postBarcodePrd" id="inputBarcodePrd" placeholder="Kosongkan jika produk tidak memiliki barcode">
+                  <div id="alert-proses"></div>
+                  
+                  <h4>Informasi Produk</h4>
+                  <hr>
+                  <div class="col-12 ml-1 mb-3 row">
+                    <!-- Form-part input Nama Produk -->
+                      <div class="col-md-5">
+                        <div class="form-group">
+                          <label>Nama Product <font color="red"><small>*</small></font></label>
+                          <input type="text" class="form-control" name="postNama" id="inputNama" placeholder="Nama Produk" required>
+                          <small id="errorNama" style="display:none; color:red; font-style: italic"></small>
+                        </div>
                       </div>
-                    </div>
 
-                  <!-- Form-part input Nama Produk -->
-                    <div class="form-group row">
-                      <label for="inputNamaPrd" class="col-sm-3 col-form-label">Nama Produk<a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control float-right" name="postNamaPrd" id="inputNamaPrd" placeholder="Nama Produk" required>
+                    <!-- Form-part input Kode Produk -->
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label>Barcode Product</label>
+                          <input type="text" class="form-control" name="postBarcode" id="inputBarcode" placeholder="Kosongkan jika tidak memiliki barcode">
+                        </div>
                       </div>
-                    </div>
 
-                  <!-- Form-part input Kategori -->
-                    <div class="form-group row">
-                      <label for="inputKategoriPrd" class="col-sm-3 col-form-label">Kategori <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <select class="form-control float-right" name="postKategoriPrd" id="inputKategoriPrd">
-                          <option> -- Pilih Kategori -- </option>
-                          <?php foreach ($optCtgr as $showCtgr): ?>
-                            <option value="<?php echo $showCtgr['ctgr_id'] ?>"> <?php echo $showCtgr['ctgr_name'] ?> </option>
-                          <?php endforeach; ?>
-                        </select>
+                    <!-- Form-part input Kategori Produk -->
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label>Kategori <font color="red"><small>*</small></font></label>
+                          <select class="form-control" name="postKategori" id="inputKategori" required>
+                            <option value=""> -- Pilih Kategori -- </option>
+                            <?php foreach ($optCtgr as $showCtgr): ?>
+                              <option value="<?php echo $showCtgr['ctgr_id'] ?>"> <?php echo $showCtgr['ctgr_name'] ?> </option>
+                            <?php endforeach; ?>
+                          </select>
+                          <small id="errorKategori" style="display:none; color:red; font-style: italic"></small>
+                        </div>
                       </div>
-                    </div>
 
-                  <!-- Form-part input Harga Beli -->
-                    <div class="form-group row">
-                      <label for="inputHargaBeli" class="col-sm-3 col-form-label">Harga Beli <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postHargaBeli" id="inputHargaBeli" placeholder="Harga Beli Produk" required>
+                    <!-- Form-part input Harga Beli -->
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label>Harga Beli <font color="red"><small>*</small></font></label>
+                          <input type="number" class="form-control" step="0.01" name="postHargaBeli" id="inputHargaBeli" placeholder="Harga Beli Produk" required>
+                          <small id="errorHargaBeli" style="display:none; color:red; font-style: italic"></small>
+                        </div>
                       </div>
-                    </div>
 
-                  <!-- Form-part input Harga Jual -->
-                    <div class="form-group row">
-                      <label for="inputHargaJual" class="col-sm-3 col-form-label">Harga Jual <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" step="0.01" name="postHargaJual" id="inputHargaJual" placeholder="Harga Jual Produk" required>
+                    <!-- Form-part input Harga Jual -->
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label>Harga Jual <font color="red"><small>*</small></font></label>
+                          <div class="row">
+                              <div class="col-11">
+                                <input type="number" class="form-control" step="0.01" name="postHargaJual" id="inputHargaJual" placeholder="Harga Jual Produk" required>
+                              </div>
+                              <div class="col-1"><h3><b>/</b></h3></div>
+                          </div>
+                          <small id="errorHargaJual" style="display:none; color:red; font-style: italic"></small>
+                        </div>
                       </div>
-                    </div>
 
-                  <!-- Form-part input Satuan Produk -->
-                    <div class="form-group row">
-                      <label for="inputSatuan" class="col-sm-3 col-form-label">Satuan <a class="float-right"> : </a></label>
-                      <div class="col-sm-5">
-                        <select class="form-control float-right" name="postSatuan" id="inputSatuan">
-                          <option> -- Pilih Satuan -- </option>
-                          <?php foreach ($optUnit as $showUnit): ?>
-                            <option value="<?php echo $showUnit['unit_id'] ?>"> <?php echo $showUnit['unit_name'] ?> </option>
-                          <?php endforeach; ?>
-                        </select>
+                    <!-- Form-part input Satuan -->
+                      <div class="col-lg-2 col-md-4">
+                        <div class="form-group">
+                          <label>Satuan <font color="red"><small>*</small></font></label>
+                          <select class="form-control" name="postSatuan" id="inputSatuan" required>
+                            <option value=""> -- Pilih Satuan -- </option>
+                            <?php foreach ($optUnit as $showUnit): ?>
+                              <option value="<?php echo $showUnit['unit_id'] ?>"> <?php echo $showUnit['unit_name'] ?> </option>
+                            <?php endforeach; ?>
+                          </select>
+                          <small id="errorSatuan" style="display:none; color:red; font-style: italic"></small>
+                        </div>
                       </div>
-                    </div>
 
-                  <!-- Form-part input Isi -->
-                    <div class="form-group row">
-                      <label for="inputIsi" class="col-sm-3 col-form-label">Isi tiap satuan <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postIsi" id="inputIsi" placeholder="Isi Produk tiap satuan" required>
+                    <!-- Form-part input Isi per statuan -->
+                      <div class="col-lg-2 col-md-4">
+                        <div class="form-group">
+                          <label>Isi per satuan <font color="red"><small>*</small></font></label>
+                          <input type="number" class="form-control" name="postIsi" id="inputIsi" placeholder="Isi tiap satuan" required>
+                          <small id="errorIsi" style="display:none; color:red; font-style: italic"></small>
+                        </div>
                       </div>
-                    </div>
 
-                  <!-- Form-part input stok awal good / rusak -->
-                    <div class="form-group row">
-                      <label for="inputStokAwalG" class="col-sm-3 col-form-label">Stok awal <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postStokAwalG" id="inputStokAwalG" placeholder="Stok awal produk, stok akan berisi 0 jika tidak terisi">
+                    <!-- Form-part input gambar product -->
+                      <div class="col-lg-6 col-sm-12">
+                        <div class="form-group">
+                          <label>Gambar <small class="help" style="color: red; font-style: italic;">( potrait / square, maksimal 2MB )</small></label>
+                          <input type="file" class="dropify" name="postImg" id="inputImg" data-allowed-formats="portrait square" data-max-file-size="2M" data-max-height="2000" />
+                          <small id="errorImg" style="display:none; color:red; font-style: italic"></small>
+                        </div>
                       </div>
-                    </div>
+                    
+                    <!-- Form-part input deskripsi -->
+                      <div class="col-lg-6 col-sm-12">
+                        <div class="form-group">
+                          <label>Deskripsi</label>
+                          <textarea class="form-control" name="postDeskripsi" id="inputDeskripsi" rows="8"></textarea>
+                        </div>
+                      </div>
+                  </div>
+                  
+                  <h4>Stok Awal Produk</h4>
+                  <hr>
+                  <div class="col-12 ml-1 row">
+                    <!-- Form-part input Stok Awal -->
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label>Stok awal <font color="red"><small>*</small></font></label>
+                          <input type="number" class="form-control" name="postStockG" id="inputStockG" placeholder="Stok awal produk" required>
+                          <small id="errorStockG" style="display:none; color:red; font-style: italic"></small>
+                        </div>
+                      </div>
 
-                  <!-- Form-part input stok awal damaged / not good / rusak -->
-                    <div class="form-group row">
-                      <label for="inputStokAwalNG" class="col-sm-3 col-form-label">Stok awal damaged / rusak <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postStokAwalNG" id="inputStokAwalNG" placeholder="Stok awal produk rusak / damaged , stok akan berisi 0 jika tidak terisi">
+                    <!-- Form-part input Stok Awal -->
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label>Stok damaged / rusak <font color="red"><small>*</small></font></label>
+                          <input type="number" class="form-control" name="postStockNG" id="inputStockNG" placeholder="Stok awal produk rusak / damaged " required>
+                          <small id="errorStockNG" style="display:none; color:red; font-style: italic"></small>
+                        </div>
                       </div>
-                    </div>
 
-                  <!-- Form-part input stok awal -->
-                    <div class="form-group row">
-                      <label for="inputStokAwalR" class="col-sm-3 col-form-label">Stok awal return <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <input type="number" class="form-control float-right" name="postStokAwalR" id="inputStokAwalR" placeholder="Stok awal produk retur pelanggan, stok akan berisi 0 jika tidak terisi">
+                    <!-- Form-part input Stok Awal -->
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label>Stok Opname <font color="red"><small>*</small></font></label>
+                          <input type="number" class="form-control" name="postStockOP" id="inputStockOP" placeholder="Stok awal opname" required>
+                          <small id="errorStockOP" style="display:none; color:red; font-style: italic"></small>
+                        </div>
                       </div>
-                    </div>
+                  </div>
 
-                  <!-- Form-part input Deskripsi Produk -->
-                    <div class="form-group row">
-                      <label for="inputDeskripsiPrd" class="col-sm-3 col-form-label">Deskripsi <a class="float-right"> : </a></label>
-                      <div class="col-sm-8">
-                        <textarea class="form-control" rows="3" name="postDeskripsiPrd" id="inputDeskripsiPrd" placeholder="Deskripsi Produk (optional)"></textarea>
-                      </div>
-                    </div>
                 </div>
                 <div class="card-footer">
                   <div class="float-right">
                     <button type="reset" class="btn btn-secondary"><b> Reset </b></button>
-                    <button type="submit" class="btn btn-success"><b> Simpan </b></button>
+                    <button type="submit" class="btn btn-success" id="submitForm"><b> Simpan </b></button>
                   </div>
                 </div>
               </form>

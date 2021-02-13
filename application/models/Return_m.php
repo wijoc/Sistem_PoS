@@ -46,8 +46,15 @@ Class Return_m extends CI_Model {
             $resultInsert = $this->db->insert_batch($this->drc_tb, $data);
             return $resultInsert;
         }
+
+      /** Query get all return_customer data */
+        function getAllRC(){
+            $this->db->order_by($this->rc_f[2], 'DESC');
+            $resultSelect = $this->db->get($this->rc_tb);
+            return $resultSelect->result_array();
+        }
     
-      /** Get data return berdasar ts_id */
+      /** Query get data return berdasar ts_id */
         function getReturnOnID($sales_id){
             $this->db->select('rc.*, drc.*, prd.prd_name');
             $this->db->from($this->rc_tb.' as rc');

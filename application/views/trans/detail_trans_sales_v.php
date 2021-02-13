@@ -24,7 +24,11 @@
           <div class="col-lg-10">
             <div class="card card-orange card-outline">
               <div class="card-header">
-                <h5 class="m-0 card-title">Detail Transaksi Penjualan</h5>
+                <h5 class="m-0 card-title">
+                  Detail Penjualan - 
+                  <font color="green" style="font-weight: bold;"><?php echo $detailTrans[0]['ts_trans_code'] ?></font> -
+                  <?php echo ($detailTrans[0]['ts_return'] == 'Y')? '<font color="red">[RETUR] </font>' : '' ?> 
+                </h5>
                 <div class="float-right">
                 	<a class="btn btn-xs btn-warning" href="<?php echo site_url('Transaksi_c/listSalesPage') ?>"><i class="fas fa-list"></i></a>
                 	<?php if($detailTrans[0]['ts_status'] != 'T') { ?>
@@ -34,12 +38,6 @@
               </div>
               <div class="card-body">
                 <div id="alert-proses"></div>
-                <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Nomor Transaksi<a class="float-right"> : </a></label>
-                  <div class="col-sm-8">
-                    <p class="col-form-label"><?php echo $detailTrans[0]['ts_trans_code'] ?></p>
-                  </div>
-                </div>
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Tanggal Transaksi<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
@@ -83,7 +81,7 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Pembeli<a class="float-right"> : </a></label>
+                  <label class="col-sm-3 col-form-label">Pembeli<a class="float-right"> : </a></label>                   
                   <div class="col-sm-8">
                     <p class="col-form-label"><?php echo ($detailTrans[0]['ts_customer_fk'] == 0)? 'General Customer / Pelanggan Umum' : $detailTrans[0]['ctm_name'] ?></p>
                   </div>
