@@ -3,14 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed !');
 
 Class Product_m extends CI_Model {
 
-  /* Note :
-      1. prd status => 1 untuk deleted, 0 untuk allowed
+  /** Note :
+    *  1. prd status => 1 untuk deleted, 0 untuk allowed
   */
 
-  /* Declare Table */
-   /* Table Product */
-  	var $prd_tb = 'tb_product';
-  	var $prd_f  = array(
+  /** Declare Table */
+   /** Table Product */
+  	protected $prd_tb = 'tb_product';
+  	protected $prd_f  = array(
   		'0' => 'prd_id',
   		'1' => 'prd_barcode',
   		'2' => 'prd_name',
@@ -25,7 +25,7 @@ Class Product_m extends CI_Model {
   		'11' => 'prd_description',
       '12' => 'prd_status',
       '13' => 'prd_image'
-  	);
+    );
 
    /* Table Stock */
     var $stk_tb = 'det_product_stock';
@@ -51,8 +51,8 @@ Class Product_m extends CI_Model {
    		'1' => 'unit_name'
     );
 
-  /* Function CRUD Product */
-    /* Query next Increment Product */
+  /** Function CRUD Product */
+    /** Query next Increment Product */
     function getNextIncrement(){
       $this->db->select('AUTO_INCREMENT');
       $this->db->from('information_schema.TABLES');

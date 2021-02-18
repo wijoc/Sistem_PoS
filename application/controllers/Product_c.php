@@ -222,35 +222,34 @@ Class Product_c extends MY_Controller {
 				'errorIsi'		=> form_error('postIsi'),
 				'errorStockG'	=> form_error('postStockG'),
 				'errorStockNG' => form_error('postStockNG'),
-				'errorStockOP' => form_error('postStockOP')
-				
+				'errorStockOP' => form_error('postStockOP')			
 			);
 		} else {
 			/** Get post data dari form */
-			  $postData = array(
-				  'prd_barcode'			=> $this->input->post('postBarcode'),
-				  'prd_name'			=> $this->input->post('postNama'),
-				  'prd_category_id_fk'	=> $this->input->post('postKategori'),
-				  'prd_purchase_price'	=> $this->input->post('postHargaBeli'),
-				  'prd_selling_price'	=> $this->input->post('postHargaJual'),
-				  'prd_unit_id_fk' 	 	=> $this->input->post('postSatuan'),
-				  'prd_containts' 	 	=> $this->input->post('postIsi'),
-				  'prd_initial_g_stock'	=> $this->input->post('postStockG'),
-				  'prd_initial_ng_stock'	=> $this->input->post('postStockNG'),
-				  'prd_initial_op_stock'	=> $this->input->post('postStockOP'),
-				  'prd_description'		=> $this->input->post('postDeskripsi'),
-				  'prd_image'			=> NULL
-			  );
+				$postData = array(
+					'prd_barcode'			=> $this->input->post('postBarcode'),
+					'prd_name'			=> $this->input->post('postNama'),
+					'prd_category_id_fk'	=> $this->input->post('postKategori'),
+					'prd_purchase_price'	=> $this->input->post('postHargaBeli'),
+					'prd_selling_price'	=> $this->input->post('postHargaJual'),
+					'prd_unit_id_fk' 	 	=> $this->input->post('postSatuan'),
+					'prd_containts' 	 	=> $this->input->post('postIsi'),
+					'prd_initial_g_stock'	=> $this->input->post('postStockG'),
+					'prd_initial_ng_stock'	=> $this->input->post('postStockNG'),
+					'prd_initial_op_stock'	=> $this->input->post('postStockOP'),
+					'prd_description'		=> $this->input->post('postDeskripsi'),
+					'prd_image'			=> NULL
+				);
 
 			/** Proses Upload file */
-				if(!empty($_FILES['postImg']['name'])){
+				if($_FILES['postImg']['name']){
 				  /** Load lib dan helper untuk upload */
 					$this->load->helper('file');
 					$this->load->library('upload');
 
 				  /** Prepare config tambahan */
 					$config['upload_path']   = 'assets/uploaded_files/product_img/'; // Path folder untuk upload file
-					$config['allowed_types'] = 'jpeg|jpg|png|bmp|svg'; // Allowed types 
+					$config['allowed_types'] = 'jpeg|jpg|png|bmp|svg'; // Allowed types
 					$config['max_size']    	 = '2048'; // Max size in KiloBytes
 					$config['encrypt_name']  = TRUE; // Encrypt nama file ketika diupload
 					$this->upload->initialize($config); // Initialize config
@@ -260,42 +259,51 @@ Class Product_c extends MY_Controller {
 					
 				  /** Set nilai untuk simpan ke database */
 					if($upload){
-					  /* Get data upload file */
+					  /** Get data upload file */
 					  $uploadData = $this->upload->data();
 		
-					  /* Set value */
+					  /** Set value */
 					  $postData['prd_image'] = $config['upload_path'].$uploadData['file_name'];
+					} else {
+						$errorUpload = $this->upload->display_errors();
 					}
 				}
 
 			/** Proses simpan data */
-				$inputPrd = $this->Product_m->insertProduct($postData);
-
-			/** Return dan redirect */
-				if($inputPrd['resultInsert'] > 0){
-					/** Insert stock product */
-					$inputStock = $this->Product_m->insertProductStock($postData, $inputPrd['insertID']); // Insert ke table stok
-			
-					/** Result to return */
-					$arrReturn = array(
-						'success'	=> TRUE,
-						'status'	=> 'successInsert',
-						'statusMsg' => 'Berhasil Menambahkan produk !',
-						'statusIcon' => 'success',
-						'redirect'	=> site_url('Product_c/listProductPage')
-					);
+				if(isset($errorUpload)){
+					$arrReturn['error']	   = TRUE;
+					$arrReturn['errorImg'] = $errorUpload;
 				} else {
-					/** Result to return */
-					$arrReturn = array(
-						'success'	=> TRUE,
-						'status'	=> 'failedInsert',
-						'statusMsg' => 'Gagal Menambahkan produk !',
-						'statusIcon' => 'error',
-						'redirect'	=> site_url('Product_c/listProductPage')
-					);
+					$inputPrd = $this->Product_m->insertProduct($postData);
+
+					/** Return dan redirect */
+						if($inputPrd && $inputPrd['resultInsert'] > 0){
+							/** Insert stock product */
+							$inputStock = $this->Product_m->insertProductStock($postData, $inputPrd['insertID']); // Insert ke table stok
+					
+							/** Result to return */
+							$arrReturn = array(
+								'success'	=> TRUE,
+								'status'	=> 'successInsert',
+								'statusMsg' => 'Berhasil Menambahkan produk !',
+								'statusIcon' => 'success',
+								'redirect'	=> site_url('Product_c/listProductPage')
+							);
+						} else {
+							/** Result to return */
+							$arrReturn = array(
+								'success'	=> TRUE,
+								'status'	=> 'failedInsert',
+								'statusMsg' => 'Gagal Menambahkan produk !',
+								'statusIcon' => 'error',
+								'redirect'	=> site_url('Product_c/listProductPage')
+							);
+						}
 				}
 		}
 
+		//print("<pre>".print_r($arrReturn, true)."</pre><hr>");
+		//var_dump($this->upload->display_errors());
 		header('Content-Type: application/json');
 		echo json_encode($arrReturn);
 	}

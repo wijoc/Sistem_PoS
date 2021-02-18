@@ -1,15 +1,22 @@
 $(document).ready(function(){
     $("#submitForm").on("click", function(event){
         event.preventDefault()
+        var file_data = $('#inputImg').prop('files')[0]; 
+        var form_data = new FormData(this.form);                   
+        form_data.append('file', file_data);    
         $.ajax({
             url     : $("#formAddPrd").attr("action"),
             method  : 'post',
-            data    : $("#formAddPrd").serialize(),
+            data    : form_data,
+            cache   : false,
+            contentType : false,
+            processData : false,
             datatype    : 'json',
             beforeSend  : function(){
                 $(this).prop("disabled", true)
             },
             success : function(data){
+                console.log(data)
                 if(data.error){
                     /** Error input nama */
                         if(data.errorNama){
@@ -68,7 +75,7 @@ $(document).ready(function(){
                             $("#errorIsi").html(data.errorIsi)
                         } else {
                             $("#inputIsi").removeClass('is-invalid')
-                            $("#errorIsi").css("display", "noen")
+                            $("#errorIsi").css("display", "none")
                         }
                         
                     /** Error input Stok Awal */
@@ -97,12 +104,25 @@ $(document).ready(function(){
                             $("#errorStockOP").css("display", "block")
                             $("#errorStockOP").html(data.errorStockOP)
                         } else {
-                            $("#inputStokOP").removeClass('is-invalid')
+                            $("#inputStockOP").removeClass('is-invalid')
                             $("#errorStockOP").css("display", "none")
                         }
+                    
+                    /** Error input Image */
+                        if(data.errorImg){
+                            $("#errorImg").css("display", "block")
+                            $("#errorImg").html(data.errorImg)
+                        } else {
+                            $("#errorImg").css("display", "none")
+                        }
                 } else {
+                    $(".error-msg").css("display", "none")
+                    $(".is-invalid").removeClass("is-invalid")
+                    
                     if(data.status == 'successInsert'){
-                        $("#formAddPrd").trigger('reset')
+                        $('#formAddPrd :input').val('');
+                        $('#formAddPrd :file').val('');
+                        $(".dropify-clear").trigger("click")
                     }
 
                     Swal.fire({
@@ -115,6 +135,9 @@ $(document).ready(function(){
                         $("#alert-proses").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">'+ data.statusMsg +'<a href="' + data.redirect + '" class="alert-link">Klik untuk melihat daftar data.</a><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                     })
                 }
+            },
+            error: function(jqxhr, status, exception) {
+                alert('Exception:', exception);
             }
         })
     })

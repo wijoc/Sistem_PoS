@@ -36,7 +36,7 @@
                         <div class="form-group">
                           <label>Nama Product <font color="red"><small>*</small></font></label>
                           <input type="text" class="form-control" name="postNama" id="inputNama" placeholder="Nama Produk" required>
-                          <small id="errorNama" style="display:none; color:red; font-style: italic"></small>
+                          <small id="errorNama" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
 
@@ -58,7 +58,7 @@
                               <option value="<?php echo $showCtgr['ctgr_id'] ?>"> <?php echo $showCtgr['ctgr_name'] ?> </option>
                             <?php endforeach; ?>
                           </select>
-                          <small id="errorKategori" style="display:none; color:red; font-style: italic"></small>
+                          <small id="errorKategori" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
 
@@ -67,7 +67,7 @@
                         <div class="form-group">
                           <label>Harga Beli <font color="red"><small>*</small></font></label>
                           <input type="number" class="form-control" step="0.01" name="postHargaBeli" id="inputHargaBeli" placeholder="Harga Beli Produk" required>
-                          <small id="errorHargaBeli" style="display:none; color:red; font-style: italic"></small>
+                          <small id="errorHargaBeli" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
 
@@ -81,7 +81,7 @@
                               </div>
                               <div class="col-1"><h3><b>/</b></h3></div>
                           </div>
-                          <small id="errorHargaJual" style="display:none; color:red; font-style: italic"></small>
+                          <small id="errorHargaJual" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
 
@@ -95,7 +95,7 @@
                               <option value="<?php echo $showUnit['unit_id'] ?>"> <?php echo $showUnit['unit_name'] ?> </option>
                             <?php endforeach; ?>
                           </select>
-                          <small id="errorSatuan" style="display:none; color:red; font-style: italic"></small>
+                          <small id="errorSatuan" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
 
@@ -104,7 +104,7 @@
                         <div class="form-group">
                           <label>Isi per satuan <font color="red"><small>*</small></font></label>
                           <input type="number" class="form-control" name="postIsi" id="inputIsi" placeholder="Isi tiap satuan" required>
-                          <small id="errorIsi" style="display:none; color:red; font-style: italic"></small>
+                          <small id="errorIsi" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
 
@@ -113,7 +113,7 @@
                         <div class="form-group">
                           <label>Gambar <small class="help" style="color: red; font-style: italic;">( potrait / square, maksimal 2MB )</small></label>
                           <input type="file" class="dropify" name="postImg" id="inputImg" data-allowed-formats="portrait square" data-max-file-size="2M" data-max-height="2000" />
-                          <small id="errorImg" style="display:none; color:red; font-style: italic"></small>
+                          <small id="errorImg" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
                     
@@ -134,7 +134,7 @@
                         <div class="form-group">
                           <label>Stok awal <font color="red"><small>*</small></font></label>
                           <input type="number" class="form-control" name="postStockG" id="inputStockG" placeholder="Stok awal produk" required>
-                          <small id="errorStockG" style="display:none; color:red; font-style: italic"></small>
+                          <small id="errorStockG" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
 
@@ -143,7 +143,7 @@
                         <div class="form-group">
                           <label>Stok damaged / rusak <font color="red"><small>*</small></font></label>
                           <input type="number" class="form-control" name="postStockNG" id="inputStockNG" placeholder="Stok awal produk rusak / damaged " required>
-                          <small id="errorStockNG" style="display:none; color:red; font-style: italic"></small>
+                          <small id="errorStockNG" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
 
@@ -152,7 +152,7 @@
                         <div class="form-group">
                           <label>Stok Opname <font color="red"><small>*</small></font></label>
                           <input type="number" class="form-control" name="postStockOP" id="inputStockOP" placeholder="Stok awal opname" required>
-                          <small id="errorStockOP" style="display:none; color:red; font-style: italic"></small>
+                          <small id="errorStockOP" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
                   </div>
