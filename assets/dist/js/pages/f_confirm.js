@@ -1,54 +1,55 @@
 function confirmDelete(item, getid, url, msg){
-	event.preventDefault();
+    /** Cegah default event */
+	event.preventDefault()
 	
 	switch(item){
 		case "ctgr":
-			var warningMsg = "Penghapusan data bersifat permanen !  Menghapus data kategori akan mengubah detail data product dengan kategori ini !";
-			var cancelMsg  = "Batal menghapus data kategori !";
-			break;
+			var warningMsg = "Penghapusan data bersifat permanen !  Menghapus data kategori akan mengubah detail data product dengan kategori ini !"
+			var cancelMsg  = "Batal menghapus data kategori !"
+			break
 		case "unit":
-			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data satuan akan mengubah detail data product dengan satuan ini !";
-			var cancelMsg  = "Batal menghapus data satuan !";
-			break;
+			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data satuan akan mengubah detail data product dengan satuan ini !"
+			var cancelMsg  = "Batal menghapus data satuan !"
+			break
 		case "soft-prd":
-			var warningMsg = "Menghapus data product tidak berpengaruh terhadap transaksi yang sudah dilakukan !";
-			var cancelMsg  = "Batal menghapus data product !";
-			break;
+			var warningMsg = "Menghapus data product tidak berpengaruh terhadap transaksi yang sudah dilakukan !"
+			var cancelMsg  = "Batal menghapus data product !"
+			break
         case "hard-prd":
-            var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data product akan menghapus transaksi yang sudah dilakukan !";
-            var cancelMsg  = "Batal menghapus data product !";
-            break;
+            var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data product akan menghapus transaksi yang sudah dilakukan !"
+            var cancelMsg  = "Batal menghapus data product !"
+            break
         case "soft-supp":
-            var warningMsg = "Menghapus data supplier tidak berpengaruh terhadap transaksi yang sudah dilakukan !";
-            var cancelMsg  = "Batal menghapus data supplier !";
-            break;
+            var warningMsg = "Menghapus data supplier tidak berpengaruh terhadap transaksi yang sudah dilakukan !"
+            var cancelMsg  = "Batal menghapus data supplier !"
+            break
         case "hard-supp":
-            var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data supplier akan menghapus transaksi yang sudah dilakukan !";
-            var cancelMsg  = "Batal menghapus data supplier !";
-            break;
+            var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data supplier akan menghapus transaksi yang sudah dilakukan !"
+            var cancelMsg  = "Batal menghapus data supplier !"
+            break
         case "soft-ctm":
-            var warningMsg = "Menghapus data pelanggan tidak berpengaruh terhadap transaksi yang sudah dilakukan !";
-            var cancelMsg  = "Batal menghapus data pelanggan !";
-            break;
+            var warningMsg = "Menghapus data pelanggan tidak berpengaruh terhadap transaksi yang sudah dilakukan !"
+            var cancelMsg  = "Batal menghapus data pelanggan !"
+            break
         case "hard-ctm":
-            var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data pelanggan akan menghapus transaksi yang sudah dilakukan !";
-            var cancelMsg  = "Batal menghapus data pelanggan !";
-            break;
+            var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data pelanggan akan menghapus transaksi yang sudah dilakukan !"
+            var cancelMsg  = "Batal menghapus data pelanggan !"
+            break
 		default :
-			var warningMsg = msg;
-			var cancelMsg  = "Batal menghapus data !";
+			var warningMsg = msg
+			var cancelMsg  = "Batal menghapus data !"
 	}
 
-    /* Custom tombol sweetalert 2 */
+    /** Custom tombol sweetalert 2 */
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
-            confirmButton: 'btn btn-success',
-            cancelButton: 'btn btn-danger'
+            confirmButton   : 'btn btn-success',
+            cancelButton    : 'btn btn-danger'
         },
         buttonsStyling: false
     })
 
-    /* Fire sweetAlert untuk konfirmasi */
+    /** Fire sweetAlert untuk konfirmasi */
     swalWithBootstrapButtons.fire({
         title: 'ANDA YAKIN MENGHAPUS DATA A ?',
         text: warningMsg,
@@ -58,16 +59,16 @@ function confirmDelete(item, getid, url, msg){
         cancelButtonText: 'Tidak, Batalkan !',
         reverseButtons: true
     }).then((result) => {
-        /* jika klik tombol confirm, kirim data id via ajax */
+        /** jika klik tombol confirm, kirim data id via ajax */
         if (result.value){
             $.ajax({
                 type: 'POST',
                 url: url,
                 data: {"postID":getid},
                 proccesData: false,
-                /* jika ajax sukses mengirim data */
+                /** jika ajax sukses mengirim data */
                 success: function(data){
-                    /* jika hasil return function delete success */
+                    /** jika hasil return function delete success */
                     if(data==='successDelete'){
                         Swal.fire({
                             position: 'center',
@@ -76,7 +77,7 @@ function confirmDelete(item, getid, url, msg){
                             icon: 'success',
                             title: 'Data berhasil dihapus !'
                         }).then((result)=>{
-                            location.reload();
+                            $('.table-server').DataTable().ajax.reload()
                         })
                     } else if (data==='failedDelete') {
                         Swal.fire({
@@ -86,7 +87,7 @@ function confirmDelete(item, getid, url, msg){
                             icon: 'error',
                             title: 'Data gagal dihapus !'
                         }).then((result)=>{
-                            location.reload();
+                            $('.table-server').DataTable().ajax.reload()
                         })
                     } else {
                         Swal.fire({
@@ -97,7 +98,7 @@ function confirmDelete(item, getid, url, msg){
                             //title: 'Terjadi Kesalahan pada sistem. Silahkan coba beberapa saat lagi !'
                             title: data
                         }).then((result)=>{
-                            location.reload();
+                            $('.table-server').DataTable().ajax.reload()
                         })
                     }
                 },
@@ -110,7 +111,7 @@ function confirmDelete(item, getid, url, msg){
                         icon: 'error',
                         title: data
                     }).then((result)=>{
-                        location.reload();
+                        $('.table-server').DataTable().ajax.reload()
                     })
                 }
             })

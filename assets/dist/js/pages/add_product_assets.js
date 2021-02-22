@@ -16,7 +16,6 @@ $(document).ready(function(){
                 $(this).prop("disabled", true)
             },
             success : function(data){
-                console.log(data)
                 if(data.error){
                     /** Error input nama */
                         if(data.errorNama){

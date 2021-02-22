@@ -24,13 +24,23 @@
           <div class="col-lg-10">
             <div class="card card-orange card-outline">
               <div class="card-header">
-                <h5 class="m-0">Detail Produk</h5>
+                <h5 class="card-title">Detail Produk</h5>
+                <div class="float-right">
+                  <a href="<?php echo site_url('Product_c/listProductPage') ?>" class="btn btn-xs btn-secondary"><i class="fas fa-list"></i></a>
+                  <a href="<?php echo site_url('Product_c/editProductPage/').urlencode(base64_encode($detailPrd[0]['prd_id'])) ?>" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
+                </div>
               </div>
               <div class="card-body">
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Barcode Produk<a class="float-right"> : </a></label>
                   <div class="col-sm-8">
                     <p class="col-form-label"><?php echo ($detailPrd[0]['prd_barcode'] != '')? $detailPrd[0]['prd_barcode'] : '<font color="red"><b>Belum ada barcode !</b></font>' ?></p>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Gambar<a class="float-right"> : </a></label>
+                  <div class="col-sm-8">
+                    <img width="150" height="auto" class="img-fluid" src="<?php echo base_url(); echo ($detailPrd[0]['prd_image'] != '')? $detailPrd[0]['prd_image'] : 'assets/uploaded_files/product_img/no_photo.png' ?>" alt="baseurl.com/my_assets/upload/product_img/gambar_product.jpg">
                   </div>
                 </div>
                 <div class="form-group row">
@@ -94,8 +104,8 @@
                           <td class="text-center"><?php echo $detailPrd[0]['stk_good'] ?></td>
                           <td class="text-center"><?php echo $detailPrd[0]['prd_initial_ng_stock'] ?></td>
                           <td class="text-center"><?php echo $detailPrd[0]['stk_not_good'] ?></td>
-                          <td class="text-center"><?php echo $detailPrd[0]['prd_initial_return_stock'] ?></td>
-                          <td class="text-center"><?php echo $detailPrd[0]['stk_return'] ?></td>
+                          <td class="text-center"><?php echo $detailPrd[0]['prd_initial_op_stock'] ?></td>
+                          <td class="text-center"><?php echo $detailPrd[0]['stk_opname'] ?></td>
                         </tr>
                       </tbody>
                     </table>

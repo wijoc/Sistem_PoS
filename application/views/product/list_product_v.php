@@ -29,7 +29,7 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                    <table id="table-product" class="table table-bordered table-striped">
+                    <table id="table-product" class="table-server table table-bordered table-striped">
                       <thead>
                         <th>No.</th>
                         <th>Nama Produk</th>
@@ -41,33 +41,6 @@
                         <th>Aksi</th>
                       </thead>
                       <tbody>
-                        <?php 
-                        $no = 1;
-                        if($dataProduct == NULL){ ?>
-                          <tr>
-                            <td colspan="8" class="text-center alert alert-danger" opacity="0.8">Data Kategori belum tersedia !</td>
-                          </tr>
-                        <?php } 
-                        foreach ($dataProduct as $showPrd) : ?>
-                          <tr>
-                            <td><?php echo $no++ ?></td>
-                            <td><?php echo $showPrd['prd_name'] ?></td>
-                            <td><?php echo $showPrd['ctgr_name'] ?></td>
-                            <td><?php echo $showPrd['prd_purchase_price'] ?></td>
-                            <td><?php echo $showPrd['prd_selling_price'] ?></td>
-                            <td><?php echo $showPrd['unit_name'] ?></td>
-                            <td>0</td>
-                            <td>
-                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Product_c/detailProductPage').'/'.urlencode(base64_encode($showPrd['prd_id'])) ?> ?>"><i class="fas fa-search"></i></a>
-                              <a class="btn btn-xs btn-warning" href="<?php echo site_url('Product_c/editProductPage').'/'.urlencode(base64_encode($showPrd['prd_id'])) ?>"><i class="fas fa-edit"></i></a>
-                              <!-- Hard Delete 
-                              <a class="btn btn-xs btn-danger" onclick="confirmDelete('hard-prd', '<?php echo urlencode(base64_encode($showPrd['prd_id'])) ?>', '<?php echo site_url('Product_c/deleteProductProses') ?>')"><i class="fas fa-trash"></i></a>
-                              -->
-                              <!-- Soft Delete -->
-                              <a class="btn btn-xs btn-danger" onclick="confirmDelete('soft-prd', '<?php echo urlencode(base64_encode($showPrd['prd_id'])) ?>', '<?php echo site_url('Product_c/softdeleteProductProses') ?>')"><i class="fas fa-trash"></i></a>
-                            </td>
-                          </tr>
-                        <?php endforeach; ?>
                       </tbody>
                       <tfoot>
                         <th>No.</th>

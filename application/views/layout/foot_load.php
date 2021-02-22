@@ -114,9 +114,17 @@
 	<?php } ?>
 
 <!-- additional Page script goes here -->
-	<!-- Page Add Produk -->
+	<!-- Page Add Product -->
 	<?php if(in_array('p_add_product',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_product_assets.js"></script>
+	<?php } ?>
+
+	<!-- Page List Produk -->
+	<?php if(in_array('p_list_product',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/list_product_assets.js"></script>
+		<script>
+			var product_url = "<?php echo site_url('Product_c/listProductAjax') ?>"
+		</script>
 	<?php } ?>
 
 	<!-- Page Kategori & Satuan -->

@@ -29,8 +29,8 @@ Class Product_c extends MY_Controller {
 		$this->pageData = array(
 			'title'   => 'PoS | Input Product',
 			'assets'  => array('sweetalert2', 'dropify', 'p_add_product'),
-			'optCtgr' => $this->Product_m->getCategory(), // Get semua kategori untuk option
-			'optUnit' => $this->Product_m->getUnit() // Get semua satuan untuk option
+			'optCtgr' => $this->Product_m->selectCategory(), // Get semua kategori untuk option
+			'optUnit' => $this->Product_m->selectUnit() // Get semua satuan untuk option
 		);
 		$this->page = 'product/add_product_v';
 		$this->layout();
@@ -40,14 +40,45 @@ Class Product_c extends MY_Controller {
 	public function listProductPage(){
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
-			'assets' => array('datatables', 'sweetalert2', 'f_confirm'),
-			'dataProduct' => $this->Product_m->getAllowedProduct() // Get semua data product
+			'assets' => array('datatables', 'sweetalert2', 'p_list_product', 'f_confirm'),
 		);
 		$this->page = 'product/list_product_v';
 		$this->layout();
 	}
 
-	/* Function : List product berdasar kategori */
+	/** Function : Ajax list product */
+	public function listProductAjax(){
+		$getData	= $this->Product_m->selectProduct($this->input->post('length'), $this->input->post('start'));
+		$prdData	= array();
+		$no			= $this->input->post('start');
+		foreach($getData->result_array() as $show){
+			$no++;
+			$row = array();
+			$row[] = $no;
+			$row[] = $show['prd_name'];
+			$row[] = $show['ctgr_name'];
+			$row[] = $show['prd_purchase_price'];
+			$row[] = $show['prd_selling_price'];
+			$row[] = $show['unit_name'];
+			$row[] = '0';
+			$row[] = '<a class="btn btn-xs btn-info" href="'.site_url("Product_c/detailProductPage/").urlencode(base64_encode($show['prd_id'])).'" data-toggle="tooltip" data-placement="top" title="Detail Produk"><i class="fas fa-search"></i></a>
+			<a class="btn btn-xs btn-warning" href="'.site_url('Product_c/editProductPage/').urlencode(base64_encode($show['prd_id'])).'" data-toggle="tooltip" data-placement="top" title="Edit Produk"><i class="fas fa-edit"></i></a>
+			<a class="btn btn-xs btn-danger" onclick="confirmDelete(\'soft-prd\', \' '.urlencode(base64_encode($show['prd_id'])).' \', \' '.site_url('Product_c/softdeleteProductProses').' \')" data-toggle="tooltip" data-placement="top" title="Hapus Produk"><i class="fas fa-trash"></i></a>';
+		
+			$prdData[] = $row;
+		}
+
+		$output = array(
+			'draw'			  => $this->input->post('draw'),
+			'recordsTotal'	  => $this->Product_m->count_all(),
+			'recordsFiltered' => $this->Product_m->count_filtered($this->input->post('length'), $this->input->post('start')),
+			'data'			  => $prdData
+		);
+
+		echo json_encode($output);
+	}
+
+	/** Function : List product berdasar kategori */
 	public function listProductOnCatPage($encoded_cat_id){
 		$catID = base64_decode(urldecode($encoded_cat_id));
 		$this->pageData = array(
@@ -83,7 +114,7 @@ Class Product_c extends MY_Controller {
 		$this->pageData = array(
 			'title'   => 'PoS | Detail Product',
 			'assets'  => array(),
-			'detailPrd' => $this->Product_m->getProductOnID($prdID), // Get data berdasar produk id
+			'detailPrd' => $this->Product_m->selectProductOnID($prdID), // Get data berdasar produk id
 		);
 		$this->page = 'product/detail_product_v';
 		$this->layout();
@@ -97,10 +128,10 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Edit Product',
-			'assets'  => array('sweetalert2', 'page_add_product'),
-			'detailPrd' => $this->Product_m->getProductOnID($prdID), // Get data berdasar produk id
-			'optCtgr' => $this->Product_m->getCategory(), // Get semua kategori untuk option
-			'optUnit' => $this->Product_m->getUnit() // Get semua satuan untuk option
+			'assets'  => array('sweetalert2', 'dropify', 'page_add_product'),
+			'detailPrd' => $this->Product_m->selectProductOnID($prdID), // Get data berdasar produk id
+			'optCtgr' => $this->Product_m->selectCategory(), // Get semua kategori untuk option
+			'optUnit' => $this->Product_m->selectUnit() // Get semua satuan untuk option
 		);
 		$this->page = 'product/edit_product_v';
 		$this->layout();
@@ -359,18 +390,19 @@ Class Product_c extends MY_Controller {
 
 	/* Function : Proses soft delete product (hide product dari user, namun masih tersimpan di database) */
 	function softdeleteProductProses(){
-	  /* Get posted id and decode proses */
-	  	$prdID = base64_decode(urldecode($this->input->post('postID')));
+	  /** Get posted id and decode proses */
+		  $prdID = base64_decode(urldecode($this->input->post('postID')));
+		  //$prdID = base64_decode(urldecode('Mw%3D%3D '));
 
-	  /* Proses delete data di database */
-	  	$delPrd = $this->Product_m->softdeleteProduct($prdID);
+	  /** Proses delete data di database */
+	  	$delPrd = $this->Product_m->softdeleteProduct($prdID); 
 
-	  /* Return Value */
+	  /** Return Value */
 	  	if($delPrd > 0){
 	  		echo "successDelete";
 	  	} else {
 	  		echo "failedDelete";
-	  	}
+		}
 	}
 
 	/* Function : AutoComplete untuk page transaksi */
@@ -391,12 +423,12 @@ Class Product_c extends MY_Controller {
 		//print("<pre>".print_r($prdData, true)."</pre>");
 	} 
 
-  /* Function CRUD Kategori & Satuan */
+  /** CRUD Kategori & Satuan */
 	/* Function : List kategori dan satuan */
 	public function listCatUnitPage(){
 	  /* Get data kategori dan Satuan dari database */
-		$dataCategory = $this->Product_m->getCategory();
-		$dataUnit 	  = $this->Product_m->getUnit();
+		$dataCategory = $this->Product_m->selectCategory();
+		$dataUnit 	  = $this->Product_m->selectUnit();
 
 	  /* Proses tampil halaman */
 		$this->pageData = array(
