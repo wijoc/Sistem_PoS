@@ -39,10 +39,13 @@ Class Product_m extends MY_Model {
 
     /** Query : Select product query */
       private function _querySelectProduct($status = 'all', $keyword = null, $order = null){
-        $this->db->select('prd.*, kat.'.$this->cat_f[1].', sat.'.$this->unit_f[1]);
+        /** Select semua field data product, nama kategori, dan nama satuan */
+        $this->db->select('prd.*, ctgr.'.$this->ctgr_f[1].', u.'.$this->unit_f[1]);
         $this->db->from($this->prd_tb.' as prd');
-        $this->db->join($this->cat_tb.' as kat', 'kat.'.$this->cat_f[0].'=prd.'.$this->prd_f[3]);
-        $this->db->join($this->unit_tb.' as sat', 'sat.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
+
+        /** Join table kategori alias ctgr, dan satuan alias u */
+        $this->db->join($this->ctgr_tb.' as ctgr', 'ctgr.'.$this->ctgr_f[0].'=prd.'.$this->prd_f[3]);
+        $this->db->join($this->unit_tb.' as u', 'u.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
         
         /** Jika status = all select semua data */
         ($status != 'all')? $this->db->where($this->prd_f[12], $status) : '';
@@ -62,22 +65,29 @@ Class Product_m extends MY_Model {
     /** Query : Select product */
       function selectProduct($amount = 0, $offset = 0){
         $this->_querySelectProduct('0', $this->input->post('prdSearch'), $this->input->post('order'));
-        $this->db->limit($amount, $offset);
+        ($amount > 0)? $this->db->limit($amount, $offset) : '';
         $resultSelect = $this->db->get();
         return $resultSelect;
       }
 
-    /** Query : Select 1 data product berdasar product id */
+    /** Q-Function : Select 1 data product berdasar product id */
       function selectProductOnID($id){
-        $this->db->select('prd.*, stk.*, kat.'.$this->cat_f[1].', sat.'.$this->unit_f[1]);
+        $this->db->select('prd.*, stk.*, kat.'.$this->ctgr_f[1].', sat.'.$this->unit_f[1]);
         $this->db->from($this->prd_tb.' as prd');
         $this->db->where($this->prd_f[0], $id);
-        $this->db->join($this->cat_tb.' as kat', 'kat.'.$this->cat_f[0].'=prd.'.$this->prd_f[3]);
+        $this->db->join($this->ctgr_tb.' as kat', 'kat.'.$this->ctgr_f[0].'=prd.'.$this->prd_f[3]);
         $this->db->join($this->unit_tb.' as sat', 'sat.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
         $this->db->join($this->stk_tb.' as stk', 'stk.'.$this->stk_f[1].'=prd.'.$this->prd_f[6]);
         $resultSelect = $this->db->get();
         return $resultSelect->result_array();
       }
+
+    /** Q-Function : Select data product berdasar ctgr_id
+      function selectProductOnCtgr($ctgr_id){
+        $this->_querySelectProduct;
+        $this->db->where('a', 'a');
+        $this->db
+      } */
 
     /** Query : count_filtered */
       function count_filtered($amount = 0, $offset = 0){
@@ -130,39 +140,59 @@ Class Product_m extends MY_Model {
       }
 
   /** CRUD Kategori */
-    /** Query : Insert Kategori */
+    /** Q-Function : Insert Kategori */
       function insertCategory($data){
-        $resultInsert = $this->db->insert($this->cat_tb, $data);
+        $resultInsert = $this->db->insert($this->ctgr_tb, $data);
         return $resultInsert;
       }
-    
-    /** Query : Select semua kategori, dan sort berdasar ctgr_name */
-      function selectCategory(){
-        $this->db->order_by($this->cat_f[1], 'ASC');
-        $resultInsert = $this->db->get($this->cat_tb);
-        return $resultInsert->result_array();
+      
+    /** Q-Function : Select semua kategori, dan sort berdasar ctgr_name */
+      function selectCategory($amount = 0, $offset = 0){
+        /** Select semua data kategori dan hitung total prd per kategori */
+        $this->db->select('ctgr.*, COUNT(prd.'.$this->prd_f[0].') as ctgr_count_prd');
+        $this->db->from($this->ctgr_tb.' as ctgr');
+
+        /** Join table produck */
+        $this->db->join($this->prd_tb.' as prd', 'ctgr.'.$this->ctgr_f[0].' = prd.'.$this->prd_f[3].' AND prd.'.$this->prd_f['12'].' = 0', 'LEFT');
+
+        /** Jika keyword != null, set search data berdasar keyword */
+        if (!empty($this->input->post('cgtrSearch')) && $this->input->post('cgtrSearch') != NULL){
+          $this->db->like($this->ctgr_f['1'], $this->input->post('cgtrSearch'));
+        }
+
+        /** Jika order = null, sort data berdasar ctgr_nama secara ASC */
+        if (!empty($this->input->post('cgtrSearch')) && $this->input->post('cgtrSearch') != NULL){
+          $this->db->order_by($this->ctgr_f[$this->input->post('cgtrSearch')['coloumn']], $this->input->post('cgtrSearch')['dir']);
+        } else {
+          $this->db->order_by($this->ctgr_f[1], 'ASC');
+        }
+        
+        $this->db->group_by('ctgr.'.$this->ctgr_f[0]);
+        ($amount > 0)? $this->db->limit($amount, $offset) : '';
+        $resultInsert = $this->db->get();
+        return $resultInsert;
       }
     
     /** Query : Select kategori berdasar id */
       function selectCategoryOnID($id){
-        $this->db->where($this->cat_f[0], $id);
-        $this->db->order_by($this->cat_f[1], 'ASC');
-        $resultInsert = $this->db->get($this->cat_tb);
+        $this->db->where($this->ctgr_f[0], $id);
+        $this->db->order_by($this->ctgr_f[1], 'ASC');
+        $resultInsert = $this->db->get($this->ctgr_tb);
         return $resultInsert->result_array();
       }
 
     /** Query : Update Kategori */
       function updateCategory($data){
-        $this->db->set($this->cat_f[1], $data['ctgr_name']);
-        $this->db->where($this->cat_f[0], $data['ctgr_id']);
-        $resultUpdate = $this->db->update($this->cat_tb);
+        $this->db->set($this->ctgr_f[1], $data['ctgr_name']);
+        $this->db->where($this->ctgr_f[0], $data['ctgr_id']);
+        $resultUpdate = $this->db->update($this->ctgr_tb);
         return $resultUpdate;
       }
 
     /** Query : Delete Kategori */
       function deleteCategory($id){
-        $this->db->where($this->cat_f[0], $id);
-        $resultDelete = $this->db->delete($this->cat_tb);
+        $this->db->where($this->ctgr_f[0], $id);
+        $resultDelete = $this->db->delete($this->ctgr_tb);
         return $resultDelete;
       }
 
@@ -173,11 +203,37 @@ Class Product_m extends MY_Model {
         return $resultInsert;
       }
     
-    /** Query : Select semua Satuan, dan sort berdasar sat_nama */
+    /** Query : Select semua Satuan, dan sort berdasar sat_nama 
       function selectUnit(){
         $this->db->order_by($this->unit_f[1], 'ASC');
         $resultInsert = $this->db->get($this->unit_tb);
         return $resultInsert->result_array();
+      }
+      */
+      
+    /** Q-Function : Select semua unit, dan sort berdasar ctgr_name */
+      function selectUnit($amount = 0, $offset = 0){
+        /** Select semua data unit dan hitung total prd per unit */
+        $this->db->select('u.*, COUNT(prd.'.$this->prd_f[0].') as unit_count_prd');
+        $this->db->from($this->unit_tb.' as u');
+        $this->db->join($this->prd_tb.' as prd', 'u.'.$this->unit_f[0].' = prd.'.$this->prd_f[6].' AND prd.'.$this->prd_f['12'].' = 0', 'LEFT');
+
+        /** Jika keyword != null, set search data berdasar keyword */
+        if (!empty($this->input->post('unitSearch')) && $this->input->post('unitSearch') != NULL){
+          $this->db->like($this->unit_f['1'], $this->input->post('unitSearch'));
+        }
+
+        /** Jika order = null, sort data berdasar ctgr_nama secara ASC */
+        if (!empty($this->input->post('unitSearch')) && $this->input->post('unitSearch') != NULL){
+          $this->db->order_by($this->unit_f[$this->input->post('unitSearch')['coloumn']], $this->input->post('unitSearch')['dir']);
+        } else {
+          $this->db->order_by($this->unit_f[1], 'ASC');
+        }
+        
+        $this->db->group_by('u.'.$this->unit_f[0]);
+        ($amount > 0)? $this->db->limit($amount, $offset) : '';
+        $resultInsert = $this->db->get();
+        return $resultInsert;
       }
 
     /** Query : Update Satuan */

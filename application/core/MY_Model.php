@@ -34,8 +34,8 @@ class MY_Model extends CI_Model {
         );
   
     /** Table Kategori */
-        protected $cat_tb = 'tb_category';
-        protected $cat_f  = array(
+        protected $ctgr_tb = 'tb_category';
+        protected $ctgr_f  = array(
             '0' => 'ctgr_id',
             '1' => 'ctgr_name'
         );

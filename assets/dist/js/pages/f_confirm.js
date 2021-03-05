@@ -51,7 +51,7 @@ function confirmDelete(item, getid, url, msg){
 
     /** Fire sweetAlert untuk konfirmasi */
     swalWithBootstrapButtons.fire({
-        title: 'ANDA YAKIN MENGHAPUS DATA A ?',
+        title: 'ANDA YAKIN MENGHAPUS DATA ?',
         text: warningMsg,
         icon: 'warning',
         showCancelButton: true,

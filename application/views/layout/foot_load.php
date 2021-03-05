@@ -128,8 +128,15 @@
 	<?php } ?>
 
 	<!-- Page Kategori & Satuan -->
+	<?php if(in_array('p_ctgr_unit', $assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/ctgr_unit_assets.js"></script>
+		<script>
+			var ctgr_url = "<?php echo site_url('Product_c/listCategoryAjax') ?>"
+			var unit_url = "<?php echo site_url('Product_c/listUnitAjax') ?>"
+		</script>
+	<?php } ?>
 	<?php if(in_array('page_catunit',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/cat_unit_assets.js"></script>
+		<!-- <script src="<?php echo base_url() ?>assets/dist/js/pages/cat_unit_assets.js"></script> -->
 	<?php } ?>
 
 	<!-- Page Add Product -->

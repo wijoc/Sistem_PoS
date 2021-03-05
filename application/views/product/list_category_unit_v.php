@@ -45,42 +45,24 @@
                     </div>
                     <hr>
                     <div id="alert-category"></div>
-                   <?php if($dataCtgr == NULL ){ ?>
-                    <div class="alert alert-danger text-center"> Data Kategori belum tersedia !</div>
-                   <?php } else { ?>
                     <div class="table-responsive">
-                        <table id="table-ctgr" class="table table-bordered table-striped table-catunit">
+                        <table id="table-category" class="table-server table table-bordered table-striped">
                           <thead>
                             <th>No.</th>
                             <th>Kategori</th>
-                            <th>Produk dalam kategori ini</th>
+                            <th>Jumlah Produk</th>
                             <th class="text-center">Aksi</th>
                           </thead>
                           <tbody>
-                            <?php
-                              $no = 1; 
-                              foreach ($dataCtgr as $showCtgr) { ?>
-                              <tr>
-                                <td><?php echo $no++ ?></td>
-                                <td><?php echo $showCtgr['ctgr_name'] ?></td>
-                                <td><?php echo $showCtgr['ctgr_name'] ?></td>
-                                <td class="text-center">
-                                  <a class="btn btn-xs btn-info" href="<?php echo site_url('Product_c/listProductOnCatPage/').urlencode(base64_encode($showCtgr['ctgr_id'])) ?>"><i class="fas fa-search"></i></a>
-                                  <a class="btn btn-xs btn-warning ctgrEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showCtgr['ctgr_id'] ?>" data-name="<?php echo $showCtgr['ctgr_name'] ?>"><i class="fas fa-edit"></i></a>
-                                  <a class="btn btn-xs btn-danger" onclick="confirmDelete('ctgr', '<?php echo urlencode(base64_encode($showCtgr['ctgr_id'])) ?>', '<?php echo site_url('Product_c/deleteCategoryProses') ?>')"><i class="fas fa-trash"></i></a>
-                                </td>
-                              </tr>
-                            <?php } ?>
                           </tbody>
                           <tfoot>
                             <th>No.</th>
                             <th>Kategori</th>
-                            <th>Produk dalam kategori ini</th>
+                            <th>Jumlah Produk</th>
                             <th class="text-center">Aksi</th>
                           </tfoot>
                         </table>
                     </div>
-                   <?php } ?>
                   </div>
                 </div>
                 <div class="tab-content" id="custom-content-above-tabContent">
@@ -94,38 +76,24 @@
                     </div>
                     <hr>
                     <div id="alert-unit"></div>
-                   <?php if($dataUnit == NULL ){ ?>
-                    <div class="alert alert-danger text-center"> Data Satuan belum tersedia !</div>
-                   <?php } else { ?>
                     <div class="table-responsive">
-                      <table id="table-unit" class="table table-bordered table-striped table-catunit">
+                      <table id="table-unit" style="width: 100%" class="table-server table table-bordered table-striped">
                         <thead>
                           <th>No.</th>
                           <th>Satuan</th>
+                          <th>Jumlah Produk</th>
                           <th>Aksi</th>
                         </thead>
                         <tbody>
-                            <?php
-                              $no = 1; 
-                              foreach ($dataUnit as $showUnit) { ?>
-                              <tr>
-                                <td><?php echo $no++ ?></td>
-                                <td><?php echo $showUnit['unit_name'] ?></td>
-                                <td class="text-center">
-                                  <a class="btn btn-xs btn-warning unitEdit" data-toggle="modal" data-target="#modal-edit" data-id="<?php echo $showUnit['unit_id'] ?>" data-name="<?php echo $showUnit['unit_name'] ?>"><i class="fas fa-edit"></i></a>
-                                  <a class="btn btn-xs btn-danger" onclick="confirmDelete('unit', '<?php echo urlencode(base64_encode($showUnit['unit_id'])) ?>', '<?php echo site_url('Product_c/deleteUnitProses') ?>')"><i class="fas fa-trash"></i></a>
-                                </td>
-                              </tr>
-                            <?php } ?>
                         </tbody>
                         <tfoot>
                           <th>No.</th>
                           <th>Satuan</th>
+                          <th>Jumlah Produk</th>
                           <th>Aksi</th>
                         </tfoot>
                       </table>
                     </div>
-                   <?php } ?>
                   </div>
                 </div>
               </div>
@@ -148,19 +116,20 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Product_c/addCategoryProses') ?>">
+            <form method="POST" action="<?php echo site_url('Product_c/addCategoryProses') ?>" id="form-ctgr">
               <div class="modal-body">
                 <!-- Form-part input Kategori nama -->
                   <div class="form-group row">
                     <label for="inputCtgrName" class="col-sm-3 col-form-label">Nama Kategori <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control float-right" name="postCtgrName" id="inputCtgrName" placeholder="Nama kategori baru" required>
+                      <small id="errorCtgr" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
               </div>
               <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" id="submitctgr" class="btn btn-primary">Simpan</button>
               </div>
             </form>
           </div>
@@ -179,13 +148,14 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Product_c/addUnitProses') ?>" id="formSatuan">
+            <form method="POST" action="<?php echo site_url('Product_c/addUnitProses') ?>" id="form-unit">
               <div class="modal-body">
                 <!-- Form-part input Kategori -->
                   <div class="form-group row">
-                    <label for="inputSatuanNama" class="col-sm-3 col-form-label">Nama Satuan <a class="float-right"> : </a></label>
+                    <label for="inputUnitName" class="col-sm-3 col-form-label">Nama Satuan <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postSatuanNama" id="inputSatuanNama" placeholder="Nama satuan baru" required>
+                      <input type="text" class="form-control float-right" name="postUnitName" id="inputUnitName" placeholder="Nama satuan baru" required>
+                      <small id="errorUnit" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
               </div>
@@ -205,12 +175,12 @@
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Ubah Data</h4>
+              <h4 class="modal-title">Ubah Data <span id="edit-title"></span></h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Product_c') ?>" id="formEdit">
+            <form method="POST" action="<?php echo site_url('Product_c/') ?>" id="form-edit">
               <div class="modal-body">
                 <!-- Form-part hidden Edit id -->
                   <input type="hidden" name="postID" id="editID" value="" disabled="disabled">

@@ -140,9 +140,9 @@ Class Product_c extends MY_Controller {
 	/* Function : Proses input product */
 	function addProductProses(){
 	  /** Load library & Helper */
-		  $this->load->library('form_validation'); // Libray form validation 
-		  $this->load->helper('file'); // Helper upload file
-		  $this->load->library('upload'); // Library upload file
+		  $this->load->library('form_validation'); 
+		  $this->load->helper('file');
+		  $this->load->library('upload');
 		  
 	  /** Set rules form validation */
 		$config = array(
@@ -424,70 +424,134 @@ Class Product_c extends MY_Controller {
 	} 
 
   /** CRUD Kategori & Satuan */
-	/* Function : List kategori dan satuan */
+	/** Function : List kategori dan satuan */
 	public function listCatUnitPage(){
-	  /* Get data kategori dan Satuan dari database */
-		$dataCategory = $this->Product_m->selectCategory();
-		$dataUnit 	  = $this->Product_m->selectUnit();
-
-	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'  => 'PoS | List Kategori',
-			'assets' => array('datatables', 'sweetalert2', 'page_catunit', 'f_confirm'),
-			'dataCtgr' => $dataCategory,
-			'dataUnit' => $dataUnit
+			'assets' => array('datatables', 'sweetalert2', 'p_ctgr_unit', 'page_catunit', 'f_confirm')
 		);
 		$this->page = 'product/list_category_unit_v';
 		$this->layout();
 	}
 
+	/** Function : Ajax list kategori dan satuan */
+	public function listCategoryAjax(){
+		$getData	= $this->Product_m->selectCategory($this->input->post('length'), $this->input->post('start'));
+		$ctgrData	= array();
+		$no			= $this->input->post('start');
+		foreach($getData->result_array() as $show){
+			$no++;
+			$row = array();
+			$row[] = $no;
+			$row[] = $show['ctgr_name'];
+			$row[] = $show['ctgr_count_prd'];
+			$row[] = '
+			<a class="btn btn-xs btn-info" href="'.site_url('Product_c/listProductOnCatPage/').urlencode(base64_encode($show['ctgr_id'])).'"><i class="fas fa-list"></i></a>
+			<a class="btn btn-xs btn-warning" onclick="editCtgrUnit(\'ctgr\', \''.urlencode(base64_encode($show['ctgr_id'])).'\', \''.$show['ctgr_name'].'\')"><i class="fas fa-edit"></i></a>
+			<a class="btn btn-xs btn-danger" onclick="confirmDelete(\'ctgr\', \''.urlencode(base64_encode($show['ctgr_id'])).'\', \''.site_url('Product_c/deleteCategoryProses').'\')"><i class="fas fa-trash"></i></a>  
+			';
+		
+			$prdData[] = $row;
+		}
+
+		$output = array(
+			'draw'			  => $this->input->post('draw'),
+			'recordsTotal'	  => $this->Product_m->count_all(),
+			'recordsFiltered' => $this->Product_m->count_filtered($this->input->post('length'), $this->input->post('start')),
+			'data'			  => $prdData
+		);
+
+		echo json_encode($output);
+	}
+
 	/* Function : Add Kategori Proses */
 	function addCategoryProses(){
-	  /* Get data post dari form */
-	  	$postData = array(
-	  		'ctgr_name' => $this->input->post('postCtgrName')
-	  	);
-
-	  /* Insert proses */
-	  	$inputCategory = $this->Product_m->insertCategory($postData);
-
-	  /* return & redirect */ 
-	  	/* Set Session untuk alert */
-	  	if($inputCategory > 0){
-	  		$this->session->set_flashdata('flashStatus', 'successInsert');
-	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan kategori');
-	  	} else {
-	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan kategori');
-	  	}
-	  		$this->session->set_flashdata('flashInput', 'category');
-
-	  	/* Redirect list kategori dan satuan */
-	  	redirect('Product_c/listCatUnitPage');
+		/** Load library & Helper */
+		  $this->load->library('form_validation'); 
+			
+		/** Set rules form validation */
+		  $config = array(
+			  array(
+				  'field'	=> 'postCtgrName',
+				  'label'	=> 'Nama Kategori',
+				  'rules'	=> 'trim|required|is_unique[tb_category.ctgr_name]',
+				  'errors'	=> array(
+					  'is_unique'	=> 'Kategori sudah tersedia',
+					  'required'	=> 'Kategori tidak boleh kosong'
+				  )
+			  )
+		  );
+		  $this->form_validation->set_rules($config);
+  
+		/** Run form validation */
+		  if($this->form_validation->run() == FALSE) {
+			  $arrReturn = array(
+				  'error'			=> TRUE,
+				  'errorCtgr' 	=> form_error('postCtgrName')
+			  );
+		  } else {
+			  /** Get data post dari form */
+				  $postData = array(
+					  'ctgr_name' => $this->input->post('postCtgrName')
+				  );
+			  
+			  /** insert ke database */
+				  $inputCtgr = $this->Product_m->insertCategory($postData);
+  
+			  /** Set return value */
+			  if($inputCtgr > 0){
+				  /** Result to return */
+				  $arrReturn = array(
+					  'success'	=> TRUE,
+					  'status'	=> 'successInsert',
+					  'statusMsg' => 'Berhasil Menambahkan kategori !',
+					  'statusIcon' => 'success'
+				  );
+			  } else {
+				  /** Result to return */
+				  $arrReturn = array(
+					  'success'	=> FALSE,
+					  'status'	=> 'failedInsert',
+					  'statusMsg' => 'Gagal Menambahkan kategori !',
+					  'statusIcon' => 'error'
+				  );
+			  }
+		  }
+		
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
 	}
 
 	/* Function : Edit Kategori Proses */
 	function editCategoryProses(){
 		$editData = array(
-			'ctgr_id' 	=> $this->input->post('postID'),
+			'ctgr_id' 	=> base64_decode(urldecode($this->input->post('postID'))),
 			'ctgr_name' => $this->input->post('postName')
 		);
 		
 		$editCategori = $this->Product_m->updateCategory($editData);
 
-	  /* return & redirect */ 
-	  	/* Set Session untuk alert */
-	  	if($editCategori > 0){
-	  		$this->session->set_flashdata('flashStatus', 'successUpdate');
-	  		$this->session->set_flashdata('flashMsg', 'Success mengubah data kategori !');
-	  	} else {
-	  		$this->session->set_flashdata('flashStatus', 'failedUpdate');
-	  		$this->session->set_flashdata('flashMsg', 'Failed mengubah data kategori !');
-	  	}
-	  		$this->session->set_flashdata('flashInput', 'category');
-
-	  	/* Redirect list kategori dan satuan */
-	  	redirect('Product_c/listCatUnitPage');
+		/** Return value */
+		if($editCategori > 0){
+			$arrReturn = array(
+				'success'	=> TRUE,
+				'status'	=> 'successUpdate',
+				'statusMsg' => 'Berhasil mengubah data kategori !',
+				'statusIcon' => 'success',
+				'type'		=> 'ctgr'
+			);
+		} else {
+			$arrReturn = array(
+				'success'	=> TRUE,
+				'status'	=> 'failedUpdate',
+				'statusMsg' => 'Gagal mengubah data kategori !',
+				'statusIcon' => 'error',
+				'type'		=> 'ctgr'
+			);
+		}
+		
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
 	}
 
 	/* Function : Delete Kategori */
@@ -506,54 +570,124 @@ Class Product_c extends MY_Controller {
 	  	}
 	}
 
+	/** Function : Ajax list satuan dan satuan */
+	public function listUnitAjax(){
+		$getData	= $this->Product_m->selectUnit($this->input->post('length'), $this->input->post('start'));
+		$ctgrData	= array();
+		$no			= $this->input->post('start');
+		foreach($getData->result_array() as $show){
+			$no++;
+			$row = array();
+			$row[] = $no;
+			$row[] = $show['unit_name'];
+			$row[] = $show['unit_count_prd'];
+			$row[] = '
+			<a class="btn btn-xs btn-warning" onclick="editCtgrUnit(\'unit\', \''.urlencode(base64_encode($show['unit_id'])).'\', \''.$show['unit_name'].'\')"><i class="fas fa-edit"></i></a>
+			<a class="btn btn-xs btn-danger" onclick="confirmDelete(\'unit\', \''.urlencode(base64_encode($show['unit_id'])).'\', \''.site_url('Product_c/deleteUnitProses').'\')"><i class="fas fa-trash"></i></a>  
+			';
+		
+			$prdData[] = $row;
+		}
+
+		$output = array(
+			'draw'			  => $this->input->post('draw'),
+			'recordsTotal'	  => $this->Product_m->count_all(),
+			'recordsFiltered' => $this->Product_m->count_filtered($this->input->post('length'), $this->input->post('start')),
+			'data'			  => $prdData
+		);
+
+		echo json_encode($output);
+	}
+
 	/* Function : add Satuan Proses */
 	function addUnitProses(){
-	  /* Get data post dari form */
-	  	$postData = array(
-	  		'unit_name' => $this->input->post('postSatuanNama')
-	  	);
-
-	  /* Insert proses */
-	  	$inputSatuan = $this->Product_m->insertUnit($postData);
-
-	  /* return & redirect */ 
-	  	/* Set Session untuk alert */
-	  	if($inputSatuan > 0){
-	  		$this->session->set_flashdata('flashStatus', 'successInsert');
-	  		$this->session->set_flashdata('flashMsg', 'Success insert satuan');
-	  	} else {
-	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-	  		$this->session->set_flashdata('flashMsg', 'Failed insert satuan');
-	  	}
-	  		$this->session->set_flashdata('flashInput', 'unit');
-
-	  	/* Redirect list kategori dan satuan */
-	  	redirect('Product_c/listCatUnitPage');
+		/** Load library & Helper */
+		  $this->load->library('form_validation'); 
+			
+		/** Set rules form validation */
+		  $config = array(
+			  array(
+				  'field'	=> 'postUnitName',
+				  'label'	=> 'Nama Satuan',
+				  'rules'	=> 'trim|required|is_unique[tb_unit.unit_name]',
+				  'errors'	=> array(
+					  'is_unique'	=> 'Satuan sudah tersedia',
+					  'required'	=> 'Satuan tidak boleh kosong'
+				  )
+			  )
+		  );
+		  $this->form_validation->set_rules($config);
+  
+		/** Run form validation */
+		  if($this->form_validation->run() == FALSE) {
+			  $arrReturn = array(
+				  'error'		=> TRUE,
+				  'errorUnit' 	=> form_error('postUnitName')
+			  );
+		  } else {
+			/** Get data post dari form */
+			$postData = array(
+				'unit_name' => $this->input->post('postUnitName')
+			);
+	  
+			/** Insert ke database */
+			$inputUnit = $this->Product_m->insertUnit($postData);
+	  
+			/** Return Value */
+			if($inputUnit > 0){
+				/** Result to return */
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'status'	=> 'successInsert',
+					'statusMsg' => 'Berhasil Menambahkan data satuan !',
+					'statusIcon' => 'success'
+				);
+			} else {
+				/** Result to return */
+				$arrReturn = array(
+					'success'	=> FALSE,
+					'status'	=> 'failedInsert',
+					'statusMsg' => 'Gagal Menambahkan data satuan !',
+					'statusIcon' => 'error'
+				);
+			} 
+		  }
+		
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
 	}
 
 	/* Function : edit Satuan Proses */
 	function editUnitProses(){
-	  /* Get data dari form */
+		/** Get data dari form */
 		$editData = array(
-			'unit_id' 	=> $this->input->post('postID'),
-			'unit_nama' => $this->input->post('postName')
+		  'unit_id' 	=> base64_decode(urldecode($this->input->post('postID'))),
+		  'unit_nama' => $this->input->post('postName')
 		);
 
 		$editUnit = $this->Product_m->updateUnit($editData);
 
-	  /* return & redirect */ 
-	  	/* Set Session untuk alert */
-	  	if($editUnit > 0){
-	  		$this->session->set_flashdata('flashStatus', 'successUpdate');
-	  		$this->session->set_flashdata('flashMsg', 'Berhasil mengubah data satuan');
-	  	} else {
-	  		$this->session->set_flashdata('flashStatus', 'failedUpdate');
-	  		$this->session->set_flashdata('flashMsg', 'Gagal mengubah data satuan');
-	  	}
-	  		$this->session->set_flashdata('flashInput', 'unit');
-
-	  	/* Redirect list kategori dan satuan */
-	  	redirect('Product_c/listCatUnitPage');
+		/** Return value */
+		if($editUnit > 0){
+			$arrReturn = array(
+				'success'	=> TRUE,
+				'status'	=> 'successUpdate',
+				'statusMsg' => 'Berhasil mengubah data satuan !',
+				'statusIcon' => 'success',
+				'type'		=> 'unit'
+			);
+		} else {
+			$arrReturn = array(
+				'success'	=> FALSE,
+				'status'	=> 'failedUpdate',
+				'statusMsg' => 'Gagal mengubah data satuan !',
+				'statusIcon' => 'error',
+				'type'		=> 'unit'
+			);
+		}
+		
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
 	}
 
 	/* Function : Delete Satuan */

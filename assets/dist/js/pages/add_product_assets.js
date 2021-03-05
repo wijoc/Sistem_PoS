@@ -2,7 +2,7 @@ $(document).ready(function(){
     $("#submitForm").on("click", function(event){
         event.preventDefault()
         var file_data = $('#inputImg').prop('files')[0]; 
-        var form_data = new FormData(this.form);                   
+        var form_data = new FormData(this.form);
         form_data.append('file', file_data);    
         $.ajax({
             url     : $("#formAddPrd").attr("action"),
