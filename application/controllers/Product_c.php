@@ -29,8 +29,8 @@ Class Product_c extends MY_Controller {
 		$this->pageData = array(
 			'title'   => 'PoS | Input Product',
 			'assets'  => array('sweetalert2', 'dropify', 'p_add_product'),
-			'optCtgr' => $this->Product_m->selectCategory(), // Get semua kategori untuk option
-			'optUnit' => $this->Product_m->selectUnit() // Get semua satuan untuk option
+			'optCtgr' => $this->Product_m->selectCategory()->result_array(), // Get semua kategori untuk option
+			'optUnit' => $this->Product_m->selectUnit()->result_array() // Get semua satuan untuk option
 		);
 		$this->page = 'product/add_product_v';
 		$this->layout();
@@ -128,10 +128,10 @@ Class Product_c extends MY_Controller {
 	  /* Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Edit Product',
-			'assets'  => array('sweetalert2', 'dropify', 'page_add_product'),
+			'assets'  => array('sweetalert2', 'dropify', 'p_edit_product'),
 			'detailPrd' => $this->Product_m->selectProductOnID($prdID), // Get data berdasar produk id
-			'optCtgr' => $this->Product_m->selectCategory(), // Get semua kategori untuk option
-			'optUnit' => $this->Product_m->selectUnit() // Get semua satuan untuk option
+			'optCtgr' => $this->Product_m->selectCategory()->result_array(), // Get semua kategori untuk option
+			'optUnit' => $this->Product_m->selectUnit()->result_array() // Get semua satuan untuk option
 		);
 		$this->page = 'product/edit_product_v';
 		$this->layout();
@@ -274,7 +274,7 @@ Class Product_c extends MY_Controller {
 
 			/** Proses Upload file */
 				if($_FILES['postImg']['name']){
-				  /** Load lib dan helper untuk upload */
+				  /** Load lib dan helper */
 					$this->load->helper('file');
 					$this->load->library('upload');
 
@@ -333,43 +333,211 @@ Class Product_c extends MY_Controller {
 				}
 		}
 
-		//print("<pre>".print_r($arrReturn, true)."</pre><hr>");
-		//var_dump($this->upload->display_errors());
 		header('Content-Type: application/json');
 		echo json_encode($arrReturn);
 	}
 
 	/* Function : Proses edit / update product */
 	function editProductProses(){
-	  /* Get post data dari form */
-	  	$prdID = base64_decode(urldecode($this->input->post('postId')));
-		$postData = array(
-			'prd_name' 			 => $this->input->post('postNamaPrd'),
-			'prd_category_id_fk' => $this->input->post('postKategoriPrd'),
-			'prd_purchase_price' => $this->input->post('postHargaBeli'),
-			'prd_selling_price'  => $this->input->post('postHargaJual'),
-			'prd_unit_id_fk' 	 => $this->input->post('postSatuan'),
-			'prd_containts'		 => $this->input->post('postIsi'),
-			'prd_initial_g_stock'	   => $this->input->post('postStokAwalG'),
-			'prd_initial_ng_stock'	   => $this->input->post('postStokAwalNG'),
-			'prd_initial_return_stock' => $this->input->post('postStokAwalR'),
-			'prd_description' 	 => $this->input->post('postDeskripsiPrd')
-		);
+		/** Load library & Helper */
+			$this->load->library('form_validation'); 
 
-	  /* Update ke database */
-	  	$editPrd = $this->Product_m->updateProduct($prdID, $postData);
+		/** Get post data dari form */
+			$prdID = base64_decode(urldecode($this->input->post('postId')));
+			$postData = array(
+				'prd_barcode'			=> $this->input->post('postBarcode'),
+				'prd_name'				=> $this->input->post('postNama'),
+				'prd_category_id_fk'	=> $this->input->post('postKategori'),
+				'prd_purchase_price'	=> $this->input->post('postHargaBeli'),
+				'prd_selling_price'		=> $this->input->post('postHargaJual'),
+				'prd_unit_id_fk' 	 	=> $this->input->post('postSatuan'),
+				'prd_containts' 	 	=> $this->input->post('postIsi'),
+				'prd_initial_g_stock'	=> $this->input->post('postStockG'),
+				'prd_initial_ng_stock'	=> $this->input->post('postStockNG'),
+				'prd_initial_op_stock'	=> $this->input->post('postStockOP'),
+				'prd_description'		=> $this->input->post('postDeskripsi'),
+				'prd_image'				=> $this->input->post('postOldImg')
+			);
 
-	  /* Return dan redirect */
-	  	if($editPrd > 0){
-	  		$this->session->set_flashdata('flashStatus', 'successUpdate');
-	  		$this->session->set_flashdata('flashMsg', 'Berhasil mengubah detail produk !');
-	  	} else {
-	  		$this->session->set_flashdata('flashStatus', 'failedUpdate');
-	  		$this->session->set_flashdata('flashMsg', 'Gagal mengubah detail produk !');
-	  	}
-	  	$this->session->set_flashdata('flashRedirect', 'Product_c/listProductPage');
+		/** Set rules form validation */
+			$config = array(
+				array(
+					'field'	=> 'postBarcode',
+					'label'	=> 'Barcode Produk',
+					'rules'	=> 'trim'
+				),
+				array(
+					'field'	=> 'postNama',
+					'label'	=> 'Nama Produk',
+					'rules'	=> 'trim|required',
+					'errors'	=> array(
+						'required' => 'Nama produk tidak boleh kosong'
+					)
+				),
+				array(
+					'field'	=> 'postKategori',
+					'label'	=> 'Kategori Produk',
+					'rules'	=> 'trim|required|numeric',
+					'errors'	=> array(
+						'required'	=> 'Kategori produk tidak boleh kosong',
+						'numeric'	=> 'Pilih option tersedia'
+					)
+				),
+				array(
+					'field'	=> 'postHargaBeli',
+					'label'	=> 'Harga Beli',
+					'rules'	=> 'trim|required|greater_than_equal_to[0]|numeric',
+					'errors'	=> array(
+						'required' 	=> 'Harga beli tidak boleh kosong',
+						'numeric'	=> 'Harga tidak sesuai format',
+						'greater_than_equal_to' => 'Harga harus lebih dari 0' 
+					)
+				),
+				array(
+					'field'	=> 'postHargaJual',
+					'label'	=> 'Harga Jual',
+					'rules'	=> 'trim|required|greater_than_equal_to[0]|numeric',
+					'errors'	=> array(
+						'required' 	=> 'Harga Jual tidak boleh kosong',
+						'numeric'	=> 'Harga tidak sesuai format',
+						'greater_than_equal_to' => 'Harga harus lebih dari 0' 
+					)
+				),
+				array(
+					'field'	=> 'postSatuan',
+					'label'	=> 'Satuan',
+					'rules'	=> 'trim|required|numeric',
+					'errors'	=> array(
+						'required'	=> 'Satuan produk tidak boleh kosong',
+						'numeric'	=> 'Satuan tidak sesuai format'
+					)
+				),
+				array(
+					'field'	=> 'postIsi',
+					'label'	=> 'Isi per satuan',
+					'rules'	=> 'trim|required|numeric',
+					'errors'	=> array(
+						'required'	=> 'Isi tidak boleh kosong',
+						'numeric'	=> 'Isi tidak sesuai format'
+					)
+				),
+				array(
+					'field'	=> 'postStockG',
+					'label'	=> 'Stok awal',
+					'rules'	=> 'trim|required|numeric',
+					'errors'	=> array(
+						'numeric'	=> 'tidak sesuai format',
+						'required'	=> 'Stok awal tidak boleh kosong'
+					)
+				),
+				array(
+					'field'	=> 'postStockNG',
+					'label'	=> 'Stok awal rusak',
+					'rules'	=> 'trim|required|numeric',
+					'errors'	=> array(
+						'numeric'	=> 'tidak sesuai format',
+						'required'	=> 'Stok awal tidak boleh kosong'
+					)
+				),
+				array(
+					'field'	=> 'postStockOP',
+					'label'	=> 'Stok awal opname',
+					'rules'	=> 'trim|required|numeric',
+					'errors'	=> array(
+						'numeric'	=> 'tidak sesuai format',
+						'required'	=> 'Stok awal tidak boleh kosong'
+					)
+				),
+				array(
+					'field'	=> 'postDeskripsi',
+					'label'	=> 'Deskripsi Produk',
+					'rules'	=> 'trim'
+				)
+			);
+			$this->form_validation->set_rules($config);
 
-		redirect('Product_c/editProductPage/'.$this->input->post('postId'));
+		/** Run form validation */
+			if($this->form_validation->run() == FALSE) {
+				$arrReturn = array(
+					'error'		=> TRUE,
+					'errorNama' 	=> form_error('postNama'),
+					'errorKategori'	=> form_error('postKategori'),
+					'errorHrgBeli'	=> form_error('postHargaBeli'),
+					'errorHrgJual'	=> form_error('postHargaJual'),
+					'errorSatuan'	=> form_error('postSatuan'),
+					'errorIsi'		=> form_error('postIsi'),
+					'errorStockG'	=> form_error('postStockG'),
+					'errorStockNG' => form_error('postStockNG'),
+					'errorStockOP' => form_error('postStockOP')			
+				);
+			} else {
+				/** Check gambar baru */
+				if($_FILES['postImg']['name']){
+					/** Load lib dan helper */
+						$this->load->helper('file');
+						$this->load->library('upload');
+
+					/** Prepare config tambahan */
+						$config['upload_path']   = 'assets/uploaded_files/product_img/'; // Path folder untuk upload file
+						$config['allowed_types'] = 'jpeg|jpg|png|bmp|svg'; // Allowed types
+						$config['max_size']    	 = '2048'; // Max size in KiloBytes
+						$config['encrypt_name']  = TRUE; // Encrypt nama file ketika diupload
+						$this->upload->initialize($config); // Initialize config
+
+					/** Upload proses dan Simpan file ke database */
+						$upload = $this->upload->do_upload('postImg');
+						
+					/** Set nilai untuk simpan ke database */
+						if($upload){
+							/** Get data upload file */
+							$uploadData = $this->upload->data();
+
+							/** Delete gambar lama */
+							if($this->input->post('postOldImg') != ''){ unlink($this->input->post('postOldImg')); }
+			
+							/** Set value */
+							$postData['prd_image'] = $config['upload_path'].$uploadData['file_name'];
+							$errorUpload = NULL;
+						} else {
+							$errorUpload = $this->upload->display_errors();
+						}
+				}
+
+				if(isset($errorUpload) && $errorUpload != NULL){
+					$arrReturn['error']	   = TRUE;
+					$arrReturn['errorImg'] = $errorUpload;
+				} else {
+					/** Update data */
+	  					$editPrd = $this->Product_m->updateProduct($prdID, $postData);
+
+					/** Return dan redirect */
+						if($editPrd && $editPrd > 0){
+							  /** Result to return */
+							  $arrReturn = array(
+								  'success'	=> TRUE,
+								  'status'	=> 'successUpdate',
+								  'statusMsg' => 'Berhasil mengubah data produk !',
+								  'statusIcon' => 'success',
+								  'redirect'	=> site_url('Product_c/listProductPage')
+							  );
+						} else {
+							/** unlink new image */
+							unlink($postData['prd_image']);
+
+							/** Result to return */
+							$arrReturn = array(
+								'success'	=> TRUE,
+								'status'	=> 'failedUpdate',
+								'statusMsg' => 'Gagal mengubah data produk !',
+								'statusIcon' => 'error',
+								'redirect'	=> site_url('Product_c/listProductPage')
+							);
+						} 
+				}
+			}
+
+			header('Content-Type: application/json');
+			echo json_encode($arrReturn);
 	}
 
 	/* Function : Proses hapus / delete product */

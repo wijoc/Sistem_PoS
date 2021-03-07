@@ -119,6 +119,11 @@
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_product_assets.js"></script>
 	<?php } ?>
 
+	<!-- Page edit Product -->
+	<?php if(in_array('p_edit_product',$assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/edit_product_assets.js"></script>
+	<?php } ?>
+
 	<!-- Page List Produk -->
 	<?php if(in_array('p_list_product',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/list_product_assets.js"></script>
@@ -134,9 +139,6 @@
 			var ctgr_url = "<?php echo site_url('Product_c/listCategoryAjax') ?>"
 			var unit_url = "<?php echo site_url('Product_c/listUnitAjax') ?>"
 		</script>
-	<?php } ?>
-	<?php if(in_array('page_catunit',$assets)){ ?>
-		<!-- <script src="<?php echo base_url() ?>assets/dist/js/pages/cat_unit_assets.js"></script> -->
 	<?php } ?>
 
 	<!-- Page Add Product -->

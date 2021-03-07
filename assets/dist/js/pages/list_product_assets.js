@@ -12,12 +12,9 @@ $(document).ready(function(){
         },
 
         /** Set coloumn properties */
-        'coloumnDefs'   : [{
-            'targets'   : [0],
+        'columnDefs'   : [{
+            'targets'   : [0, -1],
             'orderable' : false
-        }],
-        'buttons'    : [
-            'copy', 'excel', 'pdf'
-        ],
+        }]
     })
 })

@@ -53,16 +53,16 @@ Class Product_m extends MY_Model {
         /** Jika keyword != null, set search data berdasar keyword */
         if($keyword != null){
           $this->db->group_start();
-          $this->db->like('prd.'.$this->prd_f['1'], $keyword);
-          $this->db->or_like('prd.'.$this->prd_f['2'], $keyword);
+          $this->db->like('prd.'.$this->prd_f['1'], $keyword['search']['value']);
+          $this->db->or_like('prd.'.$this->prd_f['2'], $keyword['search']['value']);
           $this->db->group_end();
         }
         
         /** Jika order = null, sort data bedasar prd_id */
-        ($order == null)? $this->db->order_by($this->prd_f[0], 'ASC') : $this->db->order_by($this->prd_f[$order['coloumn']], $order['dir']);
+        ($order == null)? $this->db->order_by($this->prd_f[0], 'ASC') : $this->db->order_by($this->prd_f[$order['order']['0']['coloumn']], $order['order']['0']['dir']);
       }
     
-    /** Query : Select product */
+    /** Q-Function : Select product */
       function selectProduct($amount = 0, $offset = 0){
         $this->_querySelectProduct('0', $this->input->post('prdSearch'), $this->input->post('order'));
         ($amount > 0)? $this->db->limit($amount, $offset) : '';
@@ -89,27 +89,36 @@ Class Product_m extends MY_Model {
         $this->db
       } */
 
-    /** Query : count_filtered */
+    /** Q-Function : count_filtered */
       function count_filtered($amount = 0, $offset = 0){
         $resultSelect = $this->selectProduct($amount, $offset);
         return $resultSelect->num_rows();
       }
 
-    /** Query : total semua */
+    /** Q-Function : total semua */
       function count_all(){
         $this->_querySelectProduct('0');
         $resultSelect = $this->db->get();
         return $resultSelect->num_rows();
       }
+
+    /** Q-Function : update data product */
+    function updateProduct($id, $data){
+      $this->db->set($data);
+      $this->db->where($this->prd_f[0], $id);
+      //$this->db->where('ngok', $id);
+      $resultUpdate = $this->db->update($this->prd_tb);
+      return $resultUpdate;
+    }
     
-    /** Query : Delete Product */
+    /** Q-Fucntion : Delete Product */
       function deleteProduct($id){
         $this->db->where($this->prd_f[0], $id);
         $resultDelete = $this->db->delete($this->prd_tb);
         return $resultDelete;
       }
     
-    /** Query : Soft-delete Product */
+    /** Q-Fucntion : Soft-delete Product */
       function softdeleteProduct($id){
         $this->db->set($this->prd_f[12], '1');
         $this->db->where($this->prd_f[0], $id);
@@ -117,7 +126,7 @@ Class Product_m extends MY_Model {
         return $resultUpdate;
       }
 
-    /** Query : insert stock */
+    /** Q-Fucntion : insert stock */
       function insertProductStock($data, $id){
         $insertData = array(
           $this->stk_f[1] => $id,
@@ -129,7 +138,7 @@ Class Product_m extends MY_Model {
         return $resultInsert;
       }
 
-    /** Query : search product */
+    /** Q-Fucntion : search product */
       function searchProduct($term){
         $this->db->group_start();
         $this->db->like($this->prd_f[1], $term);
@@ -202,14 +211,6 @@ Class Product_m extends MY_Model {
         $resultInsert = $this->db->insert($this->unit_tb, $data);
         return $resultInsert;
       }
-    
-    /** Query : Select semua Satuan, dan sort berdasar sat_nama 
-      function selectUnit(){
-        $this->db->order_by($this->unit_f[1], 'ASC');
-        $resultInsert = $this->db->get($this->unit_tb);
-        return $resultInsert->result_array();
-      }
-      */
       
     /** Q-Function : Select semua unit, dan sort berdasar ctgr_name */
       function selectUnit($amount = 0, $offset = 0){
