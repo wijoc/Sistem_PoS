@@ -29,7 +29,7 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                    <table id="table-product" class="table table-bordered table-striped">
+                    <table id="table-stock-product" class="table table-bordered table-striped">
                       <thead>
                       	<tr class="text-center">
 	                        <th rowspan="2" class=" align-middle">No.</th>
@@ -37,7 +37,7 @@
 	                        <th rowspan="2" class=" align-middle">Nama Produk</th>
 	                        <th colspan="2">Stock Bagus</th>
 	                        <th colspan="2">Stock Rusak</th>
-	                        <th colspan="2">Stock Return</th>
+	                        <th colspan="2">Stock Opname</th>
 	                        <th rowspan="2" class=" align-middle">Aksi</th>
                       	</tr>
                       	<tr class="text-center">
@@ -50,24 +50,6 @@
                     	</tr>
                       </thead>
                       <tbody>
-                        <?php $no = 1; foreach ($dataStock as $showStk) : ?>
-                        	<tr>
-                        		<td><?php echo $no++ ?></td>
-                        		<td><?php echo $showStk['prd_barcode'] ?></td>
-                        		<td><?php echo $showStk['prd_name'] ?></td>
-                        		<td class="text-center"><?php echo $showStk['prd_initial_g_stock'] ?></td>
-                        		<td class="text-center"><?php echo $showStk['stk_good'] ?></td>
-                        		<td class="text-center"><?php echo $showStk['prd_initial_ng_stock'] ?></td>
-                        		<td class="text-center"><?php echo $showStk['stk_not_good'] ?></td>
-                        		<td class="text-center"><?php echo $showStk['prd_initial_return_stock'] ?></td>
-                        		<td class="text-center"><?php echo $showStk['stk_return'] ?></td>
-                        		<td class="text-center">
-                              <a class="btn btn-xs btn-info" href="<?php echo site_url('Product_c/detailProductPage').'/'.urlencode(base64_encode($showStk['prd_id'])) ?>">
-                                <i class="fas fa-search"></i>
-                              </a>
-                        		</td>
-                        	</tr>
-                        <?php endforeach; ?>
                       </tbody>
                       <tfoot class="text-center">
                         <th>No.</th>
@@ -75,7 +57,7 @@
                         <th>Nama Produk</th>
                         <th colspan="2">Good</th>
                         <th colspan="2">Damaged</th>
-                        <th colspan="2">Return</th>
+                        <th colspan="2">Opname</th>
                         <th>Aksi</th>
                       </tfoot>
                     </table>

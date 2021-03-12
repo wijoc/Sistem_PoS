@@ -24,7 +24,7 @@
           <div class="col-12">
             <div class="card card-orange card-outline">
               <div class="card-header">
-                <h4 class="card-title">Detail Produk <b><?php echo $detailPrd[0]['prd_name'] ?></b> -- Barcode : <b><?php echo ($detailPrd[0]['prd_barcode'] != '')? $detailPrd[0]['prd_barcode'] : '<font color="red">Belum ada barcode !</font>' ?></b></h4>
+                <h4 class="card-title">Detail Produk <b><?php echo $detailPrd[0]['prd_name'] ?></b> -- Barcode : <b><?php echo ($detailPrd[0]['prd_barcode'] != '')? $detailPrd[0]['prd_barcode'] : '<i class="fas fa-minus" style="color: red"></i>' ?></b></h4>
                 <div class="float-right">
                   <a href="<?php echo site_url('Product_c/listProductPage') ?>" class="btn btn-xs btn-secondary"><i class="fas fa-list"></i></a>
                   <a href="<?php echo site_url('Product_c/editProductPage/').urlencode(base64_encode($detailPrd[0]['prd_id'])) ?>" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>

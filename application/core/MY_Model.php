@@ -17,7 +17,7 @@ class MY_Model extends CI_Model {
             '7' => 'prd_containts',
             '8' => 'prd_initial_g_stock',
             '9' => 'prd_initial_ng_stock',
-            '10' => 'prd_initial_return_stock',
+            '10' => 'prd_initial_op_stock',
             '11' => 'prd_description',
             '12' => 'prd_status',
             '13' => 'prd_image'
@@ -45,6 +45,18 @@ class MY_Model extends CI_Model {
         protected $unit_f  = array(
              '0' => 'unit_id',
              '1' => 'unit_name'
+        );
+
+    /** Table Supplier */
+        protected $supp_tb = 'tb_supplier';
+        protected $supp_f  = array(
+            '0' => 'supp_id',
+            '1' => 'supp_name',
+            '2' => 'supp_contact_name',
+            '3' => 'supp_email',
+            '4' => 'supp_telp',
+            '5' => 'supp_address',
+        '6' => 'supp_status'
         );
 
 	public function __construct(){

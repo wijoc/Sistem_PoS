@@ -1,26 +1,35 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed !');
 
-Class Supplier_m extends CI_Model{
+Class Supplier_m extends MY_Model{
 
   /* Note
     supp_status : 1 for deleted data, 0 for allowed data 
   */
-	
-  /* Declare table */
-  	var $supp_tb = 'tb_supplier';
-  	var $supp_f  = array(
-  		'0' => 'supp_id',
-  		'1' => 'supp_name',
-  		'2' => 'supp_contact_name',
-  		'3' => 'supp_email',
-  		'4' => 'supp_telp',
-  		'5' => 'supp_address',
-      '6' => 'supp_status'
-  	);
+
+  /** Query select data supplier */
+    function selectSupplier($amount = 0, $offset = 0, $status = 'all', $keyword = NULL, $order = 'asc'){
+      $this->db->select('supp.*');
+      $this->db->from($this->supp_tb.' as supp');
+
+      if($status != 'all'){ $this->db->where($this->supp_f[6], 0); }
+
+      if($keyword != NULL){
+        $this->db->group_start();
+        $this->db->like($this->supp_f[1], $keyword);
+        $this->db->or_like($this->supp_f[2], $keyword);
+        $this->db->group_end();
+      }
+
+      $this->db->order_by($this->supp_f[1], $order);
+
+      if($amount > 0){ $this->db->limit($amount, $offset); }
+
+      return $this->db->get();
+    }
 
   /* Query */
-  	/* Query select semua row data supplier */
+  	/** Query : select semua row data supplier */
   	function getAllSupplier(){
   		$this->db->order_by($this->supp_f[1], 'ASC');
   		$resultSelect = $this->db->get($this->supp_tb);
@@ -28,7 +37,7 @@ Class Supplier_m extends CI_Model{
   	}
 
     /* Query select row data supplier berdasar supp_id */
-    function getSupplierOnID($id){
+    function selectSupplierOnID($id){
       $this->db->where($this->supp_f[0], $id);
       $resultSelect = $this->db->get($this->supp_tb);
       return $resultSelect->result_array();

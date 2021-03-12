@@ -8,10 +8,11 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
 <!-- Additional lib or plugin goes here -->
-  <!-- DataTables -->
-    <?php if(in_array('datatables',$assets)){ ?> 
+  <?php if(in_array('datatables',$assets)){ ?>
+    <!-- DataTables --> 
       <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <?php } ?>
+      <!-- <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/datatables-buttons/css/buttons.bootstrap4.css"> -->
+  <?php } ?>
 
   <!-- SweetAlert2 -->
     <?php if(in_array('sweetalert2',$assets)){ ?> 

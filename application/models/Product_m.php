@@ -38,17 +38,30 @@ Class Product_m extends MY_Model {
       }
 
     /** Query : Select product query */
-      private function _querySelectProduct($status = 'all', $keyword = null, $order = null){
-        /** Select semua field data product, nama kategori, dan nama satuan */
-        $this->db->select('prd.*, ctgr.'.$this->ctgr_f[1].', u.'.$this->unit_f[1]);
-        $this->db->from($this->prd_tb.' as prd');
+      public function _querySelectProduct($status = 'all', $keyword = null, $order = null, $select = 'all'){
+        /** From table */
+        //$this->db->from($this->prd_tb.' as prd');
+        
+        if($select == 'stock'){
+          /** Select data stock */
+          $this->db->select('prd.'.$this->prd_f[0].', prd.'.$this->prd_f[1].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[8].', prd.'.$this->prd_f[9].', prd.'.$this->prd_f[10].', stk.* ');
 
-        /** Join table kategori alias ctgr, dan satuan alias u */
-        $this->db->join($this->ctgr_tb.' as ctgr', 'ctgr.'.$this->ctgr_f[0].'=prd.'.$this->prd_f[3]);
-        $this->db->join($this->unit_tb.' as u', 'u.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
+          $this->db->from($this->prd_tb.' as prd');
+
+          $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].'=stk.'.$this->stk_f[1]);
+        } else if ($select == 'all') {
+          /** Select semua field data product */
+          $this->db->select('prd.*, ctgr.'.$this->ctgr_f[1].', u.'.$this->unit_f[1]);
+
+          $this->db->from($this->prd_tb.' as prd');
+
+          /** Join table kategori alias ctgr, dan satuan alias u */
+          $this->db->join($this->ctgr_tb.' as ctgr', 'ctgr.'.$this->ctgr_f[0].'=prd.'.$this->prd_f[3]);
+          $this->db->join($this->unit_tb.' as u', 'u.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
+        }
         
         /** Jika status = all select semua data */
-        ($status != 'all')? $this->db->where($this->prd_f[12], $status) : '';
+        ($status != 'all')? $this->db->where('prd.'.$this->prd_f[12], $status) : '';
 
         /** Jika keyword != null, set search data berdasar keyword */
         if($keyword != null){
@@ -59,7 +72,7 @@ Class Product_m extends MY_Model {
         }
         
         /** Jika order = null, sort data bedasar prd_id */
-        ($order == null)? $this->db->order_by($this->prd_f[0], 'ASC') : $this->db->order_by($this->prd_f[$order['order']['0']['coloumn']], $order['order']['0']['dir']);
+        ($order == null)? $this->db->order_by('prd.'.$this->prd_f[0], 'ASC') : $this->db->order_by('prd.'.$this->prd_f[$order['order']['0']['coloumn']], $order['order']['0']['dir']);
       }
     
     /** Q-Function : Select product */
@@ -88,28 +101,47 @@ Class Product_m extends MY_Model {
         $this->db->where('a', 'a');
         $this->db
       } */
+    
+    /** Q-Function : Select stock product */
+      function getStockProduct(){
+        $this->db->select('prd.'.$this->prd_f[0].', prd.'.$this->prd_f[1].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[8].', prd.'.$this->prd_f[9].', prd.'.$this->prd_f[10].', stk.*');
+        $this->db->from($this->stk_tb.' as stk');
+        $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].'=stk.'.$this->stk_f[1]);
+        $this->db->where('prd.'.$this->prd_f[12], '0');
+        $this->db->order_by('prd.'.$this->prd_f[0], 'ASC');
+        $resultSelect = $this->db->get();
+        return $resultSelect->result_array();
+      }
+
+    /** Q-Function : Select stock product */
+      function selectProductStock($amount = 0, $offset = 0){
+        $this->_querySelectProduct('0', $this->input->post('prdSearch'), $this->input->post('order'), 'stock');
+        ($amount > 0)? $this->db->limit($amount, $offset) : '';
+        $resultSelect = $this->db->get();
+        return $resultSelect;
+      }
 
     /** Q-Function : count_filtered */
-      function count_filtered($amount = 0, $offset = 0){
-        $resultSelect = $this->selectProduct($amount, $offset);
+      function count_filtered($amount = 0, $offset = 0, $select = 'all'){
+        $resultSelect = $this->selectProduct($amount, $offset, $select);
         return $resultSelect->num_rows();
       }
 
     /** Q-Function : total semua */
       function count_all(){
-        $this->_querySelectProduct('0');
+        $this->_querySelectProduct('0', null, null, 'stock');
         $resultSelect = $this->db->get();
         return $resultSelect->num_rows();
       }
 
     /** Q-Function : update data product */
-    function updateProduct($id, $data){
-      $this->db->set($data);
-      $this->db->where($this->prd_f[0], $id);
-      //$this->db->where('ngok', $id);
-      $resultUpdate = $this->db->update($this->prd_tb);
-      return $resultUpdate;
-    }
+      function updateProduct($id, $data){
+        $this->db->set($data);
+        $this->db->where($this->prd_f[0], $id);
+        //$this->db->where('ngok', $id);
+        $resultUpdate = $this->db->update($this->prd_tb);
+        return $resultUpdate;
+      }
     
     /** Q-Fucntion : Delete Product */
       function deleteProduct($id){

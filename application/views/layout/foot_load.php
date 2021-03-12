@@ -15,14 +15,6 @@
 	</script>
 
 <!-- Addritional library needed -->
-	<!-- DataTables -->
-	<?php if(in_array('datatables',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
-		<script src="<?php echo base_url() ?>assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-		<script src="<?php echo base_url() ?>assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-		<!-- Default datatable -->
-		<script src="<?php echo base_url() ?>assets/extra/datatables_default.js"></script>
-	<?php } ?>
 
 	<!-- SweetAlert 2 -->
 	<?php if(in_array('sweetalert2',$assets)){ ?>
@@ -129,6 +121,7 @@
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/list_product_assets.js"></script>
 		<script>
 			var product_url = "<?php echo site_url('Product_c/listProductAjax') ?>"
+			var stk_product_url = "<?php echo site_url('Product_c/listStockProductAjax') ?>"
 		</script>
 	<?php } ?>
 
@@ -144,6 +137,10 @@
 	<!-- Page Add Product -->
 	<?php if(in_array('page_contact',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/contact_assets.js"></script>
+		<script>
+			var supp_url = "<?php echo site_url('Supplier_c/listSupplierAjax/') ?>"
+			var contact_url = "<?php echo base_url() ?>assets/dist/js/pages/contact_assets.js"
+		</script>
 	<?php } ?>	
 
 	<!-- Page Add Trans -->
@@ -205,4 +202,19 @@
 				var site_url = "<?php echo site_url($this->session->flashdata('flashRedirect')) ?>";
 			<?php } ?>
 		</script>
+	<?php } ?>
+
+	
+	<?php if(in_array('datatables',$assets)){ ?>
+	  <!-- DataTables -->
+		<script src="<?php echo base_url() ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/dataTables.buttons.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.flash.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+		<!-- Default datatable -->
+		<script src="<?php echo base_url() ?>assets/extra/datatables_default.js"></script>
 	<?php } ?>

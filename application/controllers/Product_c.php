@@ -96,13 +96,46 @@ Class Product_c extends MY_Controller {
 		/* set data yang akan ditampilkan */
 		$this->pageData = array(
 			'title' 	=> 'PoS | Stock Product',
-			'assets'	=> array('datatables', 'sweetalert2', 'page_product'),
-			'dataStock' => $this->Product_m->getStockProduct()
+			'assets'	=> array('datatables', 'sweetalert2', 'p_list_product'),
+			//'dataStock' => $this->Product_m->getStockProduct()
 		);
 
 		/* Set view file */
 		$this->page = 'product/list_stock_product_v';
 		$this->layout();
+	}
+
+	/** Sementara stokc */
+	public function listStockProductAjax(){
+		$prdData	= array();
+		$no			= $this->input->post('start');
+		foreach($this->Product_m->selectProductStock(10, 0)->result_array() as $show){
+			$no++;
+			$row = array();
+			$row[] = $no;
+			$row[] = ($show['prd_barcode'])? $show['prd_barcode'] : '<i class="fas fa-minus" style="color: red;"></i>';
+			$row[] = $show['prd_name'];
+			$row[] = $show['prd_initial_g_stock'];
+			$row[] = $show['stk_good'];
+			$row[] = $show['prd_initial_ng_stock'];
+			$row[] = $show['stk_not_good'];
+			$row[] = $show['prd_initial_op_stock'];
+			$row[] = $show['stk_opname'];
+			$row[] = '<a class="btn btn-xs btn-info" href="'.site_url('Product_c/detailProductPage/').urlencode(base64_encode($show['prd_id'])).'"> <i class="fas fa-search"></i> </a>';
+		
+			$prdData[] = $row;
+		}
+
+		$output = array(
+			'draw'			  => $this->input->post('draw'),
+			'recordsTotal'	  => $this->Product_m->count_all('stock'),
+			'recordsFiltered' => $this->Product_m->count_filtered($this->input->post('length'), $this->input->post('start'), 'stock'),
+			'data'			  => $prdData
+		);
+
+		echo json_encode($output);
+
+		//print("<pre>".print_r($this->Product_m->selectProductStock(10, 0)->result_array(), true)."</pre>");
 	}
 
 	/* Function : Detail product page */
