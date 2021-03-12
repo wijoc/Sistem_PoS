@@ -139,7 +139,6 @@
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/contact_assets.js"></script>
 		<script>
 			var supp_url = "<?php echo site_url('Supplier_c/listSupplierAjax/') ?>"
-			var contact_url = "<?php echo base_url() ?>assets/dist/js/pages/contact_assets.js"
 		</script>
 	<?php } ?>	
 

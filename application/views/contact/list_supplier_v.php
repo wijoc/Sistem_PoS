@@ -23,76 +23,30 @@
         <div class="card card-info card-solid card-outline">
           <div class="card-header">
             <h5 class="card-title">Daftar Kontak Supplier</h5>
-            <div class="float-right row">
-              <div class="col-8 input-group input-group-sm">
-                <input type="text" class="form-control">
-                <span class="input-group-append">
-                  <button type="button" class="btn btn-secondary btn-flat"><i class="fas fa-search"></i></button>
-                </span>
-              </div>
-              <a class="col-4 pt-1 btn btn-xs btn-info text-white font-weight-bold" data-toggle="modal" data-target="#modal-tambah-supplier"> <i class="fas fa-plus"></i>&nbsp; Supplier Baru</a>
-            </div>
+              <a class="btn btn-sm btn-info text-white font-weight-bold float-right" data-toggle="modal" data-target="#modal-tambah-supplier"> <i class="fas fa-plus"></i>&nbsp; Supplier Baru</a>
           </div>
           <div class="card-body pb-0">
-            <div class="row d-flex align-items-stretch">
-              <?php 
-                if(empty($dataSupplier) && count($dataSupplier) <= 0) {  
-                  echo '<div class="col-12 alert alert-danger text-center" style="opacity: 0.7" role="alert">Data belum tersedia !</div>';
-                } else {
-                  foreach($dataSupplier as $showSupp):
-              ?>
-                <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
-                  <div class="card bg-light">
-                    <div class="card-header text-muted border-bottom-0">
-                      <?php echo $showSupp['supp_contact_name'] ?>
-                    </div>
-                    <div class="card-body pt-0">
-                      <div class="row">
-                        <div class="col-7">
-                          <h2 class="lead"><b><?php echo $showSupp['supp_name'] ?></b></h2>
-                          <ul class="ml-4 mb-0 fa-ul text-muted">
-                            <li class="small">
-                              <span class="fa-li"><i class="fas fa-md fa-building"></i></span> Alamat: <?php echo $showSupp['supp_address'] ?>
-                            </li>
-                            <li class="small">
-                              <span class="fa-li"><i class="fas fa-md fa-phone"></i></span> Phone : <?php echo $showSupp['supp_telp'] ?>
-                            </li>
-                            <li class="small">
-                              <span class="fa-li"><i class="fas fa-md fa-envelope-open-text"></i></span> Email : <?php echo $showSupp['supp_email'] ?>
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="col-5 text-center">
-                          <img src="<?php echo base_url() ?>assets/dist/img/user1-128x128.jpg" alt="" class="img-circle img-fluid">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card-footer">
-                      <div class="text-right">
-                        <a href="" class="btn btn-sm btn-primary">
-                          <i class="fas fa-sync"></i>&nbsp; Lihat Transaksi
-                        </a>
-                        <a href="#" class="btn btn-sm bg-teal">
-                          <i class="fas fa-search"></i>
-                        </a>
-                        <a class="btn btn-sm btn-warning contactEdit" data-toggle="modal" data-target="#modal-edit-supplier" data-type="supp" data-id="<?php echo urlencode(base64_encode($showSupp['supp_id'])) ?>" data-href="<?php echo site_url('Supplier_c/getSupplier') ?>">
-                          <i class="fas fa-edit"></i>
-                        </a>
-                        <!-- Soft Delete -->
-                        <a class="btn btn-sm btn-danger" onclick="confirmDelete('soft-supp', '<?php echo urlencode(base64_encode($showSupp['supp_id'])) ?>', '<?php echo site_url('Supplier_c/deleteSupplier/soft') ?>')">
-                          <i class="fas fa-trash"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              <?php endforeach; } ?>
+            <div class="col-12 row">
+              <div class="col-10 input-group input-group-sm">
+                <input type="text" name="postSearch" class="form-control" onkeyup="getRowData(0)">
+                <span class="input-group-append">
+                  <button type="button" class="btn btn-secondary btn-flat" onclick="getRowData(0)"><i class="fas fa-search"></i></button>
+                </span>
+              </div>
+              <div class="col-2 input-group-sm">
+                <select name="postOrder" id="suppOrder" class="form-control" onchange="getRowData(0)">
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+            </div>
+            <hr>
+            <div class="row d-flex align-items-stretch" id="list-supp">  
             </div>
           </div>
           <!-- /.card-body -->
           <div class="card-footer">
-            <nav aria-label="Contacts Page Navigation">
-              <?php echo $this->pagination->create_links(); ?>
+            <nav aria-label="Contacts Page Navigation" id="pagination">
             </nav>
           </div>
           <!-- /.card-footer -->
@@ -182,7 +136,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Supplier_c/editSupplierProses') ?>" id="formEditSupplier">
+            <form method="POST" action="<?php echo site_url('Supplier_c/editSupplierProses') ?>" id="form-edit-supplier">
               <div class="modal-body">
                 <input type="hidden" name="postSuppID" id="editSuppID" required readonly>
                 
@@ -191,6 +145,7 @@
                     <label for="editSuppNama" class="col-sm-3 col-form-label">Nama Supplier <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control float-right" name="postSuppNama" id="editSuppNama" placeholder="Nama Supplier" required>
+                      <small id="errorSuppNama" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
@@ -199,6 +154,7 @@
                     <label for="editSuppKontak" class="col-sm-3 col-form-label">Nama Kontak <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control float-right" name="postSuppKontak" id="editSuppKontak" placeholder="Nama untuk kontak supplier" required>
+                      <small id="errorSuppKontak" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
@@ -207,6 +163,7 @@
                     <label for="editSuppTelp" class="col-sm-3 col-form-label">No. Telp <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control float-right" name="postSuppTelp" id="editSuppTelp" placeholder="Nomor Telephone">
+                      <small id="errorSuppTelp" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
@@ -215,6 +172,7 @@
                     <label for="editSuppEmail" class="col-sm-3 col-form-label">E-mail <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control float-right" name="postSuppEmail" id="editSuppEmail" placeholder="Alamat email">
+                      <small id="errorSuppEmail" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 

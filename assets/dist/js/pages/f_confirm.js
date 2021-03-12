@@ -80,7 +80,7 @@ function confirmDelete(item, getid, url, msg){
                             if(item == 'soft-supp'){
                                 $("input[name='postSearch']").val('')
                                 $("#suppOrder").val('asc')
-                                $.getScript('../assets/dist/js/pages/contact_assets.js', function(data, textStatus, jqxhr ) {
+                                $.getScript('assets/dist/js/pages/contact_assets.js', function(data, textStatus, jqxhr ) {
                                     getRowData(0)
                                 })
                             } else { $('.table-server').DataTable().ajax.reload() }
