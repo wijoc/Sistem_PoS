@@ -14,8 +14,9 @@ class Supplier_c extends MY_Controller
 
     /* Data yang akan dikirim ke view */
     $this->pageData = array(
-      'title' => 'PoS | Supplier',
-      'assets' => array('sweetalert2', 'f_confirm', 'page_contact')
+      'title'  => 'PoS | Supplier',
+      'assets' => array('sweetalert2', 'f_confirm', 'page_contact'),
+      'contact_url'  => site_url('Supplier_c/listSupplierAjax/')
     );
 
     /* View file */
@@ -34,7 +35,7 @@ class Supplier_c extends MY_Controller
     $page       = $this->uri->segment(3);
     $config['base_url']         = site_url('Supplier_c/listSupplierAjax/');
     $config['use_page_numbers'] = TRUE;
-    $config['total_rows']       = $this->Supplier_m->selectSupplier(0, 0, 0, $this->input->get('supp_keyword'), $this->input->get('supp_order'))->num_rows(); // limit (param1), offset (param2), status (param3)
+    $config['total_rows']       = $this->Supplier_m->selectSupplier(0, 0, 0, $this->input->get('filter_keyword'), $this->input->get('filter_order'))->num_rows(); // limit (param1), offset (param2), status (param3)
     $config['per_page']         = 9;
     $config['full_tag_open']    = '<ul class="pagination justify-content-center m-0">';
     $config['full_tag_close']   = '</ul>';
@@ -59,7 +60,7 @@ class Supplier_c extends MY_Controller
 
     /** Prepare Data */
       $i = 0;
-      foreach ($this->Supplier_m->selectSupplier($config['per_page'], $start_from, 0, $this->input->get('supp_keyword'), $this->input->get('supp_order'))->result_array() as $showSupp):
+      foreach ($this->Supplier_m->selectSupplier($config['per_page'], $start_from, 0, $this->input->get('filter_keyword'), $this->input->get('filter_order'))->result_array() as $showSupp):
         $suppData[$i]['data_id']    = urlencode(base64_encode($showSupp['supp_id']));
         $suppData[$i]['data_name']  = ($showSupp['supp_name'])? $showSupp['supp_name'] : '<i class="fas fa-minus"></i>';
         $suppData[$i]['data_contact'] = ($showSupp['supp_contact_name'])? $showSupp['supp_contact_name'] : '<i class="fas fa-minus"></i>';
@@ -70,17 +71,19 @@ class Supplier_c extends MY_Controller
       endforeach;
       
       $data['pagination'] = $this->pagination->create_links();
-      $data['supp_data']  = $suppData;
+      $data['contact_data'] = $suppData;
       $data['page']       = $page;
-      $data['url_detail'] = site_url('Supplier_c/getSupplier/');
-      $data['delete_type'] = 'soft-supp';
-      $data['delete_url'] = site_url('Supplier_c/deleteSupplier/soft');
+      $data['type']       = 'supp';
+      $data['modal']      = 'modal-edit-supplier';
+      $data['url_detail']   = site_url('Supplier_c/getSupplier/');
+      $data['delete_type']  = 'soft-supp';
+      $data['delete_url']   = site_url('Supplier_c/deleteSupplier/soft');
 
     header('Content-Type: application/json');
     echo json_encode($data);
   }
 
-  /* Function : Get detail supplier */
+  /** Function : Get detail supplier */
   function getSupplier(){
     $suppID = base64_decode(urldecode($this->input->get('id')));
 
@@ -96,7 +99,7 @@ class Supplier_c extends MY_Controller
     echo json_encode($returnData);
   }
 
-  /* Function : Input supplier proses */
+  /** Function : Input supplier proses */
   function addSupplierProses(){
     /** Run form validation */
     if ($this->_formValidation() == FALSE) {
@@ -173,14 +176,14 @@ class Supplier_c extends MY_Controller
         if ($updateSupp > 0) {
           $arrReturn = array(
             'success'    => TRUE,
-            'status'    => 'successInsert',
+            'status'    => 'successUpdate',
             'statusMsg' => 'Berhasil mengubah data kontak !',
             'statusIcon' => 'success'
           );
         } else {
           $arrReturn = array(
             'success'    => TRUE,
-            'status'    => 'failedInsert',
+            'status'    => 'failedUpdate',
             'statusMsg' => 'Gagal mengubah data kontak !',
             'statusIcon' => 'error'
           );

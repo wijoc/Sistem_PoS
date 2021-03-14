@@ -138,7 +138,7 @@
 	<?php if(in_array('page_contact',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/contact_assets.js"></script>
 		<script>
-			var supp_url = "<?php echo site_url('Supplier_c/listSupplierAjax/') ?>"
+			var contact_url = "<?php echo $contact_url ?>"
 		</script>
 	<?php } ?>	
 

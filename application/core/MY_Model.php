@@ -58,6 +58,17 @@ class MY_Model extends CI_Model {
             '5' => 'supp_address',
         '6' => 'supp_status'
         );
+	
+    /** Table Customer */
+        protected $ctm_tb = 'tb_customer';
+        protected $ctm_f  = array(
+            '0' => 'ctm_id',
+            '1' => 'ctm_name',
+            '2' => 'ctm_phone',
+            '3' => 'ctm_email',
+            '4' => 'ctm_address',
+            '5' => 'ctm_status'
+        );
 
 	public function __construct(){
 		parent::__construct();

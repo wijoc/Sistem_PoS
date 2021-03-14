@@ -77,7 +77,8 @@ function confirmDelete(item, getid, url, msg){
                             icon: 'success',
                             title: 'Data berhasil dihapus !'
                         }).then((result)=>{
-                            if(item == 'soft-supp'){
+                            console.log(result)
+                            if(item == 'soft-supp' || item == 'hard-supp' || item == 'soft-ctm' || item == 'hard-ctm'){
                                 $("input[name='postSearch']").val('')
                                 $("#suppOrder").val('asc')
                                 $.getScript('assets/dist/js/pages/contact_assets.js', function(data, textStatus, jqxhr ) {

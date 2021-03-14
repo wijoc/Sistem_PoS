@@ -20,70 +20,33 @@
     <section class="content">
       <div class="container-fluid">
         <!-- Default box -->
-        <div class="card card-orange card-solid card-outline">
+        <div class="card card-info card-solid card-outline">
           <div class="card-header">
             <h5 class="m-0 card-title">Daftar Kontak Pelanggan</h5>
-            <a class="btn btn-sm btn-success float-right" data-toggle="modal" data-target="#modal-tambah-pelanggan"> <i class="fas fa-plus"></i> Tambah member</a>
+            <a class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#modal-tambah-customer"> <i class="fas fa-plus"></i> Tambah member</a>
           </div>
           <div class="card-body pb-0">
-            <?php if(empty($dataCtm)){ ?>
-              <div class="alert alert-danger text-center" style="opacity: 0.8; font-weight: bold;" role="alert">Data Pelanggan belum tersedia !</div>
-            <?php } else { ?>
-              <div class="row d-flex align-items-stretch">
-                  <?php foreach($dataCtm as $showCtm) : ?>
-                  <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
-                    <div class="card bg-light">
-                      <div class="card-header text-muted border-bottom-0">
-                      </div>
-                      <div class="card-body pt-0">
-                        <div class="row">
-                          <div class="col-12">
-                            <h5 class="lead"><b><?php echo $showCtm['ctm_name'] ?></b></h5>
-                            <ul class="ml-4 mb-0 fa-ul text-muted">
-                              <li class="small">
-                                <span class="fa-li"><i class="fas fa-md fa-phone"></i></span> <?php echo ($showCtm['ctm_phone'] != '')? $showCtm['ctm_phone'] : '-' ?>
-                              </li>
-                            </ul>
-                            <ul class="ml-4 mb-0 fa-ul text-muted">
-                              <li class="small">
-                                <span class="fa-li"><i class="fas fa-md fa-envelope"></i></span> <?php echo ($showCtm['ctm_email'] != '')? $showCtm['ctm_email'] : '-' ?>
-                              </li>
-                            </ul>
-                            <ul class="ml-4 mb-0 fa-ul text-muted">
-                              <li class="small">
-                                <span class="fa-li"><i class="fas fa-md fa-map"></i></span> <?php echo ($showCtm['ctm_address'] != '')? $showCtm['ctm_address'] : '-' ?>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card-footer">
-                        <div class="text-right">
-                          <a href="" class="btn btn-sm btn-primary">
-                            <i class="fas fa-sync"></i>&nbsp; Lihat Transaksi
-                          </a>
-                          <a href="#" class="btn btn-sm bg-teal">
-                            <i class="fas fa-search"></i>
-                          </a>
-                          <a class="btn btn-sm btn-warning contactEdit" data-toggle="modal" data-target="#modal-edit-pelanggan" data-type="ctm" data-id="<?php echo urlencode(base64_encode($showCtm['ctm_id'])) ?>" data-href="<?php echo site_url('Customer_c/getCustomer') ?>">
-                            <i class="fas fa-edit"></i>
-                          </a>
-                          <!-- Soft Delete -->
-                          <a class="btn btn-sm btn-danger" onclick="confirmDelete('soft-ctm', '<?php echo urlencode(base64_encode($showCtm['ctm_id'])) ?>', '<?php echo site_url('Customer_c/deleteCustomer/soft') ?>')">
-                            <i class="fas fa-trash"></i>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                <?php endforeach; ?>
+            <div class="col-12 row">
+              <div class="col-10 input-group input-group-sm">
+                <input type="text" name="postSearch" class="form-control" onkeyup="getRowData(0)">
+                <span class="input-group-append">
+                  <button type="button" class="btn btn-secondary btn-flat" onclick="getRowData(0)"><i class="fas fa-search"></i></button>
+                </span>
               </div>
-            <?php } ?>
+              <div class="col-2 input-group-sm">
+                <select name="postOrder" id="contactOrder" class="form-control" onchange="getRowData(0)">
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+            </div>
+            <hr>
+            <div class="row d-flex align-items-stretch" id="list-ctm">  
+            </div>
           </div>
           <!-- /.card-body -->
           <div class="card-footer">
-            <nav aria-label="Contacts Page Navigation">
-              <?php echo $this->pagination->create_links(); ?>
+            <nav aria-label="Contacts Page Navigation" id="pagination">
             </nav>
           </div>
           <!-- /.card-footer -->
@@ -96,7 +59,7 @@
 
     <!-- Modal -->
       <!-- Modal Tambah Pelanggan -->
-      <div class="modal fade" id="modal-tambah-pelanggan">
+      <div class="modal fade" id="modal-tambah-customer">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -105,7 +68,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Customer_c/addCustomerProses') ?>" id="formAddPelanggan">
+            <form action="<?php echo site_url('Customer_c/addCustomerProses') ?>" id="form-add-customer">
               <div class="modal-body">
                 
                 <!-- Form-part input Pelanggan nama -->
@@ -113,6 +76,7 @@
                     <label for="inputCtmNama" class="col-sm-3 col-form-label">Nama Pelanggan <font color="red">*</font> <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control float-right" name="postCtmNama" id="inputCtmNama" placeholder="Nama Pelanggan" required>
+                      <small id="errorCtmNama" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
@@ -121,6 +85,7 @@
                     <label for="inputCtmTelp" class="col-sm-3 col-form-label">No. Telphone <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control float-right" name="postCtmTelp" id="inputCtmTelp" placeholder="Nomor telepone pelanggan">
+                      <small id="errorCtmTelp" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
@@ -129,6 +94,7 @@
                     <label for="inputCtmEmail" class="col-sm-3 col-form-label">E - mail <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="email" class="form-control float-right" name="postCtmEmail" id="inputCtmEmail" placeholder="Alamat E - mail">
+                      <small id="errorCtmEmail" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
@@ -152,7 +118,7 @@
       </div>
 
       <!-- Modal Edit Pelanggan -->
-      <div class="modal fade" id="modal-edit-pelanggan">
+      <div class="modal fade" id="modal-edit-customer">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -161,7 +127,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Customer_c/editCustomerProses') ?>" id="formEditCustomer">
+            <form action="<?php echo site_url('Customer_c/editCustomerProses') ?>" id="form-edit-customer">
               <div class="modal-body">
                 <input type="hidden" name="postCtmID" id="editCtmID" required readonly>
                 
@@ -170,6 +136,7 @@
                     <label for="editCtmNama" class="col-sm-3 col-form-label">Nama Pelanggan <font color="red">*</font> <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control float-right" name="postCtmNama" id="editCtmNama" placeholder="Nama Pelanggan" required>
+                      <small id="errorCtmNama" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
@@ -178,6 +145,7 @@
                     <label for="editCtmTelp" class="col-sm-3 col-form-label">No. Telphone <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control float-right" name="postCtmTelp" id="editCtmTelp" placeholder="Nomor telepone pelanggan">
+                      <small id="errorCtmTelp" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
@@ -186,6 +154,7 @@
                     <label for="editCtmEmail" class="col-sm-3 col-form-label">E - mail <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
                       <input type="email" class="form-control float-right" name="postCtmEmail" id="editCtmEmail" placeholder="Alamat E - mail">
+                      <small id="errorCtmEmail" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 

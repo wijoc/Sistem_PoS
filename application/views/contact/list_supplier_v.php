@@ -34,7 +34,7 @@
                 </span>
               </div>
               <div class="col-2 input-group-sm">
-                <select name="postOrder" id="suppOrder" class="form-control" onchange="getRowData(0)">
+                <select name="postOrder" id="contactOrder" class="form-control" onchange="getRowData(0)">
                   <option value="asc">Ascending</option>
                   <option value="desc">Descending</option>
                 </select>

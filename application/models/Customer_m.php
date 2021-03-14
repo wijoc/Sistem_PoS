@@ -1,43 +1,36 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed !');
 
-Class Customer_m extends CI_Model{
-  /* Note 
-    1. member status :
-        Y = active
-        N = deactive
-        D = deleted
+Class Customer_m extends MY_Model{
+  /** Note 
+   * 1. member status :
+   *    Y = active
+   *    N = deactive
+   *    D = deleted
   */
-	
-  /* Declare table */
-  	var $ctm_tb = 'tb_customer';
-  	var $ctm_f  = array(
-  		'0' => 'ctm_id',
-  		'1' => 'ctm_name',
-      '2' => 'ctm_phone',
-      '3' => 'ctm_email',
-      '4' => 'ctm_address',
-  		'5' => 'ctm_status'
-  	);
 
-  /* Query */
-  	/* Query select semua row data customer */
-  	function getAllCustomer(){
-  		$this->db->order_by($this->ctm_f[1], 'ASC');
-  		$resultGet = $this->db->get($this->ctm_tb);
-  		return $resultGet->result_array();
-  	}
+  /** Q-Function select data customer */
+  Function selectCustomer($amount = 0, $offset = 0, $status = 'all', $keyword = NULL, $order = 'asc'){
+    $this->db->select('ctm.*');
+    $this->db->from($this->ctm_tb.' as ctm');
 
-    /* Query select row data customer, dengan status <> D (D untuk data customer deleted) */
-    function getAllowedCustomer($amount, $offset){
-      $this->db->where($this->ctm_f[5], 'Y');
-      $this->db->order_by($this->ctm_f[1], 'ASC');
-      $resultGet = $this->db->get($this->ctm_tb, $amount, $offset);
-      return $resultGet;
+    if($status != 'all'){ $this->db->where($this->ctm_f[5], 0); }
+
+    if($keyword != NULL){
+      $this->db->group_start();
+      $this->db->like($this->ctm_f[1], $keyword);
+      $this->db->group_end();
     }
 
-    /* Query select row data customer berdasar ctm_id */
-    function getCustomerOnID($id){
+    $this->db->order_by($this->ctm_f[1], $order);
+
+    if($amount > 0){ $this->db->limit($amount, $offset); }
+
+    return $this->db->get();
+  }
+
+  /** Q-Function : Select row data customer berdasar ctm_id */
+    function selectCustomerOnID($id){
       $this->db->where($this->ctm_f[0], $id);
       $resultSelect = $this->db->get($this->ctm_tb);
       return $resultSelect->result_array();
@@ -71,9 +64,9 @@ Class Customer_m extends CI_Model{
   		return $resultDelete;
   	}
 
-    /* Query soft delete data customer, change ctm_status to D for deleted rowdata */
+    /* Query soft delete data customer, change ctm_status to 1 for deleted rowdata */
     function softdeleteCustomer($id){
-      $this->db->set($this->ctm_f[5], 'D');
+      $this->db->set($this->ctm_f[5], '1');
       $this->db->where($this->ctm_f[0], $id);
       $resultUpdate = $this->db->update($this->ctm_tb);
       return $resultUpdate;
