@@ -87,7 +87,7 @@ class Supplier_c extends MY_Controller
   function getSupplier(){
     $suppID = base64_decode(urldecode($this->input->get('id')));
 
-    $suppData = $this->Supplier_m->selectSupplierOnID($suppID);
+    $suppData = $this->Supplier_m->selectSupplierOnID($suppID)->result_array();
     $returnData = array(
       'edit_name'    => $suppData[0]['supp_name'],
       'edit_contact' => $suppData[0]['supp_contact_name'],

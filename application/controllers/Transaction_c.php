@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed !');
 
-Class Transaksi_c extends MY_Controller{
+Class Transaction_c extends MY_Controller{
 	
 	function __construct(){
 		parent::__construct();
 		$this->load->model('Sales_m');
 		$this->load->model('Purchases_m');
-		$this->load->model('Rekening_m');
+		$this->load->model('Account_m');
 		$this->load->model('Installment_m');
 		$this->load->model('Return_m');
 	}
@@ -26,111 +26,166 @@ Class Transaksi_c extends MY_Controller{
 	  	$this->layout();
 	}
 
-  /* Function untuk menyimpan daftar barang transaksi ke table temp. Harus diganti ke session keranjang */
-	public function addTransProduct($trans){
-		$postData = array(
-			'post_product_id' => $this->input->post('postIdPrd'),
-			'post_harga_satuan' => $this->input->post('postHargaPrd'),
-			'post_product_jumlah' => $this->input->post('postJumlahPrd'),
-			'post_total_bayar' => ($this->input->post('postTotalPrd') > 0)? $this->input->post('postTotalPrd') : $this->input->post('postHargaPrd')*$this->input->post('postJumlahPrd')
+  /** Function : Keranjang. Harus diganti ke session keranjang */
+	/** Function : Tambah data keranjang */
+	public function addCart($trans){
+	  /** Load library & Helper */
+		$this->load->library('form_validation');
+	
+	  /** Set rules form validation */
+		$config = array(
+		  array(
+			'field'  => 'postIdPrd',
+			'label'  => 'ID Product',
+			'rules'  => 'trim|required',
+			'errors'  => array(
+				'required' => 'Product tidak boleh kosong'
+			)
+		  ),
+		  array(
+			'field'  => 'postHargaPrd',
+			'label'  => 'Harga Satuan',
+			'rules'  => 'trim|numeric|greater_than[0]|required',
+			'errors'  => array(
+				'numeric'	=> 'Harga tidak valid',
+				'required'	=> 'Harga tidak boleh kosong',
+				'greater_than' => 'Harga tidak boleh kurang dari 0'
+			)
+		  ),
+		  array(
+			'field'  => 'postJumlahPrd',
+			'label'  => 'Qty',
+			'rules'  => 'trim|numeric|greater_than[0]|required',
+			'errors'  => array(
+				'numeric'	=> 'Quantity tidak valid',
+				'required'	=> 'Qty tidak boleh kosong',
+				'greater_than' => 'Qty tidak boleh kurang dari 0'
+			)
+		  )
 		);
+	
+		$this->form_validation->set_rules($config);
+	
+	  /** Run validate */
+		if($this->form_validation->run() == FALSE){
+			$arrReturn	= array(
+				'error'     => TRUE,
+				'errorID'	=> (form_error('postIdPrd'))? form_error('postIdPrd') : '',
+				'errorQty'	=> (form_error('postJumlahPrd'))? form_error('postJumlahPrd') : '',
+				'errorHrg'	=> (form_error('postHargaPrd'))? form_error('postHargaPrd') : ''
+			);
+		} else {
+			/** Get data post dari form */
+			$postData = array(
+				'post_product_id' 	  => base64_decode(urldecode($this->input->post('postIdPrd'))),
+				'post_harga_satuan'   => $this->input->post('postHargaPrd'),
+				'post_product_jumlah' => $this->input->post('postJumlahPrd'),
+				'post_total_bayar' 	  => ($this->input->post('postTotalPrd') > 0)? $this->input->post('postTotalPrd') : $this->input->post('postHargaPrd')*$this->input->post('postJumlahPrd')
+			);
 
-		if($trans === 'Purchases'){
-			/* Cek product di keranjang */
-			$checkTemp = $this->Purchases_m->getTemponPrdId($this->input->post('postIdPrd'));
-			if(count($checkTemp) > 0 && $checkTemp[0]['tp_purchase_price'] == $postData['post_harga_satuan']){
-				$newAmount = $checkTemp[0]['tp_product_amount'] + $postData['post_product_jumlah'];
-				$newTotal  = $checkTemp[0]['tp_total_paid'] + $postData['post_total_bayar'];
+			if($trans === 'Purchases'){
+				/** Cek product di keranjang */
+				$checkTemp = $this->Purchases_m->getTemponPrdId(base64_decode(urldecode($this->input->post('postIdPrd'))));
+				if(count($checkTemp) > 0 && $checkTemp[0]['tp_purchase_price'] == $postData['post_harga_satuan']){
+					$newAmount = $checkTemp[0]['tp_product_amount'] + $postData['post_product_jumlah'];
+					$newTotal  = $checkTemp[0]['tp_total_paid'] + $postData['post_total_bayar'];
+	
+					$updateId = $checkTemp[0]['tp_id'];
+					$newInputData = array(
+						'tp_product_fk'	=> $checkTemp[0]['tp_product_fk'],
+						'tp_product_amount' => $newAmount,
+						'tp_purchase_price' => $checkTemp[0]['tp_purchase_price'],
+						'tp_total_paid'		=> $newTotal
+					);
+					$inputTemp = $this->Purchases_m->updateCart($newInputData, $updateId);
+				} else {
+					$inputTemp = $this->Purchases_m->insertCart($postData);
+				}
 
-				$updateId = $checkTemp[0]['tp_id'];
-				$newInputData = array(
-					'tp_product_fk'	=> $checkTemp[0]['tp_product_fk'],
-					'tp_product_amount' => $newAmount,
-					'tp_purchase_price' => $checkTemp[0]['tp_purchase_price'],
-					'tp_total_paid'		=> $newTotal
-				);
-				$inputTemp = $this->Purchases_m->updateTemp($newInputData, $updateId);
-			} else {
-				$inputTemp = $this->Purchases_m->insertTemp($postData);
-			}
-			redirect('Transaksi_c/addPurchasesPage');
-		} else if ($trans === 'Sales'){
-			/* Input khusus untuk keranjang penjualan */
-			$postData['post_potongan'] = $this->input->post('postPotonganPrd');
-
-			/* Cek product di keranjang */
-			$checkTemp = $this->Sales_m->getTemponPrdId($this->input->post('postIdPrd'));
-			//print("<pre>".print_r($checkTemp, true)."</pre>");
-
-			if(count($checkTemp) > 0 && $checkTemp[0]['temps_sale_price'] == $postData['post_harga_satuan'] && $checkTemp[0]['temps_discount'] == $postData['post_potongan']){
-				$newAmount = $checkTemp[0]['temps_product_amount'] + $postData['post_product_jumlah'];
-				$newTotal  = $checkTemp[0]['temps_total_paid'] + $postData['post_total_bayar'];
-
-				$updateId 	  = $checkTemp[0]['temps_id'];
-				$newInputData = array(
-					'temps_product_fk'	=> $checkTemp[0]['temps_product_fk'],
-					'temps_product_amount' => $newAmount,
-					'temps_sale_price'	=> $checkTemp[0]['temps_sale_price'],
-					'temps_total_paid'	=> $newTotal
-				);
-				$inputTemp = $this->Sales_m->updateTemp($newInputData, $updateId);
-			} else {
-				$inputTemp = $this->Sales_m->insertTemp($postData);
-			}
-			redirect('Transaksi_c/addSalesPage');
+				/** return value */
+				if($inputTemp){
+					$arrReturn = array(
+						'success'	=> TRUE,
+						'successMsg' => 'Data ditambahkan ke keranjang'
+					);
+				} else {
+					$arrReturn = array(
+						'success'	=> TRUE,
+						'successMsg' => 'Gagal menambahkan data ke keranjang'
+					);
+				}
+			} else if ($trans === 'Sales'){}
 		}
+
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
 	}
 
-	public function deleteTransProduct($trans, $encoded_prd_id){
-		$prdID = base64_decode(urldecode($encoded_prd_id));
+	/** Function : Hapus data keranjang */
+	public function deleteCart($trans){
 		if($trans === 'Purchases'){
-			$delTemp = $this->Purchases_m->deleteTemp($prdID);
-			redirect('Transaksi_c/addPurchasesPage');
+			$delCart = $this->Purchases_m->deleteCart(base64_decode(urldecode($this->input->post('postId'))), $this->input->post('postPrice'));
+			if($delCart > 0){
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'successMsg' => 'Product dihapus dari keranjang'
+				);
+			} else {
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'successMsg' => 'Product gagal dihapus dari keranjang'
+				);
+			}
 		} else if ($trans === 'Sales') {
-			$delTemp = $this->Sales_m->deleteTemp($prdID);
+			$delTemp = $this->Sales_m->deleteTemp($base64_decode(urldecode($this->input->post('postId'))));
 			redirect('Transaksi_c/addSalesPage');
 		}
+
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
 	}
 
-  /* Fungsi untuk CRUD Pembelian */
-	/* Function : Form tambah trans pembelian */
+	/** Function : Daftar keranjang */
+	public function listCardAjax($trans){
+		if($trans == 'Purchases'){
+			$cartData = $this->Purchases_m->selectCart();
+			$returnData = array(
+				'delete_url' => site_url('Transaksi_c/deleteCart/Purchases/'),
+				'cart_list'	 => null,
+				'total_payment' => 0
+			);
+			$i = 0;
+			foreach($cartData as $showData):
+				$returnData['cart_list'][$i] = array(
+					'cart_id' 	 => urlencode(base64_encode($showData['tp_product_fk'])),
+					'cart_name'	 => $showData['prd_name'],
+					'cart_amount' => $showData['tp_product_amount'],
+					'cart_price' => $showData['tp_purchase_price'],
+					'cart_total' => $showData['tp_total_paid']
+				);
+				$returnData['total_payment'] += $showData['tp_total_paid'];
+				$i++;
+			endforeach;
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode($returnData);
+	}
+
+  /** CRUD Purchasing */
+	/** Function : Page add purchasing */
 	public function addPurchasesPage(){
-	  /* Load Model supplier untuk option supplier */
+	  /** Load Model supplier untuk option supplier */
 	  	$this->load->model('Supplier_m');
 
-	  /* Set no transaksi seanjutnya */
-	  	$nextAI = $this->Purchases_m->getNextIncrement(); // Get next auto increment table transaksi masuk
-	  	switch(strlen($nextAI['0']['AUTO_INCREMENT'])){
-	  		case ($nextAI['0']['AUTO_INCREMENT'] > 5):
-	  			$nol = '';
-	  			break;
-	  		case '4':
-	  			$nol = '0';
-	  			break;
-	  		case '3':
-	  			$nol = '00';
-	  			break;
-	  		case '2':
-	  			$nol = '00';
-	  			break;
-	  		case '3':
-	  			$nol = '000';
-	  			break;
-	  		default :
-	  			$nol = '0000';
-	  	}
-	  	$nextTransCode = 'TM'.date('Ymd').$nol.$nextAI['0']['AUTO_INCREMENT'];
-
-	  /* Data yang ditampilkan ke view */
+	  /** Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pembelian',
-			'assets'  => array('jqueryui', 'custominput', 'sweetalert2', 'page_add_trans', 'page_add_purchases'),
-			'optSupp' => $this->Supplier_m->getAllSupplier(),
-			'optRek'  => $this->Rekening_m->getAllRekening(),
-			'nextTransCode' => $nextTransCode,
-			'daftarPrd' 	=> $this->Purchases_m->getTemp(),
+			'assets'  => array('jqueryui', 'custominput', 'toastr', 'sweetalert2', 'page_add_trans', 'p_purchases'),
+			'optSupp' => $this->Supplier_m->selectSupplier(0, 0, 0)->result_array(),
+			'optAcc'  => $this->Account_m->selectAccount()
 		);
-		$this->page = 'trans/add_trans_purchases_v';
+		$this->page = 'trans/purchases/add_trans_purchases_v';
 		$this->layout();
 	}
 
@@ -178,104 +233,223 @@ Class Transaksi_c extends MY_Controller{
 		$this->layout();
 	}
 
-	/* Function : Proses tambah trans pembelian */
+	/** Function : Proses tambah trans pembelian */
 	function addPurchasesProses(){
-	  /* Load lib dan helper untuk upload */
+	  /** Load lib dan helper */
 		$this->load->helper('file');
-		$this->load->library('upload');
+		$this->load->library('form_validation');
 
-	  /* Set Var purchases product */
-	  	$dataDetail = array();
-
-	  /* Get posted data dari form */ 
-		$postData = array(
-			'tp_trans_code'		=> $this->input->post('postTransKode'),
-			'tp_invoice_code'	=> $this->input->post('postTransNota'),
-			'tp_invoice_file'	=> NULL,
-			'tp_date'	  		=> $this->input->post('postTransTgl'),
-			'tp_supplier_fk' 	=> $this->input->post('postTransSupp'),
-			'tp_payment_metode' => $this->input->post('postTransMetode'),
-			'tp_purchase_price' => $this->input->post('postTransTotalBayar'),
-			'tp_account_fk' 	=> ($this->input->post('postTransMetode') == 'TF')? $this->input->post('postTransRek') : '',
-			'tp_paid' 			=> $this->input->post('postTransPembayaran'),
-			'tp_status' 		=> $this->input->post('postTransStatus'),
-			'tp_tenor' 			=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTenor') : '',
-			'tp_tenor_periode' 	=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTenorPeriode') : '',
-			'tp_installment'	=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransAngsuran') : '',
-			'tp_due_date' 		=> ($this->input->post('postTransStatus') == 'K')? $this->input->post('postTransTempo') : ''
+	  /** Set rules form validation */
+		$configValidation = array(
+			array(
+			  'field'  => 'postPurchaseDate',
+			  'label'  => 'Tgl Transaksi',
+			  'rules'  => 'trim|required|callback__validation_date',
+			  'errors'  => array(
+				  'required'	=> 'Tanggal tidak boleh kosong',
+				  '_validation_date' => 'Tanggal tidak valid'
+			  )
+			),
+			array(
+			  'field'  => 'postPurchaseNote',
+			  'label'  => 'No. Nota Pembelian',
+			  'rules'  => 'trim|required',
+			  'errors'  => array(
+				  'required' => 'Nomor Nota tidak boleh kosong'
+			  )
+			),
+			array(
+			  'field'  => 'postPurchaseNoteFile',
+			  'label'  => 'File nota',
+			  'rules'  => 'callback__validation_file'
+			),
+			array(
+			  'field'  => 'postPurchaseSupplier',
+			  'label'  => 'Supplier',
+			  'rules'  => 'trim|required|callback__validation_supplier',
+			  'errors'  => array(
+				  'required'	=> 'Supplier tidak boleh kosong',
+				  '_validation_supplier' => 'Supplier tidak ditemukan'
+			  )
+			),
+			array(
+			  'field'  => 'postPurchaseStatus',
+			  'label'  => 'Status Pembayaran',
+			  'rules'  => 'trim|required|in_list[K,T]',
+			  'errors'  => array(
+				  'required' => 'Status pembayaran tidak boleh kosong',
+				  'in_list'  => 'Pilih opsi status yang tersedia'
+			  )
+			),
+			array(
+			  'field'  => 'postPurchaseTenor',
+			  'label'  => 'Tenor',
+			  'rules'  => 'trim|numeric|greater_than[0]|callback__validation_kredit',
+			  'errors'  => array(
+				  'numeric' => 'Harus berinilai angka',
+				  '_validation_kredit' => 'Tenor tidak boleh kosong',
+				  'greater_than[0]'	=> 'Tenor harus lebih dari 0'
+			  )
+			),
+			array(
+			  'field'  => 'postPurchaseTenorPeriode',
+			  'label'  => 'Periode tenor',
+			  'rules'  => 'in_list[D,W,M,Y]',
+			  'errors'  => array(
+				'in_list'  => 'Pilih opsi periode yang tersedia'
+			  )
+			),
+			array(
+			  'field'  => 'postPurchaseInstallment',
+			  'label'  => 'Angsuran',
+			  'rules'  => 'trim|greater_than[0]|numeric|callback__validation_kredit',
+			  'errors'  => array(
+				'numeric'  => 'Nilai angsuran tidak valid',
+				'greater_than' => 'Nilai harus lebih besar dari 0',
+				'_validation_kredit' => 'Angsuran tidak boleh kosong',
+			  )
+			),
+			array(
+			  'field'  => 'postPurchaseDue',
+			  'label'  => 'Tempo',
+			  'rules'  => 'trim|callback__validation_due'
+			),
+			array(
+			  'field'  => 'postPurchaseMethod',
+			  'label'  => 'Metode pembayaran',
+			  'rules'  => 'trim|required|in_list[TF,TN]',
+			  'errors'  => array(
+				'in_list' => 'Pilih opsi metode yang tersedia'
+			  )
+			),
+			array(
+			  'field'  => 'postPurchaseAccount',
+			  'label'  => 'Metode pembayaran',
+			  'rules'  => 'trim|callback__validation_account'
+			),
+			array(
+			  'field'  => 'postPurchasePayment',
+			  'label'  => 'Pembayaran',
+			  'rules'  => 'trim|required|numeric',
+			  'errors' => array(
+				'required'	=> 'Pembayaran tidak boleh kosong',
+				'numeric'	=> 'Pembayaran tidak valid'
+			  )
+			)
 		);
+	  
+		$this->form_validation->set_rules($configValidation);
 
-	  /* Check posted file */
-	  	if(!empty($_FILES['postTransFileNota']['name'])){
-	  	  /* Prepare config tambahan */
-            $config['upload_path']   = 'assets/imported_files/purchase_nota/'; // Path folder untuk upload file
-            $config['allowed_types'] = 'jpeg|jpg|png|pdf|doc|docx'; // Allowed types 
-            $config['max_size']		 = '2048'; // Max size in KiloBytes
-            $config['encrypt_name']  = TRUE; // Encrypt nama file ketika diupload
+	  /** Run Valudation */
+		if($this->form_validation->run() == FALSE) {
+			$arrReturn = array(
+				'error'		=> TRUE,
+				'errorPnote' 	=> form_error('postPurchaseNote'),
+				'errorFilenote'	=> form_error('postPurchaseNoteFile'),
+				'errorPDate' 	=> form_error('postPurchaseDate'),
+				'errorPSupp' 	=> form_error('postPurchaseSupplier'),
+				'errorPStatus'	=> form_error('postPurchaseStatus'),
+				'errorPTenor'	=> form_error('postPurchaseTenor'),
+				'errorPTenorPeriode' => form_error('postPurchaseTenorPeriode'),
+				'errorPInstallment'	 => form_error('postPurchaseInstallment'),
+				'errorPDue'		=> form_error('postPurchaseDue'),
+				'errorPMethod'	=> form_error('postPurchaseMethod'),
+				'errorPAccount'	=> form_error('postPurchaseAccount'),
+				'errorPPayment' => form_error('postPurchasePayment')
+			);
+		} else {
+		  /** Upload Lib */
+			$this->load->library('upload');
+		  
+		  /** Get form data */
+			$postData = array(
+				'tp_note_code'	 => $this->input->post('postPurchaseNote'),
+				'tp_note_file'	 => NULL,
+				'tp_date'	  	 => $this->input->post('postPurchaseDate'),
+				'tp_supplier_fk' => base64_decode(urldecode($this->input->post('postPurchaseSupplier'))),
+				'tp_status' 	 => $this->input->post('postPurchaseStatus'),
+				'tp_tenor' 		 => ($this->input->post('postPurchaseStatus') == 'K')? $this->input->post('postPurchaseTenor') : '',
+				'tp_tenor_periode' 	=> ($this->input->post('postPurchaseStatus') == 'K')? $this->input->post('postPurchaseTenorPeriode') : '',
+				'tp_installment' 	=> ($this->input->post('postPurchaseStatus') == 'K')? $this->input->post('postPurchaseInstallment') : '',
+				'tp_due_date' 		=> ($this->input->post('postPurchaseStatus') == 'K')? $this->input->post('postPurchaseDue') : '',
+				'tp_payment_method' => $this->input->post('postPurchaseMethod'),
+				'tp_account_fk' 	=> ($this->input->post('postPurchaseMethod') == 'TF')? $this->input->post('postPurchaseAccount') : '',
+				'tp_paid' 			=> $this->input->post('postPurchasePayment'),
+			);
+		
+		  /** Prepare config tambahan */
+			$config['upload_path']   = 'assets/uploaded_files/purchase_note/';
+			$config['allowed_types'] = 'jpeg|jpg|png|pdf|doc|docx';
+			$config['max_size']		 = '2048';
+			$config['encrypt_name']  = TRUE;
+			  
+			$arrayFile = explode('.', $_FILES['postPurchaseNoteFile']['name']);
+			$extension = end($arrayFile);
+			$this->upload->initialize($config);
 
-		  /* Get file format / file extention */
-            $arrayFile = explode('.', $_FILES['postTransFileNota']['name']); //Ubah nama file menjadi array
-            $extension = end($arrayFile); // Get ext dari array nama file, index terakhir array
-            $this->upload->initialize($config);
+		  /** Upload proses dan Simpan file ke database */
+			$upload = $this->upload->do_upload('postPurchaseNoteFile');
+			if($upload){
+				/** Uploaded file data */
+				$uploadData = $this->upload->data();
 
-          /* Upload proses dan Simpan file ke database */
-            $upload = $this->upload->do_upload('postTransFileNota');
-            if($upload){
-              /* Get data upload file */
-            	$uploadData = $this->upload->data();
+				/** Set path ke postData */
+				$postData['tp_note_file'] = $config['upload_path'].$uploadData['file_name'];
 
-              /* Set path untuk trans purchase */
-            	$postData['tp_invoice_file'] = $config['upload_path'].$uploadData['file_name'];
+				$inputTP = $this->Purchases_m->insertPurchase($postData);
+				if($inputTP['resultInsert'] > 0){
+					/** Get data dari cart purchases */
+					$tempPrd = $this->Purchases_m->selectCart();
+					foreach ($tempPrd as $row) {
+						$dataDetail[] = array(
+							'dtp_tp_fk'		 	 => $inputTP['insertID'],
+							'dtp_product_fk'	 => $row['tp_product_fk'],
+							'dtp_product_amount' => $row['tp_product_amount'],
+							'dtp_purchase_price' => $row['tp_purchase_price'],
+							'dtp_total_price'	 => $row['tp_total_paid']
+						); 
+					}
 
-              /* Get data dari temp table dan insert ke det trans purchase table */
-				$tempPrd = $this->Purchases_m->getTemp();
-				foreach ($tempPrd as $row) {
-					$dataDetail[] = array(
-				  		'dtp_tp_fk'			 => $this->input->post('postTransKode'),
-				  		'dtp_product_fk'	 => $row['tp_product_fk'],
-				  		'dtp_product_amount' => $row['tp_product_amount'],
-				  		'dtp_purchase_price' => $row['tp_purchase_price'],
-				    	'dtp_total_price'	 => $row['tp_total_paid']
-					); 
+					$inputDetTP = $this->Purchases_m->insertBatchDetTP($dataDetail);
+					if($inputDetTP > 0){
+						$this->Purchases_m->truncateCart();
+						$arrReturn = array(
+							'success'	=> TRUE,
+							'status'	=> 'successInsert',
+							'statusIcon' => 'success',
+							'statusMsg'	 => 'Berhasil menambahkan transaksi pembelian',
+						);
+					} else {
+						$this->Purchases_m->deletePurchase($inputTP['insertID']);
+						unlink($postData['tp_note_file']);
+						$arrReturn = array(
+							'success'	=> TRUE,
+							'status'	=> 'failedInsert',
+							'statusIcon' => 'warning',
+							'statusMsg'	 => 'Gagal menambahkan detail transaksi pembelian',
+						);
+					}
+				} else {
+					unlink($postData['tp_note_file']);
+					$arrReturn = array(
+						'success'	=> TRUE,
+						'status'	=> 'failedInsert',
+						'statusIcon' => 'error',
+						'statusMsg'	 => 'Gagal menambahkan transaksi pembelian',
+					);
 				}
+			  } else {
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'status'	=> 'failedInsert',
+					'statusIcon' => 'error',
+					'statusMsg'	 => 'Gagal menyimpan file nota pembelian, transaksi pembelian batal ditambahkan. Error : '.$this->upload->display_errors(),
+				);
+			  }
+		}
 
-			  /* Cek jika barang sudah ditambahkan */
-			  	if(count($tempPrd) > 0){
-				  /* Input data transaksi ke database */
-				  	$inputTP = $this->Purchases_m->insertTransPurchase($postData);
-
-				  /* Input data product ke table det trans purchase */
-				  	$inputDetTP = $this->Purchases_m->insertBatchDetTP($dataDetail);
-			  	} else {
-			  		$inputTP = 0;
-			  		$inputDetTP = 0;
-			  	}
-			  	
-			  /* Cek proses insert, Set session dan redirect */
-			  	if($inputTP > 0 && $inputDetTP > 0){
-			  		/* hapus data di table temp */
-			  		$this->Purchases_m->truncateTemp();
-
-		  	  		$this->session->set_flashdata('flashStatus', 'successInsert');
-		  	  		$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan transaksi pembelian !');
-			  	} else {
-		  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-		  	  		$this->session->set_flashdata('flashMsg', 'Gagal menambahkan transaksi pembelian !');
-			  	}
-            } else {
-	  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-	  	  		$this->session->set_flashdata('flashMsg', $this->upload->display_errors());
-            }
-	  	} else {
-  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-  	  		$this->session->set_flashdata('flashMsg', 'File Nota Pembelian tidak boleh kosong !');
-	  	}
-
-	  	/* Link redirect ke list Transaksi Purchase */
-  	  	$this->session->set_flashdata('flashRedirect', 'Transaksi_c/listPurchasesPage');
-
-  	  	/* redirect ke page add purchase */
-	  	redirect('Transaksi_c/addPurchasesPage');
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
 	}
 
 	/* Function : Proses pay installment trans pembelian */
@@ -365,7 +539,105 @@ Class Transaksi_c extends MY_Controller{
 	  	redirect('Transaksi_c/payPurchasesInstallmentPage/'.$encoded_trans_id);
 	}
 
-	/* Function : Proses delete trans pembelian */
+	/** Function - Custom Form Validation */
+	  /** Validation Supplier */
+		function _validation_supplier($post){
+			/** Load Model supplier untuk option supplier */
+			$this->load->model('Supplier_m');
+
+			if($this->Supplier_m->selectSupplierOnID(base64_decode(urldecode($post)))->num_rows() > 0){
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		}
+
+	  /** Validation : file */
+		function _validation_file($post){
+			/** Load lib dan helper */
+			$this->load->helper('file');
+			/** buat mime type : 
+			$allowedMime = array('application/pdf','image/gif','image/jpeg','image/pjpeg','image/png','image/x-png') */
+			$allowedExt	= array('pdf','jpeg', 'jpg', 'png');
+			if($_FILES['postPurchaseNoteFile']['name']){
+				if(in_array(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION), $allowedExt)){
+					return TRUE;
+				} else {
+					$this->form_validation->set_message('_validation_file', 'File nota harus berformat pdf/jpeg/jpg/png');
+					return FALSE;
+				}
+			} else {
+				$this->form_validation->set_message('_validation_file', 'File nota tidak boleh kosong');
+				return FALSE;
+			}
+		}
+	
+	  /** Validation : kredit */
+		function _validation_kredit($post){
+			if($this->input->post('postPurchaseStatus') == 'K'){
+				if(trim($post, " ") != ''){
+					return TRUE;
+				} else {
+					return FALSE;
+				}
+			} else {
+				return TRUE;
+			}
+		}
+
+	  /** Validation : Tempo */
+		function _validation_due($post){
+			if($this->input->post('postPurchaseStatus') == 'K'){
+				if(trim($post, " ") != ''){
+					if($this->_validation_date($post) == TRUE){
+						return TRUE;
+					} else {
+						$this->form_validation->set_message('_validation_due', 'Tanggal tempo tidak valid');
+						return FALSE;
+					}
+				} else {
+					$this->form_validation->set_message('_validation_due', 'Tanggal tempo tidak boleh kosong');
+					return FALSE;
+				}
+			} else {
+				return TRUE;
+			}
+		}
+
+	  /** Validation : Account */
+		function _validation_account($post){
+			if($this->input->post('postPurchaseMethod') == 'TF'){
+				if(trim($post, " ") != ''){
+					$this->load->model('Account_m');
+					if( $this->Account_m->selectAccountOnID(base64_decode(urldecode($post)))->num_rows() > 0 ){
+						return TRUE;
+					} else {
+						$this->form_validation->set_message('_validation_account', 'Rekening tidak ditemukan');
+						return FALSE;
+					}
+				} else {
+					$this->form_validation->set_message('_validation_account', 'Mohon pilih rekening');
+					return FALSE;
+				}
+			} else {
+				return TRUE;
+			}
+		}
+	  
+	  /** Validation : date */
+		function _validation_date($post){
+			/** preg_match pattern for input format YYYY-mm-dd */
+			if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $post)){
+				/** checkdate(month, day, year) for input format YYYY-mm-dd */
+				if(checkdate(substr($post, 5, 2), substr($post, 8, 2), substr($post, 0, 4))){
+					return TRUE;
+				} else {
+					return FALSE;
+				}
+			} else {
+				return FALSE;
+			}
+		}
 
   /* Fungsi untuk CRUD Penjualan */
 	/* Function : Form tambah trans penjualan */
@@ -403,7 +675,7 @@ Class Transaksi_c extends MY_Controller{
 			'optRek'	=> $this->Rekening_m->getAllRekening(),
 			'nextTransCode' => $nextTransCode,
 			'daftarPrd' => $this->Sales_m->getTemp(),
-			'optCtm'	=> $this->Customer_m->getAllowedCustomer(0, 0)->result_array()
+			'optCtm'	=> $this->Customer_m->selectCustomer()->result_array()
 	  	);
 	  	$this->page = 'trans/add_trans_sales_v';
 	  	$this->layout();

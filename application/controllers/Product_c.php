@@ -105,7 +105,7 @@ Class Product_c extends MY_Controller {
 		$this->layout();
 	}
 
-	/** Sementara stokc */
+	/** Function : Ajax stock product */
 	public function listStockProductAjax(){
 		$prdData	= array();
 		$no			= $this->input->post('start');
@@ -609,12 +609,12 @@ Class Product_c extends MY_Controller {
 	/* Function : AutoComplete untuk page transaksi */
 	public function autocompleteProduct(){
 		if($this->input->get('term')){
-			$data = $this->Product_m->searchProduct($this->input->get('term'));
+			$data = $this->Product_m->searchProduct($this->input->get('term'), '0');
 			if(count($data) > 0){
 				foreach($data as $row)
 					$prdData[] = array(
 						'label' => $row['prd_name'],
-						'prd_id' => $row['prd_id'],
+						'prd_id' => urlencode(base64_encode($row['prd_id'])),
 						'prd_barcode' => $row['prd_barcode'],
 						'prd_harga_beli' => $row['prd_purchase_price']
 					);

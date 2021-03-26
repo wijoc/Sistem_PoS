@@ -10,7 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed !');
 
 Class Product_m extends MY_Model {
   /** CRUD Product */
-    /** Query next Increment Product */
+    /** Q-Function : next Increment Product */
       function getNextIncrement(){
         $this->db->select('AUTO_INCREMENT');
         $this->db->from('information_schema.TABLES');
@@ -20,7 +20,7 @@ Class Product_m extends MY_Model {
         return $returnValue->result_array();
       }
     
-    /** Query insert product */
+    /** Q-Function : insert product */
       function insertProduct($data){
         $resultInsert = $this->db->insert($this->prd_tb, $data);
         if($resultInsert > 0){
@@ -38,10 +38,7 @@ Class Product_m extends MY_Model {
       }
 
     /** Query : Select product query */
-      public function _querySelectProduct($status = 'all', $keyword = null, $order = null, $select = 'all'){
-        /** From table */
-        //$this->db->from($this->prd_tb.' as prd');
-        
+      public function _querySelectProduct($status = 'all', $keyword = null, $order = null, $select = 'all'){        
         if($select == 'stock'){
           /** Select data stock */
           $this->db->select('prd.'.$this->prd_f[0].', prd.'.$this->prd_f[1].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[8].', prd.'.$this->prd_f[9].', prd.'.$this->prd_f[10].', stk.* ');
@@ -171,12 +168,15 @@ Class Product_m extends MY_Model {
       }
 
     /** Q-Fucntion : search product */
-      function searchProduct($term){
+      function searchProduct($term, $status){
+        $this->db->select($this->prd_f[0].', '.$this->prd_f[1].', '.$this->prd_f[2].', '.$this->prd_f[4].', '.$this->prd_f[5]);
+        $this->db->from($this->prd_tb);
         $this->db->group_start();
         $this->db->like($this->prd_f[1], $term);
         $this->db->or_like($this->prd_f[2], $term);
         $this->db->group_end();
-        $resultSelect = $this->db->get($this->prd_tb);
+        $this->db->where($this->prd_f[12], $status);
+        $resultSelect = $this->db->get();
         return $resultSelect->result_array();
       }
 

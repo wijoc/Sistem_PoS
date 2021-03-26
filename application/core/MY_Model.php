@@ -70,6 +70,64 @@ class MY_Model extends CI_Model {
             '5' => 'ctm_status'
         );
 
+    /* Declare var table transaksi purchases */
+        protected $tp_tb = 'trans_purchases';
+        protected $tp_f  = array(
+            '0' => 'tp_id',
+            '1' => 'tp_date',
+            '2' => 'tp_supplier_fk',
+            '3' => 'tp_payment_method',
+            '4' => 'tp_purchase_price',
+            '5' => 'tp_account_fk', // Allow Null
+            '6' => 'tp_paid',
+            '7' => 'tp_status',
+            '8' => 'tp_tenor', // Allow Null
+            '9' => 'tp_tenor_periode', // Allow Null
+            '10' => 'tp_due_date', // Allow Null
+            '11' => 'tp_delete', // as defined 0
+            '12' => 'tp_note_code',
+            '13' => 'tp_installment',
+            '14' => 'tp_note_file'
+        );
+
+    /* Declare var table detail transaksi purchases */
+        protected $dtp_tb = 'det_trans_purchases';
+        protected $dtp_f  = array(
+            '0' => 'dtp_id',
+            '1' => 'dtp_tp_fk',
+            '2' => 'dtp_product_fk',
+            '3' => 'dtp_product_amount',
+            '4' => 'dtp_purchase_price',
+            '5' => 'dtp_total_price'
+        );
+
+    /* Declare var table keranjang purchases */
+        protected $temp_tp = 'temp_purchases';
+        protected $temp_f  = array(
+            '0' => 'tp_id', 
+            '1' => 'tp_product_fk', 
+            '2' => 'tp_product_amount', 
+            '3' => 'tp_purchase_price',
+            '4' => 'tp_total_paid'
+        );
+
+	/** Declare var table rekening */
+        protected $acc_tb = 'tb_bank_account';
+        protected $acc_f = array(
+            '0' => 'acc_id',
+            '1' => 'acc_bank_code',
+            '2' => 'acc_number',
+            '3' => 'acc_name'
+        );
+
+	/** Declare var table bank */
+        protected $bank_tb = 'ref_bank';
+        protected $bank_f = array(
+            '0' => 'bank_id',
+            '1' => 'bank_code',
+            '2' => 'bank_name'
+        );
+
 	public function __construct(){
 		parent::__construct();
 	}

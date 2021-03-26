@@ -105,6 +105,11 @@
         </script>
 	<?php } ?>
 
+	<?php if(in_array('toastr', $assets)){ ?>
+		<!-- Toastr -->
+		<script src="<?php echo base_url() ?>assets/plugins/toastr/toastr.min.js"></script>
+	<?php } ?>
+
 <!-- additional Page script goes here -->
 	<!-- Page Add Product -->
 	<?php if(in_array('p_add_product',$assets)){ ?>
@@ -134,6 +139,13 @@
 		</script>
 	<?php } ?>
 
+	<?php if(in_array('p_setting', $assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/setting_assets.js"></script>
+		<script>
+			var setting_list_url = "<?php echo $ajaxUrl ?>"
+		</script>
+	<?php } ?>
+
 	<!-- Page Add Product -->
 	<?php if(in_array('page_contact',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/contact_assets.js"></script>
@@ -146,13 +158,16 @@
 	<?php if(in_array('page_add_trans',$assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_transaction_assets.js"></script>
 		<script type="text/javascript">
-			prdAutocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct') ?>"
+			prdAutocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct/') ?>"
 		</script>
-	<?php } ?>	
+	<?php } ?>
 
-	<!-- Page Add Trans Purchase / Pembelian -->
-	<?php if(in_array('page_add_purchases',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_purchases_assets.js"></script>
+	<?php if(in_array('p_purchases',$assets)){ ?>
+		<!-- Page Purchases -->
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/purchases_assets.js"></script>
+		<script>
+			cart_url = "<?php echo site_url('Transaction_c/listCardAjax/Purchases/') ?>"
+		</script>
 	<?php } ?>
 
 	<!-- Page Add Trans -->

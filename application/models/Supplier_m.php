@@ -32,7 +32,7 @@ Class Supplier_m extends MY_Model{
   function selectSupplierOnID($id){
     $this->db->where($this->supp_f[0], $id);
     $resultSelect = $this->db->get($this->supp_tb);
-    return $resultSelect->result_array();
+    return $resultSelect;
   }
 
   /** Query : insert data supplier */

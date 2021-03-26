@@ -14,17 +14,16 @@
       <!-- <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/datatables-buttons/css/buttons.bootstrap4.css"> -->
   <?php } ?>
 
-  <!-- SweetAlert2 -->
-    <?php if(in_array('sweetalert2',$assets)){ ?> 
-      <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
-    <?php } ?>
+  <?php if(in_array('sweetalert2',$assets)){ ?> 
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+  <?php } ?>
 
-  <!-- JQuery UI -->
-    <?php if(in_array('jqueryui',$assets)){ ?>
-      <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/jquery-ui/jquery-ui.css">
-    <?php } ?>
+  <?php if(in_array('jqueryui',$assets)){ ?>
+    <!-- JQuery UI -->
+    <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/jquery-ui/jquery-ui.css">
+  <?php } ?>
 
-  <!-- Datepicker -->
   <?php if(in_array('daterangepicker', $assets)){ ?>
     <!-- daterange picker -->
     <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/daterangepicker/daterangepicker.css">
@@ -33,9 +32,14 @@
     <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
   <?php } ?>
 
-  <!-- Dropify -->
   <?php if(in_array('dropify', $assets)){ ?>
+    <!-- Dropify -->
     <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/dropify/css/dropify.min.css">
+  <?php } ?>
+
+  <?php if(in_array('toastr', $assets)){ ?>
+    <!-- Toastr -->
+    <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/toastr/toastr.min.css">
   <?php } ?>
 
 <!-- Extra CSS / JS file goes here -->

@@ -15,7 +15,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <?php if($head_load){ echo $head_load; } ?>
 
 </head>
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed sidebar-collapse">
  <!-- wrapper -->
   <div class="wrapper">
 

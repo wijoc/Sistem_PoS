@@ -22,59 +22,143 @@ Class Setting_c extends MY_Controller{
 	}
 
   /* Functions Management User */
-  /* Functions Management Rekening Bank */
-  	/* Function : List rekening */
-  	public function listRekeningPage(){
-  		/* Load model rekening */
-  		$this->load->model('Rekening_m');
+  /** CRUD Rekening Bank */
+  	/** Function : List account */
+  	public function listAccountPage(){
+  		$this->load->model('Account_m');
 
       /* Data untuk view */
   		$this->pageData = array(
   			'title' => 'PoS | Rekening',
-  			'assets' => array(),
-  			'dataRekening' => $this->Rekening_m->getALlRekening(),
-        'optBank' => $this->Rekening_m->getAllBank(),
+  			'assets' => array('sweetalert2', 'datatables', 'p_setting'),
+        'optBank' => $this->Account_m->selectBank(),
+        'ajaxUrl' => site_url('Setting_c/listAccountAjax/')
   		);
-  		$this->page = 'rekening/list_rekening_v';
+  		$this->page = 'setting/stg_account_v';
   		$this->layout();
   	} 
 
-  	/* Function : Form edit rekening */
-  	/* Function : Proses tambah rekening */
-    function addRekeningProses(){
-      /* Load model rekening */
-      $this->load->model('Rekening_m');
+  	/** Function : Ajax list account */
+    function listAccountAjax(){
+  		/* Load model rekening */
+  		$this->load->model('Account_m');
+      $getData	= $this->Account_m->selectAccount($this->input->post('length'), $this->input->post('start'));
+      $accData	= array();
+      $no			  = $this->input->post('start');
+      foreach($getData->result_array() as $show){
+        $no++;
+        $row = array();
+        $row[] = $no;
+        $row[] = $show['bank_name'];
+        $row[] = $show['acc_number'];
+        $row[] = $show['acc_name'];
+        $row[] = '<a class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
+                  <a class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></a>';
+      
+        $accData[] = $row;
+      }
 
-      /* Get data post dari form */
-        $postData = array(
-          'rek_kode_bank' => $this->input->post('postRekBank'),
-          'rek_atas_nama' => $this->input->post('postRekAN'),
-          'rek_nomor' => $this->input->post('postRekNomor')
+      $output = array(
+        'draw'			  => $this->input->post('draw'),
+        'recordsTotal'	  => $this->Account_m->count_all(),
+        'recordsFiltered' => $this->Account_m->count_filtered($this->input->post('length'), $this->input->post('start')),
+        'data'			  => $accData
+      );
+
+      echo json_encode($output);
+    }
+
+  	/* Function : Add account proses */
+    function addAccountProses(){
+      $this->load->model('Account_m');
+      $this->load->library('form_validation');
+
+      /** Set rules form validation */
+      $config = array(
+        array(
+          'field'  => 'postAccBank',
+          'label'  => 'Kode bank',
+          'rules'  => 'trim|required|callback__validation_bank',
+          'errors'  => array(
+            'required'	=> 'Bank tidak boleh kosong'
+          )
+        ),
+        array(
+          'field'  => 'postAccountName',
+          'label'  => 'Atas nama Rekening',
+          'rules'  => 'trim|required',
+          'errors'  => array(
+            'required'	=> 'Atas nama tidak boleh kosong'
+          )
+        ),
+        array(
+          'field'  => 'postAccNumber',
+          'label'  => 'Nomor Rekening',
+          'rules'  => 'trim|required|numeric',
+          'errors'  => array(
+            'required' => 'Nomor rekening tidak boleh kosong',
+            'numeric'  => 'Nomor rekening tidak valid'
+          )
+        )
+      );
+      
+      $this->form_validation->set_rules($config);
+  
+      if($this->form_validation->run() == FALSE) {
+        $arrReturn = array(
+          'error' => TRUE,
+          'errorBank' => form_error('postAccBank'),
+          'errorName' => form_error('postAccountName'),
+          'errorNumber' => form_error('postAccNumber')
         );
-
-      /* Insert ke database */
-        $inputRek = $this->Rekening_m->insertRekening($postData);
-
-      /* Set session dan Redirect */
-        if($inputRek > 0){
-          $this->session->set_flashdata('flashStatus', 'successInsert');
-          $this->session->set_flashdata('flashMsg', 'Berhasil menambahkan rekening baru !');
-        } else {
-          $this->session->set_flashdata('flashStatus', 'failedInsert');
-          $this->session->set_flashdata('flashMsg', 'Gagal menambahkan rekening baru !');
+      } else {
+        $inputAcc = $this->Account_m->insertAccount();
+  
+        /** Return value */
+          if($inputAcc > 0){
+            $arrReturn = array(
+              'success' => TRUE,
+              'status'  => 'successInsert',
+              'statusIcon' => 'success',
+              'statusMsg' => 'Berhasil menambahkan data rekening' 
+            );
+          } else {
+            $arrReturn = array(
+              'success' => TRUE,
+              'status'  => 'failedInsert',
+              'statusIcon' => 'error',
+              'statusMsg' => 'Gagal menambahkan data rekening' 
+            );
+          }
         }
 
-        redirect('Setting_c/listRekeningPage');
+      header('Content-Type: application/json');
+      echo json_encode($arrReturn);
     }
   	
     /* Function : Proses edit rekening */
   	/* Function : Proses delete rekening */
+    /** Function : Custom Validation */
+      /** Function : Validation Bank */
+      function _validation_bank($post){
+        if(trim($post, " ") != ''){
+          if($this->Account_m->selectBankOnID(base64_decode(urldecode($post)))->num_rows() > 0){
+            return TRUE;
+          } else {
+            $this->form_validation->set_message('_validation_bank', 'Kode bank tidak ditemukan');
+            return FALSE;
+          }
+        } else {
+          $this->form_validation->set_message('_validation_bank', 'Silahkan pilih bank');
+          return FALSE;
+        }
+      }
 
   /* Functions Management Profil Toko */
     /* Function : management profil toko */
     public function settingProfile(){
       /* Load model Profile */
-    $this->load->model('Profile_m');
+      $this->load->model('Profile_m');
 
       /* Data untuk view */
       $this->pageData = array(
