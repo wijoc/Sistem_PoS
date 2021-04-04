@@ -13,7 +13,7 @@ Class Customer_c extends MY_Controller{
     	/* Proses tampil halaman */
     	$this->pageData = array(
     		'title'       => 'PoS | Pelanggan',
-        'assets'      => array('sweetalert2', 'f_confirm', 'page_contact'),
+        'assets'      => array('sweetalert2', 'contact', 'f_confirm'),
         'contact_url'  => site_url('Customer_c/listCustomerAjax/')
     	);
 

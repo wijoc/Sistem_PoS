@@ -1,6 +1,6 @@
-$(document).ready(function () {
+$(document).ready(function() {
 	/** Tambah keranjang */
-	$("#form-purchase-cart").on("submit", function(event) {
+	$("#form-cart").on("submit", function(event) {
 		event.preventDefault()
 		$.ajax({
 			url: $(this).attr("action"),
@@ -10,8 +10,8 @@ $(document).ready(function () {
 			beforeSend: function () {
 				$(this).find(":submit").prop("disabled", true)
 			},
-			success: function (data) {
-				if (data.error) {
+			success: function (result) {
+				if (result.error) {
 					const Toast = Swal.mixin({
 						toast	: true,
 						position: "top-end",
@@ -19,10 +19,10 @@ $(document).ready(function () {
 						timer	: 2000,
 					})
 
-					toastr.error( data.errorID +''+ data.errorQty +''+ data.errorHrg )
+					toastr.error( result.errorID +''+ result.errorQty +''+ result.errorHrg )
 				} else {
-					toastr.success( data.successMsg )
-					$("#form-purchase-cart").trigger("reset")
+					toastr.success( result.successMsg )
+					$("#form-cart").trigger("reset")
 					getCartList()
 				}
 			},
@@ -33,7 +33,7 @@ $(document).ready(function () {
 	})
 
 	/** Status pembayaran */
-	$("#input-p-status").change(function () {
+	$("#input-status").change(function () {
 		if ($(this).val() == "K") {
 			$(".status-k").css("display", "block")
 			$(".input-k").prop("disabled", false)
@@ -46,7 +46,7 @@ $(document).ready(function () {
 	})
 
 	/** Metode Pembayaran */
-	$("#input-p-method").change(function () {
+	$("#input-method").change(function () {
 		if ($(this).val() == "TF") {
 			$(".method-tf").css("display", "block")
 			$("#input-p-account").prop("disabled", false)
@@ -66,7 +66,7 @@ $(document).ready(function () {
         form_data.append('file', file_data);
         $.ajax({
             url     : $("#form-add-purchases").attr("action"),
-            method  : 'post',
+            method  : 'POST',
             data    : form_data,
             cache   : false,
             contentType : false,
@@ -105,6 +105,16 @@ $(document).ready(function () {
                         } else {
                             $("#input-p-file").removeClass('is-invalid')
                             $("#error-p-file").css("display", "none")
+                        }
+
+                    /** Error input Status */
+                        if(result.errorPStatus){
+                            $("#input-status").addClass('is-invalid')
+                            $("#error-p-status").css("display", "block")
+                            $("#error-p-status").html(result.errorPStatus)
+                        } else {
+                            $("#input-status").removeClass('is-invalid')
+                            $("#error-p-status").css("display", "none")
                         }
 
                     /** Error input Tenor */
@@ -149,11 +159,11 @@ $(document).ready(function () {
 
                     /** Error input Payment method */
                         if(result.errorPMethod){
-                            $("#input-p-method").addClass('is-invalid')
+                            $("#input-method").addClass('is-invalid')
                             $("#error-p-method").css("display", "block")
                             $("#error-p-method").html(result.errorPMethod)
                         } else {
-                            $("#input-p-method").removeClass('is-invalid')
+                            $("#input-method").removeClass('is-invalid')
                             $("#error-p-method").css("display", "none")
                         }
 
@@ -176,6 +186,16 @@ $(document).ready(function () {
                             $("#input-p-payment").removeClass('is-invalid')
                             $("#error-p-payment").css("display", "none")
                         }
+
+                    /** Error input Additional charge */
+                        if(result.errorPAdditional){
+                            $("#cart-addition-charge").addClass('is-invalid')
+                            $("#error-p-additional").css("display", "block")
+                            $("#error-p-additional").html(result.errorPAdditional)
+                        } else {
+                            $("#cart-addition-charge").removeClass('is-invalid')
+                            $("#error-p-additional").css("display", "none")
+                        }
 				} else {
                     $(".error-msg").css("display", "none")
                     $(".is-invalid").removeClass("is-invalid")
@@ -183,6 +203,19 @@ $(document).ready(function () {
                     if(result.status == 'successInsert'){
                         $('#form-add-purchases :input').val('')
                         $('#form-add-purchases :file').val('')
+						$("#input-p-file").val('')
+						/** set label bs-custom-input */
+						$("#input-p-file").next('.custom-file-label').html('Pilih file Nota')
+						/** disable method */
+						$(".method-tf").css("display", "none")
+						$("#input-p-account").prop("disabled", true)
+						$("#input-p-account").prop("required", false)
+						/** disable status */
+						$(".status-k").css("display", "none")
+						$(".input-k").prop("disabled", true)
+						$(".input-k").prop("required", false)
+						/** Clear additional */
+						$("#cart-addition-charge").val('')
                     }
 
                     Swal.fire({
@@ -197,6 +230,23 @@ $(document).ready(function () {
 				}
 			}
 		})
+	})
+
+	/** Additonal-charge purchase */
+	$("#cart-addition-charge").on('keyup', function(){
+		$("#input-additional-charge").val($(this).val())
+		getCartList()
+	})
+
+	/* Autocomplete on Nama atau Barcode Product */
+	$("#input-cart-prd").autocomplete({
+		source: prd_url,
+
+		select: function(event, ui){
+			$('[name="postIdPrd"]').val(ui.item.prd_id);
+			$("#input-cart-prd").val(ui.item.label);
+			$("#input-cart-price").val(ui.item.prd_harga_beli);
+		}
 	})
 
 	getCartList()
@@ -228,7 +278,10 @@ function getCartList(){
 			}
 
 			$("#cart-shop").find("#total-payment").html(formatCurrency(result.total_payment, ''))
-			$("#cart-total").html(formatCurrency(result.total_payment, 'Rp'))
+			if (result.trans_type == 'Purchase'){
+				total = ( $("#cart-addition-charge").val() == "" ? 0 : parseFloat($("#cart-addition-charge").val()) ) + parseFloat(result.total_payment)
+				$("#cart-total").html(formatCurrency( total , 'Rp'))
+			}
 			$("#cart-shop").find("tbody").html(output)
 			$("#form-add-transaction").find("input[name='postTotalCart']").val(result.total_payment)
 		}
@@ -264,4 +317,23 @@ function formatCurrency(number, prefix){
 
 	rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
 	return (rupiah ? prefix + rupiah : '');
+}
+
+/** Function : Total payment per product */
+function totalPrice(page){
+	var cart_qty = $("#input-cart-qty").val();
+	var cart_price  = $("#input-cart-price").val();
+	if(page == 'sales'){
+		var prdPotongan = $("#inputPotonganPrd").val();
+		var potongan = (prdPotongan != '')? prdPotongan : 0 ;
+		var total = parseInt(cart_qty) * parseFloat(cart_price) - parseFloat(potongan);
+	} else {
+		var total = parseInt(cart_qty) * parseFloat(cart_price);
+	}
+
+	if(isNaN(total)){
+		$("#inputTotalPrd").val(0);
+	} else {
+		$("#inputTotalPrd").val(total);
+	}
 }

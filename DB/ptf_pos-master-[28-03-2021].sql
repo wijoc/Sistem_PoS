@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 21, 2021 at 03:52 PM
--- Server version: 10.5.8-MariaDB
--- PHP Version: 7.4.13
+-- Generation Time: Mar 28, 2021 at 12:35 AM
+-- Server version: 10.5.9-MariaDB
+-- PHP Version: 8.0.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -32,28 +32,36 @@ CREATE TABLE `det_product_stock` (
   `stk_product_id_fk` int(11) NOT NULL,
   `stk_good` int(6) NOT NULL,
   `stk_not_good` int(6) NOT NULL,
-  `stk_return` int(6) NOT NULL
+  `stk_opname` int(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `det_product_stock`
 --
 
-INSERT INTO `det_product_stock` (`stk_id`, `stk_product_id_fk`, `stk_good`, `stk_not_good`, `stk_return`) VALUES
-(1, 1, 96, 0, 0),
-(2, 2, 13, 0, 0),
-(3, 3, 9, 0, 0),
-(4, 4, 5, 0, 0),
-(5, 5, 0, 0, 0),
-(6, 6, 0, 0, 0),
-(7, 7, 0, 0, 0),
-(8, 8, 0, 0, 0),
-(9, 9, 5, 0, 0),
-(10, 10, 0, 0, 0),
-(11, 11, 0, 0, 0),
-(12, 12, 0, 0, 0),
-(13, 13, 0, 0, 0),
-(14, 14, 0, 0, 0);
+INSERT INTO `det_product_stock` (`stk_id`, `stk_product_id_fk`, `stk_good`, `stk_not_good`, `stk_opname`) VALUES
+(1, 1, 11, 0, 0),
+(2, 2, 1, 0, 0),
+(3, 3, 1, 1, 1),
+(4, 6, 1, 1, 1),
+(5, 7, 1, 1, 1),
+(6, 8, 12, 0, 0),
+(7, 9, 1, 0, 0),
+(8, 4, 0, 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `det_return_customer`
+--
+
+CREATE TABLE `det_return_customer` (
+  `drc_id` int(5) NOT NULL,
+  `rc_id_fk` int(5) NOT NULL,
+  `prd_id_fk` int(5) NOT NULL,
+  `drc_qty` int(3) NOT NULL,
+  `drc_status` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -75,12 +83,8 @@ CREATE TABLE `det_trans_purchases` (
 --
 
 INSERT INTO `det_trans_purchases` (`dtp_id`, `dtp_tp_fk`, `dtp_product_fk`, `dtp_product_amount`, `dtp_purchase_price`, `dtp_total_price`) VALUES
-(1, 'TM2020110100001', 1, 10, '70000.00', '700000.00'),
-(2, 'TM2020110100001', 2, 5, '74500.00', '372500.00'),
-(3, 'TM2020110100002', 2, 5, '74500.00', '372500.00'),
-(4, 'TM2020110200003', 3, 10, '68500.00', '685000.00'),
-(5, 'TM2020110200004', 4, 5, '66500.00', '332500.00'),
-(6, 'TM2021012100005', 9, 5, '66000.00', '330000.00');
+(6, '2', 1, 10, '70000.00', '700000.00'),
+(7, '3', 8, 10, '68500.00', '685000.00');
 
 --
 -- Triggers `det_trans_purchases`
@@ -109,14 +113,6 @@ CREATE TABLE `det_trans_sales` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `det_trans_sales`
---
-
-INSERT INTO `det_trans_sales` (`dts_id`, `dts_ts_id_fk`, `dts_product_fk`, `dts_product_amount`, `dts_sale_price`, `dts_discount`, `dts_total_price`) VALUES
-(1, '1', 1, 1, '70000.00', '0.00', '70000.00'),
-(2, '1', 2, 1, '74500.00', '0.00', '74500.00');
-
---
 -- Triggers `det_trans_sales`
 --
 DELIMITER $$
@@ -143,16 +139,6 @@ CREATE TABLE `installment_purchases` (
   `ip_invoice_file` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `installment_purchases`
---
-
-INSERT INTO `installment_purchases` (`ip_id`, `ip_trans_id_fk`, `ip_periode`, `ip_periode_end`, `ip_date`, `ip_payment`, `ip_invoice_code`, `ip_invoice_file`) VALUES
-(1, '4', 1, 10, '2020-12-02 00:00:00', '10000.00', 'NAGS11122', 'assets/imported_files/purchase_nota/installment/9ae18c84c4278507b041abf675e61e8d.jpeg'),
-(2, '4', 11, 11, '2021-05-03 00:00:00', '1000.00', 'Nota123455', 'assets/imported_files/purchase_nota/installment/26dd3747a8080403fa400c69e62271e5.jpeg'),
-(3, '3', 1, 0, '2020-11-24 00:00:00', '5000.00', 'Nota123455', 'assets/imported_files/purchase_nota/installment/b94773ca592a7e6a0f4b9601d4c89221.jpeg'),
-(4, '5', 1, 1, '2021-02-22 00:00:00', '11000.00', 'APP220220210001', 'assets/imported_files/purchase_nota/installment/d3faf3d65888ad29c735d7950ae99ae4.png');
-
 -- --------------------------------------------------------
 
 --
@@ -170,22 +156,6 @@ CREATE TABLE `installment_sales` (
   `is_status` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `installment_sales`
---
-
-INSERT INTO `installment_sales` (`is_id`, `is_trans_id_fk`, `is_code`, `is_periode`, `is_due_date`, `is_payment`, `is_payment_date`, `is_status`) VALUES
-(1, 1, NULL, 1, '2021-03-01 00:00:00', NULL, NULL, 0),
-(2, 1, NULL, 2, '2021-04-01 00:00:00', NULL, NULL, 0),
-(3, 1, NULL, 3, '2021-05-01 00:00:00', NULL, NULL, 0),
-(4, 1, NULL, 4, '2021-06-01 00:00:00', NULL, NULL, 0),
-(5, 1, NULL, 5, '2021-07-01 00:00:00', NULL, NULL, 0),
-(6, 1, NULL, 6, '2021-08-01 00:00:00', NULL, NULL, 0),
-(7, 1, NULL, 7, '2021-09-01 00:00:00', NULL, NULL, 0),
-(8, 1, NULL, 8, '2021-10-01 00:00:00', NULL, NULL, 0),
-(9, 1, NULL, 9, '2021-11-01 00:00:00', NULL, NULL, 0),
-(10, 1, NULL, 10, '2021-12-01 00:00:00', NULL, NULL, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -197,6 +167,60 @@ CREATE TABLE `ref_bank` (
   `bank_code` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
   `bank_name` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `ref_bank`
+--
+
+INSERT INTO `ref_bank` (`bank_id`, `bank_code`, `bank_name`) VALUES
+(1, '002', 'BRI'),
+(2, '014', 'BCA');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `return_customer`
+--
+
+CREATE TABLE `return_customer` (
+  `rc_id` int(5) NOT NULL,
+  `ts_id_fk` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rc_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `rc_paid` decimal(10,2) DEFAULT NULL,
+  `rc_note` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `return_customer`
+--
+
+INSERT INTO `return_customer` (`rc_id`, `ts_id_fk`, `rc_date`, `rc_paid`, `rc_note`) VALUES
+(1, '1', '2021-02-03 12:13:00', '1231231.00', 'asdasdasd');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_bank_account`
+--
+
+CREATE TABLE `tb_bank_account` (
+  `acc_id` int(3) NOT NULL,
+  `acc_bank_code` int(4) NOT NULL,
+  `acc_number` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `acc_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tb_bank_account`
+--
+
+INSERT INTO `tb_bank_account` (`acc_id`, `acc_bank_code`, `acc_number`, `acc_name`) VALUES
+(1, 2, '2147483647', 'Rekening BCA 1'),
+(2, 1, '2147483647', 'Rekening BRI 1'),
+(3, 2, '2147483647', 'Rekening BCA 2'),
+(4, 2, '014000000000003', 'Rekening BCA 3'),
+(5, 1, '002000000000002', 'Rekening BRI 2'),
+(6, 1, '002000000000003', 'Rekening BRI 3');
 
 -- --------------------------------------------------------
 
@@ -221,8 +245,6 @@ INSERT INTO `tb_category` (`ctgr_id`, `ctgr_name`) VALUES
 (5, 'Bondek'),
 (6, 'Wiremesh'),
 (7, 'Genteng'),
-(8, 'Gypsun'),
-(9, 'Skrup'),
 (10, 'Bor'),
 (11, 'Dinabol');
 
@@ -238,7 +260,7 @@ CREATE TABLE `tb_customer` (
   `ctm_phone` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ctm_email` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ctm_address` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ctm_status` varchar(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `ctm_status` varchar(2) COLLATE utf8mb4_unicode_ci DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -246,15 +268,36 @@ CREATE TABLE `tb_customer` (
 --
 
 INSERT INTO `tb_customer` (`ctm_id`, `ctm_name`, `ctm_phone`, `ctm_email`, `ctm_address`, `ctm_status`) VALUES
-(1, 'Pelanggan A', '', '', '', 'Y'),
-(2, 'Pelanggan B', '', '', '', 'Y'),
-(3, 'Pelanggan C', '', '', '', 'Y'),
-(4, 'Pelanggan D', '088892349233', 'email@email.com', 'Alamat alamat kota alamat edited', 'Y'),
-(5, 'Pelanggan E', '', 'emailsurel@surmail.com', '', 'Y'),
-(6, 'Pelanggan F', '0897654321', '', 'Editeed', 'Y'),
-(7, 'Pelanggan G', '08666666', 'GsixG@email.com', 'alamatpelanggan G', 'Y'),
-(8, 'Pelanggan H', '011111111', '', '', 'Y'),
-(9, 'Pelanggan I', '', '', '', 'Y');
+(1, 'Pelanggan A', '', '', '', '0'),
+(2, 'Pelanggan B', '08123', '', '', '0'),
+(3, 'Pelanggan C', '', '', '', '0'),
+(4, 'Pelanggan D', '088892349233', 'email@email.com', 'Alamat alamat kota alamat edited', '0'),
+(5, 'Pelanggan E', '', 'emailsurel@surmail.com', '', '0'),
+(6, 'Pelanggan F', '0897654321', '', 'Editeed', '0'),
+(7, 'Pelanggan G', '08666666', 'GsixG@email.com', 'alamatpelanggan G', '0'),
+(8, 'Pelanggan H', '011111111', '', '', '0'),
+(9, 'Pelanggan I', '', '', '', '0'),
+(10, 'Pelanggan J', '0855', 'email@email.com', '', '0'),
+(11, 'Pelanggan K', '', '', '', '0'),
+(12, 'Pelanggan Z', '', '', '', '0');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_invoice`
+--
+
+CREATE TABLE `tb_invoice` (
+  `inv_id` int(5) NOT NULL,
+  `ts_id_fk` int(5) NOT NULL,
+  `inv_code` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `inv_date` date NOT NULL,
+  `inv_payment_due` date NOT NULL,
+  `inv_status` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `inv_type` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `inv_periode_a` int(11) DEFAULT NULL,
+  `inv_periode_b` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -273,8 +316,9 @@ CREATE TABLE `tb_product` (
   `prd_containts` int(3) DEFAULT NULL,
   `prd_initial_g_stock` int(6) NOT NULL DEFAULT 0,
   `prd_initial_ng_stock` int(6) NOT NULL DEFAULT 0,
-  `prd_initial_return_stock` int(6) NOT NULL DEFAULT 0,
+  `prd_initial_op_stock` int(6) NOT NULL DEFAULT 0,
   `prd_description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `prd_image` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `prd_status` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -282,21 +326,13 @@ CREATE TABLE `tb_product` (
 -- Dumping data for table `tb_product`
 --
 
-INSERT INTO `tb_product` (`prd_id`, `prd_barcode`, `prd_name`, `prd_category_id_fk`, `prd_purchase_price`, `prd_selling_price`, `prd_unit_id_fk`, `prd_containts`, `prd_initial_g_stock`, `prd_initial_ng_stock`, `prd_initial_return_stock`, `prd_description`, `prd_status`) VALUES
-(1, '', 'C75 0.75 M-NET', 1, '70000.00', '85000.00', '1', 1, 0, 0, 0, 'Deskripsi C75 0.75 M-NET', 0),
-(2, '', 'C75 0.75 G-NET', 1, '74500.00', '82000.00', '1', 1, 0, 0, 0, 'Deskripsi C75', 0),
-(3, '', 'C75 0.75 WIRAMA', 1, '68500.00', '77000.00', '1', 1, 0, 0, 0, 'Deskripsi WIRAMA', 0),
-(4, '', 'C75 0.75 MAXI', 1, '66500.00', '73000.00', '1', 1, 0, 0, 0, '', 0),
-(5, '', 'C75 0.75 A-PLUS (motif)', 1, '71700.00', '78000.00', '1', 1, 0, 0, 0, '', 0),
-(6, '', 'C75 0.70 A-PLUS (motif)', 1, '66000.00', '72000.00', '1', 1, 0, 0, 0, 'Deskripsi C75 0.70 A-PLUS (motif)', 0),
-(7, '', 'C75 0.70 A-PLUS (polos)', 1, '65000.00', '71000.00', '1', 1, 0, 0, 0, 'Deskripsi C75 0.70 A-PLUS (polos)', 0),
-(8, '', 'C75 0.75 AL', 1, '67000.00', '75000.00', '1', 1, 0, 0, 0, 'Deskripsi C75 0.75 AL', 0),
-(9, '', 'C75 0.70 AL', 1, '66000.00', '72000.00', '1', 1, 0, 0, 0, 'Deskripsi C75 0.70 AL', 0),
-(10, '', 'Galvalume 0.30 G-NET 4m', 3, '147200.00', '168000.00', '2', 1, 0, 0, 0, 'Deskripsi Galvalume 0.30 G-NET 4m\r\n', 0),
-(11, '', 'Galvalume 0.30 G-NET 5m', 3, '184000.00', '210000.00', '2', 1, 0, 0, 0, 'Deskripsi Galvalume 0.30 G-NET 5m', 0),
-(12, '', 'Galvalume 0.30 G-NET 6m', 3, '220800.00', '252000.00', '2', 1, 0, 0, 0, 'Deskripsi Galvalume 0.30 G-NET 6m', 0),
-(13, '', 'Galvalume 0.25 G-NET 4m', 3, '136400.00', '156000.00', '2', 1, 0, 0, 0, 'Deskripsi Galvalume 0.25 G-NET 4m', 0),
-(14, '', 'Galvalume 0.25 G-NET 5m', 3, '170500.00', '195000.00', '2', 1, 0, 0, 0, 'Deskripsi Galvalume 0.25 G-NET 5m', 0);
+INSERT INTO `tb_product` (`prd_id`, `prd_barcode`, `prd_name`, `prd_category_id_fk`, `prd_purchase_price`, `prd_selling_price`, `prd_unit_id_fk`, `prd_containts`, `prd_initial_g_stock`, `prd_initial_ng_stock`, `prd_initial_op_stock`, `prd_description`, `prd_image`, `prd_status`) VALUES
+(1, '', 'C75 0,75 M-NET', 1, '70000.00', '85000.00', '1', 1, 0, 0, 0, 'Deskripsi', NULL, 0),
+(2, '', 'C75 0,75 G-NET', 1, '74500.00', '82000.00', '1', 1, 0, 0, 0, 'Deskripsi', NULL, 0),
+(3, '', 'Product to delete', 5, '1.00', '1.00', '3', 1, 1, 1, 1, 'asdasdasda', 'assets/uploaded_files/product_img/a4c720227a5543879883c7374ec3e5a2.png', 1),
+(4, 'BPrdE', 'Produk Edited', 5, '99.00', '100.99', '2', 10, 0, 0, 0, 'Deskripsi product edited', 'assets/uploaded_files/product_img/bcb4f42bfa740438eb25ca7f80e07a3e.jpeg', 1),
+(8, '', 'C75 0,75 WIRAMA', 1, '68500.00', '77000.00', '1', 1, 0, 0, 0, 'Deskripsi', NULL, 0),
+(9, '', 'C75 0,75 MAXI', 1, '66500.00', '73000.00', '1', 1, 0, 0, 0, '', NULL, 0);
 
 --
 -- Triggers `tb_product`
@@ -304,9 +340,9 @@ INSERT INTO `tb_product` (`prd_id`, `prd_barcode`, `prd_name`, `prd_category_id_
 DELIMITER $$
 CREATE TRIGGER `TG_UpdateStock_Initialstock` AFTER UPDATE ON `tb_product` FOR EACH ROW UPDATE `det_product_stock` 
 SET 
-stk_good = stk_good + (NEW.prd_initial_g_stock - OLD.prd_initial_g_stock),
-stk_not_good = stk_not_good + (NEW.prd_initial_ng_stock - OLD.prd_initial_ng_stock),
-stk_return = stk_return + (NEW.prd_initial_return_stock - OLD.prd_initial_return_stock)
+stk_good = CASE WHEN NEW.prd_status = 0 THEN stk_good + (NEW.prd_initial_g_stock - OLD.prd_initial_g_stock) ELSE stk_good END,
+stk_not_good = CASE WHEN NEW.prd_status = 0 THEN stk_not_good + (NEW.prd_initial_ng_stock - OLD.prd_initial_ng_stock) ELSE stk_not_good END,
+stk_opname = CASE WHEN NEW.prd_status = 0 THEN stk_opname + (NEW.prd_initial_op_stock - OLD.prd_initial_op_stock) ELSE stk_opname END
 WHERE stk_product_id_fk = NEW.prd_id
 $$
 DELIMITER ;
@@ -337,19 +373,6 @@ INSERT INTO `tb_profile` (`pfl_id`, `pfl_name`, `pfl_logo`, `pfl_email`, `pfl_te
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tb_rekening_bank`
---
-
-CREATE TABLE `tb_rekening_bank` (
-  `rek_id` int(3) NOT NULL,
-  `rek_bank_code` int(4) NOT NULL,
-  `rek_nomor` int(25) NOT NULL,
-  `rek_atas_nama` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tb_supplier`
 --
 
@@ -368,19 +391,28 @@ CREATE TABLE `tb_supplier` (
 --
 
 INSERT INTO `tb_supplier` (`supp_id`, `supp_name`, `supp_contact_name`, `supp_email`, `supp_telp`, `supp_address`, `supp_status`) VALUES
-(1, 'PT. Global Indo Asia Sejahtera', 'PT. Global Indo Asia Sejahtera', '', '', '', 0),
-(2, 'CV. Griya Semarang', 'CV. Griya Semarang', '', '', '', 0),
-(3, 'CV. Putra Padjajaran', 'CV. Putra Padjajaran', '', '', '', 0),
-(4, 'PT. A', 'PT. A', '', '', '', 0),
-(5, 'CV. B Edited', 'CV. B', '1', '1', '1', 0),
-(6, 'CV. C', 'CV. C', '', '', '', 0),
-(7, 'PT. D', 'PT. E', '', '', '', 0),
-(8, 'CV. F', 'CV. F', '', '', '', 0),
-(9, 'CV. G', 'CV. G', '', '', '', 0),
-(10, 'PT. H', 'PT. H', '', '', '', 0),
-(11, 'CV. I', 'CV. I', '', '', '', 0),
-(12, 'CV. J', 'CV. J', '', '', '', 0),
-(13, 'Supplier 1 Edited', 'Kontak Supp 1', 'email@email.com', '082292839291', 'alamat supplier', 1);
+(1, 'PT A', 'Bp Anton', '', '', '', 0),
+(2, 'PT B', 'Ibu Merry', '', '', '', 0),
+(3, 'PT C', 'Mas Sugeng', '', '', '', 0),
+(4, 'PT D', 'Mbak Uni', '', '', '', 0),
+(5, 'PT D', 'Gunawan', 'gunawan@ptsd.co.id', '089969694646', 'KI BSB blok A no !A, Ngaliyan, Semarang, Jateng, ', 0),
+(6, 'PT E', 'Anseng', '', '', '', 0),
+(7, 'PT F', 'Soni', '', '', '', 0),
+(8, 'PT G', 'Raden', '', '', '', 0),
+(9, 'PT H', 'Eko HARDIANTO', '', '', '', 0),
+(10, 'PT K', 'Sumiati R', '', '', '', 0),
+(11, 'PT I', 'HARIANTO', '', '', '', 0),
+(12, 'PT J', 'Gunawan PT J', '', '', '', 0),
+(13, 'PT L', 'Hartono', 'email@email.com', '082292839291', 'alamat supplier', 0),
+(33, 'PT L', 'Sudarsono Marketing L', 'emailesudasono@ptl.my.id', '082246469876', '', 0),
+(34, 'PT M', 'Daryono', '', '', '', 0),
+(35, 'Untuk dihapus', 'Kontak', '', '', '', 1),
+(36, 'Test New Supp', 'New Supp', '', '', '', 1),
+(37, 'Supp', 'To be deleted', '', '', '', 0),
+(38, 'aaa', 'aaa', '', '112', '', 0),
+(39, 'ZZ', 'ZZ', '', '12312', '', 0),
+(40, 'ZZ', 'ZZ', '', '12312', '', 0),
+(41, 'zcoba', 'zzz', 'email@weia.com', '1231', '', 0);
 
 -- --------------------------------------------------------
 
@@ -452,13 +484,6 @@ CREATE TABLE `trans_expense` (
   `te_invoice` varchar(225) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `trans_expense`
---
-
-INSERT INTO `trans_expense` (`te_id`, `te_necessity`, `te_date`, `te_payment_method`, `te_payment`, `te_note`, `te_account_id_fk`, `te_invoice`) VALUES
-(1, 'Gaji', '2020-11-07', 'TN', '10000.00', 'Lainn', NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -467,12 +492,11 @@ INSERT INTO `trans_expense` (`te_id`, `te_necessity`, `te_date`, `te_payment_met
 
 CREATE TABLE `trans_purchases` (
   `tp_id` int(5) NOT NULL,
-  `tp_trans_code` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tp_invoice_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tp_invoice_file` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tp_note_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tp_note_file` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `tp_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `tp_supplier_fk` int(3) NOT NULL,
-  `tp_payment_metode` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tp_payment_method` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tp_purchase_price` decimal(10,2) NOT NULL,
   `tp_account_fk` int(3) DEFAULT NULL,
   `tp_paid` decimal(10,2) NOT NULL,
@@ -488,12 +512,9 @@ CREATE TABLE `trans_purchases` (
 -- Dumping data for table `trans_purchases`
 --
 
-INSERT INTO `trans_purchases` (`tp_id`, `tp_trans_code`, `tp_invoice_code`, `tp_invoice_file`, `tp_date`, `tp_supplier_fk`, `tp_payment_metode`, `tp_purchase_price`, `tp_account_fk`, `tp_paid`, `tp_status`, `tp_tenor`, `tp_tenor_periode`, `tp_installment`, `tp_due_date`, `tp_delete`) VALUES
-(1, 'TM2020110100001', 'Nota111', 'assets/imported_files/purchase_nota/be507cf5d2048e9a87a7d564e205c345.jpeg', '2020-10-31 17:00:00', 2, 'TN', '1072500.00', 0, '500.00', 'K', '10', 'D', '10720.00', '2020-12-01', 0),
-(2, 'TM2020110100002', 'NAGS11112', 'assets/imported_files/purchase_nota/0838bf0f6c908e58726ef97f1ec41733.jpeg', '2020-10-31 17:00:00', 2, 'TN', '372500.00', 0, '372500.00', 'T', '', '', '0.00', '0000-00-00', 0),
-(3, 'TM2020110200003', 'NAGS11113', 'assets/imported_files/purchase_nota/d52f1ea5b0036b1e457b926c2d26c898.jpeg', '2020-11-03 17:00:00', 3, 'TN', '685000.00', 0, '680000.00', 'L', '1', 'W', '5000.00', '0000-00-00', 0),
-(4, 'TM2020110200004', 'NAGS11114', 'assets/imported_files/purchase_nota/ddedf562078dd8df8f6230c89ca7bbd4.jpeg', '2020-11-01 17:00:00', 3, 'TN', '332500.00', 0, '2500.00', 'K', '33', 'D', '1000.00', '2021-11-02', 0),
-(5, 'TM2021012100005', 'NP21012021001', 'assets/imported_files/purchase_nota/1d304491fce2ede4fe657ea66599be0f.png', '2021-01-20 17:00:00', 2, 'TN', '330000.00', 0, '30000.00', 'K', '10', 'M', '11000.00', '2021-03-22', 0);
+INSERT INTO `trans_purchases` (`tp_id`, `tp_note_code`, `tp_note_file`, `tp_date`, `tp_supplier_fk`, `tp_payment_method`, `tp_purchase_price`, `tp_account_fk`, `tp_paid`, `tp_status`, `tp_tenor`, `tp_tenor_periode`, `tp_installment`, `tp_due_date`, `tp_delete`) VALUES
+(2, 'NP2603202100001', 'assets/uploaded_files/purchase_note/963e7654cb09b164c380aba06eb69da1.jpg', '2021-03-25 17:00:00', 1, 'TN', '0.00', 0, '700000.00', 'T', '', '', '0.00', '0000-00-00', 0),
+(3, 'NP2603202100002', 'assets/uploaded_files/purchase_note/63dd2c0e08da30da8957b2d67988b6e9.jpg', '2021-03-25 17:00:00', 2, 'TF', '0.00', 0, '85000.00', 'K', '10', 'M', '60000.00', '2021-04-26', 0);
 
 -- --------------------------------------------------------
 
@@ -511,13 +532,6 @@ CREATE TABLE `trans_revenues` (
   `tr_account_id_fk` int(5) DEFAULT NULL,
   `tr_note` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `trans_revenues`
---
-
-INSERT INTO `trans_revenues` (`tr_id`, `tr_trans_code`, `tr_source`, `tr_date`, `tr_payment_method`, `tr_payment`, `tr_account_id_fk`, `tr_note`) VALUES
-(1, 'TR2020110800001', 'Pendapatan', '2020-11-09 00:00:00', 'TN', '100000.00', NULL, 'note');
 
 -- --------------------------------------------------------
 
@@ -541,15 +555,10 @@ CREATE TABLE `trans_sales` (
   `ts_tenor_periode` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ts_installment` decimal(10,2) DEFAULT NULL,
   `ts_due_date` date DEFAULT NULL,
-  `ts_delete` int(2) NOT NULL DEFAULT 0
+  `ts_invoice` varchar(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ts_delete` int(2) NOT NULL DEFAULT 0,
+  `ts_return` varchar(1) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `trans_sales`
---
-
-INSERT INTO `trans_sales` (`ts_id`, `ts_trans_code`, `ts_date`, `ts_customer_fk`, `ts_payment_metode`, `ts_delivery_metode`, `ts_delivery_payment`, `ts_sales_price`, `ts_account_fk`, `ts_paid`, `ts_status`, `ts_tenor`, `ts_tenor_periode`, `ts_installment`, `ts_due_date`, `ts_delete`) VALUES
-(1, 'TK2021012100001', '2021-01-20 17:00:00', 1, 'TN', 'T', '5500.00', '150000.00', 0, '50000.00', 'K', '10', 'M', '11000.00', '2021-03-01', 0);
 
 --
 -- Indexes for dumped tables
@@ -561,6 +570,12 @@ INSERT INTO `trans_sales` (`ts_id`, `ts_trans_code`, `ts_date`, `ts_customer_fk`
 ALTER TABLE `det_product_stock`
   ADD PRIMARY KEY (`stk_id`),
   ADD UNIQUE KEY `stk_product_id_fk` (`stk_product_id_fk`);
+
+--
+-- Indexes for table `det_return_customer`
+--
+ALTER TABLE `det_return_customer`
+  ADD PRIMARY KEY (`drc_id`);
 
 --
 -- Indexes for table `det_trans_purchases`
@@ -594,6 +609,18 @@ ALTER TABLE `ref_bank`
   ADD UNIQUE KEY `bank_code` (`bank_code`);
 
 --
+-- Indexes for table `return_customer`
+--
+ALTER TABLE `return_customer`
+  ADD PRIMARY KEY (`rc_id`);
+
+--
+-- Indexes for table `tb_bank_account`
+--
+ALTER TABLE `tb_bank_account`
+  ADD PRIMARY KEY (`acc_id`);
+
+--
 -- Indexes for table `tb_category`
 --
 ALTER TABLE `tb_category`
@@ -604,6 +631,12 @@ ALTER TABLE `tb_category`
 --
 ALTER TABLE `tb_customer`
   ADD PRIMARY KEY (`ctm_id`);
+
+--
+-- Indexes for table `tb_invoice`
+--
+ALTER TABLE `tb_invoice`
+  ADD PRIMARY KEY (`inv_id`);
 
 --
 -- Indexes for table `tb_product`
@@ -617,12 +650,6 @@ ALTER TABLE `tb_product`
 --
 ALTER TABLE `tb_profile`
   ADD PRIMARY KEY (`pfl_id`);
-
---
--- Indexes for table `tb_rekening_bank`
---
-ALTER TABLE `tb_rekening_bank`
-  ADD PRIMARY KEY (`rek_id`);
 
 --
 -- Indexes for table `tb_supplier`
@@ -659,7 +686,7 @@ ALTER TABLE `trans_expense`
 --
 ALTER TABLE `trans_purchases`
   ADD PRIMARY KEY (`tp_id`),
-  ADD UNIQUE KEY `tp_no_trans` (`tp_trans_code`);
+  ADD UNIQUE KEY `tp_invoice_code` (`tp_note_code`);
 
 --
 -- Indexes for table `trans_revenues`
@@ -681,55 +708,79 @@ ALTER TABLE `trans_sales`
 -- AUTO_INCREMENT for table `det_product_stock`
 --
 ALTER TABLE `det_product_stock`
-  MODIFY `stk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `stk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `det_return_customer`
+--
+ALTER TABLE `det_return_customer`
+  MODIFY `drc_id` int(5) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `det_trans_purchases`
 --
 ALTER TABLE `det_trans_purchases`
-  MODIFY `dtp_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `dtp_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `det_trans_sales`
 --
 ALTER TABLE `det_trans_sales`
-  MODIFY `dts_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `dts_id` int(3) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `installment_purchases`
 --
 ALTER TABLE `installment_purchases`
-  MODIFY `ip_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ip_id` int(5) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `installment_sales`
 --
 ALTER TABLE `installment_sales`
-  MODIFY `is_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `is_id` int(5) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `ref_bank`
 --
 ALTER TABLE `ref_bank`
-  MODIFY `bank_id` int(4) NOT NULL AUTO_INCREMENT;
+  MODIFY `bank_id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `return_customer`
+--
+ALTER TABLE `return_customer`
+  MODIFY `rc_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tb_bank_account`
+--
+ALTER TABLE `tb_bank_account`
+  MODIFY `acc_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tb_category`
 --
 ALTER TABLE `tb_category`
-  MODIFY `ctgr_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `ctgr_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `tb_customer`
 --
 ALTER TABLE `tb_customer`
-  MODIFY `ctm_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `ctm_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `tb_invoice`
+--
+ALTER TABLE `tb_invoice`
+  MODIFY `inv_id` int(5) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tb_product`
 --
 ALTER TABLE `tb_product`
-  MODIFY `prd_id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `prd_id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `tb_profile`
@@ -738,22 +789,16 @@ ALTER TABLE `tb_profile`
   MODIFY `pfl_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `tb_rekening_bank`
---
-ALTER TABLE `tb_rekening_bank`
-  MODIFY `rek_id` int(3) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `tb_supplier`
 --
 ALTER TABLE `tb_supplier`
-  MODIFY `supp_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `supp_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `tb_unit`
 --
 ALTER TABLE `tb_unit`
-  MODIFY `unit_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `unit_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `temp_purchases`
@@ -771,25 +816,25 @@ ALTER TABLE `temp_sales`
 -- AUTO_INCREMENT for table `trans_expense`
 --
 ALTER TABLE `trans_expense`
-  MODIFY `te_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `te_id` int(5) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `trans_purchases`
 --
 ALTER TABLE `trans_purchases`
-  MODIFY `tp_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `tp_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `trans_revenues`
 --
 ALTER TABLE `trans_revenues`
-  MODIFY `tr_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `tr_id` int(5) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `trans_sales`
 --
 ALTER TABLE `trans_sales`
-  MODIFY `ts_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ts_id` int(5) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

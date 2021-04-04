@@ -15,7 +15,7 @@ class Supplier_c extends MY_Controller
     /* Data yang akan dikirim ke view */
     $this->pageData = array(
       'title'  => 'PoS | Supplier',
-      'assets' => array('sweetalert2', 'f_confirm', 'page_contact'),
+      'assets' => array('sweetalert2', 'contact', 'f_confirm'),
       'contact_url'  => site_url('Supplier_c/listSupplierAjax/')
     );
 

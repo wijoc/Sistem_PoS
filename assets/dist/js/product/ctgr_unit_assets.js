@@ -155,39 +155,45 @@ $(document).ready(function(){
     })
 
     /** Datatables Kategori serverside */
-    $("#table-category").DataTable({
-        "processing" : true, // Fitur control indicator "processing"
-        "serverside" : true, // Fitur control datatables server-side processing mode
-        //"order"      : [1, 'desc'], // Set nilai default order ke null
+    var ctgrTable = $("#table-category").DataTable({
+        'responsive': true,
+        'autoWidth' : false,
+        'processing' : true, // Fitur control indicator "processing"
+        'serverside' : true, // Fitur control datatables server-side processing mode
+        //'order'      : [1, 'desc'], // Set nilai default order ke null
 
         /** Load data dari function ajax list di controller */
-        "ajax"  : {
+        'ajax'  : {
             'url'   : ctgr_url,
             'type'  : 'POST'
         },
 
         /** Set coloumn properties */
-        "coloumnDefs"   : [
-            { "orderable" : false, "targets" : 0}
-        ],
+        'columnDefs'   : [{
+            'targets'   : [0, -1],
+            'orderable' : false
+        }]
     })
 
     /** Datatables Kategori serverside */
-    $("#table-unit").DataTable({
-        "processing" : true, // Fitur control indicator "processing"
-        "serverside" : true, // Fitur control datatables server-side processing mode
-        //"order"      : [1, 'desc'], // Set nilai default order ke null
+    var unitTable = $("#table-unit").DataTable({
+        'responsive': true,
+        'autoWidth' : false,
+        'processing' : true, // Fitur control indicator "processing"
+        'serverside' : true, // Fitur control datatables server-side processing mode
+        //'order'      : [1, 'desc'], // Set nilai default order ke null
 
         /** Load data dari function ajax list di controller */
-        "ajax"  : {
+        'ajax'  : {
             'url'   : unit_url,
             'type'  : 'POST'
         },
 
         /** Set coloumn properties */
-        "coloumnDefs"   : [
-            { "orderable" : false, "targets" : 0}
-        ],
+        'columnDefs'   : [{
+            'targets'   : [0, -1],
+            'orderable' : false
+        }]
     })
 })
 

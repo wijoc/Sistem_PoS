@@ -15,19 +15,18 @@
 	</script>
 
 <!-- Addritional library needed -->
-
-	<!-- SweetAlert 2 -->
 	<?php if(in_array('sweetalert2',$assets)){ ?>
+		<!-- SweetAlert 2 -->
 		<script src="<?php echo base_url() ?>assets/plugins/sweetalert2/sweetalert2.min.js"></script>
 	<?php } ?>
 
-	<!-- JQuery UI -->
 	<?php if(in_array('jqueryui',$assets)){ ?>
+		<!-- JQuery UI -->
 		<script src="<?php echo base_url() ?>assets/plugins/jquery-ui/jquery-ui.js"></script>
 	<?php } ?>
 
-	<!-- bs-custom-file-input -->
 	<?php if(in_array('custominput',$assets)){ ?>
+		<!-- bs-custom-file-input -->
 		<script src="<?php echo base_url() ?>assets/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function () {
@@ -36,7 +35,6 @@
 		</script>
 	<?php } ?>
 
-	<!-- Datepicker -->
 	<?php if(in_array('daterangepicker', $assets)){ ?>
 		<!-- moment js -->
 		<script src="<?php echo base_url() ?>assets/plugins/moment/moment.min.js"></script>
@@ -57,9 +55,9 @@
 			})
 		</script>	
 	<?php } ?>
-	
-	<!-- Dropify -->
+
 	<?php if(in_array('dropify', $assets)){ ?>
+		<!-- Dropify -->
         <script src="<?php echo base_url() ?>assets/plugins/dropify/js/dropify.min.js"></script>
         <script>
             $(document).ready(function(){
@@ -111,62 +109,70 @@
 	<?php } ?>
 
 <!-- additional Page script goes here -->
-	<!-- Page Add Product -->
-	<?php if(in_array('p_add_product',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_product_assets.js"></script>
+	<?php if(in_array('add_product',$assets)){ ?>
+		<!-- Page Add Product -->
+		<script src="<?php echo base_url() ?>assets/dist/js/product/add_product_assets.js"></script>
 	<?php } ?>
 
-	<!-- Page edit Product -->
-	<?php if(in_array('p_edit_product',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/edit_product_assets.js"></script>
+	<?php if(in_array('edit_product',$assets)){ ?>
+		<!-- Page edit Product -->
+		<script src="<?php echo base_url() ?>assets/dist/js/product/edit_product_assets.js"></script>
 	<?php } ?>
 
-	<!-- Page List Produk -->
-	<?php if(in_array('p_list_product',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/list_product_assets.js"></script>
+	<?php if(in_array('list_product',$assets)){ ?>
+		<!-- List Produk Assets -->
+		<script src="<?php echo base_url() ?>assets/dist/js/product/list_product_assets.js"></script>
 		<script>
-			var product_url = "<?php echo site_url('Product_c/listProductAjax') ?>"
-			var stk_product_url = "<?php echo site_url('Product_c/listStockProductAjax') ?>"
+			let product_url = "<?php echo site_url('Product_c/listProductAjax') ?>"
 		</script>
 	<?php } ?>
 
-	<!-- Page Kategori & Satuan -->
-	<?php if(in_array('p_ctgr_unit', $assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/ctgr_unit_assets.js"></script>
+	<?php if(in_array('stock_product',$assets)){ ?>
+		<!-- Stock Produk Assets -->
+		<script src="<?php echo base_url() ?>assets/dist/js/product/stock_product_assets.js"></script>
+		<script>
+			let stk_product_url = "<?php echo site_url('Product_c/stockProductAjax') ?>"
+		</script>
+	<?php } ?>
+
+	<?php if(in_array('ctgr_unit', $assets)){ ?>
+		<!-- Page Kategori & Satuan -->
+		<script src="<?php echo base_url() ?>assets/dist/js/product/ctgr_unit_assets.js"></script>
 		<script>
 			var ctgr_url = "<?php echo site_url('Product_c/listCategoryAjax') ?>"
 			var unit_url = "<?php echo site_url('Product_c/listUnitAjax') ?>"
 		</script>
 	<?php } ?>
 
-	<?php if(in_array('p_setting', $assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/setting_assets.js"></script>
-		<script>
-			var setting_list_url = "<?php echo $ajaxUrl ?>"
-		</script>
-	<?php } ?>
-
-	<!-- Page Add Product -->
-	<?php if(in_array('page_contact',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/contact_assets.js"></script>
+	<?php if(in_array('contact',$assets)){ ?>
+		<!-- Page Contact Assets -->
+		<script src="<?php echo base_url() ?>assets/dist/js/contact_assets.js"></script>
 		<script>
 			var contact_url = "<?php echo $contact_url ?>"
 		</script>
-	<?php } ?>	
+	<?php } ?>
 
-	<!-- Page Add Trans -->
-	<?php if(in_array('page_add_trans',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_transaction_assets.js"></script>
-		<script type="text/javascript">
-			prdAutocompleteUrl = "<?php echo site_url('Product_c/autocompleteProduct/') ?>"
+	<?php if(in_array('list_transaction',$assets)){ ?>
+		<!-- Page Purchases -->
+		<script src="<?php echo base_url() ?>assets/dist/js/transaction/list_transaction_assets.js"></script>
+		<script>
+			let transaction_url = "<?php echo $transactionUrl; ?>"
 		</script>
 	<?php } ?>
 
-	<?php if(in_array('p_purchases',$assets)){ ?>
+	<?php if(in_array('add_transaction',$assets)){ ?>
 		<!-- Page Purchases -->
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/purchases_assets.js"></script>
+		<script src="<?php echo base_url() ?>assets/dist/js/transaction/add_transaction_assets.js"></script>
 		<script>
-			cart_url = "<?php echo site_url('Transaction_c/listCardAjax/Purchases/') ?>"
+			cart_url = "<?php echo $cartUrl ?>"
+			prd_url	 = "<?php echo site_url('Product_c/autocompleteProduct/') ?>"
+		</script>
+	<?php } ?>
+
+	<?php if(in_array('p_setting', $assets)){ ?>
+		<script src="<?php echo base_url() ?>assets/dist/js/product/setting_assets.js"></script>
+		<script>
+			var setting_list_url = "<?php echo $ajaxUrl ?>"
 		</script>
 	<?php } ?>
 

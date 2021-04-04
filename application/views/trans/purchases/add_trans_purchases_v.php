@@ -28,25 +28,25 @@
                 <h5 class="m-0">Keranjang</h5>
               </div>
               <div class="card-body">
-                <form action="<?php echo site_url('Transaction_c/addCart/Purchases/') ?>" id="form-purchase-cart">
+                <form action="<?php echo site_url('Transaction_c/addCart/Purchases/') ?>" id="form-cart">
                   <div class="row">
                     <div class="col-md-6 col-sm-6">
                       <div class="form-group">
                         <label>Product</label>
-                        <input type="hidden" name="postIdPrd">
-                        <input type="text" class="form-control" name="postNamaPrd" id="inputNamaPrd" placeholder="Nama / barcode product">
+                        <input type="hidden" name="postIdPrd" readonly>
+                        <input type="text" class="form-control" id="input-cart-prd" placeholder="Nama / barcode product">
                       </div>
                     </div>
                     <div class="col-md-2 col-sm-6">
                       <div class="form-group">
                         <label>Qty</label>
-                        <input type="text" class="form-control" name="postJumlahPrd" id="inputJumlahPrd" onkeyup="totalBayar()" placeholder="Qty">
+                        <input type="text" class="form-control" name="postCartQty" id="input-cart-qty" onkeyup="totalPrice()" placeholder="Qty">
                       </div>
                     </div>
                     <div class="col-md-4 col-sm-6">
                       <div class="form-group">
                         <label>Harga</label>
-                        <input type="text" class="form-control" name="postHargaPrd" id="inputHargaPrd" placeholder="Harga satuan">
+                        <input type="text" class="form-control" name="postCartPrice" id="input-cart-price" placeholder="Harga satuan">
                       </div>
                     </div>
                   </div>
@@ -55,6 +55,7 @@
                       <button type="submit" class="col-12 btn btn-sm btn-info">Tambah</button>
                     </div>
                   </div>
+                </form>
                   <div class="table-responsive">
                     <table class="table table-bordered" id="cart-shop">
                       <thead class="text-center">
@@ -75,7 +76,15 @@
                       </tfoot>
                     </table>
                   </div>
-                </form>
+                  <div class="row pb-2 border-bottom">
+                    <div class="col-md-12 col-sm-12">
+                      <div class="form-group">
+                        <label>Biaya Tambahan</label>
+                        <input type="number" class="form-control" id="cart-addition-charge" min="0" step="0.01" placeholder="Additional Charge...">
+                        <small id="error-p-additional" class="error-msg" style="display:none; color:red; font-style: italic"></small>
+                      </div>
+                    </div>
+                  </div>
               </div>
             </div>
           </div>
@@ -103,7 +112,7 @@
                     </div>
 
                     <!-- Form-part : hidden input -->
-                    <input type="hidden" name="postPurchaseTotalCart">
+                    <input type="hidden" name="postPurchaseAdditional" id="input-additional-charge" readonly>
                         
                     <!-- Form-part input tanggal transaksi -->
                     <div class="col-md-4 col-sm-6 col-xs-12">
@@ -129,7 +138,7 @@
                         <label>File Nota</label>
                         <div class="custom-file">
                           <input type="file" class="form-control float-right custom-file-input" name="postPurchaseNoteFile" id="input-p-file" required>
-                          <label class="custom-file-label" for="input-file-invoice"><p>File Nota</p></label>
+                          <label class="custom-file-label" for="input-file-invoice"><p>Pilih file Nota</p></label>
                           <small id="error-p-file" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
                       </div>
@@ -153,7 +162,7 @@
                     <div class="col-md-5 col-sm-6 col-xs-12">
                       <div class="form-group">
                         <label>Status</label>
-                        <select class="form-control float-right" name="postPurchaseStatus" id="input-p-status" required>
+                        <select class="form-control float-right" name="postPurchaseStatus" id="input-status" required>
                           <option value=""> -- Pilih Status -- </option>
                           <option value="T"> Tunai </option>
                           <option value="K"> Kredit / Angsur </option>
@@ -212,7 +221,7 @@
                     <div class="col-md-5 col-sm-6 col-xs-12">
                       <div class="form-group">
                         <label>Metode Bayar</label>
-                        <select class="form-control float-right" name="postPurchaseMethod" id="input-p-method">
+                        <select class="form-control float-right" name="postPurchaseMethod" id="input-method">
                           <option value=""> -- Pilih Metode -- </option>
                           <option value="TF"> Transfer </option>
                           <option value="TN"> Tunai </option>
@@ -241,6 +250,14 @@
                         <label>Pembayaran</label>
                         <input type="number" class="form-control float-right" step="0.01" name="postPurchasePayment" id="input-p-payment" placeholder="Pembayaran" required>
                         <small id="error-p-payment" class="error-msg" style="display:none; color:red; font-style: italic"></small>
+                      </div>
+                    </div>
+
+                    <!-- Form-part input PS -->
+                    <div class="col-md-12 col-sm-6 col-xs-12">
+                      <div class="form-group">
+                        <label>Catatan tambahan <font class="text-lowercase font-italic" color="red"><small>(optional)</small></font></label>
+                        <textarea class="form-control" cols="30" rows="5" name="postPurchasePS"></textarea>
                       </div>
                     </div>
                   </div>

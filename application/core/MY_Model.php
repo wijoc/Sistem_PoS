@@ -56,7 +56,7 @@ class MY_Model extends CI_Model {
             '3' => 'supp_email',
             '4' => 'supp_telp',
             '5' => 'supp_address',
-        '6' => 'supp_status'
+            '6' => 'supp_status'
         );
 	
     /** Table Customer */
@@ -77,7 +77,7 @@ class MY_Model extends CI_Model {
             '1' => 'tp_date',
             '2' => 'tp_supplier_fk',
             '3' => 'tp_payment_method',
-            '4' => 'tp_purchase_price',
+            '4' => 'tp_total_cost',
             '5' => 'tp_account_fk', // Allow Null
             '6' => 'tp_paid',
             '7' => 'tp_status',
@@ -87,7 +87,9 @@ class MY_Model extends CI_Model {
             '11' => 'tp_delete', // as defined 0
             '12' => 'tp_note_code',
             '13' => 'tp_installment',
-            '14' => 'tp_note_file'
+            '14' => 'tp_note_file',
+            '15' => 'tp_additional_cost',
+            '16' => 'tp_post_script'
         );
 
     /* Declare var table detail transaksi purchases */

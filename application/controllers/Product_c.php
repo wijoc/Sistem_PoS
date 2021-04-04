@@ -11,12 +11,12 @@ Class Product_c extends MY_Controller {
 	public function index(){
 	  /* Data yang akan dikirim ke view */
 		$this->pageData = array(
-			'title'  => 'PoS | Product',
-			'assets' => array()
-		); 
+			'title'  => 'PoS | List Product',
+			'assets' => array(),
+		);
 
       /* View file */
-        $this->page = "product/index_product_v";
+		$this->page = 'product/index_product_v';
 
       /* Call function layout dari MY_Controller Class */
         $this->layout();
@@ -28,7 +28,7 @@ Class Product_c extends MY_Controller {
 	  /** Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Input Product',
-			'assets'  => array('sweetalert2', 'dropify', 'p_add_product'),
+			'assets'  => array('sweetalert2', 'dropify', 'add_product'),
 			'optCtgr' => $this->Product_m->selectCategory()->result_array(), // Get semua kategori untuk option
 			'optUnit' => $this->Product_m->selectUnit()->result_array() // Get semua satuan untuk option
 		);
@@ -40,7 +40,7 @@ Class Product_c extends MY_Controller {
 	public function listProductPage(){
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
-			'assets' => array('datatables', 'sweetalert2', 'p_list_product', 'f_confirm'),
+			'assets' => array('datatables', 'list_product', 'f_confirm'),
 		);
 		$this->page = 'product/list_product_v';
 		$this->layout();
@@ -61,9 +61,11 @@ Class Product_c extends MY_Controller {
 			$row[] = $show['prd_selling_price'];
 			$row[] = $show['unit_name'];
 			$row[] = '0';
-			$row[] = '<a class="btn btn-xs btn-info" href="'.site_url("Product_c/detailProductPage/").urlencode(base64_encode($show['prd_id'])).'" data-toggle="tooltip" data-placement="top" title="Detail Produk"><i class="fas fa-search"></i></a>
-			<a class="btn btn-xs btn-warning" href="'.site_url('Product_c/editProductPage/').urlencode(base64_encode($show['prd_id'])).'" data-toggle="tooltip" data-placement="top" title="Edit Produk"><i class="fas fa-edit"></i></a>
-			<a class="btn btn-xs btn-danger" onclick="confirmDelete(\'soft-prd\', \' '.urlencode(base64_encode($show['prd_id'])).' \', \' '.site_url('Product_c/softdeleteProductProses').' \')" data-toggle="tooltip" data-placement="top" title="Hapus Produk"><i class="fas fa-trash"></i></a>';
+			$row[] = '<div class="btn-group" role="group" aria-label="Basic example">
+				<a class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Detail produk" href="'.site_url("Product_c/detailProductPage/").urlencode(base64_encode($show['prd_id'])).'" data-toggle="tooltip" data-placement="top" title="Detail Produk"><i class="fas fa-search"></i></a>
+				<a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Ubah produk" href="'.site_url('Product_c/editProductPage/').urlencode(base64_encode($show['prd_id'])).'" data-toggle="tooltip" data-placement="top" title="Edit Produk"><i class="fas fa-edit"></i></a>
+				<a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Hapus produk" onclick="confirmDelete(\'soft-prd\', \' '.urlencode(base64_encode($show['prd_id'])).' \', \' '.site_url('Product_c/softdeleteProductProses').' \')" data-toggle="tooltip" data-placement="top" title="Hapus Produk"><i class="fas fa-trash"></i></a>
+				</div>';
 		
 			$prdData[] = $row;
 		}
@@ -91,22 +93,21 @@ Class Product_c extends MY_Controller {
 		$this->layout();
 	}
 
-	/* Function : List stock product */
-	public function listStockProductPage(){
+	/* Function : Stock product */
+	public function stockProductPage(){
 		/* set data yang akan ditampilkan */
 		$this->pageData = array(
 			'title' 	=> 'PoS | Stock Product',
-			'assets'	=> array('datatables', 'sweetalert2', 'p_list_product'),
-			//'dataStock' => $this->Product_m->getStockProduct()
+			'assets'	=> array('datatables', 'sweetalert2', 'stock_product')
 		);
 
 		/* Set view file */
-		$this->page = 'product/list_stock_product_v';
+		$this->page = 'product/stock_product_v';
 		$this->layout();
 	}
 
 	/** Function : Ajax stock product */
-	public function listStockProductAjax(){
+	public function stockProductAjax(){
 		$prdData	= array();
 		$no			= $this->input->post('start');
 		foreach($this->Product_m->selectProductStock(10, 0)->result_array() as $show){
@@ -629,7 +630,7 @@ Class Product_c extends MY_Controller {
 	public function listCatUnitPage(){
 		$this->pageData = array(
 			'title'  => 'PoS | List Kategori',
-			'assets' => array('datatables', 'sweetalert2', 'p_ctgr_unit', 'page_catunit', 'f_confirm')
+			'assets' => array('datatables', 'sweetalert2', 'ctgr_unit', 'f_confirm')
 		);
 		$this->page = 'product/list_category_unit_v';
 		$this->layout();

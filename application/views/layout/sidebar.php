@@ -63,7 +63,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo site_url('Product_c/listStockProductPage') ?>" class="nav-link">
+                <a href="<?php echo site_url('Product_c/stockProductPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Stok</p>
                 </a>
