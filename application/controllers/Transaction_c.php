@@ -248,7 +248,7 @@ Class Transaction_c extends MY_Controller{
 			'assets' 	=> array(),
 			'detailTrans' => $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
 			'detailCart'  => $this->Purchases_m->selectDetTP(base64_decode(urldecode($encoded_trans_id)))->result_array(),
-			//'detailPayment' => $this->Installment_m->getInstallmentPurchase(base64_decode(urldecode($encoded_trans_id))),
+			'detailIP' 	  => $this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
 		);
 		$this->page = 'trans/purchases/detail_purchases_v';
 		$this->layout();

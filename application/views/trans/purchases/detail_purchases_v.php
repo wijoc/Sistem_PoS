@@ -168,26 +168,41 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-12">
-                    <div class="form-group">
-                      <label>Riwayat Angsuran</label>
-                      <div class="table-responsive">
-                        <table class="table table-bordered" id="cart-shop">
-                          <thead class="text-center">
-                            <tr>
-                              <th>Angsuran</th>
-                              <th>Tgl Bayar</th>
-                              <th>Biaya</th>
-                              <th>No Nota</th>
-                              <th>File Nota</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="card card-info card-outline">
+              <div class="card-header">
+                <h4 class="m-0 card-title">Detail Pembayaran Angsuran <i class="fas fa-minus"></i> Nota : <b><?php echo $detailTrans[0]['tp_note_code'] ?></b></h4>
+              </div>
+              <div class="card-body row">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="cart-shop">
+                    <thead class="text-center">
+                      <tr>
+                        <th>Periode</th>
+                        <th>Tgl</th>
+                        <th>Bayar</th>
+                        <th>No. Nota</th>
+                        <th>File Nota</th>
+                        <th>PS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php foreach($detailIP as $showIP): ?>
+                        <tr>
+                          <td class="text-center"><?php echo ($showIP['ip_periode_end'] == $showIP['ip_periode_begin'])? $showIP['ip_periode_begin'] : $showIP['ip_periode_begin'].' - '.$showIP['ip_periode_end'] ?></td>
+                          <td class="text-center"><?php echo date('d-m-Y', strtotime($showIP['ip_date'])) ?></td>
+                          <td class="text-center"><?php echo 'Rp'.number_format($showIP['ip_payment'], 2) ?></td>
+                          <td class="text-center"><?php echo $showIP['ip_note_code'] ?></td>
+                          <td><a class="btn btn-xs btn-success" target="_blank" href="'.base_url().$showIP['ip_note_file'].'"><i class="fas fa-file-download"></i></a></td>
+                          <td class="text-justify"><p><?php echo $showIP['ip_post_script'] ?></p></td>
+                        </tr>
+                      <?php endforeach; ?>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -218,4 +233,5 @@
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
-    <!-- /.content -->
+    <!-- /.content --> 
+    <?php print("<pre>".print_r($detailIP, true)."</pre>") ?>

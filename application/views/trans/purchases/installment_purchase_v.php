@@ -26,7 +26,7 @@
               <div class="card-header">
                 <h5 class="m-0 card-title"><b class="text-uppercase">Detail Angsuran</b> <small><i class="fa fa-minus"></i></small> Nota : <b><?php echo $detailTrans[0]['tp_note_code'] ?></b></h5>
                 <div class="float-right">
-                  <a class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="<?php echo site_url('Transaction_c/detailPurchasesPage/'.urlencode(base64_encode($detailTrans[0]['tp_id']).'/')) ?>"><i class="fas fa-search"></i></a>
+                  <a class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="<?php echo site_url('Transaction_c/detailPurchasesPage/'.urlencode(base64_encode($detailTrans[0]['tp_id'])).'/') ?>"><i class="fas fa-search"></i></a>
                   <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Daftar Transaksi Pembelian" href="<?php echo site_url('Transaction_c/listPurchasesPage/') ?>"><i class="fas fa-list"></i></a>
                 </div>
               </div>
@@ -231,4 +231,3 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    <?php print("<pre>".print_r($minLimitIP, true)."</pre>") ?>
