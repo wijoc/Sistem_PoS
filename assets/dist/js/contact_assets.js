@@ -321,6 +321,7 @@ $(document).ready(function(){
     /** Execute function getRowData page 0 */
     getRowData(0)
 
+    /** Pagination */
     $("#pagination").on("click", ".pagination li a", function(event){
         event.preventDefault();
         var page = $(this).data("ci-pagination-page")

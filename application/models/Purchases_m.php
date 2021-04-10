@@ -76,8 +76,9 @@ Class Purchases_m extends MY_Model{
 
     /** Q-Function : Select Trans Purchase berdasar id */
     function selectPurchaseOnID($trans_id){
-      $this->db->select('tp.*, supp.'.$this->supp_f[1].', acc.'.$this->acc_f[2].', acc.'.$this->acc_f[3].', bank.'.$this->bank_f[2]);
+      $this->db->select('tp.*, SUM(dtp.'.$this->dtp_f[5].') as total_cart, supp.'.$this->supp_f[1].', acc.'.$this->acc_f[2].', acc.'.$this->acc_f[3].', bank.'.$this->bank_f[2]);
       $this->db->from($this->tp_tb.' as tp');
+      $this->db->join($this->dtp_tb.' as dtp', 'dtp.'.$this->dtp_f[1].' = tp.'.$this->tp_f[0], 'LEFT');
       $this->db->join($this->supp_tb.' as supp', 'supp.'.$this->supp_f[0].' = tp.'.$this->tp_f[2], 'LEFT');
       $this->db->join($this->acc_tb.' as acc', 'acc.'.$this->acc_f[0].' = tp.'.$this->tp_f[5], 'LEFT');
       $this->db->join($this->bank_tb.' as bank', 'bank.'.$this->bank_f[0].' = acc.'.$this->acc_f[1], 'LEFT');
@@ -85,9 +86,25 @@ Class Purchases_m extends MY_Model{
       return $this->db->get();
     }
 
+    /** Q-Function : Update Trans Purchase berdasar ID */
+    function updatePurchaseOnID($data, $id){
+      $this->db->where($this->tp_f[0], $id);
+      return $this->db->update($this->tp_tb, $data);
+    }
+
     /** Q-Function : Insert detail purchase  */
     function insertBatchDetTP($data){
       return $this->db->insert_batch($this->dtp_tb, $data);
+    }
+
+    /** Q-function : Select detail trans purchase berdasar id */
+    function selectDetTP($trans_id){
+      $this->db->select('dtp.'.$this->dtp_f[3].', dtp.'.$this->dtp_f[4].', dtp.'.$this->dtp_f[5].', prd.'.$this->prd_f[2]);
+      $this->db->from($this->dtp_tb.' as dtp');
+      $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].' = dtp.'.$this->dtp_f[2], 'LEFT');
+      $this->db->where('dtp.'.$this->dtp_f[1], $trans_id);
+      $this->db->group_by('dtp.'.$this->dtp_f[0]);
+      return $this->db->get();
     }
 
   /** Query Table Temp_purchase (Cart) */

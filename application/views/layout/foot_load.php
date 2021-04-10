@@ -153,7 +153,7 @@
 	<?php } ?>
 
 	<?php if(in_array('list_transaction',$assets)){ ?>
-		<!-- Page Purchases -->
+		<!-- List Transaction Assets -->
 		<script src="<?php echo base_url() ?>assets/dist/js/transaction/list_transaction_assets.js"></script>
 		<script>
 			let transaction_url = "<?php echo $transactionUrl; ?>"
@@ -161,11 +161,21 @@
 	<?php } ?>
 
 	<?php if(in_array('add_transaction',$assets)){ ?>
-		<!-- Page Purchases -->
+		<!-- Add Transaction Assets -->
 		<script src="<?php echo base_url() ?>assets/dist/js/transaction/add_transaction_assets.js"></script>
 		<script>
 			cart_url = "<?php echo $cartUrl ?>"
 			prd_url	 = "<?php echo site_url('Product_c/autocompleteProduct/') ?>"
+		</script>
+	<?php } ?>
+
+	<?php if(in_array('installment',$assets)){ ?>
+		<!-- Installment Assets -->
+		<script src="<?php echo base_url() ?>assets/dist/js/transaction/installment_assets.js"></script>
+		<script>
+			installment_url = "<?php echo $ipListUrl ?>"
+			min_tenor	= "<?php echo $minLimitIP ?>"
+			max_tenor	= "<?php echo $detailTrans[0]['tp_tenor'] ?>"
 		</script>
 	<?php } ?>
 

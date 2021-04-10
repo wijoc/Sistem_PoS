@@ -22,10 +22,10 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-lg-12">
-            <div class="card card-orange card-outline">
+            <div class="card card-info card-outline">
               <div class="card-header">
                 <h5 class="m-0 card-title">Daftar Transaksi Pembelian</h5>
-                <a class="btn btn-sm btn-success float-right" href="<?php echo site_url('Transaction_c/addPurchasesPage') ?>"> <i class="fas fa-plus"></i> Tambah Transaksi</a>
+                <a class="btn btn-sm btn-success float-right" data-toggle="tooltip" data-placement="top" title="Tambah Transaksi" href="<?php echo site_url('Transaction_c/addPurchasesPage') ?>"> <i class="fas fa-plus"></i> Tambah Transaksi</a>
               </div>
               <div class="card-body">
                 <table id="table-transaction" class="table table-bordered table-striped">

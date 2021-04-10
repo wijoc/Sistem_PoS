@@ -228,7 +228,10 @@ $(document).ready(function() {
 						getCartList()
 					})
 				}
-			}
+			},
+            error: function(jqxhr, status, exception) {
+                alert('Exception:', exception);
+            }
 		})
 	})
 

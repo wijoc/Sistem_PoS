@@ -187,7 +187,7 @@ Class Transaction_c extends MY_Controller{
 			'optAcc'  => $this->Account_m->selectAccount(),
 			'cartUrl' => site_url('Transaction_c/listCartAjax/Purchases/')
 		);
-		$this->page = 'trans/purchases/add_trans_purchases_v';
+		$this->page = 'trans/purchases/add_purchases_v';
 		$this->layout();
 	}
 
@@ -198,7 +198,7 @@ Class Transaction_c extends MY_Controller{
 			'assets' => array('datatables', 'list_transaction'),
 			'transactionUrl' => site_url('Transaction_c/listPurchaseAjax')
 		);
-		$this->page = 'trans/purchases/list_trans_purchases_v';
+		$this->page = 'trans/purchases/list_purchases_v';
 		$this->layout();
 	}
 
@@ -207,11 +207,11 @@ Class Transaction_c extends MY_Controller{
 		$tpData	= array();
 		$no			= $this->input->post('start');
 		foreach($this->Purchases_m->selectPurchase('all', 0, $this->input->post('length'), $this->input->post('start'))->result_array() as $show){
-			$actionBtn = '<a class="btn btn-xs btn-info" href="'.site_url('Transaction_c/detailPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-search"></i> </a>
-				<a class="btn btn-xs btn-secondary" href="'.site_url('Transaction_c/returnPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-exchange-alt"></i> </a>';
+			$actionBtn = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="'.site_url('Transaction_c/detailPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-search"></i> </a>
+				<a class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Transaksi Retur Terkait" href="'.site_url('Transaction_c/returnPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-exchange-alt"></i> </a>';
 			if($show['tp_payment_status'] == 'K'){ 
 				$showStatus = '<span class="badge badge-danger">Kredit - Belum Lunas</span>';
-				$actionBtn .= '&nbsp<a class="btn btn-xs btn-warning" href="'.site_url('Transaction_c/payPurchasesInstallmentPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-cash-register"></i> </a>';
+				$actionBtn .= '&nbsp<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Bayar Angsuran Pembelian" href="'.site_url('Transaction_c/installmentPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-cash-register"></i> </a>';
 			} else if($show['tp_payment_status'] == 'T'){
 				$showStatus = '<span class="badge badge-success">Tunai - Lunas</span>';
 			} else if($show['tp_payment_status'] == 'L'){
@@ -241,32 +241,53 @@ Class Transaction_c extends MY_Controller{
 		echo json_encode($output);
 	}
 
-	/* Function : Detail trans pembelian */
+	/** Function : Detail trans pembelian */
 	public function detailPurchasesPage($encoded_trans_id){
 		$this->pageData = array(
 			'title' 	=> 'PoS | Trans Pembelian',
 			'assets' 	=> array(),
-			'detailTrans' 	=> $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			'detailTrans' => $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			'detailCart'  => $this->Purchases_m->selectDetTP(base64_decode(urldecode($encoded_trans_id)))->result_array(),
 			//'detailPayment' => $this->Installment_m->getInstallmentPurchase(base64_decode(urldecode($encoded_trans_id))),
 		);
-		$this->page = 'trans/purchases/detail_trans_purchases_v';
+		$this->page = 'trans/purchases/detail_purchases_v';
 		$this->layout();
 	}
 
-	/* Function : Form pembayaran angsuran transaksi pembelian */
-	public function payPurchasesInstallmentPage($encoded_trans_id){
-	  /* Decode id */
-		$transId = base64_decode(urldecode($encoded_trans_id));
-
-	  /* Data yang ditampilkan ke view */
+	/** Function : Form pembayaran angsuran transaksi pembelian */
+	public function installmentPurchasesPage($encoded_trans_id){
+		$limitIP = $this->Installment_m->selectLastPeriodeIP(base64_decode(urldecode($encoded_trans_id)))->result_array();
 		$this->pageData = array(
-			'title' => 'PoS | Trans Pembelian',
-			'assets' => array('datatables', 'custominput', 'sweetalert2', 'page_installment'),
-			'detailTrans' => $this->Purchases_m->getTransPurchaseonID($transId),
-			'detailPayment' => $this->Installment_m->getInstallmentPurchase($transId),
+			'title'		  => 'PoS | Trans Pembelian',
+			'assets' 	  => array('datatables', 'custominput', 'sweetalert2', 'installment'),
+			'detailTrans' => $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			'ipListUrl'	  => site_url('Transaction_c/installmentPurchasesAjax/'.$encoded_trans_id),
+			'minLimitIP'  => intval($limitIP[0]['ip_periode_end']) + 1
 		);
-		$this->page = 'trans/pay_installment_purchase_v';
+		$this->page = 'trans/purchases/installment_purchase_v';
 		$this->layout();
+	}
+
+	/** Function : Ajax list installment */
+	function installmentPurchasesAjax($encoded_trans_id){
+		if($this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->num_rows() <= 0 ){
+			$returnData['count_rows'] = $this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->num_rows();
+		} else {
+			$returnData['count_rows'] = $this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->num_rows();
+			$i = 0;
+			foreach($this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->result_array() as $showIP){
+				$returnData['iP_data'][$i]['i_periode'] = ($showIP['ip_periode_end'] == $showIP['ip_periode_begin'])? $showIP['ip_periode_begin'] : $showIP['ip_periode_begin'].' - '.$showIP['ip_periode_end'];
+				$returnData['iP_data'][$i]['i_date'] 	 = date('d-m-Y', strtotime($showIP['ip_date']));
+				$returnData['iP_data'][$i]['i_payment'] = number_format($showIP['ip_payment'], 2);
+				$returnData['iP_data'][$i]['i_note'] = $showIP['ip_note_code'];
+				$returnData['iP_data'][$i]['i_file'] = '<a class="btn btn-xs btn-success" target="_blank" href="'.base_url().$showIP['ip_note_file'].'"><i class="fas fa-file-download"></i></a>';
+				$returnData['iP_data'][$i]['i_ps']	 = '<p>'.$showIP['ip_post_script'].'</p>';
+				$i++;
+			}
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode($returnData);
 	}
 
 	/** Function : Proses tambah trans pembelian */
@@ -429,7 +450,7 @@ Class Transaction_c extends MY_Controller{
 					'tp_installment' 	=> ($this->input->post('postPurchaseStatus') == 'K')? $this->input->post('postPurchaseInstallment') : '',
 					'tp_due_date' 		=> ($this->input->post('postPurchaseStatus') == 'K')? $this->input->post('postPurchaseDue') : '',
 					'tp_payment_method' => $this->input->post('postPurchaseMethod'),
-					'tp_account_fk' 	=> ($this->input->post('postPurchaseMethod') == 'TF')? $this->input->post('postPurchaseAccount') : '',
+					'tp_account_fk' 	=> ($this->input->post('postPurchaseMethod') == 'TF')? base64_decode(urldecode($this->input->post('postPurchaseAccount'))) : '',
 					'tp_additional_cost' => $this->input->post('postPurchaseAdditional'),
 					'tp_total_cost'	 => $totalCart[0]['tp_total_paid'] + floatval($this->input->post('postPurchaseAdditional')),
 					'tp_paid' 		 => $this->input->post('postPurchasePayment'),
@@ -511,91 +532,189 @@ Class Transaction_c extends MY_Controller{
 		echo json_encode($arrReturn);
 	}
 
-	/* Function : Proses pay installment trans pembelian */
+	/** Function : Proses pay installment trans pembelian */
 	function installmentPurchasesProses($encoded_trans_id){
-	  /* Load lib dan helper untuk upload */
+	  /** Load lib dan helper */
 		$this->load->helper('file');
-		$this->load->library('upload');
-
-	  /* Decode */
-		$transId = base64_decode(urldecode($encoded_trans_id));
-
-	  /* Get posted data */
-	  	/* untuk disimpan ke table installment_purchase */
-		$postData = array(
-			'ip_trans_id_fk'  => $transId,
-			'ip_periode' 	  => $this->input->post('postAngsuranAwal'),
-			'ip_periode_end'  => ($this->input->post('postAngsuranAkhir') == '0')? $this->input->post('postAngsuranAkhir') : $this->input->post('postAngsuranAwal'),
-			'ip_date' 		  => $this->input->post('postTglBayar'),
-			'ip_payment' 	  => $this->input->post('postBayar'),
-			'ip_invoice_code' => $this->input->post('postTransNota'),
-			'ip_invoice_file' => NULL,
+		$this->load->library('form_validation');
+  
+	  /** Set rules form validation */
+		$configValidation = array(
+			array(
+			  'field'  => 'postIPDate',
+			  'label'  => 'Tgl Pembayaran',
+			  'rules'  => 'trim|required|callback__validation_date',
+			  'errors'  => array(
+				  'required'	=> 'Tanggal tidak boleh kosong',
+				  '_validation_date' => 'Tanggal tidak valid'
+			  )
+			),
+			array(
+			  'field'  => 'postIPNote',
+			  'label'  => 'No. Nota Pembayaran',
+			  'rules'  => 'trim|required',
+			  'errors'  => array(
+				  'required'	=> 'Tanggal tidak boleh kosong'
+			  )
+			),
+			array(
+			  'field'  => 'postIPNoteFile',
+			  'label'  => 'File nota',
+			  'rules'  => 'callback__validation_installment_file'
+			),
+			array(
+			  'field'  => 'postIPPeriodeStart',
+			  'label'  => 'Periode',
+			  'rules'  => 'trim|required|numeric',
+			  'errors'  => array(
+				  'required' => 'Periode tidak boleh kosong',
+				  'numeric'  => 'Pilih option yang tersedia'
+			  )
+			),
+			array(
+			  'field'  => 'postIPPeriodeEnd',
+			  'label'  => 'Periode',
+			  'rules'  => 'trim|required|numeric',
+			  'errors'  => array(
+				  'required' => 'Periode tidak boleh kosong',
+				  'numeric'  => 'Pilih option yang tersedia'
+			  )
+			),
+			array(
+			  'field'  => 'postIPInstallment',
+			  'label'  => 'Angsuran',
+			  'rules'  => 'trim|required|greater_than[0]|numeric',
+			  'errors'  => array(
+				  'required' => 'Angsuran tidak boleh kosong',
+				  'greater_than' => 'Angsuran harus lebih dari 0',
+				  'numeric'  => 'Angsuran tidak valid'
+			  )
+			),
+			array(
+			  'field'  => 'postIPStatus',
+			  'label'  => 'Status Pembayaran',
+			  'rules'  => 'trim|required|in_list[BL,L]',
+			  'errors'  => array(
+				  'required' => 'Status pembayaran tidak boleh kosong',
+				  'in_list'  => 'Pilih opsi status yang tersedia'
+			  )
+			),
+			array(
+			  'field'  => 'postIPDue',
+			  'label'  => 'Tempo',
+			  'rules'  => 'trim|callback__validation_installment_due'
+			),
 		);
+	  
+		$this->form_validation->set_rules($configValidation);
 
-		/* Untuk update data di table tb_purchase */
-		if($this->input->post('postStatus') == 'L'){
-			$updateData = array(
-				'tp_due_date' => date('Y-m-d', strtotime('0000-00-00')),
-				'tp_payment_status'	  => 'L'
-			);	
-		} else if($this->input->post('postStatus') == 'BL'){
-			$updateData = array(
-				'tp_due_date' => $this->input->post('postNextTempo')
+	  /** Run Valudation */
+		if($this->form_validation->run() == FALSE) {
+			$arrReturn = array(
+				'error'				  => TRUE,
+				'errorIPDate' 		  => form_error('postIPDate'),
+				'errorIPNote'		  => form_error('postIPNote'),
+				'errorIPNoteFile'	  => form_error('postIPNoteFile'),
+				'errorIPPeriodeStart' => form_error('postIPPeriodeStart'),
+				'errorIPPeriodeEnd'	  => form_error('postIPPeriodeEnd'),
+				'errorIPInstallment'  => form_error('postIPInstallment'),
+				'errorIPStatus' 	  => form_error('postIPStatus'),
+				'errorIPDue'	 	  => form_error('postIPDue')
 			);
+		} else {
+		  /** Upload Lib */
+			$this->load->library('upload');
+		
+		  /** Get post data */
+			$postData = array(
+				'ip_trans_id_fk' => base64_decode(urldecode($encoded_trans_id)),
+				'ip_date' 		 => $this->input->post('postIPDate'),
+				'ip_note_code' 	 => $this->input->post('postIPNote'),
+				'ip_note_file' 	 => null,
+				'ip_periode_begin' => $this->input->post('postIPPeriodeStart'),
+				'ip_periode_end' => $this->input->post('postIPPeriodeEnd'),
+				'ip_payment' 	 => $this->input->post('postIPInstallment'),
+				'ip_post_script' => $this->input->post('postPurchasePS')
+			);
+
+		  /** Prepare config tambahan */
+			$config['upload_path']   = 'assets/uploaded_files/purchase_note/p_installment/';
+			$config['allowed_types'] = 'jpeg|jpg|png|pdf|doc|docx';
+			$config['max_size']		 = '2048';
+			$config['encrypt_name']  = TRUE;
+			  
+			$arrayFile = explode('.', $_FILES['postIPNoteFile']['name']);
+			$extension = end($arrayFile);
+			$this->upload->initialize($config);
+
+		  /** Upload proses dan Simpan file ke database */
+			$upload = $this->upload->do_upload('postIPNoteFile');
+
+			if($upload){
+				/** Uploaded file data */
+				$uploadData = $this->upload->data();
+
+				/** Set path ke postData */
+				$postData['ip_note_file'] = $config['upload_path'].$uploadData['file_name'];
+
+				$inputIP = $this->Installment_m->insertIP($postData);
+				if($inputIP > 0){
+					/** get last tenor */
+					$lastTenor = $this->Installment_m->selectLastPeriodeIP(base64_decode(urldecode($encoded_trans_id)))->result_array();
+
+					/** Data untuk update table tb_purchases */
+					if($this->input->post('postIPStatus') == 'L' && $this->input->post('postIPPeriodeEnd') == $lastTenor[0]['tp_tenor']){
+						$updateData = array(
+							'tp_due_date' => date('Y-m-d', strtotime('0000-00-00')),
+							'tp_payment_status'	  => 'L'
+						);	
+					} else if($this->input->post('postIPStatus') == 'BL'){
+						$updateData = array(
+							'tp_due_date' => $this->input->post('postIPDue')
+						);
+					}
+	            	$updateTP = $this->Purchases_m->updatePurchaseOnID($updateData, base64_decode(urldecode($encoded_trans_id)));
+					$limitIP = $this->Installment_m->selectLastPeriodeIP(base64_decode(urldecode($encoded_trans_id)))->result_array();
+					$detailTrans = $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($encoded_trans_id)))->result_array();
+
+					if($updateTP > 0){
+						$arrReturn = array(
+							'success'	=> TRUE,
+							'status'	=> 'successInsert',
+							'statusIcon' => 'success',
+							'statusMsg'	 => 'Berhasil menambahkan data pembayaran angsuran',
+						);
+					} else {
+						$arrReturn = array(
+							'success'	=> TRUE,
+							'status'	=> 'failedInsert',
+							'statusIcon' => 'warning',
+							'statusMsg'	 => 'Data pembayaran angsuran ditambahkan, gagal memperbarui jatuh tempo',
+						);
+					}
+					$arrReturn['min_tenor'] = intval($limitIP[0]['ip_periode_end']) + 1;
+					$arrReturn['max_tenor'] = intval($detailTrans[0]['tp_tenor']);
+				} else {
+					unlink($postData['ip_note_file']);
+					$arrReturn = array(
+						'success'	=> TRUE,
+						'status'	=> 'failedInsert',
+						'statusIcon' => 'error',
+						'statusMsg'	 => 'Gagal menambahkan data pembayaran angsuran',
+					);
+				}
+			} else {
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'status'	=> 'failedInsert',
+					'statusIcon' => 'error',
+					'statusMsg'	 => 'Gagal menyimpan file nota pembayaran, transaksi pembayaran angsuran batal ditambahkan. Error : '.$this->upload->display_errors(),
+				);
+			}
 		}
 
-		if(!empty($_FILES['postTransFileNota']['name'])){
-	  	  /* Prepare config tambahan */
-            $config['upload_path']   = 'assets/imported_files/purchase_nota/installment/'; // Path folder untuk upload file
-            $config['allowed_types'] = 'jpeg|jpg|png|pdf|doc|docx'; // Allowed types 
-            $config['max_size']		 = '2048'; // Max size in KiloBytes
-            $config['encrypt_name']  = TRUE; // Encrypt nama file ketika diupload
-
-		  /* Get file format / file extention */
-            $arrayFile = explode('.', $_FILES['postTransFileNota']['name']); //Ubah nama file menjadi array
-            $extension = end($arrayFile); // Get ext dari array nama file, index terakhir array
-            $this->upload->initialize($config);
-
-          /* Upload proses dan Simpan file ke database */
-            $upload = $this->upload->do_upload('postTransFileNota');
-            if($upload){
-              /* Get data upload file */
-            	$uploadData = $this->upload->data();
-
-              	/* Set path untuk simpan ke table installment_purchase */
-            	$postData['ip_invoice_file'] = $config['upload_path'].$uploadData['file_name'];
-
-            	/* Proses simpan ke table intallment_purchase */
-            	$inputIP = $this->Installment_m->insertInstallmentPurchase($postData);
-
-            	if($inputIP > 0){
-	            	/* Proses update tempo_selanjutnya table tb_purchase */
-	            	$updatePurchase = $this->Purchases_m->updateTransPurchase($updateData, $transId);
-	            	if($updatePurchase > 0){
-			  	  		$this->session->set_flashdata('flashStatus', 'successInsert');
-			  	  		$this->session->set_flashdata('flashMsg', 'Berhasil menyimpan histori pembayaran angsuran !');
-	            	} else {
-			  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-			  	  		$this->session->set_flashdata('flashMsg', 'Gagal memperbarui tempo selanjutnya !');
-		  	  		}
-            	} else {
-		  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-		  	  		$this->session->set_flashdata('flashMsg', 'Gagal menyimpan histori pembayaran angsuran !');
-            	}
-            } else {
-	  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-	  	  		$this->session->set_flashdata('flashMsg', $this->upload->display_errors());
-	  	  	}
-		} else {
-  	  		$this->session->set_flashdata('flashStatus', 'failedInsert');
-  	  		$this->session->set_flashdata('flashMsg', 'File Nota Pembelian tidak boleh kosong !');
-  	  	}
-
-	  	/* Link redirect ke list Transaksi Purchase */
-  	  	$this->session->set_flashdata('flashRedirect', 'Transaksi_c/detailPurchasesPage/'.$encoded_trans_id.'');
-
-  	  	/* redirect ke page add purchase */
-	  	redirect('Transaksi_c/payPurchasesInstallmentPage/'.$encoded_trans_id);
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
 	}
 
 	/** Function - Custom Form Validation */
@@ -617,7 +736,7 @@ Class Transaction_c extends MY_Controller{
 			$this->load->helper('file');
 			/** buat mime type : 
 			$allowedMime = array('application/pdf','image/gif','image/jpeg','image/pjpeg','image/png','image/x-png') */
-			$allowedExt	= array('pdf','jpeg', 'jpg', 'png');
+			$allowedExt	= array('pdf', 'doc', 'docx', 'jpeg', 'jpg', 'png');
 			if($_FILES['postPurchaseNoteFile']['name']){
 				if(in_array(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION), $allowedExt)){
 					return TRUE;
@@ -627,6 +746,24 @@ Class Transaction_c extends MY_Controller{
 				}
 			} else {
 				$this->form_validation->set_message('_validation_file', 'File nota tidak boleh kosong');
+				return FALSE;
+			}
+		}
+		function _validation_installment_file($post){
+			/** Load lib dan helper */
+			$this->load->helper('file');
+			/** buat mime type : 
+			$allowedMime = array('application/pdf','image/gif','image/jpeg','image/pjpeg','image/png','image/x-png') */
+			$allowedExt	= array('pdf', 'doc', 'docx', 'jpeg', 'jpg', 'png');
+			if($_FILES['postIPNoteFile']['name']){
+				if(in_array(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION), $allowedExt)){
+					return TRUE;
+				} else {
+					$this->form_validation->set_message('_validation_installment_file', 'File nota harus berformat pdf/jpeg/jpg/png');
+					return FALSE;
+				}
+			} else {
+				$this->form_validation->set_message('_validation_installment_file', 'File nota tidak boleh kosong');
 				return FALSE;
 			}
 		}
@@ -656,6 +793,23 @@ Class Transaction_c extends MY_Controller{
 					}
 				} else {
 					$this->form_validation->set_message('_validation_due', 'Tanggal tempo tidak boleh kosong');
+					return FALSE;
+				}
+			} else {
+				return TRUE;
+			}
+		}
+		function _validation_installment_due($post){
+			if($this->input->post('postIPStatus') == 'BL'){
+				if(trim($post, " ") != ''){
+					if($this->_validation_date($post) == TRUE){
+						return TRUE;
+					} else {
+						$this->form_validation->set_message('_validation_installment_due', 'Tanggal tempo tidak valid');
+						return FALSE;
+					}
+				} else {
+					$this->form_validation->set_message('_validation_installment_due', 'Tanggal tempo tidak boleh kosong');
 					return FALSE;
 				}
 			} else {

@@ -70,7 +70,7 @@ class MY_Model extends CI_Model {
             '5' => 'ctm_status'
         );
 
-    /* Declare var table transaksi purchases */
+    /** Table transaksi purchases */
         protected $tp_tb = 'trans_purchases';
         protected $tp_f  = array(
             '0' => 'tp_id',
@@ -80,7 +80,7 @@ class MY_Model extends CI_Model {
             '4' => 'tp_total_cost',
             '5' => 'tp_account_fk', // Allow Null
             '6' => 'tp_paid',
-            '7' => 'tp_status',
+            '7' => 'tp_payment_status',
             '8' => 'tp_tenor', // Allow Null
             '9' => 'tp_tenor_periode', // Allow Null
             '10' => 'tp_due_date', // Allow Null
@@ -92,7 +92,7 @@ class MY_Model extends CI_Model {
             '16' => 'tp_post_script'
         );
 
-    /* Declare var table detail transaksi purchases */
+    /** Table detail transaksi purchases */
         protected $dtp_tb = 'det_trans_purchases';
         protected $dtp_f  = array(
             '0' => 'dtp_id',
@@ -103,7 +103,7 @@ class MY_Model extends CI_Model {
             '5' => 'dtp_total_price'
         );
 
-    /* Declare var table keranjang purchases */
+    /** Table keranjang purchases */
         protected $temp_tp = 'temp_purchases';
         protected $temp_f  = array(
             '0' => 'tp_id', 
@@ -113,7 +113,34 @@ class MY_Model extends CI_Model {
             '4' => 'tp_total_paid'
         );
 
-	/** Declare var table rekening */
+	/** Table installment Purcahse */
+        protected $ip_tb = 'installment_purchases';
+        protected $ip_f  = array(
+            '0' => 'ip_id',
+            '1' => 'ip_trans_id_fk',
+            '2' => 'ip_periode_begin',
+            '3' => 'ip_periode_end',
+            '4' => 'ip_date',
+            '5' => 'ip_payment',
+            '6' => 'ip_note_code',
+            '7' => 'ip_note_file',
+            '8' => 'ip_post_script'
+        );
+
+    /** Table installment Sales */
+        protected $is_tb = 'installment_sales';
+        protected $is_f  = array(
+            '0' => 'is_id',
+            '1' => 'is_trans_id_fk',
+            '2' => 'is_code',
+            '3' => 'is_periode',
+            '4' => 'is_due_date',
+            '5' => 'is_payment',
+            '6' => 'is_payment_date',
+            '7' => 'is_status',
+        );
+
+	/** Table rekening */
         protected $acc_tb = 'tb_bank_account';
         protected $acc_f = array(
             '0' => 'acc_id',
@@ -122,7 +149,7 @@ class MY_Model extends CI_Model {
             '3' => 'acc_name'
         );
 
-	/** Declare var table bank */
+	/** Table bank */
         protected $bank_tb = 'ref_bank';
         protected $bank_f = array(
             '0' => 'bank_id',

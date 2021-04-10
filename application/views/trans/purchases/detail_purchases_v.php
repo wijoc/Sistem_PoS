@@ -24,9 +24,12 @@
           <div class="col-12">
             <div class="card card-info card-outline">
               <div class="card-header">
-                <h4 class="m-0 card-title">Detail Transaksi <i class="fas fa-minus"></i> Nota : <b><?php echo $detailTrans[0]['tp_note_code'] ?></b></h4>
+                <h4 class="m-0 card-title text-uppercase"><b>Detail Transaksi</b></h4> <small><i class="fa fa-minus"></i></small> Nota : <b><?php echo $detailTrans[0]['tp_note_code'] ?></b>
                 <div class="float-right">
-                  <a class="btn btn-xs btn-success" href="<?php echo site_url('Transaction_c/listPurchasesPage') ?>"><i class="fas fa-list"></i></a>
+                  <a class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Daftar Transaksi Pembelian" href="<?php echo site_url('Transaction_c/listPurchasesPage') ?>"><i class="fas fa-list"></i></a>
+                  <?php if($detailTrans[0]['tp_payment_status'] == 'K'){ ?>
+                  <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Bayar Angsuran Pembelian" href="<?php echo site_url('Transaction_c/installmentPurchasesPage/'.urlencode(base64_encode($detailTrans[0]['tp_id']))) ?>"><i class="fas fa-cash-register"></i></a>
+                  <?php } ?>
                 </div>
               </div>
               <div class="card-body row">
@@ -44,20 +47,34 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <h6 class="col-sm-4">Total belanja<a class="float-right"> : </a></h6>
+                    <h6 class="col-sm-4">Total Keranjang<a class="float-right"> : </a></h6>
                     <div class="col-sm-8">
-                      <h6 class="font-weight-bold" style="color: green"><?php echo 'Rp'.$detailTrans[0]['tp_purchase_price'] ?></h6>
+                      <h6 class="font-weight-bold" style="color: green"><?php echo 'Rp'.number_format($detailTrans[0]['total_cart']) ?></h6>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <h6 class="col-sm-4">Biaya Tambahan<a class="float-right"> : </a></h6>
+                    <div class="col-sm-8">
+                      <h6 class="font-weight-bold" style="color: green"><?php echo 'Rp'.number_format($detailTrans[0]['tp_additional_cost']) ?></h6>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <h6 class="col-sm-4">Total Belanja<a class="float-right"> : </a></h6>
+                    <div class="col-sm-8">
+                      <h6 class="font-weight-bold" style="color: green"><?php echo 'Rp'.number_format($detailTrans[0]['tp_total_cost']) ?></h6>
                     </div>
                   </div>
                   <div class="form-group row">
                     <h6 class="col-sm-4">Metode pembayaran<a class="float-right"> : </a></h6>
                     <div class="col-sm-8">
-                      <h6 class="font-weight-bold"><?php echo ($detailTrans[0]['tp_payment_method'] == 'TF')? 'Transfer' : 'Cash / Tunai' ?></h6>
+                      <h6 class="font-weight-bold">
+                        <?php echo ($detailTrans[0]['tp_payment_method'] == 'TF')? '<span class="badge badge-warning">Transfer</span>' : '<span class="badge badge-info">Cash / Tunai</span>' ?>
+                      </h6>
                     </div>
                   </div>
                   <?php if ($detailTrans[0]['tp_payment_method'] == 'TF'){ ?>
                   <div class="form-group row">
-                    <h6 class="col-sm-4">Rekening pembayaran<a class="float-right"> : </a></h6>
+                    <h6 class="col-sm-4">Rekening<a class="float-right"> : </a></h6>
                     <div class="col-sm-8">
                       <h6 class="font-weight-bold"><?php echo $detailTrans[0]['bank_name'].' - '.$detailTrans[0]['acc_number'].' A/N '.$detailTrans[0]['acc_name'] ?></h6>
                     </div>
@@ -68,24 +85,24 @@
                     <div class="col-sm-8">
                       <h6 class="font-weight-bold" style="color: green">
                         <?php 
-                          if ($detailTrans[0]['tp_status'] == 'K') {
-                            echo '<font color="red">Kredit - Belum Lunas</font>';
-                          } else if ($detailTrans[0]['tp_status'] == 'L') {
-                            echo '<font color="green">Kredit - Lunas</font>';
-                          } else if ($detailTrans[0]['tp_status'] == 'T') {
-                            echo '<font color="green">Tunai - Lunas</font>';
+                          if ($detailTrans[0]['tp_payment_status'] == 'K') {
+                            echo '<span class="badge badge-danger">Kredit - Belum Lunas</span>';
+                          } else if ($detailTrans[0]['tp_payment_status'] == 'L') {
+                            echo '<span class="badge badge-success">Kredit - Lunas</span>';
+                          } else if ($detailTrans[0]['tp_payment_status'] == 'T') {
+                            echo '<span class="badge badge-success">Tunai - Lunas</span>';
                           } 
                         ?>
                       </h6>
                     </div>
                   </div>
-                  <?php if ($detailTrans[0]['tp_status'] != 'T'){ ?>
+                  <?php if ($detailTrans[0]['tp_payment_status'] != 'T'){ ?>
                   <div class="form-group row">
                     <h6 class="col-sm-4">Tenor<a class="float-right"> : </a></h6>
                     <div class="col-sm-8">
                       <h6>
                         <?php 
-                        echo '<b>'.$detailTrans[0]['tp_tenor'].'<i class="fas fa-cross"></i></b>' ?>
+                        echo '<b>'.$detailTrans[0]['tp_tenor'].'</b>&nbsp<small><i class="fa fa-times"></i></small>' ?>
                         , dengan periode 
                         <b>
                           <?php
@@ -106,7 +123,14 @@
                   <div class="form-group row">
                     <h6 class="col-sm-4">Angsuran<a class="float-right"> : </a></h6>
                     <div class="col-sm-8">
-                      <h6 class="font-weight-bold"> <?php echo $detailTrans[0]['tp_installment'] ?>
+                      <h6 class="font-weight-bold"> <?php echo 'Rp '.number_format($detailTrans[0]['tp_installment'], 2) ?>
+                      </h6>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <h6 class="col-sm-4">Tempo selanjutnya<a class="float-right"> : </a></h6>
+                    <div class="col-sm-8">
+                      <h6 class="font-weight-bold"><font class="font-weight-bold" color="red"><?php echo date('d-m-Y', strtotime($detailTrans[0]['tp_due_date'])) ?></font>
                       </h6>
                     </div>
                   </div>
@@ -122,17 +146,23 @@
                             <tr>
                               <th>Product</th>
                               <th>Qty</th>
-                              <th>Harga</th>
-                              <th>Total</th>
-                              <th></th>
+                              <th>Harga (Rp)</th>
+                              <th>Total (Rp)</th>
                             </tr>
                           </thead>
                           <tbody>
+                            <?php foreach($detailCart as $showCart): ?>
+                              <tr>
+                                <td><?php echo $showCart['prd_name'] ?></td>
+                                <td class="text-center"><?php echo $showCart['dtp_product_amount'] ?></td>
+                                <td class="text-right"><?php echo number_format($showCart['dtp_purchase_price']) ?></td>
+                                <td class="text-right"><?php echo number_format($showCart['dtp_total_price']) ?></td>
+                              </tr>
+                            <?php endforeach; ?>
                           </tbody>
                           <tfoot>
-                            <th colspan="3" class="text-right">Total</th>
-                            <th id="total-payment" class="text-right">0</th>
-                            <th></th>
+                            <th colspan="3" class="text-right">Total (Rp)</th>
+                            <th id="total-payment" class="text-right"><?php echo number_format($detailTrans[0]['total_cart']) ?></th>
                           </tfoot>
                         </table>
                       </div>
@@ -189,4 +219,3 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    <?php print("<pre>".print_r($detailTrans, true)."</pre>") ?>
