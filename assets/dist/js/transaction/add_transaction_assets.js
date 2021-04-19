@@ -19,7 +19,7 @@ $(document).ready(function() {
 						timer	: 2000,
 					})
 
-					toastr.error( result.errorID +''+ result.errorQty +''+ result.errorHrg )
+					toastr.error( (typeof(result.errorID) != 'unidentified' ? result.errorID : '') +''+ (typeof(result.errorQty) != 'unidentified' ? result.errorQty : '') +''+ (typeof(result.errorHrg) != 'unidentified' ? result.errorHrg : '') +''+ (typeof(result.errorDisc) != 'unidentified' ? result.errorDisc : '') )
 				} else {
 					toastr.success( result.successMsg )
 					$("#form-cart").trigger("reset")
@@ -49,12 +49,12 @@ $(document).ready(function() {
 	$("#input-method").change(function () {
 		if ($(this).val() == "TF") {
 			$(".method-tf").css("display", "block")
-			$("#input-p-account").prop("disabled", false)
-			$("#input-p-account").prop("required", true)
+			$("#input-account").prop("disabled", false)
+			$("#input-account").prop("required", true)
 		} else {
 			$(".method-tf").css("display", "none")
-			$("#input-p-account").prop("disabled", true)
-			$("#input-p-account").prop("required", false)
+			$("#input-account").prop("disabled", true)
+			$("#input-account").prop("required", false)
 		}
 	})
 
@@ -197,6 +197,8 @@ $(document).ready(function() {
                             $("#error-p-additional").css("display", "none")
                         }
 				} else {
+					getCartList()
+
                     $(".error-msg").css("display", "none")
                     $(".is-invalid").removeClass("is-invalid")
                     
@@ -224,9 +226,7 @@ $(document).ready(function() {
                         timer	: 2500,
                         icon	: result.statusIcon,
                         title	: result.statusMsg
-                    }).then((result) => {
-						getCartList()
-					})
+                    })
 				}
 			},
             error: function(jqxhr, status, exception) {
@@ -264,29 +264,53 @@ function getCartList(){
 		datatype    : 'json',
 		success     : function(result){
 			var output = ''
-			for(index in result.cart_list){
-				output += `
-					<tr>
-						<td>`+ result.cart_list[index].cart_name +`</td>
-						<td class="text-center">`+ result.cart_list[index].cart_amount +`</td>
-						<td class="text-right">`+ result.cart_list[index].cart_price +`</td>
-						<td class="text-right">`+ result.cart_list[index].cart_total +`</td>
-						<td>
-							<a class="btn btn-xs btn-danger text-white" onclick="deleteCart('`+ result.delete_url +`', '`+ result.cart_list[index].cart_id +`', '`+ result.cart_list[index].cart_price +`')" >
-								<i class="fas fa-trash"></i>
-							</a>
-						</td>
-					</tr>
-					`
-			}
-
-			$("#cart-shop").find("#total-payment").html(formatCurrency(result.total_payment, ''))
-			if (result.trans_type == 'Purchase'){
+			if(result.trans_type == 'Purchases'){
+				for(index in result.cart_list){
+					output += `
+						<tr>
+							<td>`+ result.cart_list[index].cart_name +`</td>
+							<td class="text-center">`+ result.cart_list[index].cart_amount +`</td>
+							<td class="text-right">`+ result.cart_list[index].cart_price +`</td>
+							<td class="text-right">`+ result.cart_list[index].cart_total +`</td>
+							<td>
+								<a class="btn btn-xs btn-danger text-white" onclick="deleteCart('`+ result.delete_url +`', '`+ result.cart_list[index].cart_id +`', '`+ result.cart_list[index].cart_price +`')" >
+									<i class="fas fa-trash"></i>
+								</a>
+							</td>
+						</tr>`
+				}
+				
+				$("#cart-shop").find("#total-payment").html(formatCurrency(result.total_payment, ''))
+				
 				total = ( $("#cart-addition-charge").val() == "" ? 0 : parseFloat($("#cart-addition-charge").val()) ) + parseFloat(result.total_payment)
 				$("#cart-total").html(formatCurrency( total , 'Rp'))
+				
+				$("#cart-shop").find("tbody").html(output)
+				$("#form-add-transaction").find("input[name='postTotalCart']").val(result.total_payment)
+			} else if(result.trans_type == 'Sales'){
+				for(index in result.cart_list){
+					output += `
+						<tr>
+							<td><small>`+ result.cart_list[index].cart_name +`</small></td>
+							<td class="text-center">`+ result.cart_list[index].cart_amount +`</td>
+							<td class="text-right">`+ result.cart_list[index].cart_price +`</td>
+							<td class="text-right">`+ result.cart_list[index].cart_discount +`</td>
+							<td class="text-right">`+ result.cart_list[index].cart_total +`</td>
+							<td>
+								<a class="btn btn-xs btn-danger text-white" onclick="deleteCart('`+ result.delete_url +`', '`+ result.cart_list[index].cart_id +`', '`+ result.cart_list[index].cart_price +`')" >
+									<i class="fas fa-trash"></i>
+								</a>
+							</td>
+						</tr>`
+				}
+
+				$("#cart-shop").find("#total-payment").html(formatCurrency(result.total_payment, ''))
+				$("#cart-shop").find("tbody").html(output)
+				$("#form-add-sales").find("#total-cart").val(result.total_payment)
+			
+				/** Display total sales */
+				if(typeof(countTotalSale) != "undefined"){ countTotalSale(result.total_payment) }
 			}
-			$("#cart-shop").find("tbody").html(output)
-			$("#form-add-transaction").find("input[name='postTotalCart']").val(result.total_payment)
 		}
 	})
 }
@@ -299,7 +323,7 @@ function deleteCart(delete_url, product_id, product_price){
 		data	: { postId : product_id, postPrice : product_price },
 		datatype : 'json',
 		success	: function(result){
-			toastr.warning( result.successMsg )
+			toastr.warning( `<font class="font-weight-bold">` + result.successMsg + `</font>` )
 			getCartList()
 		}
 	})

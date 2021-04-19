@@ -127,8 +127,7 @@ Class Customer_c extends MY_Controller{
 
     /** Function : get customer berdasar customer id / customer nama */
     function getCustomer(){
-      $ctmID = base64_decode(urldecode($this->input->get('id')));
-      $ctmData = $this->Customer_m->selectCustomerOnID($ctmID);
+      $ctmData = $this->Customer_m->selectCustomerOnID(base64_decode(urldecode($this->input->get('id'))))->result_array();
 
       $returnData = array(
         'data_name'    => $ctmData[0]['ctm_name'],

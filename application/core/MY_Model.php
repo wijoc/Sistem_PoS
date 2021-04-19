@@ -104,8 +104,8 @@ class MY_Model extends CI_Model {
         );
 
     /** Table keranjang purchases */
-        protected $temp_tp = 'temp_purchases';
-        protected $temp_f  = array(
+        protected $cp_tb = 'temp_purchases';
+        protected $cp_f  = array(
             '0' => 'tp_id', 
             '1' => 'tp_product_fk', 
             '2' => 'tp_product_amount', 
@@ -125,6 +125,50 @@ class MY_Model extends CI_Model {
             '6' => 'ip_note_code',
             '7' => 'ip_note_file',
             '8' => 'ip_post_script'
+        );
+
+    /** Table Trans Penjualan */
+        protected $ts_tb = 'trans_sales';
+        protected $ts_f  = array(
+            '0' => 'ts_id',
+            '1' => 'ts_trans_code',
+            '2' => 'ts_date',
+            '3' => 'ts_customer_fk',
+            '4' => 'ts_payment_method',
+            '5' => 'ts_total_sales',
+            '6' => 'ts_account_fk',
+            '7' => 'ts_payment',
+            '8' => 'ts_status',
+            '9' => 'ts_tenor',
+            '10' => 'ts_tenor_periode',
+            '11' => 'ts_installment',
+            '12' => 'ts_due_date',
+            '13' => 'ts_delete',
+            '14' => 'ts_delivery_method',
+            '15' => 'ts_delivery_fee'
+        );
+
+    /** Table Detail Trans Penjualan */
+        protected $dts_tb = 'det_trans_sales';
+        protected $dts_f  = array(
+            '0' => 'dts_id',
+            '1' => 'dts_ts_id_fk',
+            '2' => 'dts_product_fk',
+            '3' => 'dts_product_amount',
+            '4' => 'dts_sale_price',
+            '5' => 'dts_discount',
+            '6' => 'dts_total_price'
+        );
+
+    /** Table temp / keranjang trans penjualan */
+        protected $cs_tb = 'temp_sales';
+        protected $cs_f  = array(
+            '0' => 'temps_id',
+            '1' => 'temps_product_fk',
+            '2' => 'temps_product_amount',
+            '3' => 'temps_sale_price',
+            '4' => 'temps_discount',
+            '5' => 'temps_total_paid'
         );
 
     /** Table installment Sales */

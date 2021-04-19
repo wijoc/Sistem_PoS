@@ -25,4 +25,8 @@ Class Installment_m extends MY_Model {
     }
 
   /** Sales Installment */
+    /** Q-Function : Insert Installment */
+    function insertIS($insert_data){
+      return $this->db->insert_batch($this->is_tb, $insert_data);
+    }
 }

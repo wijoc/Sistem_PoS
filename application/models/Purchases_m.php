@@ -111,56 +111,56 @@ Class Purchases_m extends MY_Model{
     /** Q-Function : Insert Cart */
     function insertCart($data){
       $insertData = array(
-        $this->temp_f[1] => $data['post_product_id'],
-        $this->temp_f[2] => $data['post_product_jumlah'],
-        $this->temp_f[3] => $data['post_harga_satuan'],
-        $this->temp_f[4] => $data['post_total_bayar']
+        $this->cp_f[1] => $data['post_product_id'],
+        $this->cp_f[2] => $data['post_qty'],
+        $this->cp_f[3] => $data['post_price'],
+        $this->cp_f[4] => $data['post_total']
       );
 
-      $resultInsert = $this->db->insert($this->temp_tp, $insertData);
+      $resultInsert = $this->db->insert($this->cp_tb, $insertData);
       return $resultInsert;
     }
 
     /** Q-function : Update cart */
     function updateCart($data, $id){
       $this->db->set($data);
-      $this->db->where($this->temp_f[0], $id);
-      return $this->db->update($this->temp_tp);
+      $this->db->where($this->cp_f[0], $id);
+      return $this->db->update($this->cp_tb);
     }
 
     /** Q-Function : Select cart purchase */
     function selectCart(){
-      $this->db->select($this->temp_tp.'.*, '.$this->prd_tb.'.prd_name');
-      $this->db->from($this->temp_tp);
-      $this->db->join($this->prd_tb, $this->prd_tb.'.prd_id = '.$this->temp_tp.'.tp_product_fk');
+      $this->db->select($this->cp_tb.'.*, '.$this->prd_tb.'.prd_name');
+      $this->db->from($this->cp_tb);
+      $this->db->join($this->prd_tb, $this->prd_tb.'.prd_id = '.$this->cp_tb.'.tp_product_fk');
       $this->db->order_by($this->prd_tb.'.prd_id', 'ASC');
       return $this->db->get();
     }
 
     /** Q-Function : Cart total proce */
     function sumCartPrice(){
-      $this->db->select_sum($this->temp_f[4]);
-      return $this->db->get($this->temp_tp);
+      $this->db->select_sum($this->cp_f[4]);
+      return $this->db->get($this->cp_tb);
     }
 
     /* Query get temp berdasar product id */
-    function getTemponPrdId($prdId){
-      $this->db->where($this->temp_f[1], $prdId);
-      $resultSelect = $this->db->get($this->temp_tp);
+    function getCartonPrdId($prdId){
+      $this->db->where($this->cp_f[1], $prdId);
+      $resultSelect = $this->db->get($this->cp_tb);
       return $resultSelect->result_array();
     }
 
     /** Q-Function : Delete temp product berdasar product_id */
     function deleteCart($prdId, $prdPrice){
-      $this->db->where($this->temp_f[1], $prdId);
-      $this->db->where($this->temp_f[3], $prdPrice);
-      $resultDelete = $this->db->delete($this->temp_tp);
+      $this->db->where($this->cp_f[1], $prdId);
+      $this->db->where($this->cp_f[3], $prdPrice);
+      $resultDelete = $this->db->delete($this->cp_tb);
       return $resultDelete;
     }
 
     /** Query Truncate / Hapus semua data di table temp */
     function truncateCart(){
-      return $this->db->truncate($this->temp_tp);
+      return $this->db->truncate($this->cp_tb);
     }
 
 }

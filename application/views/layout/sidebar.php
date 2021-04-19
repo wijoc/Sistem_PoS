@@ -34,7 +34,7 @@
             </a>
           </li>
 
-          <!-- Menu : Pegawai -->
+          <!-- Menu : Product -->
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-cubes"></i>
@@ -96,7 +96,7 @@
             </ul>
           </li>
 
-          <!-- Menu : Transaksi -->
+          <!-- Menu : Transaction -->
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-cash-register"></i>
@@ -109,25 +109,13 @@
               <li class="nav-item">
                 <a href="<?php echo site_url('Transaction_c/listPurchasesPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Trans Pembelian</p>
+                  <p>Trans. Pembelian</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="<?php echo site_url('Transaction_c/listSalesPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Trans Penjualan</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Retur_c/listReturBuyPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Retur Supplier</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Retur_c/listReturSellPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Retur Pelanggan</p>
+                  <p>Trans. Penjualan</p>
                 </a>
               </li>
               <li class="nav-item">

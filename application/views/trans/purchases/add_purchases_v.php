@@ -3,7 +3,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Halaman Transaksi Pembelian</h1>
+            <h1 class="m-0 text-dark text-uppercase">Tambah Transaksi Pembelian</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -40,13 +40,13 @@
                     <div class="col-md-2 col-sm-6">
                       <div class="form-group">
                         <label>Qty</label>
-                        <input type="text" class="form-control" name="postCartQty" id="input-cart-qty" onkeyup="totalPrice()" placeholder="Qty">
+                        <input type="number" min="0" class="form-control" name="postCartQty" id="input-cart-qty" onkeyup="totalPrice()" placeholder="Qty">
                       </div>
                     </div>
                     <div class="col-md-4 col-sm-6">
                       <div class="form-group">
                         <label>Harga</label>
-                        <input type="text" class="form-control" name="postCartPrice" id="input-cart-price" placeholder="Harga satuan">
+                        <input type="number" min="0" step="0.01" class="form-control" name="postCartPrice" id="input-cart-price" placeholder="Harga satuan">
                       </div>
                     </div>
                   </div>
@@ -112,13 +112,13 @@
                     </div>
 
                     <!-- Form-part : hidden input -->
-                    <input type="hidden" name="postPurchaseAdditional" id="input-additional-charge" readonly>
+                    <input type="hidden" name="postPAdditional" id="input-additional-charge" readonly>
                         
                     <!-- Form-part input tanggal transaksi -->
                     <div class="col-md-4 col-sm-6 col-xs-12">
                       <div class="form-group">
                         <label>Tgl Transaksi</label>
-                        <input type="date" class="form-control" name="postPurchaseDate" id="input-p-date" required>
+                        <input type="date" class="form-control" name="postPDate" id="input-p-date" required>
                         <small id="error-p-date" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                       </div>
                     </div>
@@ -127,7 +127,7 @@
                     <div class="col-md-8 col-sm-6 col-xs-12">
                       <div class="form-group">
                         <label>No. Nota Transaksi</label>
-                        <input type="text" class="form-control float-right" name="postPurchaseNote" id="input-p-note" placeholder="No. nota pembelian" required>
+                        <input type="text" class="form-control float-right" name="postPNote" id="input-p-note" placeholder="No. nota pembelian" required>
                         <small id="error-p-note" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                       </div>
                     </div>
@@ -137,7 +137,7 @@
                       <div class="form-group">
                         <label>File Nota</label>
                         <div class="custom-file">
-                          <input type="file" class="form-control float-right custom-file-input" name="postPurchaseNoteFile" id="input-p-file" required>
+                          <input type="file" class="form-control float-right custom-file-input" name="postPNoteFile" id="input-p-file" required>
                           <label class="custom-file-label" for="input-file-invoice"><p>Pilih file Nota</p></label>
                           <small id="error-p-file" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>
@@ -148,7 +148,7 @@
                     <div class="col-md-7 col-sm-6 col-xs-12">
                       <div class="form-group">
                         <label>Supplier</label>
-                        <select class="form-control float-right" name="postPurchaseSupplier" id="input-p-supplier" required>
+                        <select class="form-control float-right" name="postPSupplier" id="input-p-supplier" required>
                           <option value=""> -- Pilih Supplier -- </option>
                           <?php foreach($optSupp as $showSupp) : ?>
                             <option value="<?php echo urlencode(base64_encode($showSupp['supp_id'])) ?>"><?php echo $showSupp['supp_name'] ?></option>
@@ -162,7 +162,7 @@
                     <div class="col-md-5 col-sm-6 col-xs-12">
                       <div class="form-group">
                         <label>Status</label>
-                        <select class="form-control float-right" name="postPurchaseStatus" id="input-status" required>
+                        <select class="form-control float-right" name="postStatus" id="input-status" required>
                           <option value=""> -- Pilih Status -- </option>
                           <option value="T"> Tunai </option>
                           <option value="K"> Kredit / Angsur </option>
@@ -176,7 +176,7 @@
                       <div class="form-group">
                         <label>Tenor</label>
                         <div class="input-group sm-3">
-                          <input type="number" class="form-control float-right input-k" name="postPurchaseTenor" id="input-p-tenor" required="" disabled> 
+                          <input type="number" class="form-control float-right input-k" name="postPTenor" id="input-p-tenor" required="" disabled> 
                           <div class="input-group-append">
                             <span class="input-group-text"><i class="fa fa-times"></i></span>
                           </div>
@@ -189,7 +189,7 @@
                     <div class="col-md-4 col-sm-6 col-xs-12 status-k" style="display: none;">
                       <div class="form-group">
                         <label>Periode Tenor</label>
-                        <select class="form-control float-right input-k" name="postPurchaseTenorPeriode" id="input-p-tenor-periode" required="" disabled>
+                        <select class="form-control float-right input-k" name="postPTenorPeriode" id="input-p-tenor-periode" required="" disabled>
                           <option value="D">Harian</option>
                           <option value="W">Mingguan</option>
                           <option value="M">Bulanan</option>
@@ -203,7 +203,7 @@
                     <div class="col-md-6 col-sm-6 col-xs-12 status-k" style="display: none;">
                       <div class="form-group">
                         <label>Angsuran</label>
-                        <input type="number" class="form-control float-right input-k" name="postPurchaseInstallment" id="input-p-installment" required="" disabled>
+                        <input type="number" class="form-control float-right input-k" name="postPInstallment" id="input-p-installment" required="" disabled>
                         <small id="error-p-installment" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                       </div>
                     </div>
@@ -212,7 +212,7 @@
                     <div class="col-md-6 col-sm-6 col-xs-12 status-k" style="display: none;">
                       <div class="form-group">
                         <label>Tempo selanjutnya</label>
-                        <input type="date" class="form-control float-right input-k" name="postPurchaseDue" id="input-p-due" value="" required="" disabled>
+                        <input type="date" class="form-control float-right input-k" name="postPDue" id="input-p-due" value="" required="" disabled>
                         <small id="error-p-due" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                       </div>
                     </div>
@@ -221,7 +221,7 @@
                     <div class="col-md-5 col-sm-6 col-xs-12">
                       <div class="form-group">
                         <label>Metode Bayar</label>
-                        <select class="form-control float-right" name="postPurchaseMethod" id="input-method">
+                        <select class="form-control float-right" name="postMethod" id="input-method">
                           <option value=""> -- Pilih Metode -- </option>
                           <option value="TF"> Transfer </option>
                           <option value="TN"> Tunai </option>
@@ -234,7 +234,7 @@
                     <div class="col-md-7 col-sm-6 col-xs-12 method-tf" style="display: none;">
                       <div class="form-group">
                         <label>Rekening</label>
-                        <select class="form-control float-right" name="postPurchaseAccount" id="input-p-account" required="" disabled>
+                        <select class="form-control float-right" name="postAccount" id="input-account" required="" disabled>
                           <option value=""> -- Pilih Rekening -- </option>
                           <?php foreach($optAcc->result_array() as $showOpt): ?>
                             <option value="<?php echo urlencode(base64_encode($showOpt['acc_id'])) ?>"><?php echo $showOpt['bank_name'].' - '.$showOpt['acc_number'].' a/n '.$showOpt['acc_name'] ?></option>
@@ -248,7 +248,7 @@
                     <div class="col-md-12 col-sm-6 col-xs-12">
                       <div class="form-group">
                         <label>Pembayaran</label>
-                        <input type="number" class="form-control float-right" step="0.01" name="postPurchasePayment" id="input-p-payment" placeholder="Pembayaran" required>
+                        <input type="number" class="form-control float-right" step="0.01" name="postPPayment" id="input-p-payment" placeholder="Pembayaran" required>
                         <small id="error-p-payment" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                       </div>
                     </div>
@@ -257,7 +257,7 @@
                     <div class="col-md-12 col-sm-6 col-xs-12">
                       <div class="form-group">
                         <label>Catatan tambahan <font class="text-lowercase font-italic" color="red"><small>(optional)</small></font></label>
-                        <textarea class="form-control" cols="30" rows="5" name="postPurchasePS"></textarea>
+                        <textarea class="form-control" cols="30" rows="5" name="postPPS"></textarea>
                       </div>
                     </div>
                   </div>

@@ -5,8 +5,8 @@
 	<script src="<?php echo base_url() ?>assets/plugins/bootstrap/js/bootstrap.bundle.js"></script>
 	<!-- AdminLTE App -->
 	<script src="<?php echo base_url() ?>assets/dist/js/adminlte.min.js"></script>
-	<!-- Regex format for float input -->
-	<script src="<?php echo base_url() ?>assets/dist/js/regex_format.js"></script>
+	<!-- Regex format for float input (for Firefox)
+	<script src="<?php echo base_url() ?>assets/dist/js/regex_format.js"></script>  -->
 	<!-- Tooltip -->
 	<script>
 		$(function () {
@@ -169,6 +169,15 @@
 		</script>
 	<?php } ?>
 
+	<?php if(in_array('add_sales',$assets)){ ?>
+		<!-- Page Add Trans Sales -->
+		<script src="<?php echo base_url() ?>assets/dist/js/transaction/add_sales_assets.js"></script>
+		<script type="text/javascript">
+			var ctmSearchUrl = "<?php echo site_url('Customer_c/searchCustomer/1') ?>"
+			var ctmDataUrl = "<?php echo site_url('Customer_c/getCustomer') ?>"
+		</script>
+	<?php } ?>	
+
 	<?php if(in_array('installment',$assets)){ ?>
 		<!-- Installment Assets -->
 		<script src="<?php echo base_url() ?>assets/dist/js/transaction/installment_assets.js"></script>
@@ -185,15 +194,6 @@
 			var setting_list_url = "<?php echo $ajaxUrl ?>"
 		</script>
 	<?php } ?>
-
-	<!-- Page Add Trans -->
-	<?php if(in_array('page_add_sales',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/add_sales_assets.js"></script>
-		<script type="text/javascript">
-			var ctmSearchUrl = "<?php echo site_url('Customer_c/searchCustomer/1') ?>"
-			var ctmDataUrl = "<?php echo site_url('Customer_c/getCustomer') ?>"
-		</script>
-	<?php } ?>	
 
 	<!-- Page Add Trans Installment / Angsuran -->
 	<?php if(in_array('page_installment',$assets)){ ?>

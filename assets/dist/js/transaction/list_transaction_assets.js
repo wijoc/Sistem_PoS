@@ -1,13 +1,4 @@
 $(document).ready(function () {
-	$.ajax({
-		url     : transaction_url,
-		type    : 'POST',
-		//data    : {filter_keyword : $("input[name='postSearch']").val(), filter_order : $("#contactOrder").val()},
-		datatype    : 'json',
-		success     : function(result){
-            console.log(result)
-		}
-	})
     /** Datatables serverside */
     transTable = $("#table-transaction").DataTable({
         'responsive' : true,
