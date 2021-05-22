@@ -164,7 +164,7 @@
                     <div class="form-group">
                       <label>Angsuran ke- </label>
                       <div class="input-group sm-3">
-                        <?php $angsuranS = ($minLimitIP > 0)? intval($minLimitIP) : 1; ?>
+                        <?php $angsuranS = ($minLimitI > 0)? intval($minLimitI) : 1; ?>
                         <input type="number" class="form-control input-ip-periode" name="postIPPeriodeStart" value="<?php echo $angsuranS; ?>"  required="required" readonly>
                         <div class="input-group-append">
                           <span class="input-group-text"><i class="fa fa-minus"></i></span>
@@ -215,7 +215,7 @@
                   <div class="col-md-12 col-sm-6 col-xs-12">
                     <div class="form-group">
                       <label>Catatan tambahan <font class="text-lowercase font-italic" color="red"><small>(optional)</small></font></label>
-                      <textarea class="form-control" cols="30" rows="5" name="postPurchasePS"></textarea>
+                      <textarea class="form-control" cols="30" rows="5" name="postIPPS"></textarea>
                     </div>
                   </div>
                 </div>

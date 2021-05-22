@@ -77,11 +77,10 @@ function confirmDelete(item, getid, url, msg){
                             icon: 'success',
                             title: 'Data berhasil dihapus !'
                         }).then((result)=>{
-                            console.log(result)
                             if(item == 'soft-supp' || item == 'hard-supp' || item == 'soft-ctm' || item == 'hard-ctm'){
                                 $("input[name='postSearch']").val('')
                                 $("#suppOrder").val('asc')
-                                $.getScript('assets/dist/js/pages/contact_assets.js', function(data, textStatus, jqxhr ) {
+                                $.getScript('assets/dist/js/contact_assets.js', function(data, textStatus, jqxhr ) {
                                     getRowData(0)
                                 })
                             } else { $('.table-server').DataTable().ajax.reload() }

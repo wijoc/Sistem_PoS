@@ -62,7 +62,7 @@ Class Purchases_m extends MY_Model{
 
     /** Q-Function : Select trans purchase */
     function selectPurchase($payment = 'all', $delete = 0, $amount = 0, $offset = 0){
-      $this->_querySelectPurchase($payment, $delete, $this->input->post('tpSearch'), $this->input->post('order'));
+      $this->_querySelectPurchase($payment, $delete, $this->input->post('search'), $this->input->post('order'));
       ($amount > 0)? $this->db->limit($amount, $offset) : '';
       return $this->db->get();
     }

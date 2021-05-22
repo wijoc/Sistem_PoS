@@ -55,7 +55,6 @@ $(document).ready(function(){
                 $(this).prop("disabled", true)
             },
             success : function(result){
-				console.log(result)
 				if(result.error){
                     /** Error Total Sales */
                         if(result.errorSTotalSale){
@@ -199,7 +198,7 @@ $(document).ready(function(){
                     $(".is-invalid").removeClass("is-invalid")
                     
                     if(result.status == 'successInsert'){
-                        $('#form-add-sales :input').val('')
+                        $('#form-add-sales')[0].reset()
 						/** disable delivery */
 						$("#div-postal-fee").css("display", "none")
 						$("#input-s-fee").prop("disabled", true)

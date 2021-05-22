@@ -182,9 +182,9 @@
 		<!-- Installment Assets -->
 		<script src="<?php echo base_url() ?>assets/dist/js/transaction/installment_assets.js"></script>
 		<script>
-			installment_url = "<?php echo $ipListUrl ?>"
-			min_tenor	= "<?php echo $minLimitIP ?>"
-			max_tenor	= "<?php echo $detailTrans[0]['tp_tenor'] ?>"
+			var installment_url = "<?php echo $iListUrl ?>"
+			var min_tenor	= "<?php echo $minLimitI ?>"
+			var max_tenor	= "<?php echo $maxLimitI ?>"
 		</script>
 	<?php } ?>
 

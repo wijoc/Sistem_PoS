@@ -569,15 +569,16 @@ Class Transaction_c extends MY_Controller{
 
 	/** Function : Page pembayaran angsuran trans purchase */
 	public function installmentPurchasesPage($encoded_trans_id){
-		$limitIP = $this->Installment_m->selectLastPeriodeIP(base64_decode(urldecode($encoded_trans_id)));
-		$minTenor = ($limitIP->num_rows() <= 0)? 1 : intval($limitIP[0]['ip_periode_end']) + 1;
+		$minTenor = ($this->Installment_m->selectLastPeriodeIP(base64_decode(urldecode($encoded_trans_id)))->num_rows() <= 0)? 1 : intval($this->Installment_m->selectLastPeriodeIP(base64_decode(urldecode($encoded_trans_id)))->result_array()[0]['ip_periode_end']) + 1;
+		$detailData = $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($encoded_trans_id)))->result_array();
 		
 		$this->pageData = array(
-			'title'		  => 'PoS | Trans Pembelian',
-			'assets' 	  => array('datatables', 'custominput', 'sweetalert2', 'installment'),
-			'detailTrans' => $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
-			'ipListUrl'	  => site_url('Transaction_c/installmentPurchasesAjax/'.$encoded_trans_id),
-			'minLimitIP'  => $minTenor
+			'title'		  	=> 'PoS | Trans Pembelian',
+			'assets'		=> array('datatables', 'custominput', 'sweetalert2', 'installment'),
+			'detailTrans'	=> $detailData,
+			'iListUrl'		=> site_url('Transaction_c/installmentPurchasesAjax/'.$encoded_trans_id),
+			'minLimitI'		=> $minTenor,
+			'maxLimitI'		=> $detailData[0]['tp_tenor']
 		);
 		$this->page = 'trans/purchases/installment_purchase_v';
 		$this->layout();
@@ -585,18 +586,21 @@ Class Transaction_c extends MY_Controller{
 
 	/** Function : Ajax list installment */
 	function installmentPurchasesAjax($encoded_trans_id){
+		/** dataType */
+		$returnData['i_type'] = 'purchases';
+
 		if($this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->num_rows() <= 0 ){
 			$returnData['count_rows'] = $this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->num_rows();
 		} else {
 			$returnData['count_rows'] = $this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->num_rows();
 			$i = 0;
 			foreach($this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->result_array() as $showIP){
-				$returnData['iP_data'][$i]['i_periode'] = ($showIP['ip_periode_end'] == $showIP['ip_periode_begin'])? $showIP['ip_periode_begin'] : $showIP['ip_periode_begin'].' - '.$showIP['ip_periode_end'];
-				$returnData['iP_data'][$i]['i_date'] 	 = date('d-m-Y', strtotime($showIP['ip_date']));
-				$returnData['iP_data'][$i]['i_payment'] = number_format($showIP['ip_payment'], 2);
-				$returnData['iP_data'][$i]['i_note'] = $showIP['ip_note_code'];
-				$returnData['iP_data'][$i]['i_file'] = '<a class="btn btn-xs btn-success" target="_blank" href="'.base_url().$showIP['ip_note_file'].'"><i class="fas fa-file-download"></i></a>';
-				$returnData['iP_data'][$i]['i_ps']	 = '<p>'.$showIP['ip_post_script'].'</p>';
+				$returnData['i_data'][$i]['i_periode'] = ($showIP['ip_periode_end'] == $showIP['ip_periode_begin'])? $showIP['ip_periode_begin'] : $showIP['ip_periode_begin'].' - '.$showIP['ip_periode_end'];
+				$returnData['i_data'][$i]['i_date'] 	 = date('d-m-Y', strtotime($showIP['ip_date']));
+				$returnData['i_data'][$i]['i_payment'] = number_format($showIP['ip_payment'], 2);
+				$returnData['i_data'][$i]['i_note'] = $showIP['ip_note_code'];
+				$returnData['i_data'][$i]['i_file'] = '<a class="btn btn-xs btn-success" target="_blank" href="'.base_url().$showIP['ip_note_file'].'"><i class="fas fa-file-download"></i></a>';
+				$returnData['i_data'][$i]['i_ps']	 = '<p>'.$showIP['ip_post_script'].'</p>';
 				$i++;
 			}
 		}
@@ -707,7 +711,7 @@ Class Transaction_c extends MY_Controller{
 				'ip_periode_begin' => $this->input->post('postIPPeriodeStart'),
 				'ip_periode_end' => $this->input->post('postIPPeriodeEnd'),
 				'ip_payment' 	 => $this->input->post('postIPInstallment'),
-				'ip_post_script' => $this->input->post('postPPS')
+				'ip_post_script' => $this->input->post('postIPPS')
 			);
 
 		  /** Prepare config tambahan */
@@ -801,9 +805,9 @@ Class Transaction_c extends MY_Controller{
 			'assets'  => array('jqueryui', 'toastr', 'sweetalert2', 'add_transaction', 'add_sales'),
 			'cartUrl' => site_url('Transaction_c/listCartAjax/Sales/'),
 			'optAcc'	=> $this->Account_m->selectAccount(),
-			'optCtm'	=> $this->Customer_m->selectCustomer()->result_array()
+			'optCtm'	=> $this->Customer_m->selectCustomer(0, 0, 0)->result_array()
 		);
-		$this->page = 'trans/sales/add_trans_sales_v';
+		$this->page = 'trans/sales/add_sales_v';
 		$this->layout();
 	}
 
@@ -958,10 +962,10 @@ Class Transaction_c extends MY_Controller{
 			if($this->input->post('postSCtm') == 'nctm'){ 
 				/** get posted data customer baru */
 				$ctmPost = array(
-					'ctm_name'  => $this->input->post('postCtmNama'),
-					'ctm_phone'  => $this->input->post('postCtmTelp'),
-					'ctm_email' => $this->input->post('postCtmEmail'),
-					'ctm_address' => $this->input->post('postCtmAddress'),
+					'ctm_name'  => htmlspecialchars($this->input->post('postCtmName')),
+					'ctm_phone'  => $this->input->post('postCtmPhone'),
+					'ctm_email' => htmlspecialchars($this->input->post('postCtmEmail')),
+					'ctm_address' => htmlspecialchars($this->input->post('postCtmAddress')),
 					'ctm_status' => 'Y'
 				);
 				$ctmID = $this->Customer_m->insertCustomer($ctmPost, 'id');
@@ -972,29 +976,34 @@ Class Transaction_c extends MY_Controller{
 			}
   
 		  /** Set nomor transaksi selanjutnya */
-			$nextAI = $this->Sales_m->getNextIncrement(); // Get next auto increment table transaksi penjualan
-			$nol = '';
-			for($n = 5; $n > strlen($nextAI['0']['AUTO_INCREMENT']); $n--){
-				$nol .= '0';
+			if($this->Sales_m->getNextIncrement()->num_rows() > 0){
+				$nextAI = $this->Sales_m->getNextIncrement()->result_array(); // Get next auto increment table transaksi penjualan
+				$nol = '';
+				for($n = 5; $n >= strlen($nextAI['0']['AUTO_INCREMENT']); $n--){
+					$nol .= '0';
+				}
+				$nextCode = 'TK'.date('Ymd').$nol.$nextAI['0']['AUTO_INCREMENT'];
+			} else {
+				$nextCode = 'TK'.date('Ymd').'00001';
 			}
-			$nol .= ($nextAI['0']['AUTO_INCREMENT'] <= 0) ? 1 : $nextAI['0']['AUTO_INCREMENT'];
 
 		  /** Insert proses */
 		  	$postData = array(
-				'ts_trans_code'	 => 'TK'.date('Ymd').$nol,
+				'ts_trans_code'	 => $nextCode,
 				'ts_total_sales' => $this->input->post('postSTotalSale'),
 				'ts_customer_fk' => $ctmID,
 				'ts_date'		 => $this->input->post('postSDate'),
-				'ts_status'		 => $this->input->post('postStatus'),
-				'ts_due_date'	   => ( $this->input->post('postStatus') == 'K' )? $this->input->post('postSDue') : NULL,
-				'ts_tenor'		   => ( $this->input->post('postStatus') == 'K' )? $this->input->post('postSTenor') : NULL,
-				'ts_tenor_periode' => ( $this->input->post('postStatus') == 'K' )? $this->input->post('postSTenorPeriode') : NULL,
-				'ts_installment'   => ( $this->input->post('postStatus') == 'K' )? $this->input->post('postSInstallment') : NULL,
+				'ts_payment_status' => $this->input->post('postStatus'),
+				'ts_due_date'	    => ( $this->input->post('postStatus') == 'K' )? $this->input->post('postSDue') : NULL,
+				'ts_tenor'		    => ( $this->input->post('postStatus') == 'K' )? $this->input->post('postSTenor') : NULL,
+				'ts_tenor_periode'  => ( $this->input->post('postStatus') == 'K' )? $this->input->post('postSTenorPeriode') : NULL,
+				'ts_installment'    => ( $this->input->post('postStatus') == 'K' )? $this->input->post('postSInstallment') : NULL,
 				'ts_delivery_method' => $this->input->post('postSDelivery'),
 				'ts_delivery_fee'	=> ( $this->input->post('postSDelivery') == 'E' || $this->input->post('postSDelivery') == 'T' )? $this->input->post('postSPostalFee') : NULL,
 				'ts_payment'		=> $this->input->post('postSPayment'),
 				'ts_payment_method' => $this->input->post('postMethod'),
-				'ts_account_fk'  	=> ( $this->input->post('postMethod') == 'TF' )? $this->input->post('postAccount') : NULL
+				'ts_account_fk'  	=> ( $this->input->post('postMethod') == 'TF' )? $this->input->post('postAccount') : NULL,
+				'ts_return'			=> 'N'
 			);
 			$inputTS = $this->Sales_m->insertSale($postData);
 
@@ -1158,10 +1167,244 @@ Class Transaction_c extends MY_Controller{
 		$this->pageData = array(
 			'title' => 'PoS | Trans Penjualan',
 			'assets' => array('datatables', 'list_transaction'),
-			'transactionUrl' => site_url('Transaction_c/listSaleAjax')
+			'transactionUrl' => site_url('Transaction_c/listSalesAjax')
 		);
 		$this->page = 'trans/sales/list_sales_v';
 		$this->layout();
+	}
+
+	/** Function : Ajax list trans Sales */
+	public function listSalesAjax(){
+		$tsData	= array();
+		$no			= $this->input->post('start');
+		//foreach($this->Sales_m->selectSales('all', 0, $this->input->post('length'), $this->input->post('start'))->result_array() as $show){
+		foreach($this->Sales_m->selectSales(10, 0, 0, 0)->result_array() as $show){
+			$actionBtn = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="'.site_url('Transaction_c/detailSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-search"></i> </a>
+				<a class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Transaksi Retur Terkait" href="'.site_url('Transaction_c/returnSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-exchange-alt"></i> </a>';
+			if($show['ts_payment_status'] == 'K'){ 
+				$showStatus = '<span class="badge badge-danger">Kredit - Belum Lunas</span>';
+				$actionBtn .= '&nbsp<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Bayar Angsuran Pembelian" href="'.site_url('Transaction_c/installmentSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-cash-register"></i> </a>';
+			} else if($show['ts_payment_status'] == 'T'){
+				$showStatus = '<span class="badge badge-success">Tunai - Lunas</span>';
+			} else if($show['ts_payment_status'] == 'L'){
+				$showStatus = '<span class="badge badge-success">Kredit - Lunas</span>';
+			}
+
+			$no++;
+			$row = array();
+			$row[] = date('Y-m-d', strtotime($show['ts_date']));
+			$row[] = $show['ts_trans_code'];
+			$row[] = ($show['ts_customer_fk'] == 0)? 'Pelanggan Umum' : $show['ctm_name'];
+			$row[] = $show['ts_total_sales'];
+			$row[] = $showStatus;
+			$row[] = ($show['ts_payment_status'] == 'K')? $show['ts_due_date'] : '<i style="color:red" class="fas fa-minus"></i>';
+			$row[] = $actionBtn;
+		
+			$tsData[] = $row;
+		}
+
+		$output = array(
+			'draw'			  => $this->input->post('draw'),
+			'recordsTotal'	  => $this->Purchases_m->count_all(),
+			'recordsFiltered' => $this->Purchases_m->selectPurchase('all', 0, $this->input->post('length'), $this->input->post('start'))->num_rows(),
+			'data'			  => $tsData
+		);
+
+		echo json_encode($output);
+	}
+
+	/** Function : Detail trans Sales */
+	public function detailSalesPage($encoded_trans_id){
+		$this->pageData = array(
+			'title' 	=> 'PoS | Trans Penjualan',
+			'assets' 	=> array(),
+			'id'		=> base64_decode(urldecode($encoded_trans_id)),
+			'detailTrans' => $this->Sales_m->selectSalesOnID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			'detailCart'  => $this->Sales_m->selectDetTS(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			//'detailIP' 	  => $this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+		);
+		$this->page = 'trans/sales/detail_sales_v';
+		$this->layout();
+	}
+
+	/** Function : Page pembayaran angsuran trans sales */
+	public function installmentSalesPage($encoded_trans_id){
+		/** Detail Trans */
+		$detailData = $this->Sales_m->selectSalesOnID(base64_decode(urldecode($encoded_trans_id)))->result_array();
+		
+		$this->pageData = array(
+			'title'			=> 'PoS | Trans Penjualan',
+			'assets'		=> array('sweetalert2', 'installment'),
+			'detailTrans'	=> $detailData,
+			'iListUrl'		=> site_url('Transaction_c/installmentSalesAjax/'.$encoded_trans_id),
+			'minLimitI'		=> $this->Installment_m->selectLastPeriodeIS(base64_decode(urldecode($encoded_trans_id)))->result_array()[0]['is_periode'],
+			'maxLimitI'		=> $detailData[0]['ts_tenor']
+		);
+		$this->page = 'trans/sales/installment_sales_v';
+		$this->layout();
+	}
+
+	/** Function : Ajax list installment */
+	function installmentSalesAjax($encoded_trans_id){
+		/** dataType */
+		$returnData['i_type'] = 'sales';
+
+		if($this->Installment_m->selectISOnID(base64_decode(urldecode($encoded_trans_id)))->num_rows() <= 0 ){
+			$returnData['count_rows'] = $this->Installment_m->selectISOnID(base64_decode(urldecode($encoded_trans_id)))->num_rows();
+		} else {
+			$returnData['count_rows'] = $this->Installment_m->selectISOnID(base64_decode(urldecode($encoded_trans_id)))->num_rows();
+			$i = 0;
+			foreach($this->Installment_m->selectISOnID(base64_decode(urldecode($encoded_trans_id)))->result_array() as $showIS){
+				$returnData['i_data'][$i]['i_periode']		 = $showIS['is_periode'];
+				$returnData['i_data'][$i]['i_due_date'] 	 = '<font class="font-weight-bold">'.date('d-m-Y', strtotime($showIS['is_due_date']))."</font>";
+				$returnData['i_data'][$i]['i_code']			 = ($showIS['is_code'] != '')? '<font color="green">'.$showIS['is_code'].'</font>' : '-';
+				$returnData['i_data'][$i]['i_payment'] 	 	 = ($showIS['is_payment'] != '')? '<font color="green">'.number_format($showIS['is_payment'], 2).'</font>' : '-';
+				$returnData['i_data'][$i]['i_payment_date']  = ($showIS['is_payment_date'] != '')? '<font color="green">'.$showIS['is_payment_date'].'</font>' : '-';
+				$returnData['i_data'][$i]['i_ps']	 		 = ($showIS['is_post_script'] != '')? '<small>'.$showIS['is_post_script'].'</small>' : '';
+				$i++;
+			}
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode($returnData);
+	}
+
+	/** Function : Input proses installment sales */
+	function installmentSalesProses($encoded_trans_id){
+	  /** Load lib & helper */
+		$this->load->library('form_validation');
+	
+	  /** Set rules form validation */
+		$configValidation = array(
+			array(
+				'field'  => 'postISDate',
+				'label'  => 'Tgl Pembayaran',
+				'rules'  => 'trim|required|callback__validation_date',
+				'errors'  => array(
+					'required'	=> 'Tanggal tidak boleh kosong',
+					'_validation_date' => 'Tanggal tidak valid'
+				)
+			),
+			array(
+				'field'  => 'postISPeriodeStart',
+				'label'  => 'Periode',
+				'rules'  => 'trim|required|numeric',
+				'errors'  => array(
+					'required' => 'Periode tidak boleh kosong',
+					'numeric'  => 'Pilih option yang tersedia'
+				)
+			),
+			array(
+				'field'  => 'postISPeriodeEnd',
+				'label'  => 'Periode',
+				'rules'  => 'trim|required|numeric',
+				'errors'  => array(
+					'required' => 'Periode tidak boleh kosong',
+					'numeric'  => 'Pilih option yang tersedia'
+				)
+			),
+			array(
+				'field'  => 'postISInstallment',
+				'label'  => 'Angsuran',
+				'rules'  => 'trim|required|greater_than[0]|numeric',
+				'errors'  => array(
+					'required' => 'Angsuran tidak boleh kosong',
+					'greater_than' => 'Angsuran harus lebih dari 0',
+					'numeric'  => 'Angsuran tidak valid'
+				)
+			),
+			array(
+				'field'  => 'postISPS',
+				'label'  => 'Catatan tambahan',
+				'rules'  => 'trim'
+			)
+		);
+		
+		$this->form_validation->set_rules($configValidation);
+  
+	  /** Run validation */
+		if($this->form_validation->run() == FALSE){
+			$arrReturn = array(
+				'error'				  => TRUE,
+				'errorISDate' 		  => form_error('postISDate'),
+				'errorISPeriodeStart' => form_error('postISPeriodeStart'),
+				'errorISPeriodeEnd'   => form_error('postISPeriodeEnd'),
+				'errorISInstallment'  => form_error('postISInstallment'),
+				'errorISPS' 		  => form_error('postISPS')
+			);
+		} else {
+		  /** Set next payment code */
+			if( $this->Installment_m->selectLastISCode(base64_decode(urldecode($encoded_trans_id)))->num_rows() > 0 ){
+				$lastCode = $this->Installment_m->selectLastISCode(base64_decode(urldecode($encoded_trans_id)))->result_array();
+			  
+				$nol = '';
+				$current = substr($lastCode[0]['is_code'], -5);
+				for($n = 5; $n > strlen( intval($current) ); $n--){
+					$nol .= '0';
+				}
+				$next = intval($current) + 1;
+				$nextISCode = 'IS'.date('Ymd').$nol.$next;
+			} else {
+				$nextISCode = 'IS'.date('Ymd').'00001';
+			}
+  
+		  /** Insert proses */
+			$updateStatus = 0; // status update pembayaran installment;
+  
+			for($i = $this->input->post('postISPeriodeStart'); $i <= $this->input->post('postISPeriodeEnd'); $i++){
+				/** Get post data */
+				$postData = array(
+					'is_code' 		  => $nextISCode,
+					'is_payment_date' => $this->input->post('postISDate'),
+					'is_payment'  	  => $this->input->post('postISInstallment'),
+					'is_post_script'  => $this->input->post('postISPS'),
+					'is_status'		  => 1
+				);
+  
+				/** Update proses */
+				$updateIS = $this->Installment_m->updatePaymentIS($postData, base64_decode(urldecode($encoded_trans_id)), $i);
+				if($updateIS > 0){
+					$updateStatus = $i;
+				}
+			}
+  
+			if($updateStatus == $this->input->post('postISPeriodeEnd')){
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'status'	=> 'successInsert',
+					'statusIcon' => 'success',
+					'statusMsg'	 => 'Pembayaran angsuran berhasil disimpan !'
+				);
+			} else {
+				/** Reset value */
+				for($i = $this->input->post('postISPeriodeStart'); $i <= $this->input->post('postISPeriodeEnd'); $i++){
+					$postData = array(
+						'is_code' 		  => NULL,
+						'is_payment_date' => NULL,
+						'is_payment'  	  => NULL,
+						'is_post_script'  => NULL,
+						'is_status'		  => 0
+					);
+	  
+					/** Update proses */
+					$updateIS = $this->Installment_m->updatePaymentIS($postData, base64_decode(urldecode($encoded_trans_id)), $i);
+				}
+
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'status'	=> 'failedInsert',
+					'statusIcon' => 'error',
+					'statusMsg'	 => 'Gagal menambahkan data pembayaran angsuran transaksi penjualan !'
+				);
+			}
+  
+			$detailData = $this->Sales_m->selectSalesOnID(base64_decode(urldecode($encoded_trans_id)))->result_array();
+			$arrReturn['min_tenor'] = $this->Installment_m->selectLastPeriodeIS(base64_decode(urldecode($encoded_trans_id)))->result_array()[0]['is_periode'];
+			$arrReturn['max_tenor'] = $detailData[0]['ts_tenor'];
+		}
+  
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
 	}
 
   /* Fungsi untuk CRUD Pengeluaran Lainnya */

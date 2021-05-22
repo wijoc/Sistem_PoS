@@ -127,7 +127,7 @@ class MY_Model extends CI_Model {
             '8' => 'ip_post_script'
         );
 
-    /** Table Trans Penjualan */
+    /** Table Trans Sales */
         protected $ts_tb = 'trans_sales';
         protected $ts_f  = array(
             '0' => 'ts_id',
@@ -138,17 +138,18 @@ class MY_Model extends CI_Model {
             '5' => 'ts_total_sales',
             '6' => 'ts_account_fk',
             '7' => 'ts_payment',
-            '8' => 'ts_status',
+            '8' => 'ts_payment_status',
             '9' => 'ts_tenor',
             '10' => 'ts_tenor_periode',
             '11' => 'ts_installment',
             '12' => 'ts_due_date',
             '13' => 'ts_delete',
             '14' => 'ts_delivery_method',
-            '15' => 'ts_delivery_fee'
+            '15' => 'ts_delivery_fee',
+            '16' => 'ts_return'
         );
 
-    /** Table Detail Trans Penjualan */
+    /** Table Detail Trans Sales */
         protected $dts_tb = 'det_trans_sales';
         protected $dts_f  = array(
             '0' => 'dts_id',
@@ -160,7 +161,7 @@ class MY_Model extends CI_Model {
             '6' => 'dts_total_price'
         );
 
-    /** Table temp / keranjang trans penjualan */
+    /** Table temp / keranjang trans Sales */
         protected $cs_tb = 'temp_sales';
         protected $cs_f  = array(
             '0' => 'temps_id',
@@ -182,6 +183,7 @@ class MY_Model extends CI_Model {
             '5' => 'is_payment',
             '6' => 'is_payment_date',
             '7' => 'is_status',
+            '8' => 'is_post_script'
         );
 
 	/** Table rekening */

@@ -7,10 +7,9 @@ Class Sales_m extends MY_Model{
   	function getNextIncrement(){
   		$this->db->select('AUTO_INCREMENT');
   		$this->db->from('information_schema.TABLES');
-  		$this->db->where('TABLE_SCHEMA', $this->db->database);
   		$this->db->where('TABLE_NAME', $this->ts_tb);
-  		$resultAI = $this->db->get();
-  		return $resultAI->result_array();
+  		$this->db->where('TABLE_SCHEMA', $this->db->database);
+  		return $this->db->get();
   	}
 	
 	/** Q-Function: insert transaction sales */
@@ -30,6 +29,53 @@ Class Sales_m extends MY_Model{
 		return $dataReturn;
 	}
 
+	/** Query : Select trans sales return (query string) */
+	function _querySelectSales($payment_status = 'all', $delete = 'all', $keyword = NULL, $order = NULL){
+		$this->db->select('ts.'.$this->ts_f[0].', ts.'.$this->ts_f[1].', ts.'.$this->ts_f[2].', ts.'.$this->ts_f[3].', ts.'.$this->ts_f[5].', ts.'.$this->ts_f[8].', ts.'.$this->ts_f[12].', ctm.'.$this->ctm_f[1]);
+		$this->db->from($this->ts_tb.' as ts');
+		$this->db->join($this->ctm_tb.' as ctm', 'ctm.'.$this->ctm_f[0].' = ts.'.$this->ts_f[3], 'LEFT');
+
+		if($payment_status == 'L'){
+			$this->db->where('ts.'.$this->ts_f[8], 'L');
+			$this->db->or_where('ts.'.$this->ts_f[8], 'T');
+		} else {
+			$this->db->where('ts.'.$this->ts_f[8], $payment_status);
+		}
+      
+		/** Delete status */
+		($delete != 'all')? $this->db->where('ts.'.$this->ts_f[13], $delete) : '';
+  
+		/** Search */
+		if($keyword != NULL){
+			$this->db->group_start();
+			$this->db->like('ts.'.$this->ts_f[1], $keyword);
+			$this->db->or_like('ctm.'.$this->ctm_f[1], $keyword);
+			$this->db->group_end();
+		}
+  
+		/** Order, default sortby tp_date DESC */
+		($order == null)? $this->db->order_by('ts.'.$this->ts_f[2], 'DESC') : $this->db->order_by('ts.'.$this->tp_f[$order['order']['0']['coloumn']], $order['order']['0']['dir']);
+	}
+
+	/** Q-Function : Select rowdata trans sales */
+	function selectSales($amount = 0, $offset = 0, $payment_s = 'all', $delete = 0){
+		$this->_querySelectSales($payment_s, $delete, $this->input->post('search'), $this->input->post('order'));
+		($amount > 0)? $this->db->limit($amount, $offset) : '';
+		return $this->db->get();
+	}
+
+    /** Q-Function : Select data berdasar id */
+    function selectSalesOnID($trans_id){
+      $this->db->select('ts.*, ctm.'.$this->ctm_f[1].', SUM(dts.'.$this->dts_f[6].') as total_cart, acc.'.$this->acc_f[3].', bank.'.$this->bank_f[2]);
+      $this->db->from($this->ts_tb.' as ts');
+      $this->db->join($this->ctm_tb.' as ctm', 'ctm.'.$this->ctm_f[0].' = ts.'.$this->ts_f[3], 'LEFT');
+      $this->db->join($this->dts_tb.' as dts', 'dts.'.$this->dts_f[1].' = ts.'.$this->ts_f[0]);
+      $this->db->join($this->acc_tb.' as acc', 'acc.'.$this->acc_f[0].' = ts.'.$this->ts_f[6], 'LEFT');
+      $this->db->join($this->bank_tb.' as bank', 'bank.'.$this->bank_f[0].' = acc.'.$this->acc_f[1], 'LEFT');
+      $this->db->where('ts.'.$this->ts_f[0], $trans_id);
+      return $this->db->get();
+    }
+
     /** Q-Function : Delete transaction sales (permanent) */
     function deleteSale($trans_id){
   		return $this->db->delete($this->ts_tb, array($this->ts_f[0] => $trans_id));
@@ -41,6 +87,16 @@ Class Sales_m extends MY_Model{
 		$resultInsert = $this->db->insert_batch($this->dts_tb, $data);
 		return $resultInsert;
 	}
+
+    /** Q-function : Select detail trans sale berdasar id */
+    function selectDetTS($trans_id){
+      $this->db->select('dts.'.$this->dts_f[3].', dts.'.$this->dts_f[4].', dts.'.$this->dts_f[5].', dts.'.$this->dts_f[6].', prd.'.$this->prd_f[2]);
+      $this->db->from($this->dts_tb.' as dts');
+      $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].' = dts.'.$this->dts_f[2], 'LEFT');
+      $this->db->where('dts.'.$this->dts_f[1], $trans_id);
+      $this->db->group_by('dts.'.$this->dts_f[0]);
+      return $this->db->get();
+    }
 
 	/** Q-Function : Delete detail trans sale */
 	function deleteDetTS($trans_id){

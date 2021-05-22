@@ -1,5 +1,6 @@
 $(document).ready(function(){
-    /* Check file */
+  /** Purchases */
+    /** Check file */
     $("#input-ip-file").bind('change', function(){
     	var allowed_ext = ['jpeg', 'jpg', 'png', 'pdf', 'doc', 'docx']
     	if(this.files[0].size <= 2000000){ // 2000000 Byte = 2 MB
@@ -25,7 +26,7 @@ $(document).ready(function(){
 	    }
     })
 
-    /* Status Change */
+    /** Status Change */
     $("#input-ip-status").change(function (){
         if ($(this).val() == 'BL') {
             $("#input-ip-due").prop("disabled", false)
@@ -49,7 +50,7 @@ $(document).ready(function(){
         }
     })
 
-	/** Submit Purchases */
+	/** Submit : Purchase */
 	$("#form-installment-purchases").on("submit", function(event){
         event.preventDefault()
         var file_data = $('#input-ip-file').prop('files')[0] 
@@ -183,7 +184,92 @@ $(document).ready(function(){
 		})
 	})
 
-    /** Run function */
+  /** Sales */
+	$("#form-installment-sales").on("submit", function(event){
+        event.preventDefault()
+        $.ajax({
+            url     : $("#form-installment-sales").attr("action"),
+            method  : 'POST',
+            data    : $("#form-installment-sales").serialize(),
+            datatype    : 'json',
+            beforeSend  : function(){
+                $(this).prop("disabled", true)
+            },
+            success : function(result){
+                console.log(result)
+                if(result.error){
+                  /** Error input date */
+                    if(result.errorISDate){
+                        $("#input-is-date").addClass('is-invalid')
+                        $("#error-is-date").css("display", "block")
+                        $("#error-is-date").html(result.errorISDate)
+                    } else {
+                        $("#input-is-date").removeClass('is-invalid')
+                        $("#error-is-date").css("display", "none")
+                    }
+
+                  /** Error input Periode */
+                    if(result.errorISPeriodeStart){
+                        $(".input-is-periode").addClass('is-invalid')
+                        $("#error-is-periode").css("display", "block")
+                        $("#error-is-periode").html(result.errorISPeriodeStart)
+                    } else {
+                        $(".input-is-periode").removeClass('is-invalid')
+                        $("#error-is-periode").css("display", "none")
+                    }
+
+                  /** Error input Periode */
+                    if(result.errorISPeriodeEnd){
+                        $(".input-is-periode").addClass('is-invalid')
+                        $("#error-is-periodeb").css("display", "block")
+                        $("#error-is-periodeb").html(result.errorISPeriodeEnd)
+                    } else {
+                        $(".input-is-periode").removeClass('is-invalid')
+                        $("#error-is-periodeb").css("display", "none")
+                    }
+                    
+                  /** Error input Angsuran */
+                    if(result.errorISInstallment){
+                        $("#input-is-installment").addClass('is-invalid')
+                        $("#error-is-installment").css("display", "block")
+                        $("#error-is-installment").html(result.errorISInstallment)
+                    } else {
+                        $("#input-is-installment").removeClass('is-invalid')
+                        $("#error-is-installment").css("display", "none")
+                    }
+                } else {
+                    $(".error-msg").css("display", "none")
+                    $(".is-invalid").removeClass("is-invalid")
+                    
+                    if(result.status == 'successInsert'){
+                        $("#form-installment-sales")[0].reset()
+                    }
+                    
+                    $('input[name="postISPeriodeStart"]').val(result.min_tenor)
+                    var option_periode = '';
+                    for(a = result.min_tenor; a <= parseInt(result.max_tenor); a++){
+                        option_periode += `<option value="`+a+`">`+a+`</option>`
+                    }
+                    $("#input-is-periode-end").html(option_periode)
+
+                    getIntallment()
+
+                    Swal.fire({
+                        position: "center",
+                        showConfirmButton : true,
+                        timer	: 2500,
+                        icon	: result.statusIcon,
+                        title	: result.statusMsg
+                    })
+                }
+			},
+            error: function(jqxhr, status, exception) {
+                alert('Exception:', exception)
+            }
+		})
+	})
+
+    /** Run function detail installment */
     getIntallment()
 })
 
@@ -197,20 +283,39 @@ function getIntallment(){
         datatype    : 'json',
         success : function(result){
             var output = '';
-            if(parseInt(result.count_rows) <= 0){
-                output = `<tr>
-                            <td colspan="5" class="alert-danger">Belum ada pembayaran !</td>
-                          </tr>`
-            } else {
-                for(index in result.iP_data) {
-                    output += ` <tr>
-                                    <td class="text-center">`+ result.iP_data[index].i_periode +`</td>
-                                    <td class="text-center">`+ result.iP_data[index].i_date +`</td>
-                                    <td class="text-center">`+ result.iP_data[index].i_payment +`</td>
-                                    <td>`+ result.iP_data[index].i_note +`</td>
-                                    <td class="text-center">`+ result.iP_data[index].i_file +`</td>
-                                    <td class="text-justify">`+ result.iP_data[index].i_ps +`</td>
-                                </tr>`
+            if(result.i_type == 'purchases'){
+                if(parseInt(result.count_rows) <= 0){
+                    output = `<tr>
+                                <td colspan="6" class="alert-danger">Belum ada pembayaran !</td>
+                            </tr>`
+                } else {
+                    for(index in result.i_data) {
+                        output += ` <tr>
+                                        <td class="text-center">`+ result.i_data[index].i_periode +`</td>
+                                        <td class="text-center">`+ result.i_data[index].i_date +`</td>
+                                        <td class="text-center">`+ result.i_data[index].i_payment +`</td>
+                                        <td>`+ result.i_data[index].i_note +`</td>
+                                        <td class="text-center">`+ result.i_data[index].i_file +`</td>
+                                        <td class="text-justify"><small>`+ result.i_data[index].i_ps +`</small></td>
+                                    </tr>`
+                    }
+                }
+            } else if (result.i_type == 'sales'){
+                if(parseInt(result.count_rows) <= 0){
+                    output = `<tr>
+                                <td colspan="5" class="alert-danger">Belum ada pembayaran !</td>
+                            </tr>`
+                } else {
+                    for(index in result.i_data) {
+                        output += ` <tr>
+                                        <td class="text-center">`+ result.i_data[index].i_periode +`</td>
+                                        <td class="text-center">`+ result.i_data[index].i_due_date +`</td>
+                                        <td class="text-center">`+ result.i_data[index].i_code +`</td>
+                                        <td class="text-center">`+ result.i_data[index].i_payment +`</td>
+                                        <td class="text-center">`+ result.i_data[index].i_payment_date +`</td>
+                                        <td class="text-justify">`+ result.i_data[index].i_ps +`</td>
+                                    </tr>`
+                    }
                 }
             }
             

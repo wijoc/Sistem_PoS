@@ -98,11 +98,11 @@
                   <div class="row">
                     <!-- Hidden Form -->
                       <!-- Form-part input tag id customer -->
-                      <input type="text" class="form-control" name="postSCtm" id="input-s-ctm-id" value="" readonly>
+                      <input type="hidden" class="form-control" name="postSCtm" id="input-s-ctm-id" value="" readonly>
                       <!-- Form-part input Total Sales -->
-                      <input type="text" class="form-control" name="postSTotalSale" id="input-s-total-sales" readonly>
+                      <input type="hidden" class="form-control" name="postSTotalSale" id="input-s-total-sales" readonly>
                       <!-- Form-part total keranjang -->
-                      <input type="text" class="form-control" name="postSTotalCart" id="total-cart" value="" disabled>
+                      <input type="hidden" class="form-control" name="postSTotalCart" id="total-cart" value="" disabled>
 
                     <!-- Form-part input tanggal transaksi -->
                     <div class="col-md-4 col-sm-6 col-xs-12">

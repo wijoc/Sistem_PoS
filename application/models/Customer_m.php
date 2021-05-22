@@ -4,9 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed !');
 Class Customer_m extends MY_Model{
   /** Note 
    * 1. member status :
-   *    Y = active
-   *    N = deactive
-   *    D = deleted
+   *    0 = active
+   *    1 = deleted
+   *    2 = deactive
   */
 
   /** Q-Function select data customer */
@@ -38,6 +38,7 @@ Class Customer_m extends MY_Model{
   /** Q-Function : Select row data customer berdasar term nama */
   function searchCustomer($field, $term){
     $this->db->like($this->ctm_f[$field], $term);
+    $this->db->where($this->ctm_f[5], 0);
     $returnResult = $this->db->get($this->ctm_tb);
     return $returnResult->result_array();
   }
