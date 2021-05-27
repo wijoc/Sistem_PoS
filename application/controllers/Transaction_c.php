@@ -1407,12 +1407,12 @@ Class Transaction_c extends MY_Controller{
 		echo json_encode($arrReturn);
 	}
 
-  /** Fungsi untuk CRUD Pengeluaran / Expenses */
+  /** CRUD Pengeluaran / Expenses */
   	/** Function : Page list expenses */
   	public function listExpensesPage(){
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pengeluaran',
-			'assets'  => array('datatables', 'jqueryui', 'custominput', 'sweetalert2', 'list_transaction', 'add_expenses'),
+			'assets'  => array('datatables', 'jqueryui', 'custominput', 'sweetalert2', 'list_transaction', 'add_revenues_expenses'),
 			'transactionUrl' => site_url('Transaction_c/listExpensesAjax'),
 			'optAcc'  => $this->Account_m->selectAccount()
 		);
@@ -1544,7 +1544,7 @@ Class Transaction_c extends MY_Controller{
 				'te_note_file'	=> NULL,
 				'te_payment'	=> $this->input->post('postEPayment'),
 				'te_payment_method'	=> $this->input->post('postMethod'),
-				'te_account_id_fk'	=> $this->input->post('postAccount')
+				'te_account_id_fk'	=> base64_decode(urldecode($this->input->post('postAccount')))
 			);
 		
 		  /** Prepare config tambahan */
@@ -1597,95 +1597,164 @@ Class Transaction_c extends MY_Controller{
 		echo json_encode($arrReturn);
 	}
 
-  /* Fungsi untuk CRUD Pemasukan Lainnya */
-  	/* Function : Page add Pemasukan lainnua */
-  	public function addRevenuesPage(){
-  	  /* Load Model pengeluaran / expense */
+  /** CRUD Pemasukan / Revenues */
+	/** Function : Page list revenues */
+	public function listRevenuesPage(){
+  	  /** Load Model pengeluaran / expense */
   	  	$this->load->model('Revenues_m');
 
-  	  /* Set next code */
-  	  	$nextAI = $this->Revenues_m->getNextIncrement();
-	  	switch(strlen($nextAI['0']['AUTO_INCREMENT'])){
-	  		case ($nextAI['0']['AUTO_INCREMENT'] > 5):
-	  			$nol = '';
-	  			break;
-	  		case '4':
-	  			$nol = '0';
-	  			break;
-	  		case '3':
-	  			$nol = '00';
-	  			break;
-	  		case '2':
-	  			$nol = '00';
-	  			break;
-	  		case '3':
-	  			$nol = '000';
-	  			break;
-	  		default :
-	  			$nol = '0000';
-	  	}
-	  	$nextTransCode = 'TR'.date('Ymd').$nol.$nextAI['0']['AUTO_INCREMENT'];
-
-	  /* Data yang ditampilkan ke view */
-		$this->pageData = array(
-			'title'   => 'PoS | Trans Pengeluaran',
-			'assets'  => array('sweetalert2', 'page_add_trans'),
-			'optRek'  => $this->Rekening_m->getAllRekening(),
-			'nextTransCode' => $nextTransCode
-		);
-		$this->page = 'trans/add_revenues_v';
-		$this->layout();
-	}
-
-  	/* Function : Page list Pemasukan lainnua */
-  	public function listRevenuesPage(){
-  	  /* Load Model pengeluaran / expense */
-  	  	$this->load->model('Revenues_m');
-
-	  /* Data yang ditampilkan ke view */
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pendapatan',
-			'assets'  => array('datatables'),
-			'dataTrans' => $this->Revenues_m->getRevenues()
+			'assets'  => array('datatables', 'jqueryui', 'custominput', 'sweetalert2', 'list_transaction', 'add_revenues_expenses'),
+			'transactionUrl' => site_url('Transaction_c/listRevenuesAjax'),
+			'optAcc'  => $this->Account_m->selectAccount()
 		);
-		$this->page = 'trans/list_revenues_v';
+		$this->page = 'trans/other/revenues_v';
 		$this->layout();
 	}
 
-  	/* Function : Proses add Pemasukan lainnya */
-  	function addRevenuesProses(){
-  	  /* Load Model pengeluaran / expense */
+	/** Function : Ajax list revenues */
+	public function listRevenuesAjax(){
+  	  /** Load model */
   	  	$this->load->model('Revenues_m');
+			
+  	  /** Load model */
+		$teData = array();
+		$no = $this->input->post('start');
+		foreach($this->Revenues_m->selectRevenues($this->input->post('length'), $this->input->post('start'))->result_array() as $show){
+			$no++;
+			$row = array();
+			$row[] = date('Y-m-d', strtotime($show['tr_date']));
+			$row[] = $show['tr_trans_code'];
+			$row[] = $show['tr_source'];
+			$row[] = ($show['tr_payment_method'] == 'TN')? 'Cash / Uang Tunai' : 'Transfer';
+			$row[] = 'Rp'.number_format($show['tr_payment'], 2);
+			$row[] = '<a class="btn btn-xs btn-info"><i class="fa fa-search"></i></a>';
+		
+			$teData[] = $row;
+		}
 
-  	  /* Post data dari form */
-  	  	$postData = array(
-  	  		'tr_trans_code'		=> $this->input->post('postTransKode'),
-  	  		'tr_source' 		=> $this->input->post('postTransSumber'),
-  	  		'tr_date' 			=> $this->input->post('postTransTgl'),
-  	  		'tr_payment_method' => $this->input->post('postTransMetode'),
-  	  		'tr_account_id_fk'  => ($this->input->post('postTransMetode') == "TF")? $this->input->post('postTransRek') : NULL,
-  	  		'tr_payment'		=> $this->input->post('postTransTotalBayar'),
-  	  		'tr_note' 			=> $this->input->post('postTransNote')
-  	  	);
+		$output = array(
+			'draw'			  => $this->input->post('draw'),
+			'recordsTotal'	  => $this->Revenues_m->countAllRevenues(),
+			'recordsFiltered' => $this->Revenues_m->selectRevenues($this->input->post('length'), $this->input->post('start'))->num_rows(),
+			'data'			  => $teData
+		);
 
-  	  /* Input Revenue */
-  	  	$inputTR = $this->Revenues_m->insertRevenues($postData);
+		echo json_encode($output);
+	}
 
-  	  /* Set session & redirect */
-  	  	if($inputTR > 0){
-			$this->session->set_flashdata('flashStatus', 'successInsert');
-			$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan data transaksi pendapatan lainnya !');
-  	  	} else {
-			$this->session->set_flashdata('flashStatus', 'failedInsert');
-			$this->session->set_flashdata('flashMsg', 'Gagal menambahkan data transaksi pendapatan lainnya !');
-  	  	}
+	/** Function : Add revenues proses */
+	public function addRevenuesProses(){
+	  /** Load model */
+		$this->load->model('Revenues_m');
+		
+	  /** Load lib dan helper */
+		$this->load->library('form_validation');
+  
+	  /** Set rules for validation */
+		$configValidation = array(
+			array(
+				'field'  => 'postRDate',
+				'label'  => 'Tgl Transaksi',
+				'rules'  => 'trim|required|callback__validation_date',
+				'errors'  => array(
+					'required'	=> 'Tanggal tidak boleh kosong',
+					'_validation_date' => 'Tanggal tidak valid'
+				)
+			),
+			array(
+				'field'  => 'postRIncomeSource',
+				'label'  => 'Sumber pemasukan',
+				'rules'  => 'trim|required',
+				'errors'  => array(
+					'required'	=> 'Sumber pemasukan tidak boleh kosong'
+				)
+			),
+			array(
+				'field'  => 'postMethod',
+				'label'  => 'Metode pembayaran',
+				'rules'  => 'trim|required|in_list[TF,TN]',
+				'errors'  => array(
+				  'required' => 'Metode tidak boleh kosong',
+				  'in_list' => 'Pilih opsi metode yang tersedia'
+				)
+			),
+			array(
+				'field'  => 'postAccount',
+				'label'  => 'Rekening',
+				'rules'  => 'trim|callback__validation_account'
+			),
+			array(
+				'field'  => 'postRPayment',
+				'label'  => 'Biaya',
+				'rules'  => 'trim|required|numeric',
+				'errors' => array(
+				  'required'	=> 'Biaya tidak boleh kosong',
+				  'numeric'	=> 'Biaya tidak valid, harus berformat angka'
+				)
+			),
+		);
+		
+		$this->form_validation->set_rules($configValidation);
 
-	  /* Link redirect ke list Transaksi Purchase */
-  	  	$this->session->set_flashdata('flashRedirect', 'Transaction_c/listRevenuesPage');
+	  /** Proses input */
+		if($this->form_validation->run() == FALSE) {
+			$arrReturn = array(
+				'error'		=> TRUE,
+				'errorRDate'	=> form_error('postRDate'),
+				'errorRSource'	=> form_error('postRIncomeSource'),
+				'errorMethod'	=> form_error('postMethod'),
+				'errorAccount'	=> form_error('postAccount'),
+				'errorRPayment'	=> form_error('postRPayment')
+			);
+		} else {
+		  /** Set trans code */
+			if($this->Revenues_m->getNextIncrement()->num_rows() > 1){
+				$nextAI = $this->Revenues_m->getNextIncrement()->result_array(); // Get next auto increment table transaksi penjualan
+				$nol = '';
+				for($n = 5; $n >= strlen($nextAI['0']['AUTO_INCREMENT']); $n--){
+					$nol .= '0';
+				}
+				$nextCode = 'TK'.date('Ymd').$nol.$nextAI['0']['AUTO_INCREMENT'];
+			} else {
+				$nextCode = 'TR'.date('Ymd').'00001';
+			}
 
-  	  /* redirect ke page add purchase */
-	  	redirect('Transaction_c/addRevenuesPage');
-  	}
+		  /** Get post data */
+			$postData = array(
+				'tr_trans_code'		=> $nextCode,
+				'tr_source'			=> htmlspecialchars($this->input->post('postRIncomeSource'), ENT_QUOTES),
+				'tr_date'			=> $this->input->post('postRDate'),
+				'tr_payment_method' => $this->input->post('postMethod'),
+				'tr_payment'		=> $this->input->post('postRPayment'),
+				'tr_account_id_fk'	=> base64_decode(urldecode($this->input->post('postAccount'))),
+				'tr_post_script'	=> htmlspecialchars($this->input->post('postRPS'), ENT_QUOTES)
+			);
+
+		  /** Proses input */
+			$inputTR = $this->Revenues_m->insertRevenues($postData);
+
+			if($inputTR > 0){
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'status'	=> 'successInsert',
+					'statusIcon' => 'success',
+					'statusMsg'	 => 'Berhasil menambahkan transaksi pemasukan',
+				);
+			} else {
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'status'	=> 'failedInsert',
+					'statusIcon' => 'error',
+					'statusMsg'	 => 'Gagal menambahkan transaksi pemasukan'
+				);
+			}
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
+	}
 
   /** Custom Form Validation */
 	/** Validation Contact */

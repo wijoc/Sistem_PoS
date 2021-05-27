@@ -198,6 +198,19 @@ class MY_Model extends CI_Model {
             '6' => 'te_account_id_fk',
             '7' => 'te_note_file'
         );
+	
+	/** Table Revenues */
+        protected $tr_tb = 'trans_revenues';
+        protected $tr_f  = array(
+            '0' => 'tr_id',
+            '1' => 'tr_trans_code',
+            '2' => 'tr_source',
+            '3'	=> 'tr_date',
+            '4' => 'tr_payment_method',
+            '5' => 'tr_payment',
+            '6' => 'tr_account_id_fk',
+            '7' => 'tr_post_script'
+        );
 
 	/** Table rekening */
         protected $acc_tb = 'tb_bank_account';

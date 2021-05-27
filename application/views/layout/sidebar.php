@@ -119,13 +119,13 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo site_url('Transaksi_c/listExpensePage') ?>" class="nav-link">
+                <a href="<?php echo site_url('Transaction_c/listExpensesPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengeluaran Lainnya</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo site_url('Transaksi_c/listRevenuesPage') ?>" class="nav-link">
+                <a href="<?php echo site_url('Transaction_c/listRevenuesPage') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pendapatan Lainnya</p>
                 </a>

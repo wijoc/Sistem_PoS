@@ -1,41 +1,49 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed !');
 
-Class Revenues_m extends CI_Model {
-	
-	/* Declare Var table revenues */
-	var $tr_tb = 'trans_revenues';
-	var $tr_f  = array(
-		'0' => 'tr_id',
-		'1' => 'tr_trans_code',
-		'2' => 'tr_source',
-		'3'	=> 'tr_date',
-		'4' => 'tr_payment_method',
-		'5' => 'tr_payment',
-		'6' => 'tr_note',
-		'7' => 'tr_account_id_fk'
-	);
+Class Revenues_m extends MY_Model {
 
-	/* Query get next auto increment */
+	/** Q-Function : Select next auto increment */
   	function getNextIncrement(){
   		$this->db->select('AUTO_INCREMENT');
   		$this->db->from('information_schema.TABLES');
-  		$this->db->where('TABLE_SCHEMA', $this->db->database);
   		$this->db->where('TABLE_NAME', $this->tr_tb);
-  		$resultAI = $this->db->get();
-  		return $resultAI->result_array();
+  		$this->db->where('TABLE_SCHEMA', $this->db->database);
+  		return $this->db->get();
   	}
 
-	/* Query insert data pengeluaran */
+	/** Q-Function : insert data pengeluaran */
 	function insertRevenues($data){
-		$resultInsert = $this->db->insert($this->tr_tb, $data);
-		return $resultInsert;
+		return $this->db->insert($this->tr_tb, $data);
 	}
 
-	/* Query get data Revenue */
-	function getRevenues(){
-		$this->db->order_by($this->tr_f[3], 'DESC');
-		$resultSelect = $this->db->get($this->tr_tb);
-		return $resultSelect->result_array();
+	/** Query : Select data Revenue */
+	function _querySelectRevenues($keyword = NULL, $order = NULL){
+		$this->db->select('*');
+		$this->db->from($this->tr_tb);
+
+		/** Search */
+		if($keyword != NULL){
+			$this->db->group_start();
+			$this->db->where($this->tr_f[1]);
+			$this->db->or_where($this->tr_f[2]);
+			$this->db->group_end();
+		}
+
+		/** Order by */
+		($order != NULL)? $this->db->order_by($this->tr_f[$order['order']['0']['coloumn']], $order['order']['0']['dir']) : $this->db->order_by($this->tr_f[2], 'DESC');
+	}
+
+	/** Q-Function select data revenues */
+	function selectRevenues($amount = 0, $offset = 0){
+		$this->_querySelectRevenues($this->input->post('search'), $this->input->post('order'));
+		($amount > 0)? $this->db->limit($amount, $offset) : '';
+		return $this->db->get();
+	}
+
+	/** Q-Function : Count All Data */
+	function countAllRevenues(){
+		$this->_querySelectRevenues($this->input->post('search'), $this->input->post('order'));
+		return $this->db->get()->num_rows();
 	}
 }

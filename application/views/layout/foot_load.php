@@ -188,9 +188,9 @@
 		</script>
 	<?php } ?>
 
-	<?php if(in_array('add_expenses', $assets)){ ?>
+	<?php if(in_array('add_revenues_expenses', $assets)){ ?>
 		<!-- Add Expenses Assets -->
-		<script src="<?php echo base_url() ?>assets/dist/js/transaction/add_expenses_assets.js"></script>
+		<script src="<?php echo base_url() ?>assets/dist/js/transaction/add_revenues_expenses_assets.js"></script>
 	<?php } ?>
 
 	<!-- belum -->
