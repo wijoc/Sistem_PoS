@@ -188,6 +188,13 @@
 		</script>
 	<?php } ?>
 
+	<?php if(in_array('add_expenses', $assets)){ ?>
+		<!-- Add Expenses Assets -->
+		<script src="<?php echo base_url() ?>assets/dist/js/transaction/add_expenses_assets.js"></script>
+	<?php } ?>
+
+	<!-- belum -->
+
 	<?php if(in_array('p_setting', $assets)){ ?>
 		<script src="<?php echo base_url() ?>assets/dist/js/product/setting_assets.js"></script>
 		<script>

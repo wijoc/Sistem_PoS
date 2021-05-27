@@ -137,7 +137,7 @@
                       <div class="form-group">
                         <label>File Nota</label>
                         <div class="custom-file">
-                          <input type="file" class="form-control float-right custom-file-input" name="postPNoteFile" id="input-p-file" required>
+                          <input type="file" class="form-control float-right custom-file-input" name="postNoteFile" id="input-p-file" required>
                           <label class="custom-file-label" for="input-file-invoice"><p>Pilih file Nota</p></label>
                           <small id="error-p-file" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                         </div>

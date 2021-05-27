@@ -61,9 +61,9 @@ $(document).ready(function() {
 	/** Submit Purchases */
 	$("#form-add-purchases").on("submit", function(event){
         event.preventDefault()
-        var file_data = $('#input-p-file').prop('files')[0]; 
-        var form_data = new FormData(this);
-        form_data.append('file', file_data);
+        var file_data = $('#input-p-file').prop('files')[0] 
+        var form_data = new FormData(this)
+        form_data.append('file', file_data)
         $.ajax({
             url     : $("#form-add-purchases").attr("action"),
             method  : 'POST',

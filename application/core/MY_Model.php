@@ -186,6 +186,19 @@ class MY_Model extends CI_Model {
             '8' => 'is_post_script'
         );
 
+    /** Table Expenses */
+        protected $te_tb = 'trans_expenses';
+        protected $te_f  = array(
+            '0' => 'te_id',
+            '1' => 'te_necessity',
+            '2' => 'te_date',
+            '3' => 'te_payment_method',
+            '4' => 'te_payment',
+            '5' => 'te_note_code',
+            '6' => 'te_account_id_fk',
+            '7' => 'te_note_file'
+        );
+
 	/** Table rekening */
         protected $acc_tb = 'tb_bank_account';
         protected $acc_f = array(

@@ -38,7 +38,7 @@ Class Sales_m extends MY_Model{
 		if($payment_status == 'L'){
 			$this->db->where('ts.'.$this->ts_f[8], 'L');
 			$this->db->or_where('ts.'.$this->ts_f[8], 'T');
-		} else {
+		} else if($payment_status != 'all' && $payment_status != 'L') {
 			$this->db->where('ts.'.$this->ts_f[8], $payment_status);
 		}
       

@@ -294,7 +294,7 @@ Class Transaction_c extends MY_Controller{
 			  )
 			),
 			array(
-			  'field'  => 'postPNoteFile',
+			  'field'  => 'postNoteFile',
 			  'label'  => 'File nota',
 			  'rules'  => 'callback__validation_file'
 			),
@@ -393,7 +393,7 @@ Class Transaction_c extends MY_Controller{
 			$arrReturn = array(
 				'error'		=> TRUE,
 				'errorPNote' 	=> form_error('postPNote'),
-				'errorFilenote'	=> form_error('postPNoteFile'),
+				'errorFilenote'	=> form_error('postNoteFile'),
 				'errorPDate' 	=> form_error('postPDate'),
 				'errorPSupp' 	=> form_error('postPSupplier'),
 				'errorPStatus'	=> form_error('postStatus'),
@@ -436,12 +436,12 @@ Class Transaction_c extends MY_Controller{
 			$config['max_size']		 = '2048';
 			$config['encrypt_name']  = TRUE;
 			  
-			$arrayFile = explode('.', $_FILES['postPNoteFile']['name']);
+			$arrayFile = explode('.', $_FILES['postNoteFile']['name']);
 			$extension = end($arrayFile);
 			$this->upload->initialize($config);
 
 		  /** Upload proses dan Simpan file ke database */
-			$upload = $this->upload->do_upload('postPNoteFile');
+			$upload = $this->upload->do_upload('postNoteFile');
 			if($upload){
 				/** Uploaded file data */
 				$uploadData = $this->upload->data();
@@ -520,7 +520,8 @@ Class Transaction_c extends MY_Controller{
 		$tpData	= array();
 		$no			= $this->input->post('start');
 		foreach($this->Purchases_m->selectPurchase('all', 0, $this->input->post('length'), $this->input->post('start'))->result_array() as $show){
-			$actionBtn = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="'.site_url('Transaction_c/detailPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-search"></i> </a>
+			$actionBtn = '<a class="btn btn-xs btn-success" target="_blank" href="'.base_url().$show['tp_note_file'].'"><i class="fa fa-file-download"></i></a>
+				<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="'.site_url('Transaction_c/detailPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-search"></i> </a>
 				<a class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Transaksi Retur Terkait" href="'.site_url('Transaction_c/returnPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-exchange-alt"></i> </a>';
 			if($show['tp_payment_status'] == 'K'){ 
 				$showStatus = '<span class="badge badge-danger">Kredit - Belum Lunas</span>';
@@ -1177,8 +1178,7 @@ Class Transaction_c extends MY_Controller{
 	public function listSalesAjax(){
 		$tsData	= array();
 		$no			= $this->input->post('start');
-		//foreach($this->Sales_m->selectSales('all', 0, $this->input->post('length'), $this->input->post('start'))->result_array() as $show){
-		foreach($this->Sales_m->selectSales(10, 0, 0, 0)->result_array() as $show){
+		foreach($this->Sales_m->selectSales($this->input->post('length'), $this->input->post('start'), 0, 0)->result_array() as $show){
 			$actionBtn = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="'.site_url('Transaction_c/detailSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-search"></i> </a>
 				<a class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Transaksi Retur Terkait" href="'.site_url('Transaction_c/returnSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-exchange-alt"></i> </a>';
 			if($show['ts_payment_status'] == 'K'){ 
@@ -1407,111 +1407,195 @@ Class Transaction_c extends MY_Controller{
 		echo json_encode($arrReturn);
 	}
 
-  /* Fungsi untuk CRUD Pengeluaran Lainnya */
-  	/* Function : Page add pengeluaran lainnya */
-  	public function addExpensePage(){
-  	  /* Load Model pengeluaran / expense */
-  	  	$this->load->model('Expense_m');
-
-	  /* Data yang ditampilkan ke view */
+  /** Fungsi untuk CRUD Pengeluaran / Expenses */
+  	/** Function : Page list expenses */
+  	public function listExpensesPage(){
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pengeluaran',
-			'assets'  => array('jqueryui', 'custominput', 'sweetalert2', 'page_add_trans'),
-			'optRek'  => $this->Rekening_m->getAllRekening(),
-			//'nextTransCode' => $nextTransCode
+			'assets'  => array('datatables', 'jqueryui', 'custominput', 'sweetalert2', 'list_transaction', 'add_expenses'),
+			'transactionUrl' => site_url('Transaction_c/listExpensesAjax'),
+			'optAcc'  => $this->Account_m->selectAccount()
 		);
-		$this->page = 'trans/add_expense_v';
+		$this->page = 'trans/other/expense_v';
 		$this->layout();
 	}
 
-  	/* Function : Page list pengeluaran lainnya */
-  	public function listExpensePage(){
-  	  /* Load Model pengeluaran / expense */
-  	  	$this->load->model('Expense_m');
+	/** Function : Ajax list expense */
+	public function listExpensesAjax(){
+  	  /** Load model */
+  	  	$this->load->model('Expenses_m');
+			
+  	  /** Load model */
+		$teData = array();
+		$no = $this->input->post('start');
+		foreach($this->Expenses_m->selectExpenses($this->input->post('length'), $this->input->post('start'))->result_array() as $show){
+			$no++;
+			$row = array();
+			$row[] = date('Y-m-d', strtotime($show['te_date']));
+			$row[] = $show['te_note_code'];
+			$row[] = $show['te_necessity'];
+			$row[] = ($show['te_payment_method'] == 'TN')? 'Cash / Uang Tunai' : 'Transfer';
+			$row[] = $show['te_payment'];
+			$row[] = '<a class="btn btn-xs btn-success" target="_blank" href="'.base_url().$show['te_note_file'].'"><i class="fa fa-file-download"></i></a>';
+		
+			$teData[] = $row;
+		}
 
-	  /* Data yang ditampilkan ke view */
-		$this->pageData = array(
-			'title'   => 'PoS | Trans Pengeluaran',
-			'assets'  => array('datatables'),
-			'dataTrans' => $this->Expense_m->getExpense()
+		$output = array(
+			'draw'			  => $this->input->post('draw'),
+			'recordsTotal'	  => $this->Expenses_m->countAllExpenses(),
+			'recordsFiltered' => $this->Expenses_m->selectExpenses($this->input->post('length'), $this->input->post('start'))->num_rows(),
+			'data'			  => $teData
 		);
-		$this->page = 'trans/list_expense_v';
-		$this->layout();
+
+		echo json_encode($output);
 	}
 
-  	/* Function : proses add pengeluaran lainnya */
-  	function addExpenseProses(){
-  	  /* Load Model pengeluaran / expense */
-  	  	$this->load->model('Expense_m');
+	/** Fuction : Add expenses proses */
+	public function addExpensesProses(){
+	  /** Load model */
+		$this->load->model('Expenses_m');
+	  
+	  /** Load lib dan helper */
+		$this->load->helper('file');
+		$this->load->library('form_validation');
 
-  		/* Post data dari form */
-  		$postData = array(
-  			'te_date' 			=> $this->input->post('postTransTgl'),
-  			'te_necessity'		=> $this->input->post('postTransKeperluan'),
-  			'te_payment_method' => $this->input->post('postTransMetode'),
-  			'te_payment'		=> $this->input->post('postTransTotalBayar'),
-  			'te_note' 			=> $this->input->post('postTransNote'),
-  			'te_account_id_fk'	=> ($this->input->post('postTransMetode') == "TF")? $this->input->post('postTransRek') : NULL,
-  			'te_invoice' 		=> NULL,
-  		);
+	  /** Set rules for validation */
+		$configValidation = array(
+			array(
+			  'field'  => 'postEDate',
+			  'label'  => 'Tgl Transaksi',
+			  'rules'  => 'trim|required|callback__validation_date',
+			  'errors'  => array(
+				  'required'	=> 'Tanggal tidak boleh kosong',
+				  '_validation_date' => 'Tanggal tidak valid'
+			  )
+			),
+			array(
+			  'field'  => 'postENecessity',
+			  'label'  => 'Keperluan',
+			  'rules'  => 'trim|required',
+			  'errors'  => array(
+				  'required'	=> 'Keperluan tidak boleh kosong'
+			  )
+			),
+			array(
+			  'field'  => 'postENote',
+			  'label'  => 'No. Nota',
+			  'rules'  => 'trim|is_unique[trans_expenses.te_note_code]|required',
+			  'errors'  => array(
+				  'is_unique' => 'Nomor Nota sudah digunakan',
+				  'required' => 'Nomor Nota tidak boleh kosong'
+			  )
+			),
+			array(
+			  'field'  => 'postNoteFile',
+			  'label'  => 'File nota',
+			  'rules'  => 'callback__validation_file'
+			),
+			array(
+			  'field'  => 'postMethod',
+			  'label'  => 'Metode pembayaran',
+			  'rules'  => 'trim|required|in_list[TF,TN]',
+			  'errors'  => array(
+				'required' => 'Metode tidak boleh kosong',
+				'in_list' => 'Pilih opsi metode yang tersedia'
+			  )
+			),
+			array(
+			  'field'  => 'postAccount',
+			  'label'  => 'Rekening',
+			  'rules'  => 'trim|callback__validation_account'
+			),
+			array(
+			  'field'  => 'postEPayment',
+			  'label'  => 'Pembayaran',
+			  'rules'  => 'trim|required|numeric',
+			  'errors' => array(
+				'required'	=> 'Pembayaran tidak boleh kosong',
+				'numeric'	=> 'Pembayaran tidak valid, harus berformat angka'
+			  )
+			),
+		);
+	  
+		$this->form_validation->set_rules($configValidation);
 
-  		if (!empty($_FILES['postTransFileNota']['name'])){
-		  /* Load lib dan helper untuk upload */
-			$this->load->helper('file');
+	  /** Proses input */
+		if($this->form_validation->run() == FALSE) {
+			$arrReturn = array(
+				'error'		=> TRUE,
+				'errorEDate' 	  	=> form_error('postEDate'),
+				'errorEPayment'   	=> form_error('postEPayment'),
+				'errorEMethod'	  	=> form_error('postMethod'),
+				'errorEAccount'   	=> form_error('postAccount'),
+				'errorENecessity'	=> form_error('postENecessity'),
+				'errorENote'		=> form_error('postENote'),
+				'errorEFileNote'	=> form_error('postNoteFile')
+			);
+		} else {
+		  /** Upload Lib */
 			$this->load->library('upload');
+  
+		  /** Post data */
+			$postData = array(
+				'te_date'		=> $this->input->post('postEDate'),
+				'te_necessity'	=> $this->input->post('postENecessity'),
+				'te_note_code'	=> $this->input->post('postENote'),
+				'te_note_file'	=> NULL,
+				'te_payment'	=> $this->input->post('postEPayment'),
+				'te_payment_method'	=> $this->input->post('postMethod'),
+				'te_account_id_fk'	=> $this->input->post('postAccount')
+			);
+		
+		  /** Prepare config tambahan */
+			$config['upload_path']   = 'assets/uploaded_files/expense_note/';
+			$config['allowed_types'] = 'jpeg|jpg|png|pdf|doc|docx';
+			$config['max_size']		 = '2048';
+			$config['encrypt_name']  = TRUE;
+			  
+			$arrayFile = explode('.', $_FILES['postNoteFile']['name']);
+			$extension = end($arrayFile);
+			$this->upload->initialize($config);
 
-	  	  /* Prepare config tambahan */
-            $config['upload_path']   = 'assets/imported_files/expense_nota/'; // Path folder untuk upload file
-            $config['allowed_types'] = 'jpeg|jpg|png|pdf|doc|docx'; // Allowed types 
-            $config['max_size']		 = '2048'; // Max size in KiloBytes
-            $config['encrypt_name']  = TRUE; // Encrypt nama file ketika diupload
+		  /** Upload proses dan Simpan file ke database */
+			$upload = $this->upload->do_upload('postNoteFile');
+			if($upload){
+				/** Uploaded file data */
+				$uploadData = $this->upload->data();
 
-		  /* Get file format / file extention */
-            $arrayFile = explode('.', $_FILES['postTransFileNota']['name']); //Ubah nama file menjadi array
-            $extension = end($arrayFile); // Get ext dari array nama file, index terakhir array
-            $this->upload->initialize($config);
+				/** Set path ke postData */
+				$postData['te_note_file'] = $config['upload_path'].$uploadData['file_name'];
 
-          /* Upload proses dan Simpan file ke database */
-            $upload = $this->upload->do_upload('postTransFileNota');
+				$inputTE = $this->Expenses_m->insertExpenses($postData);
+				if($inputTE > 0){
+					$arrReturn = array(
+						'success'	=> TRUE,
+						'status'	=> 'successInsert',
+						'statusIcon' => 'success',
+						'statusMsg'	 => 'Berhasil menambahkan transaksi pengeluaran',
+					);
+				} else {
+					unlink($postData['te_note_file']);
+					$arrReturn = array(
+						'success'	=> TRUE,
+						'status'	=> 'failedInsert',
+						'statusIcon' => 'error',
+						'statusMsg'	 => 'Gagal menambahkan transaksi pengeluaran',
+					);
+				}
+			} else {
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'status'	=> 'failedInsert',
+					'statusIcon' => 'error',
+					'statusMsg'	 => 'Gagal menyimpan file nota pengeluaran, transaksi pengeluaran batal ditambahkan. Error : '.$this->upload->display_errors(),
+				);
+			}
+		}
 
-            if($upload){
-              	/* Get data upload file */
-            	$uploadData = $this->upload->data();
-
-              	/* Set path untuk simpan ke table installment_purchase */
-            	$postData['te_invoice'] = $config['upload_path'].$uploadData['file_name'];
-            } else {
-            	$uploadError = 'Yes';
-            	$uploadMsg	 = $this->upload->display_errors();
-	  	  	}
-  		}
-
-  		/* Proses Insert */
-  		if(isset($uploadError) && $uploadError == 'Yes') {
-  			$this->session->set_flashdata('flashStatus', 'failedInsert');
-	  	  	$this->session->set_flashdata('flashMsg', $uploadMsg);
-  		} else {
-  			/* Insert ke database */
-  			$inputExpense = $this->Expense_m->insertExpense($postData);
-
-  			if($inputExpense > 0){
-	  			$this->session->set_flashdata('flashStatus', 'successInsert');
-		  	  	$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan data transaksi pengeluaran');
-  			} else {
-	  			$this->session->set_flashdata('flashStatus', 'successInsert');
-		  	  	$this->session->set_flashdata('flashMsg', 'Berhasil menambahkan data transaksi pengeluaran');
-		  	  	if ($postData['te_invoice'] != NULL){ unlink(base_url().$postData['te_invoice']); };
-  			}
-  		}
-
-	  	/* Link redirect ke list Transaksi Purchase */
-  	  	$this->session->set_flashdata('flashRedirect', 'Transaction_c/listExpensePage');
-
-  	  	/* redirect ke page add purchase */
-	  	redirect('Transaction_c/addExpensePage');
-
-  		//print("<pre>".print_r($postData, true)."</pre>");
-  	}
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
+	}
 
   /* Fungsi untuk CRUD Pemasukan Lainnya */
   	/* Function : Page add Pemasukan lainnua */
@@ -1643,7 +1727,7 @@ Class Transaction_c extends MY_Controller{
 			/** buat mime type : 
 			$allowedMime = array('application/pdf','image/gif','image/jpeg','image/pjpeg','image/png','image/x-png') */
 			$allowedExt	= array('pdf', 'doc', 'docx', 'jpeg', 'jpg', 'png');
-			if($_FILES['postPNoteFile']['name']){
+			if($_FILES['postNoteFile']['name']){
 				if(in_array(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION), $allowedExt)){
 					return TRUE;
 				} else {
