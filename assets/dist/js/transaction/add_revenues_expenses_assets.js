@@ -224,3 +224,67 @@ $(document).ready(function() {
         })
     })
 })
+
+/** Function Detail trans */
+function detailER(trans_id, detail_url){
+    $.ajax({
+        url     : detail_url,
+        data    : { transID: trans_id },
+        method  : 'GET',
+        datatype : 'json',
+        success : function(result){
+            if(result.type == 'expenses'){
+                $('#modal-detail-expenses').modal("toggle")
+
+                $("#det-note").html(result.det_note)
+                $("#det-date").html(result.det_date)
+                $("#det-necessity").html(result.det_necessity)
+                $("#det-note-file").html(result.det_file)
+                $("#det-expense").html(formatCurrency(result.det_expense, 'Rp'))
+
+                if(result.method == 'TF'){
+                    $("#det-method").html('Transfer')
+                    $("#div-acc").show()
+                    $("#det-account").html(result.det_account)
+                } else {
+                    $("#det-method").html('Tunai / Cash')
+                    $("#div-acc").hide()
+                }
+            } else if (result.type == 'revenues'){
+                $('#modal-detail-revenues').modal("toggle")
+
+                $("#det-no-trans").html(result.det_trans_code)
+                $("#det-source").html(result.det_source)
+                $("#det-date").html(result.det_date)
+                $("#det-income").html(formatCurrency(result.det_income, 'Rp'))
+                $("#det-ps").html(result.det_post_script)
+
+                if(result.method == 'TF'){
+                    $("#det-method").html('Transfer')
+                    $("#div-acc").show()
+                    $("#det-account").html(result.det_account)
+                } else {
+                    $("#det-method").html('Tunai / Cash')
+                    $("#div-acc").hide()
+                }
+            }
+        }
+     })
+}
+
+/** Function : formatCurrency */
+function formatCurrency(number, prefix){
+	var number_string = number.toString().replace(/[^\d]/g, '.'),
+	split	 = number_string.split('.'),
+	sisa	 = split[0].length % 3,
+	rupiah	 = split[0].substr(0, sisa),
+	thousand = split[0].substr(sisa).match(/\d{3}/gi);
+
+	if(thousand){
+		separator = sisa ? '.' : '';
+		rupiah += separator + thousand.join('.');
+	}
+
+	rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+	return (rupiah ? prefix + rupiah : '');
+}

@@ -146,3 +146,57 @@
         </div>
         <!-- /.modal-dialog -->
       </div>
+
+    <!-- Modal detail Revenues -->
+      <div class="modal fade" id="modal-detail-revenues">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Pemasukan - No. Transaksi : <span class="font-weight-bold" id="det-no-trans"></span></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group row">
+                <label for="det-date" class="col-md-4 col-sm-12 col-form-label">Tanggal <font class="float-right">:</font></label>
+                <div class="col-md-8 col-sm-12">
+                  <span id="det-date"></span>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="det-source" class="col-md-4 col-sm-12 col-form-label">Sumber pendapatan <font class="float-right">:</font></label>
+                <div class="col-md-8 col-sm-12">
+                  <span id="det-source"></span>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="det-method" class="col-md-4 col-sm-12 col-form-label">Metode Pembayaran <font class="float-right">:</font></label>
+                <div class="col-md-8 col-sm-12">
+                  <span id="det-method"></span>
+                </div>
+              </div>
+              <div class="form-group row" id="div-acc">
+                <label for="det-account" class="col-md-4 col-sm-12 col-form-label">Rekening <font class="float-right">:</font></label>
+                <div class="col-md-8 col-sm-12">
+                  <span id="det-account"></span>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="det-income" class="col-md-4 col-sm-12 col-form-label">Total pemasukan <font class="float-right">:</font></label>
+                <div class="col-md-8 col-sm-12">
+                  <span><font class="font-weight-bold" color="green" id="det-income"></font></span>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="det-ps" class="col-md-4 col-sm-12 col-form-label">Catatan <font class="float-right">:</font></label>
+                <div class="col-md-8 col-sm-12">
+                  <span id="det-ps"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>

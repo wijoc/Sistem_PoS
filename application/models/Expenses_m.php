@@ -37,4 +37,14 @@ Class Expenses_m extends MY_Model {
 		$this->__querySelectExpense($this->input->post('search'), $this->input->post('order'));
 		return $this->db->get()->num_rows();
 	}
+
+	/** Q-Function : Select row-data berdasar te_id */
+	function selectExpensesOnID($trans_id){
+		$this->db->select('te.'.$this->te_f[1].', te.'.$this->te_f[2].', te.'.$this->te_f[3].', te.'.$this->te_f[4].', te.'.$this->te_f[5].', te.'.$this->te_f[7].', acc.'.$this->acc_f[2].', acc.'.$this->acc_f[3].', bank.'.$this->bank_f[2]);
+		$this->db->from($this->te_tb.' as te');
+		$this->db->join($this->acc_tb.' as acc', 'acc.'.$this->acc_f[0].' = te.'.$this->te_f[6], 'LEFT');
+		$this->db->join($this->bank_tb.' as bank', 'bank.'.$this->bank_f[0].' = acc.'.$this->acc_f[1], 'LEFT');
+		$this->db->where($this->te_f[0], $trans_id);
+		return $this->db->get();
+	}
 }

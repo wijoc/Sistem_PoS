@@ -10,6 +10,8 @@ Class Transaction_c extends MY_Controller{
 		$this->load->model('Account_m');
 		$this->load->model('Installment_m');
 		$this->load->model('Return_m');
+		$this->load->model('Expenses_m');
+		$this->load->model('Revenues_m');
 	}
 
 	public function index(){
@@ -1423,9 +1425,6 @@ Class Transaction_c extends MY_Controller{
 	/** Function : Ajax list expense */
 	public function listExpensesAjax(){
   	  /** Load model */
-  	  	$this->load->model('Expenses_m');
-			
-  	  /** Load model */
 		$teData = array();
 		$no = $this->input->post('start');
 		foreach($this->Expenses_m->selectExpenses($this->input->post('length'), $this->input->post('start'))->result_array() as $show){
@@ -1436,7 +1435,8 @@ Class Transaction_c extends MY_Controller{
 			$row[] = $show['te_necessity'];
 			$row[] = ($show['te_payment_method'] == 'TN')? 'Cash / Uang Tunai' : 'Transfer';
 			$row[] = $show['te_payment'];
-			$row[] = '<a class="btn btn-xs btn-success" target="_blank" href="'.base_url().$show['te_note_file'].'"><i class="fa fa-file-download"></i></a>';
+			$row[] = '<a class="btn btn-xs btn-success" target="_blank" href="'.base_url().$show['te_note_file'].'"><i class="fa fa-file-download"></i></a>
+					<a class="btn btn-xs btn-info" onclick="detailER(\''.urlencode(base64_encode($show['te_id'])).'\', \''.site_url('Transaction_c/detailExpenses/').'\')"><i class="fa fa-search"></i></a>';
 		
 			$teData[] = $row;
 		}
@@ -1451,11 +1451,26 @@ Class Transaction_c extends MY_Controller{
 		echo json_encode($output);
 	}
 
+	/** Function : Detail expense */
+	public function detailExpenses(){
+		$detailData = $this->Expenses_m->selectExpensesOnID(base64_decode(urldecode($this->input->get('transID'))))->result_array();
+		$returnData = array(
+			'type'			=> 'expenses',
+			'det_note'		=> $detailData[0]['te_note_code'],
+			'det_necessity' => $detailData[0]['te_necessity'],
+			'det_date'		=> $detailData[0]['te_date'],
+			'det_method'	=> ($detailData[0]['te_payment_method'] == 'TN')? 'Tunai / Cash' : 'Transfer',
+			'det_expense'	=> $detailData[0]['te_payment'],
+			'det_account'	=> $detailData[0]['bank_name'].' - '.$detailData[0]['acc_number'].' a/n '.$detailData[0]['acc_name'],
+			'det_file'		=> '<a class="btn btn-sm btn-success" target="_blank" href="'.base_url().$detailData[0]['te_note_file'].'"><i class="fa fa-file-download"></i>&nbsp; Download File Nota</a>'
+		);
+
+		header('Content-Type: application/json');
+		echo json_encode($returnData);
+	}
+
 	/** Fuction : Add expenses proses */
 	public function addExpensesProses(){
-	  /** Load model */
-		$this->load->model('Expenses_m');
-	  
 	  /** Load lib dan helper */
 		$this->load->helper('file');
 		$this->load->library('form_validation');
@@ -1600,9 +1615,6 @@ Class Transaction_c extends MY_Controller{
   /** CRUD Pemasukan / Revenues */
 	/** Function : Page list revenues */
 	public function listRevenuesPage(){
-  	  /** Load Model pengeluaran / expense */
-  	  	$this->load->model('Revenues_m');
-
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pendapatan',
 			'assets'  => array('datatables', 'jqueryui', 'custominput', 'sweetalert2', 'list_transaction', 'add_revenues_expenses'),
@@ -1616,9 +1628,6 @@ Class Transaction_c extends MY_Controller{
 	/** Function : Ajax list revenues */
 	public function listRevenuesAjax(){
   	  /** Load model */
-  	  	$this->load->model('Revenues_m');
-			
-  	  /** Load model */
 		$teData = array();
 		$no = $this->input->post('start');
 		foreach($this->Revenues_m->selectRevenues($this->input->post('length'), $this->input->post('start'))->result_array() as $show){
@@ -1629,7 +1638,7 @@ Class Transaction_c extends MY_Controller{
 			$row[] = $show['tr_source'];
 			$row[] = ($show['tr_payment_method'] == 'TN')? 'Cash / Uang Tunai' : 'Transfer';
 			$row[] = 'Rp'.number_format($show['tr_payment'], 2);
-			$row[] = '<a class="btn btn-xs btn-info"><i class="fa fa-search"></i></a>';
+			$row[] = '<a class="btn btn-xs btn-info" onclick="detailER(\''.urlencode(base64_encode($show['tr_id'])).'\', \''.site_url('Transaction_c/detailRevenues/').'\')"><i class="fa fa-search"></i></a>';
 		
 			$teData[] = $row;
 		}
@@ -1644,11 +1653,26 @@ Class Transaction_c extends MY_Controller{
 		echo json_encode($output);
 	}
 
+	/** Function : Detail Revenues */
+	public function detailRevenues(){
+		$detailData = $this->Revenues_m->selectRevenuesOnID(base64_decode(urldecode($this->input->get('transID'))))->result_array();
+		$returnData = array(
+			'type'	=> 'revenues',
+			'det_trans_code' => $detailData[0]['tr_trans_code'],
+			'det_source'	 => $detailData[0]['tr_source'],
+			'det_date'		 => $detailData[0]['tr_date'],
+			'det_method'	 => $detailData[0]['tr_payment_method'],
+			'det_income'	 => $detailData[0]['tr_payment'],
+			'det_account'	 => $detailData[0]['bank_name'].' - '.$detailData[0]['acc_number'].' a/n '.$detailData[0]['acc_name'],
+			'det_post_script'	=> $detailData[0]['tr_post_script'],
+		);
+
+		header('Content-Type: application/json');
+		echo json_encode($returnData);
+	}
+
 	/** Function : Add revenues proses */
 	public function addRevenuesProses(){
-	  /** Load model */
-		$this->load->model('Revenues_m');
-		
 	  /** Load lib dan helper */
 		$this->load->library('form_validation');
   

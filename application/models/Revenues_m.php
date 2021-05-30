@@ -46,4 +46,14 @@ Class Revenues_m extends MY_Model {
 		$this->_querySelectRevenues($this->input->post('search'), $this->input->post('order'));
 		return $this->db->get()->num_rows();
 	}
+
+	/** Q-Function : Select row-data berdasar tr_id */
+	function selectRevenuesOnID($trans_id){
+		$this->db->select('tr.'.$this->tr_f[1].', tr.'.$this->tr_f[2].', tr.'.$this->tr_f[3].', tr.'.$this->tr_f[4].', tr.'.$this->tr_f[5].', tr.'.$this->tr_f[7].', acc.'.$this->acc_f[2].', acc.'.$this->acc_f[3].', bank.'.$this->bank_f[2]);
+		$this->db->from($this->tr_tb.' as tr');
+		$this->db->join($this->acc_tb.' as acc', 'acc.'.$this->acc_f[0].' = tr.'.$this->tr_f[6], 'LEFT');
+		$this->db->join($this->bank_tb.' as bank', 'bank.'.$this->bank_f[0].' = acc.'.$this->acc_f[1], 'LEFT');
+		$this->db->where($this->tr_f[0], $trans_id);
+		return $this->db->get();
+	}
 }
