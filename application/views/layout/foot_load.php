@@ -19,6 +19,20 @@
 		<!-- SweetAlert 2 -->
 		<script src="<?php echo base_url() ?>assets/plugins/sweetalert2/sweetalert2.min.js"></script>
 	<?php } ?>
+	
+	<?php if(in_array('datatables',$assets)){ ?>
+	  <!-- DataTables -->
+		<script src="<?php echo base_url() ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/dataTables.buttons.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.flash.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+		<!-- Default datatable -->
+		<script src="<?php echo base_url() ?>assets/extra/datatables_default.js"></script>
+	<?php } ?>
 
 	<?php if(in_array('jqueryui',$assets)){ ?>
 		<!-- JQuery UI -->
@@ -193,6 +207,14 @@
 		<script src="<?php echo base_url() ?>assets/dist/js/transaction/add_revenues_expenses_assets.js"></script>
 	<?php } ?>
 
+	<?php if(in_array('account',$assets)){ ?>
+		<!-- Account Assets -->
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/account_assets.js"></script>
+		<script>
+			var account_url = "<?php echo $accountUrl ?>"
+		</script>
+	<?php } ?>
+
 	<!-- belum -->
 
 	<?php if(in_array('p_setting', $assets)){ ?>
@@ -212,11 +234,6 @@
 		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/setting_profile_assets.js"></script>
 	<?php } ?>
 
-	<!-- Page List Trans -->
-	<?php if(in_array('page_list_trans',$assets)){ ?>
-		<script src="<?php echo base_url() ?>assets/dist/js/pages/list_transaction_assets.js"></script>
-	<?php } ?>
-
 	<!-- Page Konfirmasi Delete -->
 	<?php if(in_array('f_confirm', $assets)){ ?>
 		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/f_confirm.js"></script>
@@ -225,33 +242,4 @@
 	<!-- Alert -->
 	<?php if(in_array('alert', $assets)){ ?>
 		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/alert.js"></script>
-	<?php } ?>
-
-	<!-- Untuk session input -->
-	<?php if($this->session->flashdata('flashStatus')){ ?>
-		<script type="text/javascript">
-			var flashStatus = "<?php echo $this->session->flashdata('flashStatus') ;?>";
-			var flashMsg = "<?php echo ($this->session->flashdata('flashMsg'))? $this->session->flashdata('flashMsg') : '' ;?>";
-			<?php if($this->session->flashdata('flashInput')){ ?> // Khusus page kategori & Satuan 
-				var flashInput = "<?php echo $this->session->flashdata('flashInput') ?>";
-			<?php } ?>
-			<?php if($this->session->flashdata('flashRedirect')){ ?> // Khusus page kategori & Satuan 
-				var site_url = "<?php echo site_url($this->session->flashdata('flashRedirect')) ?>";
-			<?php } ?>
-		</script>
-	<?php } ?>
-
-	
-	<?php if(in_array('datatables',$assets)){ ?>
-	  <!-- DataTables -->
-		<script src="<?php echo base_url() ?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
-		<script src="<?php echo base_url() ?>assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-		<script src="<?php echo base_url() ?>assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/dataTables.buttons.js"></script>
-		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.flash.min.js"></script>
-		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-		<script src="<?php echo base_url() ?>assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
-		<!-- Default datatable -->
-		<script src="<?php echo base_url() ?>assets/extra/datatables_default.js"></script>
 	<?php } ?>

@@ -179,7 +179,7 @@ Class Product_c extends MY_Controller {
 		  $this->load->library('upload');
 		  
 	  /** Set rules form validation */
-		$config = array(
+		$configValidation = array(
 			array(
 				'field'	=> 'postBarcode',
 				'label'	=> 'Barcode Produk',
@@ -273,7 +273,7 @@ Class Product_c extends MY_Controller {
 				'rules'	=> 'trim'
 			)
 		);
-		$this->form_validation->set_rules($config);
+		$this->form_validation->set_rules($configValidation);
 
 	  /** Run form validation */
 		if($this->form_validation->run() == FALSE) {
@@ -594,7 +594,6 @@ Class Product_c extends MY_Controller {
 	function softdeleteProductProses(){
 	  /** Get posted id and decode proses */
 		  $prdID = base64_decode(urldecode($this->input->post('postID')));
-		  //$prdID = base64_decode(urldecode('Mw%3D%3D '));
 
 	  /** Proses delete data di database */
 	  	$delPrd = $this->Product_m->softdeleteProduct($prdID); 

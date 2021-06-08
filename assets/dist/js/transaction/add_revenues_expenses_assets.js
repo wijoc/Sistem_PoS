@@ -269,7 +269,7 @@ function detailER(trans_id, detail_url){
                 }
             }
         }
-     })
+    })
 }
 
 /** Function : formatCurrency */

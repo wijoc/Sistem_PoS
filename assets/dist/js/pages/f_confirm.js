@@ -35,6 +35,10 @@ function confirmDelete(item, getid, url, msg){
             var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data pelanggan akan menghapus transaksi yang sudah dilakukan !"
             var cancelMsg  = "Batal menghapus data pelanggan !"
             break
+        case "soft-account":
+            var warningMsg = "Penghapusan data rekening tidak berpengaruh terhadap transaksi !"
+            var cancelMsg  = "Batal menghapus data rekening !"
+            break
 		default :
 			var warningMsg = msg
 			var cancelMsg  = "Batal menghapus data !"
@@ -62,9 +66,9 @@ function confirmDelete(item, getid, url, msg){
         /** jika klik tombol confirm, kirim data id via ajax */
         if (result.value){
             $.ajax({
-                type: 'POST',
-                url: url,
-                data: {"postID":getid},
+                type    : 'POST',
+                url     : url,
+                data    : { "postID" : getid },
                 proccesData: false,
                 /** jika ajax sukses mengirim data */
                 success: function(data){

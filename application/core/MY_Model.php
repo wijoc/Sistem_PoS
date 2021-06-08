@@ -216,9 +216,10 @@ class MY_Model extends CI_Model {
         protected $acc_tb = 'tb_bank_account';
         protected $acc_f = array(
             '0' => 'acc_id',
-            '1' => 'acc_bank_code',
+            '1' => 'acc_bank_id_fk',
             '2' => 'acc_number',
-            '3' => 'acc_name'
+            '3' => 'acc_name',
+            '4' => 'acc_status'
         );
 
 	/** Table bank */

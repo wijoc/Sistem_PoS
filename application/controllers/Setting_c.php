@@ -5,6 +5,7 @@ Class Setting_c extends MY_Controller{
 
 	public function __construct(){
 		parent::__construct();
+    $this->load->model('Account_m'); // Load model : Account_m
 	}
 
 	public function index(){
@@ -24,25 +25,20 @@ Class Setting_c extends MY_Controller{
   /* Functions Management User */
   /** CRUD Rekening Bank */
   	/** Function : List account */
-  	public function listAccountPage(){
-  		$this->load->model('Account_m');
-
-      /* Data untuk view */
+  	public function listAccountPage(){      
   		$this->pageData = array(
-  			'title' => 'PoS | Rekening',
-  			'assets' => array('sweetalert2', 'datatables', 'p_setting'),
-        'optBank' => $this->Account_m->selectBank(),
-        'ajaxUrl' => site_url('Setting_c/listAccountAjax/')
+  			'title'      => 'PoS | Rekening',
+  			'assets'     => array('sweetalert2', 'datatables', 'f_confirm', 'account'),
+        'optBank'    => $this->Account_m->selectBank(),
+        'accountUrl' => site_url('Setting_c/listAccountAjax/')
   		);
-  		$this->page = 'setting/stg_account_v';
+  		$this->page = 'account/account_v';
   		$this->layout();
   	} 
 
   	/** Function : Ajax list account */
     function listAccountAjax(){
-  		/* Load model rekening */
-  		$this->load->model('Account_m');
-      $getData	= $this->Account_m->selectAccount($this->input->post('length'), $this->input->post('start'));
+      $getData	= $this->Account_m->selectAccount($this->input->post('length'), $this->input->post('start'), 0);
       $accData	= array();
       $no			  = $this->input->post('start');
       foreach($getData->result_array() as $show){
@@ -52,8 +48,8 @@ Class Setting_c extends MY_Controller{
         $row[] = $show['bank_name'];
         $row[] = $show['acc_number'];
         $row[] = $show['acc_name'];
-        $row[] = '<a class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
-                  <a class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></a>';
+        $row[] = '<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Edit rekening" onclick="detailAccount(\''.urlencode(base64_encode($show['acc_id'])).'\', \''.site_url('Setting_c/detailAccount/').'\')"><i class="fas fa-edit"></i></a>
+                  <a class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Hapus rekening" onclick="confirmDelete(\'soft-account\', \''.urlencode(base64_encode($show['acc_id'])).'\', \''.site_url('Setting_c/deleteAccount/soft').'\')"><i class="fas fa-trash"></i></a>';
       
         $accData[] = $row;
       }
@@ -68,13 +64,28 @@ Class Setting_c extends MY_Controller{
       echo json_encode($output);
     }
 
+    /** Function : Ajax Detail */
+    function detailAccount(){
+      $data = $this->Account_m->selectAccountOnID(base64_decode(urldecode($this->input->get('accID'))))->result_array();
+
+      $arrReturn = array(
+        'type'        => 'edit',
+        'detail_id'   => urlencode(base64_encode($data[0]['acc_id'])),
+        'detail_name' => $data[0]['acc_name'],
+        'detail_number' => $data[0]['acc_number'],
+        'detail_bank'   => urlencode(base64_encode($data[0]['acc_bank_id_fk']))
+      );
+
+      header('Content-Type: application/json');
+      echo json_encode($arrReturn);
+    }
+
   	/* Function : Add account proses */
     function addAccountProses(){
-      $this->load->model('Account_m');
       $this->load->library('form_validation');
 
       /** Set rules form validation */
-      $config = array(
+      $configValidation = array(
         array(
           'field'  => 'postAccBank',
           'label'  => 'Kode bank',
@@ -84,25 +95,28 @@ Class Setting_c extends MY_Controller{
           )
         ),
         array(
-          'field'  => 'postAccountName',
-          'label'  => 'Atas nama Rekening',
-          'rules'  => 'trim|required',
+          'field'  => 'postAccName',
+          'label'  => 'A/n Rekening',
+          'rules'  => 'trim|required|alpha_numeric_spaces',
           'errors'  => array(
-            'required'	=> 'Atas nama tidak boleh kosong'
+            'required'	=> 'Atas nama rekening tidak boleh kosong',
+            'alpha_numeric_spaces' => 'Atas nama rekening tidak valid'
           )
         ),
         array(
           'field'  => 'postAccNumber',
           'label'  => 'Nomor Rekening',
-          'rules'  => 'trim|required|numeric',
+          'rules'  => 'trim|required|numeric|max_length[50]|is_unique[tb_bank_account.acc_number]',
           'errors'  => array(
-            'required' => 'Nomor rekening tidak boleh kosong',
-            'numeric'  => 'Nomor rekening tidak valid'
+            'required'	 => 'Nomor rekening tidak boleh kosong',
+            'numeric'    => 'Masukan nomor rekening tanpa spasi dan tanda " - "(dash)',
+            'max_length' => 'Nomor rekening terlalu panjang',
+            'is_unique'  => 'Nomor rekening sudah tersedia'
           )
-        )
+        ),
       );
       
-      $this->form_validation->set_rules($config);
+      $this->form_validation->set_rules($configValidation);
   
       if($this->form_validation->run() == FALSE) {
         $arrReturn = array(
@@ -112,7 +126,14 @@ Class Setting_c extends MY_Controller{
           'errorNumber' => form_error('postAccNumber')
         );
       } else {
-        $inputAcc = $this->Account_m->insertAccount();
+        /** Get post data */
+          $postData = array(
+            'acc_name'    => $this->input->post('postAccName'),
+            'acc_number'  => $this->input->post('postAccNumber'),
+            'acc_bank_id_fk'  => base64_decode(urldecode($this->input->post('postAccBank'))),
+          );
+
+          $inputAcc = $this->Account_m->insertAccount($postData);
   
         /** Return value */
           if($inputAcc > 0){
@@ -130,10 +151,108 @@ Class Setting_c extends MY_Controller{
               'statusMsg' => 'Gagal menambahkan data rekening' 
             );
           }
-        }
+      }
 
       header('Content-Type: application/json');
       echo json_encode($arrReturn);
+    }
+
+    /** Function : Edit account proses */
+    function editAccountProses(){
+      /** Load lib & helper */
+        $this->load->library('form_validation');
+
+      /** Set rules form validation */
+        $configValidation = array(
+          array(
+            'field'  => 'postAccName',
+            'label'  => 'A/n Rekening',
+            'rules'  => 'trim|required|alpha_numeric_spaces',
+            'errors'  => array(
+              'required'	=> 'Atas nama rekening tidak boleh kosong',
+              'alpha_numeric_spaces' => 'Atas nama rekening tidak valid'
+            )
+          ),
+          array(
+            'field'  => 'postAccNumber',
+            'label'  => 'Nomor Rekening',
+            'rules'  => 'trim|required|numeric|max_length[50]|callback__validation_edit_account_number',
+            'errors'  => array(
+              'required'	 => 'Nomor rekening tidak boleh kosong',
+              'numeric'    => 'Masukan nomor rekening tanpa spasi dan tanda " - "(dash)',
+              'max_length' => 'Nomor rekening terlalu panjang',
+              '_validation_edit_account_number'  => 'Nomor rekening sudah tersedia'
+            )
+          ),
+          array(
+            'field'  => 'postAccBank',
+            'label'  => 'Bank',
+            'rules'  => 'trim|required|callback__validation_bank',
+            'errors'  => array(
+              'required'	 => 'Kode bank tidak boleh kosong'
+            )
+          ),
+        );
+	  
+        $this->form_validation->set_rules($configValidation);
+    
+      /** Run Valudation */
+        if($this->form_validation->run() == FALSE) {
+          $arrReturn = array(
+            'error'   => TRUE,
+            'errorName' => form_error('postAccName'),
+            'errorNumber' => form_error('postAccNumber'),
+            'errorBank' => form_error('postAccBank'),
+          );
+        } else {
+          /** Get post data */
+            $postData = array(
+              'acc_name'    => $this->input->post('postAccName'),
+              'acc_number'  => $this->input->post('postAccNumber'),
+              'acc_bank_id_fk'  => base64_decode(urldecode($this->input->post('postAccBank'))),
+            );
+    
+          /** Update proses */
+            $updateAcc = $this->Account_m->updateAccount($postData, base64_decode(urldecode($this->input->post('postAccID'))));
+            if($updateAcc > 0){
+              $arrReturn = array(
+                'success'	=> TRUE,
+                'status'	=> 'successUpdate',
+                'statusIcon' => 'success',
+                'statusMsg'	 => 'Berhasil mengubah data rekening !',
+              );
+            } else {
+              $arrReturn = array(
+                'success'	=> TRUE,
+                'status'	=> 'failedUpdate',
+                'statusIcon' => 'error',
+                'statusMsg'	 => 'Gagal mengubah data rekening !',
+              );
+            }
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($arrReturn);
+    }
+
+    /** Function : Delete account proses */
+    function deleteAccount($type){
+      /** Post data dari form */
+        $accID = base64_decode(urldecode($this->input->post('postID')));
+      
+      /** Proses delete */
+        if($type == 'soft'){
+          $delAcc = $this->Account_m->softDeleteAccount($accID);
+        } else if($type == 'hard'){
+          $delAcc = $this->Account_m->hardDeleteAccount($accID);
+        }
+
+      /** Return */
+        if($delAcc > 0){
+          echo "successDelete";
+        } else {
+          echo "failedDelete";
+        }
     }
   	
     /* Function : Proses edit rekening */
@@ -150,6 +269,21 @@ Class Setting_c extends MY_Controller{
           }
         } else {
           $this->form_validation->set_message('_validation_bank', 'Silahkan pilih bank');
+          return FALSE;
+        }
+      }
+
+      /** Function : Validation edit account number */
+      function _validation_edit_account_number($post){
+        if(trim($post, " ") != ''){
+          if($this->Account_m->checkAccountNumber( $post, base64_decode(urldecode($this->input->post('postAccID'))) )->num_rows() > 0){
+            $this->form_validation->set_message('_validation_edit_account_number', 'Nomor rekening sudah digunakan');
+            return FALSE;
+          } else {
+            return TRUE;
+          }
+        } else {
+          $this->form_validation->set_message('_validation_edit_account_number', 'Nomor rekening tidak boleh kosong');
           return FALSE;
         }
       }

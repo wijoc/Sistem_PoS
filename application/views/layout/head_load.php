@@ -44,6 +44,11 @@
     <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/toastr/toastr.min.css">
   <?php } ?>
 
+  <?php if(in_array('icheck', $assets)){ ?>
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="<?php echo base_url() ?>assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <?php } ?>
+
 <!-- Extra CSS / JS file goes here -->
   <?php if(in_array('receipt',$assets)){ ?>
     <!-- Small Receipt / Struk thermal -->
