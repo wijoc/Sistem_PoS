@@ -92,12 +92,13 @@ Class Product_m extends MY_Model {
         return $resultSelect->result_array();
       }
 
-    /** Q-Function : Select data product berdasar ctgr_id
-      function selectProductOnCtgr($ctgr_id){
-        $this->_querySelectProduct;
-        $this->db->where('a', 'a');
-        $this->db
-      } */
+    /** Q-Function : Select data product berdasar ctgr_id */
+      function selectProductOnCtgr($ctgr_id, $amount = 0, $offset = 0){
+        $this->_querySelectProduct('0', $this->input->post('prdSearch'), $this->input->post('order'));
+        ($amount > 0)? $this->db->limit($amount, $offset) : '';
+        $this->db->where($this->prd_f[3], $ctgr_id);
+        return $this->db->get();
+      }
     
     /** Q-Function : Select stock product */
       function getStockProduct(){
@@ -108,6 +109,28 @@ Class Product_m extends MY_Model {
         $this->db->order_by('prd.'.$this->prd_f[0], 'ASC');
         $resultSelect = $this->db->get();
         return $resultSelect->result_array();
+      }
+    
+    /** Q-Function : Select stock product on ID */
+      function selectStockProductOnID($prd_id){
+        $this->db->select('*');
+        
+        if(gettype($prd_id) != 'array'){
+          $this->db->where();
+        } else {
+          $this->db->group_start();
+          $this->db->where($this->stk_f[1], array_values($prd_id)[0]);
+          
+          $shifted_prd_id = array_shift($prd_id);
+          
+          foreach($prd_id as $prdID => $prdValue){
+            $this->db->or_where($this->stk_f[1], $prdID);
+          
+          }
+          $this->db->group_end();
+        }
+
+        return $this->db->get($this->stk_tb);
       }
 
     /** Q-Function : Select stock product */
@@ -215,11 +238,10 @@ Class Product_m extends MY_Model {
       }
     
     /** Query : Select kategori berdasar id */
-      function selectCategoryOnID($id){
+      function selectCategoryByID($id){
         $this->db->where($this->ctgr_f[0], $id);
         $this->db->order_by($this->ctgr_f[1], 'ASC');
-        $resultInsert = $this->db->get($this->ctgr_tb);
-        return $resultInsert->result_array();
+        return $this->db->get($this->ctgr_tb);
       }
 
     /** Query : Update Kategori */

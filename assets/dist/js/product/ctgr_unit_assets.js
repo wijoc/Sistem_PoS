@@ -47,7 +47,6 @@ $(document).ready(function(){
                         $(".tabs-nav").removeClass("active")
                         $("#nav-category").addClass("active")
                         $("#category").addClass("active")
-                        $("#alert-category").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">'+ data.statusMsg +'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times</span></button></div>')
                     })
                 }
             },
@@ -100,7 +99,6 @@ $(document).ready(function(){
                         $(".tabs-nav").removeClass("active")
                         $("#nav-unit").addClass("active")
                         $("#unit").addClass("active")
-                        $("#alert-unit").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">'+ data.statusMsg +'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times</span></button></div>')
                     })
                 }
             },

@@ -90,7 +90,7 @@ Class Sales_m extends MY_Model{
 
     /** Q-function : Select detail trans sale berdasar id */
     function selectDetTS($trans_id){
-      $this->db->select('dts.'.$this->dts_f[3].', dts.'.$this->dts_f[4].', dts.'.$this->dts_f[5].', dts.'.$this->dts_f[6].', prd.'.$this->prd_f[2]);
+      $this->db->select('dts.'.$this->dts_f[2].', dts.'.$this->dts_f[3].', dts.'.$this->dts_f[4].', dts.'.$this->dts_f[5].', dts.'.$this->dts_f[6].', prd.'.$this->prd_f[2]);
       $this->db->from($this->dts_tb.' as dts');
       $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].' = dts.'.$this->dts_f[2], 'LEFT');
       $this->db->where('dts.'.$this->dts_f[1], $trans_id);

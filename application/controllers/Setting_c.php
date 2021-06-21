@@ -9,16 +9,16 @@ Class Setting_c extends MY_Controller{
 	}
 
 	public function index(){
-	  /* Data yang akan dikirim ke view */
-		$this->pageData = array(
-			'title'  => 'PoS | Pengaturan',
-			'assets' => array()
-		); 
+	  /** Data yang akan dikirim ke view */
+      $this->pageData = array(
+        'title'  => 'PoS | Pengaturan',
+        'assets' => array()
+      ); 
 
-      /* View file */
+      /** View file */
         $this->page = "setting/index_setting_v";
 
-      /* Call function layout dari MY_Controller Class */
+      /** Call function layout dari MY_Controller Class */
         $this->layout();
 	}
 

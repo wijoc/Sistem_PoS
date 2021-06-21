@@ -99,7 +99,7 @@ Class Purchases_m extends MY_Model{
 
     /** Q-function : Select detail trans purchase berdasar id */
     function selectDetTP($trans_id){
-      $this->db->select('dtp.'.$this->dtp_f[3].', dtp.'.$this->dtp_f[4].', dtp.'.$this->dtp_f[5].', prd.'.$this->prd_f[2]);
+      $this->db->select('dtp.'.$this->dtp_f[2].', dtp.'.$this->dtp_f[3].', dtp.'.$this->dtp_f[4].', dtp.'.$this->dtp_f[5].', prd.'.$this->prd_f[2]);
       $this->db->from($this->dtp_tb.' as dtp');
       $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].' = dtp.'.$this->dtp_f[2], 'LEFT');
       $this->db->where('dtp.'.$this->dtp_f[1], $trans_id);

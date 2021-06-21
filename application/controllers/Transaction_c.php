@@ -28,7 +28,7 @@ Class Transaction_c extends MY_Controller{
 	  	$this->layout();
 	}
 
-  /** Function : Cart / Keranjang */
+  /** CRUD Cart / Keranjang */
 	/** Function : Tambah data keranjang */
 	public function addCart($trans){
 	  /** Load library & Helper */
@@ -254,6 +254,8 @@ Class Transaction_c extends MY_Controller{
   /** CRUD Purchases */
 	/** Function : Page add purchasing */
 	public function addPurchasesPage(){
+		$this->auth_user(['uAll', 'uO', 'uP']);
+
 	  /** Load Model supplier untuk option supplier */
 	  	$this->load->model('Supplier_m');
 
@@ -270,7 +272,7 @@ Class Transaction_c extends MY_Controller{
 	}
 
 	/** Function : Proses add trans purchase */
-	function addPurchasesProses(){
+	public function addPurchasesProses(){
 	  /** Load lib dan helper */
 		$this->load->helper('file');
 		$this->load->library('form_validation');
@@ -508,6 +510,8 @@ Class Transaction_c extends MY_Controller{
 
 	/** Function : Page list trans pembelian */
 	public function listPurchasesPage(){
+		$this->auth_user(['uAll', 'uO', 'uP']);
+
 		$this->pageData = array(
 			'title' => 'PoS | Trans Pembelian',
 			'assets' => array('datatables', 'list_transaction'),
@@ -524,7 +528,7 @@ Class Transaction_c extends MY_Controller{
 		foreach($this->Purchases_m->selectPurchase('all', 0, $this->input->post('length'), $this->input->post('start'))->result_array() as $show){
 			$actionBtn = '<a class="btn btn-xs btn-success" target="_blank" href="'.base_url().$show['tp_note_file'].'"><i class="fa fa-file-download"></i></a>
 				<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="'.site_url('Transaction_c/detailPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-search"></i> </a>
-				<a class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Transaksi Retur Terkait" href="'.site_url('Transaction_c/returnPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-exchange-alt"></i> </a>';
+				<a class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Transaksi Retur Terkait" href="'.site_url('Transaction_c/addRSPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-exchange-alt"></i> </a>';
 			if($show['tp_payment_status'] == 'K'){ 
 				$showStatus = '<span class="badge badge-danger">Kredit - Belum Lunas</span>';
 				$actionBtn .= '&nbsp<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Bayar Angsuran Pembelian" href="'.site_url('Transaction_c/installmentPurchasesPage/').urlencode(base64_encode($show['tp_id'])).'"> <i class="fas fa-cash-register"></i> </a>';
@@ -800,6 +804,8 @@ Class Transaction_c extends MY_Controller{
   /** CRUD Sales */
 	/** Function : Page add trans sales */
 	public function addSalesPage(){
+		$this->auth_user(['uAll', 'uO', 'uK']);
+
 		/** Load model customer untuk option customer */
 		$this->load->model('Customer_m');
 			
@@ -1167,6 +1173,7 @@ Class Transaction_c extends MY_Controller{
 
 	/** Function : Page list trans penjualan */
 	public function listSalesPage(){
+		$this->auth_user(['uAll', 'uO', 'uK']);
 		$this->pageData = array(
 			'title' => 'PoS | Trans Penjualan',
 			'assets' => array('datatables', 'list_transaction'),
@@ -1181,11 +1188,18 @@ Class Transaction_c extends MY_Controller{
 		$tsData	= array();
 		$no			= $this->input->post('start');
 		foreach($this->Sales_m->selectSales($this->input->post('length'), $this->input->post('start'), 0, 0)->result_array() as $show){
-			$actionBtn = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="'.site_url('Transaction_c/detailSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-search"></i> </a>
-				<a class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Transaksi Retur Terkait" href="'.site_url('Transaction_c/returnSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-exchange-alt"></i> </a>';
+			$actionBtn = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="'.site_url('Transaction_c/detailSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-search"></i> </a>';
+
+			if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uK']) == TRUE ){
+				$actionBtn .= '&nbsp<a class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Transaksi Retur Terkait" href="'.site_url('Transaction_c/addRCPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-exchange-alt"></i> </a>';
+			}
+			
 			if($show['ts_payment_status'] == 'K'){ 
 				$showStatus = '<span class="badge badge-danger">Kredit - Belum Lunas</span>';
-				$actionBtn .= '&nbsp<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Bayar Angsuran Pembelian" href="'.site_url('Transaction_c/installmentSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-cash-register"></i> </a>';
+
+				if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uK']) == TRUE ){
+					$actionBtn .= '&nbsp<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Bayar Angsuran Pembelian" href="'.site_url('Transaction_c/installmentSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-cash-register"></i> </a>';
+				}
 			} else if($show['ts_payment_status'] == 'T'){
 				$showStatus = '<span class="badge badge-success">Tunai - Lunas</span>';
 			} else if($show['ts_payment_status'] == 'L'){
@@ -1217,6 +1231,7 @@ Class Transaction_c extends MY_Controller{
 
 	/** Function : Detail trans Sales */
 	public function detailSalesPage($encoded_trans_id){
+		$this->auth_user(['uAll', 'uO', 'uK']);
 		$this->pageData = array(
 			'title' 	=> 'PoS | Trans Penjualan',
 			'assets' 	=> array(),
@@ -1231,6 +1246,8 @@ Class Transaction_c extends MY_Controller{
 
 	/** Function : Page pembayaran angsuran trans sales */
 	public function installmentSalesPage($encoded_trans_id){
+		$this->auth_user(['uAll', 'uO', 'uK']);
+
 		/** Detail Trans */
 		$detailData = $this->Sales_m->selectSalesOnID(base64_decode(urldecode($encoded_trans_id)))->result_array();
 		
@@ -1412,6 +1429,7 @@ Class Transaction_c extends MY_Controller{
   /** CRUD Pengeluaran / Expenses */
   	/** Function : Page list expenses */
   	public function listExpensesPage(){
+		$this->auth_user(['uAll', 'uO', 'uK', 'uP']);
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pengeluaran',
 			'assets'  => array('datatables', 'jqueryui', 'custominput', 'sweetalert2', 'list_transaction', 'add_revenues_expenses'),
@@ -1615,6 +1633,8 @@ Class Transaction_c extends MY_Controller{
   /** CRUD Pemasukan / Revenues */
 	/** Function : Page list revenues */
 	public function listRevenuesPage(){
+		$this->auth_user(['uAll', 'uO', 'uK', 'uP']);
+
 		$this->pageData = array(
 			'title'   => 'PoS | Trans Pendapatan',
 			'assets'  => array('datatables', 'jqueryui', 'custominput', 'sweetalert2', 'list_transaction', 'add_revenues_expenses'),
@@ -1778,6 +1798,154 @@ Class Transaction_c extends MY_Controller{
 
 		header('Content-Type: application/json');
 		echo json_encode($arrReturn);
+	}
+
+  /** CRUD Return Supplier */
+	/** Function : Page add return */
+	public function addRSPage($encoded_trans_id){
+		$this->pageData = array(
+			'title'   => 'PoS | Retur Supplier',
+			'assets'  => array('jqueryui', 'sweetalert2', 'add_return'),
+			'detailCart'  => $this->Purchases_m->selectDetTP(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			'transID'	  => $encoded_trans_id
+		);
+		$this->page = 'trans/return/add_return_supp_v';
+		$this->layout();
+	}
+
+	/** Function : Proses add return supplier */
+	public function addRSProses(){
+	  /** Load lib & helper */
+		$this->load->library('form_validation');
+
+	  /** Load model */
+		$this->load->model('Product_m');
+
+	  /** Set rules form validation */
+		$configValidation = array(
+			array(
+			  'field'  => 'postTPID',
+			  'label'  => 'ID TP',
+			  'rules'  => 'trim|required|callback__validation_return_tpid',
+			  'errors'  => array(
+				  'required'	=> 'Kode Transaksi tidak boleh kosong',
+			  )
+			),
+			array(
+			  'field'  => 'postRSDate',
+			  'label'  => 'Tgl Transaksi',
+			  'rules'  => 'trim|required|callback__validation_date',
+			  'errors'  => array(
+				  'required'	=> 'Tanggal tidak boleh kosong',
+				  '_validation_date' => 'Tanggal tidak valid'
+			  )
+			),
+			array(
+			  'field'  => 'postRSStatus',
+			  'label'  => 'Status Return',
+			  'rules'  => 'trim|required|in_list[R,U]',
+			  'errors'  => array(
+				  'required' => 'Status pembayaran tidak boleh kosong',
+				  'in_list'  => 'Pilih opsi status yang tersedia'
+			  )
+			),
+			array(
+			  'field'  => 'postRSCash',
+			  'label'  => 'Biaya Retur',
+			  'rules'  => 'trim|numeric|callback__validation_return_cash',
+			  'errors'  => array(
+				  'numeric'  => 'Biaya tidak valid, harus berupa angka'
+			  )
+			),
+			array(
+			  'field'  => 'postRSPS',
+			  'label'  => 'Keterangan',
+			  'rules'  => 'trim'
+			),
+		);
+	  
+		$this->form_validation->set_rules($configValidation);
+
+	  /** Run Valudation */
+		if($this->form_validation->run() == FALSE) {
+			$arrReturn = array(
+				'error'		=> TRUE,
+				'errorRSTPID'	=> form_error('postTPID'),
+				'errorRSDate'	=> form_error('postRSDate'),
+				'errorRSStatus'	=> form_error('postRSStatus'),
+				'errorRSCash'	=> form_error('postRSCash')
+			);
+		} else {
+		  /** Get form post data */
+			$postData = array(
+			    'rs_tp_id_fk' => base64_decode(urldecode($this->input->post('postTPID'))),
+				'rs_date' 	=> $this->input->post('postRSDate'),
+				'rs_status'	=> $this->input->post('postRSStatus'),
+				'rs_cash'	=> $this->input->post('postRSCash'),
+				'rs_post_script'	=> $this->input->post('postRSPS')
+			);
+
+			$detailData = array();
+			foreach($this->input->post('postRSItem') as $prdID => $prdAmount){
+				if($prdAmount != NULL || $prdAmount > 0 || $prdAmount != ''){
+					$returnPrd[$prdID] = $prdAmount;
+					$detailData[] = array(
+						'drs_rs_id_fk'		=> NULL,
+						'drs_product_id_fk' => $prdID,
+						'drs_return_qty'	=> $prdAmount
+					);
+				}
+			}
+
+			if($detailData == NULL){
+				$arrReturn = array(
+					'error' => TRUE,
+					'errorRSCart' => 'Keranjang retur tidak boleh kosong'
+				);
+			} else {	
+			  /** Input Proses */
+				$inputRS = $this->Return_m->insertReturnSupplier($postData, $detailData, $returnPrd);
+				if($inputRS == TRUE) {
+					$arrReturn = array(
+						'success'	=> TRUE,
+						'status'	=> 'successInsert',
+						'statusIcon' => 'success',
+						'statusMsg'	 => 'Berhasil menambahkan transaksi retur',
+						'redirect'	 => site_url('Transaction_c/listReturnPage/')
+					);
+				} else {
+					$arrReturn = array(
+						'success'	=> TRUE,
+						'status'	=> 'failedInsert',
+						'statusIcon' => 'error',
+						'statusMsg'	 => 'Gagal menambahkan transaksi retur',
+					);
+				}
+			}
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
+	}
+
+  /** CRUD Return Costumer */
+	/** Function : Page add return costumer */
+	public function addRCPage($encoded_trans_id){
+		$this->auth_user(['uAll', 'uO', 'uK']);
+
+		$this->pageData = array(
+			'title'   => 'PoS | Retur Pelanggan',
+			'assets'  => array('jqueryui', 'sweetalert2', 'add_return'),
+			'detailCart'  => $this->Sales_m->selectDetTS(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			'transID'	  => $encoded_trans_id
+		);
+		$this->page = 'trans/return/add_return_ctm_v';
+		$this->layout();
+	}
+
+	/** Function : Proses add return costumer */
+	public function addRCProses(){
+
 	}
 
   /** Custom Form Validation */
@@ -1948,5 +2116,35 @@ Class Transaction_c extends MY_Controller{
 				return TRUE;
 			}
 		}
+	  
+	  /** Validation : Biaya retur */
+		function _validation_return_cash($post){
+			if($this->input->post('postRSStatus') == 'U'){
+				if(trim($post, "") != ''){
+					return TRUE;
+				} else {
+					$this->form_validation->set_message('_validation_return_cash', 'Biaya tidak boleh kosong');
+					return FALSE;
+				}
+			} else {
+				return TRUE;
+			}
+		}
 
+	  /** Validation : TP ID di form retur */
+		function _validation_return_tpid($post){
+			$checkTPID = $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($post)))->num_rows();
+			if($checkTPID > 0){
+				$checkRS = $this->Return_m->selectRSOnTPID(base64_decode(urldecode($post)))->num_rows();
+				if($checkRS > 0){
+					$this->form_validation->set_message('_validation_return_tpid', 'Retur sudah pernah dilakukan !');
+					return FALSE;
+				} else {
+					return TRUE;
+				}
+			} else {
+				$this->form_validation->set_message('_validation_return_tpid', 'Transaksi Pembelian tidak ditemukan !');
+				return FALSE;
+			}
+		}
 }

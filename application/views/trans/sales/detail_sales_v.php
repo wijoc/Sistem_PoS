@@ -24,11 +24,11 @@
           <div class="col-12">
             <div class="card card-info card-outline">
               <div class="card-header">
-                <h4 class="m-0 card-title text-uppercase"><b>Detail Transaksi</b></h4> <small><i class="fa fa-minus"></i></small> <?php echo $detailTrans[0]['ts_trans_code'] ?></b>
+                <h4 class="m-0 card-title text-uppercase">Detail Transaksi</h4> <small><i class="fa fa-minus"></i></small> <b><?php echo $detailTrans[0]['ts_trans_code'] ?></b>
                 <div class="float-right">
-                  <a class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Daftar Transaksi Pembelian" href="<?php echo site_url('Transaction_c/listPurchasesPage') ?>"><i class="fas fa-list"></i></a>
+                  <a class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Daftar Transaksi Sales" href="<?php echo site_url('Transaction_c/listSalesPage') ?>"><i class="fas fa-list"></i></a>
                   <?php if($detailTrans[0]['ts_payment_status'] == 'K'){ ?>
-                  <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Bayar Angsuran Pembelian" href="<?php echo site_url('Transaction_c/installmentPurchasesPage/'.urlencode(base64_encode($detailTrans[0]['ts_id']))) ?>"><i class="fas fa-cash-register"></i></a>
+                  <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Bayar Angsuran Sales" href="<?php echo site_url('Transaction_c/installmentSalesPage/'.urlencode(base64_encode($detailTrans[0]['ts_id']))) ?>"><i class="fas fa-cash-register"></i></a>
                   <?php } ?>
                 </div>
               </div>

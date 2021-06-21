@@ -1,67 +1,64 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed !');
 
-Class Return_m extends CI_Model {
+Class Return_m extends MY_Model {
+  /** Additional CRUD Product Stock */
+    /** Q-Function : Update stock after return supplier */
+      function updateStockAfterReturn($prd_update){
+        $this->db->query('LOCK TABLE '.$this->stk_tb.' as dps WRITE');
 
-    /** Table Trans Retur Customer */
-        protected $rc_tb    = 'return_customer';
-        protected $rc_f     = array(
-            '0' => 'rc_id',
-            '1' => 'ts_id_fk',
-            '2' => 'rc_date',
-            '3' => 'rc_paid'
-        );
-    
-    /** Table detail retur customer */
-        protected $drc_tb   = 'det_return_customer';
-        protected $drc_f    = array(
-            '0' => 'drc_id',
-            '1' => 'rc_id_fk',
-            '2' => 'prd_id_fk',
-            '3' => 'drc_qty'
-        );
+        $first_key = array_key_first($prd_update); 
+        $first_value = array_values($prd_update)[0];
+        $query_join = 'UPDATE '.$this->stk_tb.' as dps JOIN ( SELECT '.$first_key.' as prd_id, '.$first_value.' as minus_stock ';
+        
+        unset($prd_update[$first_key]);
 
+        foreach($prd_update as $prd_id => $prd_value){
+          $query_join .= ' UNION ALL 
+                          SELECT '.$prd_id.', '.$prd_value;
+        }
+        $query_join .= ') update_stock ON dps.'.$this->stk_f[1].' = update_stock.prd_id
+                        SET '.$this->stk_f[3].' = '.$this->stk_f[3].' - minus_stock';
 
-    /** Query return customer */
-      /** Query insert data return customer */
-        function insertRC($data){
-            $resultInsert = $this->db->insert($this->rc_tb, $data);
-            if($resultInsert > 0){ 
-                $resultData = array(
-                    'resultInsert'  => $resultInsert,
-                    'insertID'      => $this->db->insert_id()
-                );
-            } else {
-                $resultData = array(
-                    'resultInsert'  => $resultInsert,
-                    'insertID'      => null
-                );
-            }
+        $this->db->query($query_join);
 
-            return $resultData;
+        $this->db->query('UNLOCK TABLE');
+      }
+
+  /** CRUD Return Supplier */
+    /** Q-Function : Insert Trans Return Supplier */
+    function insertReturnSupplier($data, $detData, $prdData){
+        $this->db->query('BEGIN');
+        $this->db->insert($this->rs_tb, $data);
+        foreach($detData as $key => $value){
+          $detData[$key]['drs_rs_id_fk'] = $this->db->insert_id();
         }
 
-      /** Query insert detail product return */
-        function insertDetailRC($data){
-            $resultInsert = $this->db->insert_batch($this->drc_tb, $data);
-            return $resultInsert;
+        $insertDetail = $this->insertDetRS($detData);
+        if($data['rs_status'] == 'R'){
+            $updateStock  = $this->updateStockAfterReturn($prdData);
+        } else {
+            $updateStock  = 1;
         }
+        if($insertDetail > 0){
+            $this->db->query('COMMIT');
+            return TRUE;
+        } else {
+            $this->db->query('ROLLBACK');
+            return FALSE;
+        }
+    }
 
-      /** Query get all return_customer data */
-        function getAllRC(){
-            $this->db->order_by($this->rc_f[2], 'DESC');
-            $resultSelect = $this->db->get($this->rc_tb);
-            return $resultSelect->result_array();
-        }
-    
-      /** Query get data return berdasar ts_id */
-        function getReturnOnID($sales_id){
-            $this->db->select('rc.*, drc.*, prd.prd_name');
-            $this->db->from($this->rc_tb.' as rc');
-            $this->db->join($this->drc_tb.' as drc', 'rc.'.$this->rc_f[0].'=drc.'.$this->drc_f[1], 'LEFT');
-            $this->db->join('tb_product as prd', 'drc.'.$this->drc_f[2].'=prd.prd_id', 'LEFT');
-            $this->db->where('rc.'.$this->rc_f[1], $sales_id);
-            $resultSelect = $this->db->get();
-            return $resultSelect->result_array();
-        }
+    /** Q-Function : Select Trans Return berdasar tp_id */
+    function selectRSOnTPID($tp_id){
+      $this->db->where($this->rs_f[1], $tp_id);
+      return $this->db->get($this->rs_tb);
+    }
+
+    /** Q-Function : Insert detail return supplier */
+    function insertDetRS($data){
+        return $this->db->insert_batch($this->drs_tb, $data);
+    }
+
+  /** CRUD Return Customer */
 }

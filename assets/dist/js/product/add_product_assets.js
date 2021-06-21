@@ -131,7 +131,7 @@ $(document).ready(function(){
                         icon: data.statusIcon,
                         title: data.statusMsg
                     }).then((result) => {
-                        $("#alert-proses").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">'+ data.statusMsg +'<a href="' + data.redirect + '" class="alert-link">Klik untuk melihat daftar data.</a><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                        $("#alert-proses").html('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">'+ data.statusMsg +'<a href="' + data.redirect + '" class="alert-link">Klik untuk melihat daftar data.</a><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
                     })
                 }
             },

@@ -40,17 +40,17 @@
                       <h5 class="col-sm-6 m-0">Daftar Kategori</h5>
                       <div class="col-sm-6">
                         <a class="btn btn-sm btn-info text-white float-right" data-toggle="modal" data-target="#modal-category">
-                          <i class="fas fa-plus"></i> Tambah Kategori</a>
+                          <i class="fas fa-plus"></i>
+                        </a>
                       </div>
                     </div>
                     <hr>
-                    <div id="alert-category"></div>
                     <table id="table-category" class="table table-bordered table-striped">
                       <thead>
                         <th>No.</th>
                         <th>Kategori</th>
                         <th>Jumlah Produk</th>
-                        <th class="text-center">Aksi</th>
+                        <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
                       </thead>
                       <tbody>
                       </tbody>
@@ -58,7 +58,7 @@
                         <th>No.</th>
                         <th>Kategori</th>
                         <th>Jumlah Produk</th>
-                        <th class="text-center">Aksi</th>
+                        <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
                       </tfoot>
                     </table>
                   </div>
@@ -68,18 +68,17 @@
                     <div class="row">
                       <h5 class="col-sm-6 m-0">Daftar Satuan</h5>
                       <div class="col-sm-6">
-                        <a class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#modal-unit">
-                          <i class="fas fa-plus"></i> Tambah Satuan</a>
+                        <a class="btn btn-sm btn-info float-right text-white" data-toggle="modal" data-target="#modal-unit">
+                          <i class="fas fa-plus"></i></a>
                       </div>
                     </div>
                     <hr>
-                    <div id="alert-unit"></div>
                     <table id="table-unit" class="table table-bordered table-striped">
                       <thead>
                         <th>No.</th>
                         <th>Satuan</th>
                         <th>Jumlah Produk</th>
-                        <th>Aksi</th>
+                        <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
                       </thead>
                       <tbody>
                       </tbody>
@@ -87,7 +86,7 @@
                         <th>No.</th>
                         <th>Satuan</th>
                         <th>Jumlah Produk</th>
-                        <th>Aksi</th>
+                        <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
                       </tfoot>
                     </table>
                   </div>

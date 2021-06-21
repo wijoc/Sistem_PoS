@@ -22,11 +22,16 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-lg-12">
-            <div class="card card-orange card-outline">
+            <div class="card card-info card-outline">
+              <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK']) == TRUE ){ ?>
               <div class="card-header">
-                <h5 class="m-0 card-title">Daftar Transaksi Penjualan</h5>
-                <a class="btn btn-sm btn-success float-right" href="<?php echo site_url('Transaction_c/addSalesPage') ?>"> <i class="fas fa-plus"></i> Tambah Transaksi</a>
+                <div class="btn-group float-right" role="group" aria-label="Basic example">
+                  <a class="btn btn-sm btn-info text-white" data-toggle="tooltip" data-placement="top" title="Tambah Transaksi" href="<?php echo site_url('Transaction_c/addSalesPage') ?>"> 
+                    <i class="fas fa-plus"></i>
+                  </a>
+                </div>
               </div>
+              <?php } ?>
               <div class="card-body">
                 <div class="table-responsive">
                     <table id="table-transaction" class="table table-bordered table-striped">

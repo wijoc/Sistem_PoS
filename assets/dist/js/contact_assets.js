@@ -347,46 +347,76 @@ $(document).ready(function(){
     function createList(data){
         var output = ''
         for(index in data.contact_data){
-            output += `
-                <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
-                    <div class="card bg-light">
-                        <div class="card-header text-muted border-bottom-0">
-                            `+ data.contact_data[index].data_name +`
-                        </div>
-                        <div class="card-body pt-0">
-                            <div class="row">
-                                <div class="col-12">
-                                    <h6 class="lead font-weight-bold">`+ data.contact_data[index].data_contact +`</h6>
-                                    <ul class="ml-4 mb-0 fa-ul text-muted">
-                                        <li class="small">
-                                            <span class="fa-li"><i class="fas fa-md fa-phone"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_telp +`
-                                        </li>
-                                        <li class="small">
-                                            <span class="fa-li"><i class="fas fa-md fa-envelope-open-text"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_email +`
-                                        </li>
-                                        <li class="small">
-                                            <span class="fa-li"><i class="fas fa-md fa-building"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_address +`
-                                        </li>
-                                    </ul>
+            if(data.user_allowed == 'TRUE'){
+                output += `
+                    <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
+                        <div class="card bg-light">
+                            <div class="card-header text-muted border-bottom-0">
+                                `+ data.contact_data[index].data_name +`
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6 class="lead font-weight-bold">`+ data.contact_data[index].data_contact +`</h6>
+                                        <ul class="ml-4 mb-0 fa-ul text-muted">
+                                            <li class="small">
+                                                <span class="fa-li"><i class="fas fa-md fa-phone"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_telp +`
+                                            </li>
+                                            <li class="small">
+                                                <span class="fa-li"><i class="fas fa-md fa-envelope-open-text"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_email +`
+                                            </li>
+                                            <li class="small">
+                                                <span class="fa-li"><i class="fas fa-md fa-building"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_address +`
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="text-right">
+                                    <a href="" class="btn btn-sm btn-info">
+                                        <i class="fas fa-cash-register"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-warning" data-toggle="modal" data-target="#`+ data.modal +`" onclick="editContact('`+data.type+`', '`+ data.contact_data[index].data_id +`', '`+ data.url_detail +`')">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-danger" onclick="confirmDelete('`+ data.delete_type +`', '`+ data.contact_data[index].data_id +`', '`+ data.delete_url +`')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <div class="text-right">
-                                <a href="" class="btn btn-sm btn-info">
-                                    <i class="fas fa-cash-register"></i>
-                                </a>
-                                <a class="btn btn-sm btn-warning" data-toggle="modal" data-target="#`+ data.modal +`" onclick="editContact('`+data.type+`', '`+ data.contact_data[index].data_id +`', '`+ data.url_detail +`')">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a class="btn btn-sm btn-danger" onclick="confirmDelete('`+ data.delete_type +`', '`+ data.contact_data[index].data_id +`', '`+ data.delete_url +`')">
-                                    <i class="fas fa-trash"></i>
-                                </a>
+                    </div>
+                `;
+            } else {
+                output += `
+                    <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
+                        <div class="card bg-light">
+                            <div class="card-header text-muted border-bottom-0">
+                                `+ data.contact_data[index].data_name +`
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6 class="lead font-weight-bold">`+ data.contact_data[index].data_contact +`</h6>
+                                        <ul class="ml-4 mb-0 fa-ul text-muted">
+                                            <li class="small">
+                                                <span class="fa-li"><i class="fas fa-md fa-phone"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_telp +`
+                                            </li>
+                                            <li class="small">
+                                                <span class="fa-li"><i class="fas fa-md fa-envelope-open-text"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_email +`
+                                            </li>
+                                            <li class="small">
+                                                <span class="fa-li"><i class="fas fa-md fa-building"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_address +`
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         } 
         
         if(data.type == 'supp' ){

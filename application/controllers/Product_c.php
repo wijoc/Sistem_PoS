@@ -9,16 +9,16 @@ Class Product_c extends MY_Controller {
 	}
 
 	public function index(){
-	  /* Data yang akan dikirim ke view */
+	  /** Data yang akan dikirim ke view */
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
 			'assets' => array(),
 		);
 
-      /* View file */
+      /** View file */
 		$this->page = 'product/index_product_v';
 
-      /* Call function layout dari MY_Controller Class */
+      /** Call function layout dari MY_Controller Class */
         $this->layout();
 	}
 
@@ -38,35 +38,45 @@ Class Product_c extends MY_Controller {
 
 	/** Function : List product */
 	public function listProductPage(){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uG', 'uK', 'uP']);
+
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
 			'assets' => array('datatables', 'list_product', 'f_confirm'),
+			'prdAjaxUrl' => site_url('Product_c/listProductAjax/All')
 		);
 		$this->page = 'product/list_product_v';
 		$this->layout();
 	}
 
 	/** Function : Ajax list product */
-	public function listProductAjax(){
-		$getData	= $this->Product_m->selectProduct($this->input->post('length'), $this->input->post('start'));
+	public function listProductAjax($type, $id = NULL){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uG', 'uK', 'uP']);
+		
+		if($type == 'All'){
+			$getData = $this->Product_m->selectProduct($this->input->post('length'), $this->input->post('start'));
+		} else if($type == 'Category') {
+			$getData = $this->Product_m->selectProductOnCtgr(base64_decode(urldecode($id)), $this->input->post('length'), $this->input->post('start'));
+		}
 		$prdData	= array();
 		$no			= $this->input->post('start');
 		foreach($getData->result_array() as $show){
 			$no++;
 			$row = array();
-			$row[] = $no;
+			$row[] = ($show['prd_barcode'])? $show['prd_barcode'] : '<i class="fas fa-minus" style="color: red;"></i>';
 			$row[] = $show['prd_name'];
 			$row[] = $show['ctgr_name'];
-			$row[] = $show['prd_purchase_price'];
-			$row[] = $show['prd_selling_price'];
+			( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uP']) == TRUE )? $row[] = $show['prd_purchase_price'] : '';
+			( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK']) == TRUE )? $row[] = $show['prd_selling_price'] : '';
 			$row[] = $show['unit_name'];
 			$row[] = '0';
-			$row[] = '<div class="btn-group" role="group" aria-label="Basic example">
-				<a class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Detail produk" href="'.site_url("Product_c/detailProductPage/").urlencode(base64_encode($show['prd_id'])).'" data-toggle="tooltip" data-placement="top" title="Detail Produk"><i class="fas fa-search"></i></a>
-				<a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Ubah produk" href="'.site_url('Product_c/editProductPage/').urlencode(base64_encode($show['prd_id'])).'" data-toggle="tooltip" data-placement="top" title="Edit Produk"><i class="fas fa-edit"></i></a>
-				<a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Hapus produk" onclick="confirmDelete(\'soft-prd\', \' '.urlencode(base64_encode($show['prd_id'])).' \', \' '.site_url('Product_c/softdeleteProductProses').' \')" data-toggle="tooltip" data-placement="top" title="Hapus Produk"><i class="fas fa-trash"></i></a>
-				</div>';
-		
+			if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){
+				$row[] = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail produk" href="'.site_url("Product_c/detailProductPage/").urlencode(base64_encode($show['prd_id'])).'" data-toggle="tooltip" data-placement="top" title="Detail Produk"><i class="fas fa-search"></i></a>
+					<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Ubah produk" href="'.site_url('Product_c/editProductPage/').urlencode(base64_encode($show['prd_id'])).'" data-toggle="tooltip" data-placement="top" title="Edit Produk"><i class="fas fa-edit"></i></a>
+					<a class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Hapus produk" onclick="confirmDelete(\'soft-prd\', \' '.urlencode(base64_encode($show['prd_id'])).' \', \' '.site_url('Product_c/softdeleteProductProses').' \')" data-toggle="tooltip" data-placement="top" title="Hapus Produk"><i class="fas fa-trash"></i></a>';
+			}
 			$prdData[] = $row;
 		}
 
@@ -77,6 +87,7 @@ Class Product_c extends MY_Controller {
 			'data'			  => $prdData
 		);
 
+		header('Content-Type: application/json');
 		echo json_encode($output);
 	}
 
@@ -85,23 +96,25 @@ Class Product_c extends MY_Controller {
 		$catID = base64_decode(urldecode($encoded_cat_id));
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
-			'assets' => array('datatables', 'sweetalert2', 'f_confirm', 'page_product'),
-			'dataProduct' => $this->Product_m->getProductOnCat($catID),
-			'dataKtgr'	=> $this->Product_m->getCategoryOnID($catID)
+			'assets' => array('datatables', 'f_confirm', 'list_product'),
+			'prdAjaxUrl' => site_url('Product_c/listProductAjax/Category/'.$encoded_cat_id),
+			'dataCtgr'	=> $this->Product_m->selectCategoryByID($catID)->result_array()
 		);
 		$this->page = 'product/list_product_v';
 		$this->layout();
 	}
 
-	/* Function : Stock product */
+	/** Function : Stock product */
 	public function stockProductPage(){
-		/* set data yang akan ditampilkan */
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uG']);
+
 		$this->pageData = array(
 			'title' 	=> 'PoS | Stock Product',
 			'assets'	=> array('datatables', 'sweetalert2', 'stock_product')
 		);
 
-		/* Set view file */
+		/** Set view file */
 		$this->page = 'product/stock_product_v';
 		$this->layout();
 	}
@@ -109,11 +122,8 @@ Class Product_c extends MY_Controller {
 	/** Function : Ajax stock product */
 	public function stockProductAjax(){
 		$prdData	= array();
-		$no			= $this->input->post('start');
 		foreach($this->Product_m->selectProductStock(10, 0)->result_array() as $show){
-			$no++;
 			$row = array();
-			$row[] = $no;
 			$row[] = ($show['prd_barcode'])? $show['prd_barcode'] : '<i class="fas fa-minus" style="color: red;"></i>';
 			$row[] = $show['prd_name'];
 			$row[] = $show['prd_initial_g_stock'];
@@ -139,12 +149,15 @@ Class Product_c extends MY_Controller {
 		//print("<pre>".print_r($this->Product_m->selectProductStock(10, 0)->result_array(), true)."</pre>");
 	}
 
-	/* Function : Detail product page */
+	/** Function : Detail product page */
 	public function detailProductPage($id){
-	  /* Decode produk id */
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uG']);
+
+	  /** Decode produk id */
 		$prdID = base64_decode(urldecode($id));
 	  
-	  /* Proses tampil halaman */
+	  /** Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Detail Product',
 			'assets'  => array(),
@@ -154,12 +167,15 @@ Class Product_c extends MY_Controller {
 		$this->layout();
 	}
 
-	/* Function : Form edit product */
+	/** Function : Form edit product */
 	public function editProductPage($id){
-	  /* Decode produk id */
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uG']);
+
+	  /** Decode produk id */
 		$prdID = base64_decode(urldecode($id));
 	  
-	  /* Proses tampil halaman */
+	  /** Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Edit Product',
 			'assets'  => array('sweetalert2', 'dropify', 'p_edit_product'),
@@ -627,6 +643,9 @@ Class Product_c extends MY_Controller {
   /** CRUD Kategori & Satuan */
 	/** Function : List kategori dan satuan */
 	public function listCatUnitPage(){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uG', 'uK', 'uP']);
+
 		$this->pageData = array(
 			'title'  => 'PoS | List Kategori',
 			'assets' => array('datatables', 'sweetalert2', 'ctgr_unit', 'f_confirm')
@@ -641,25 +660,28 @@ Class Product_c extends MY_Controller {
 		$ctgrData	= array();
 		$no			= $this->input->post('start');
 		foreach($getData->result_array() as $show){
+			$actionBtn = '<a class="btn btn-xs btn-info" href="'.site_url('Product_c/listProductOnCatPage/').urlencode(base64_encode($show['ctgr_id'])).'"><i class="fas fa-list"></i></a>';
 			$no++;
 			$row = array();
 			$row[] = $no;
 			$row[] = $show['ctgr_name'];
 			$row[] = $show['ctgr_count_prd'];
-			$row[] = '
-			<a class="btn btn-xs btn-info" href="'.site_url('Product_c/listProductOnCatPage/').urlencode(base64_encode($show['ctgr_id'])).'"><i class="fas fa-list"></i></a>
-			<a class="btn btn-xs btn-warning" onclick="editCtgrUnit(\'ctgr\', \''.urlencode(base64_encode($show['ctgr_id'])).'\', \''.$show['ctgr_name'].'\')"><i class="fas fa-edit"></i></a>
-			<a class="btn btn-xs btn-danger" onclick="confirmDelete(\'ctgr\', \''.urlencode(base64_encode($show['ctgr_id'])).'\', \''.site_url('Product_c/deleteCategoryProses').'\')"><i class="fas fa-trash"></i></a>  
-			';
+
+			if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){
+				$actionBtn .= '&nbsp;<a class="btn btn-xs btn-warning" onclick="editCtgrUnit(\'ctgr\', \''.urlencode(base64_encode($show['ctgr_id'])).'\', \''.$show['ctgr_name'].'\')"><i class="fas fa-edit"></i></a>
+				<a class="btn btn-xs btn-danger" onclick="confirmDelete(\'ctgr\', \''.urlencode(base64_encode($show['ctgr_id'])).'\', \''.site_url('Product_c/deleteCategoryProses').'\')"><i class="fas fa-trash"></i></a>  
+				';
+			}
+			$row[] = $actionBtn;
 		
-			$prdData[] = $row;
+			$ctgrData[] = $row;
 		}
 
 		$output = array(
 			'draw'			  => $this->input->post('draw'),
 			'recordsTotal'	  => $this->Product_m->count_all(),
 			'recordsFiltered' => $this->Product_m->count_filtered($this->input->post('length'), $this->input->post('start')),
-			'data'			  => $prdData
+			'data'			  => $ctgrData
 		);
 
 		echo json_encode($output);
@@ -774,7 +796,7 @@ Class Product_c extends MY_Controller {
 	/** Function : Ajax list satuan dan satuan */
 	public function listUnitAjax(){
 		$getData	= $this->Product_m->selectUnit($this->input->post('length'), $this->input->post('start'));
-		$ctgrData	= array();
+		$unitData	= array();
 		$no			= $this->input->post('start');
 		foreach($getData->result_array() as $show){
 			$no++;
@@ -782,19 +804,22 @@ Class Product_c extends MY_Controller {
 			$row[] = $no;
 			$row[] = $show['unit_name'];
 			$row[] = $show['unit_count_prd'];
-			$row[] = '
-			<a class="btn btn-xs btn-warning" onclick="editCtgrUnit(\'unit\', \''.urlencode(base64_encode($show['unit_id'])).'\', \''.$show['unit_name'].'\')"><i class="fas fa-edit"></i></a>
-			<a class="btn btn-xs btn-danger" onclick="confirmDelete(\'unit\', \''.urlencode(base64_encode($show['unit_id'])).'\', \''.site_url('Product_c/deleteUnitProses').'\')"><i class="fas fa-trash"></i></a>  
-			';
+
+			if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){
+				$row[] = '
+				<a class="btn btn-xs btn-warning" onclick="editCtgrUnit(\'unit\', \''.urlencode(base64_encode($show['unit_id'])).'\', \''.$show['unit_name'].'\')"><i class="fas fa-edit"></i></a>
+				<a class="btn btn-xs btn-danger" onclick="confirmDelete(\'unit\', \''.urlencode(base64_encode($show['unit_id'])).'\', \''.site_url('Product_c/deleteUnitProses').'\')"><i class="fas fa-trash"></i></a>  
+				';
+			}
 		
-			$prdData[] = $row;
+			$unitData[] = $row;
 		}
 
 		$output = array(
 			'draw'			  => $this->input->post('draw'),
 			'recordsTotal'	  => $this->Product_m->count_all(),
 			'recordsFiltered' => $this->Product_m->count_filtered($this->input->post('length'), $this->input->post('start')),
-			'data'			  => $prdData
+			'data'			  => $unitData
 		);
 
 		echo json_encode($output);

@@ -3,7 +3,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark text-uppercase">Halaman Produk</h1>
+            <h1 class="m-0 text-dark text-uppercase">Stok Produk</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -24,15 +24,13 @@
           <div class="col-lg-12">
             <div class="card card-primary card-outline">
               <div class="card-header">
-                <h5 class="m-0 card-title">Stok Produk</h5>
-                <a class="btn btn-sm btn-success float-right" href="<?php echo site_url('Product_c/addProductPage') ?>"> <i class="fas fa-plus"></i> Tambah Produk</a>
+                <a class="btn btn-sm btn-info float-right text-white" href="<?php echo site_url('Product_c/addProductPage') ?>"> <i class="fas fa-plus"></i> Tambah Produk</a>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
                     <table id="table-stock-product" class="table table-bordered table-striped">
                       <thead>
                       	<tr class="text-center">
-	                        <th rowspan="2" class=" align-middle">No.</th>
 	                        <th rowspan="2" class=" align-middle">Barcode</th>
 	                        <th rowspan="2" class=" align-middle">Nama Produk</th>
 	                        <th colspan="2">Stock Bagus</th>
@@ -52,7 +50,6 @@
                       <tbody>
                       </tbody>
                       <tfoot class="text-center">
-                        <th>No.</th>
                         <th>Barcode</th>
                         <th>Nama Produk</th>
                         <th colspan="2">Good</th>

@@ -212,6 +212,27 @@ class MY_Model extends CI_Model {
             '7' => 'tr_post_script'
         );
 
+    /** Table Return Supplier */
+        protected $rs_tb = 'return_supplier';
+        protected $rs_f  = array(
+            '0' => 'rs_id',
+            '1' => 'rs_tp_id_fk',
+            '2' => 'rs_date',
+            '3' => 'rs_status',
+            '4' => 'rs_cash',
+            '5' => 'rs_post_script',
+            '6' => 'created_at'
+        );
+
+    /** Table Detail Return Supplier */
+        protected $drs_tb = 'det_return_supplier';
+        protected $drs_f  = array(
+            '0' => 'drs_id',
+            '1' => 'drs_rs_id_fk',
+            '2' => 'drs_product_id_fk',
+            '3' => 'drs_return_qty'
+        );
+
 	/** Table rekening */
         protected $acc_tb = 'tb_bank_account';
         protected $acc_f = array(
@@ -228,6 +249,17 @@ class MY_Model extends CI_Model {
             '0' => 'bank_id',
             '1' => 'bank_code',
             '2' => 'bank_name'
+        );
+    
+    /** Table User */
+        protected $u_tb = 'tb_user';
+        protected $u_f  = array(
+            '0' => 'u_id',
+            '1' => 'u_username',
+            '2' => 'u_password',
+            '3' => 'u_name',
+            '4' => 'u_level',
+            '5' => 'u_status'
         );
 
 	public function __construct(){

@@ -8,16 +8,6 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="<?php echo base_url() ?>assets/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="#" class="d-block">Nama User</a>
-        </div>
-      </div>
-
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -34,145 +24,154 @@
             </a>
           </li>
 
-          <!-- Menu : Product -->
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-cubes"></i>
-              <p>
-                Produk
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo site_url('Product_c/addProductPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Tambah Produk</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Product_c/listProductPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Data Produk</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Product_c/listCatUnitPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Kategori & Satuan</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Product_c/stockProductPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stok</p>
-                </a>
-              </li>
-            </ul>
-          </li>
+          <li class="nav-header">Master Data</li>
 
-          <!-- Menu : Contact -->
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-address-book"></i>
-              <p>
-                Kontak
-                <i class="right fas fa-angle-left"></i>
-              </p>
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG', 'uK', 'uP'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Product_c/listProductPage') ?>" class="nav-link">
+              <i class="fas fa-circle fa-cubes nav-icon"></i>
+              <p>Produk</p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo site_url('Supplier_c') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Supplier</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Customer_c') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pelanggan</p>
-                </a>
-              </li>
-            </ul>
           </li>
+          <?php } ?>
 
-          <!-- Menu : Transaction -->
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-cash-register"></i>
-              <p>
-                Transaksi
-                <i class="right fas fa-angle-left"></i>
-              </p>
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Product_c/stockProductPage') ?>" class="nav-link">
+              <i class="fas fa-boxes nav-icon"></i>
+              <p>Stok Produk</p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo site_url('Transaction_c/listPurchasesPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Trans. Pembelian</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Transaction_c/listSalesPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Trans. Penjualan</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Transaction_c/listExpensesPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pengeluaran Lainnya</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Transaction_c/listRevenuesPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pendapatan Lainnya</p>
-                </a>
-              </li>
-            </ul>
           </li>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Product_c/listCatUnitPage') ?>" class="nav-link">
+              <i class="fas fa-box nav-icon"></i>
+              <p>Kategori & Satuan</p>
+            </a>
+          </li>
+          <?php } ?>
 
-          <!-- Menu : Laporan -->
-          <li class="nav-item menu-open">
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Supplier_c') ?>" class="nav-link">
+              <i class="fas fa-truck-moving nav-icon"></i>
+              <p>Supplier</p>
+            </a>
+          </li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Customer_c') ?>" class="nav-link">
+              <i class="fas fa-user nav-icon"></i>
+              <p>Pelanggan</p>
+            </a>
+          </li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK', 'uP'])){ ?>
+          <li class="nav-header">Transaksi</li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uP'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Transaction_c/listPurchasesPage') ?>" class="nav-link">
+              <i class="fas fa-dolly-flatbed nav-icon"></i>
+              <p>Trans. Pembelian</p>
+            </a>
+          </li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Transaction_c/listSalesPage') ?>" class="nav-link">
+              <i class="fas fa-cash-register nav-icon"></i>
+              <p>Trans. Penjualan</p>
+            </a>
+          </li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uP', 'uK'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Transaction_c/listExpensesPage') ?>" class="nav-link">
+              <i class="fas fa-hand-holding-usd nav-icon"></i>
+              <p>Pengeluaran Lainnya</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Transaction_c/listRevenuesPage') ?>" class="nav-link">
+              <i class="fas fa-donate nav-icon"></i>
+              <p>Pendapatan Lainnya</p>
+            </a>
+          </li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uP'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Transaction_c/listRSPage') ?>" class="nav-link">
+              <i class="fas fa-exchange-alt nav-icon"></i>
+              <p>Retur Pembelian</p>
+            </a>
+          </li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Transaction_c/listRCPage') ?>" class="nav-link">
+              <i class="fas fa-sync-alt nav-icon"></i>
+              <p>Retur Pelanggan</p>
+            </a>
+          </li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG'])){ ?>
+          <li class="nav-header">Laporan</li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO'])){ ?>
+          <li class="nav-item">
             <a href="<?php echo site_url('Report_c') ?>" class="nav-link">
-              <i class="nav-icon fas fa-file-signature"></i>
-              <p>
-                Laporan
-              </p>
+              <i class="fas fa-file-signature nav-icon"></i>
+              <p>Laporan</p>
             </a>
           </li>
+          <?php } ?>
 
-          <!-- Menu : Setting -->
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-cogs"></i>
-              <p>
-                Pengaturan
-                <i class="right fas fa-angle-left"></i>
-              </p>
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uG'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Report_c') ?>" class="nav-link">
+              <i class="fas fa-file-signature nav-icon"></i>
+              <p>Laporan Stok Produk</p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo site_url('User_c/listUserPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pengaturan Pengguna</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Setting_c/settingProfile') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pengaturan Profil Toko</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo site_url('Setting_c/listAccountPage') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pengaturan Rekening Bank</p>
-                </a>
-              </li>
-            </ul>
           </li>
+          <?php } ?>
+          
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO'])){ ?>
+          <li class="nav-header">Pengaturan</li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Setting_c/listAccountPage') ?>" class="nav-link">
+              <i class="fas fa-university nav-icon"></i>
+              <p>Pengaturan Rekening Bank</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Setting_c/settingProfile') ?>" class="nav-link">
+              <i class="fas fa-cogs nav-icon"></i>
+              <p>Pengaturan Profil Toko</p>
+            </a>
+          </li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('User_c/listUserPage') ?>" class="nav-link">
+              <i class="fas fa-users-cog nav-icon"></i>
+              <p>Pengaturan Pengguna</p>
+            </a>
+          </li>
+          <?php } ?>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

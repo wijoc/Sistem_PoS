@@ -10,17 +10,20 @@ Class Customer_c extends MY_Controller{
 
     /** Fuction : List customer */
     public function index(){
-    	/* Proses tampil halaman */
+      /** Check allowed user */
+      $this->auth_user(['uAll', 'uO', 'uK']);
+  
+    	/** Proses tampil halaman */
     	$this->pageData = array(
     		'title'       => 'PoS | Pelanggan',
         'assets'      => array('sweetalert2', 'contact', 'f_confirm'),
         'contact_url'  => site_url('Customer_c/listCustomerAjax/')
     	);
 
-      /* View file */
+      /** View file */
     	$this->page = "contact/list_customer_v";
 
-      /* Call function layout dari MY_Controller Class */
+      /** Call function layout dari MY_Controller Class */
     	$this->layout();
     }
 
@@ -72,10 +75,18 @@ Class Customer_c extends MY_Controller{
         $data['contact_data'] = $ctmData;
         $data['page']         = $page;
         $data['type']         = 'ctm';
-        $data['modal']        = 'modal-edit-customer';
-        $data['url_detail']   = site_url('Customer_c/getCustomer/');
-        $data['delete_type']  = 'soft-ctm';
-        $data['delete_url']   = site_url('Customer_c/deleteCustomer/soft');
+
+        // Note : Problem js ga mau compare boolean, jadi user_allowed bernilai string
+        if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK']) == TRUE ){
+          $data['user_allowed'] = 'TRUE';
+          $data['modal']        = 'modal-edit-customer';
+          $data['url_detail']   = site_url('Customer_c/getCustomer/');
+          $data['delete_type']  = 'soft-ctm';
+          $data['delete_url']   = site_url('Customer_c/deleteCustomer/soft');
+        } else {
+          $data['user_allowed'] = 'FALSE';
+        }
+
   
       header('Content-Type: application/json');
       echo json_encode($data);

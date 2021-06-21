@@ -137,7 +137,7 @@
 		<!-- List Produk Assets -->
 		<script src="<?php echo base_url() ?>assets/dist/js/product/list_product_assets.js"></script>
 		<script>
-			let product_url = "<?php echo site_url('Product_c/listProductAjax') ?>"
+			let product_url = "<?php echo $prdAjaxUrl ?>"
 		</script>
 	<?php } ?>
 
@@ -213,6 +213,11 @@
 		<script>
 			var account_url = "<?php echo $accountUrl ?>"
 		</script>
+	<?php } ?>
+
+	<?php if(in_array('add_return',$assets)){ ?>
+		<!-- Add Return Assets -->
+		<script src="<?php echo base_url() ?>assets/dist/js/transaction/add_return_assets.js"></script>
 	<?php } ?>
 
 	<!-- belum -->

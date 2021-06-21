@@ -21,4 +21,14 @@ class MY_Controller extends CI_Controller {
 		);
 		$this->load->view('layout/base_layout', $this->layout);
 	}
+
+	public function auth_user($allowed_user){
+		if($this->session->userdata('logedInStatus') == 'canLogin'){
+			if(in_array($this->session->userdata('logedInLevel'), $allowed_user) == FALSE){
+				redirect('Page_c/notAllowedPage/');
+			}
+		} else {
+			redirect('Auth_c');
+		}
+	}
 }

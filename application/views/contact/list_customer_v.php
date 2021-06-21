@@ -3,7 +3,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Kontak</h1>
+            <h1 class="m-0 text-dark text-uppercase">Pelanggan</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -21,10 +21,15 @@
       <div class="container-fluid">
         <!-- Default box -->
         <div class="card card-info card-solid card-outline">
+          <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK']) == TRUE ){ ?>
           <div class="card-header">
-            <h5 class="m-0 card-title">Daftar Kontak Pelanggan</h5>
-            <a class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#modal-tambah-customer"> <i class="fas fa-plus"></i> Tambah member</a>
+            <div class="btn-group float-right" role="group" aria-label="Basic example">
+              <a class="btn btn-sm btn-info text-white" data-toggle="modal" data-placement="top" title="Tambah Customer" data-target="#modal-tambah-customer"> 
+                <i class="fas fa-plus"></i>
+              </a>
+            </div>
           </div>
+          <?php } ?>
           <div class="card-body pb-0">
             <div class="col-12 row">
               <div class="col-10 input-group input-group-sm">
@@ -57,6 +62,7 @@
     </section>
     <!-- /.content -->
 
+    <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK']) == TRUE ){ ?>
     <!-- Modal -->
       <!-- Modal Tambah Pelanggan -->
       <div class="modal fade" id="modal-tambah-customer">
@@ -176,3 +182,4 @@
         </div>
         <!-- /.modal-dialog -->
       </div>
+    <?php } ?>
