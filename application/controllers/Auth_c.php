@@ -52,6 +52,7 @@ Class Auth_c extends MY_Controller{
                   $this->session->set_flashdata('logedInStatus', 'canLogin');
                   $this->session->set_flashdata('logedInUser', $userData[0]['u_name']);
                   $this->session->set_flashdata('logedInLevel', $userData[0]['u_level']);
+                  $this->session->set_flashdata('userID', urlencode(base64_encode($userData[0]['u_id'])));
                   $arrReturn = array(
                       'redirect' => site_url('Page_c')
                   );

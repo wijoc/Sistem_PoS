@@ -3,7 +3,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Halaman Produk</h1>
+            <h1 class="m-0 text-dark text-uppercase">Detail Produk</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -22,16 +22,16 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
-            <div class="card card-orange card-outline">
+            <div class="card card-info card-outline">
               <div class="card-header">
                 <h4 class="card-title">Detail Produk <b><?php echo $detailPrd[0]['prd_name'] ?></b> -- Barcode : <b><?php echo ($detailPrd[0]['prd_barcode'] != '')? $detailPrd[0]['prd_barcode'] : '<i class="fas fa-minus" style="color: red"></i>' ?></b></h4>
                 <div class="float-right">
-                  <a href="<?php echo site_url('Product_c/listProductPage') ?>" class="btn btn-xs btn-secondary"><i class="fas fa-list"></i></a>
-                  <a href="<?php echo site_url('Product_c/editProductPage/').urlencode(base64_encode($detailPrd[0]['prd_id'])) ?>" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
+                  <a href="<?php echo site_url('Product_c/listProductPage') ?>" class="btn btn-sm btn-info"><i class="fas fa-list"></i></a>
+                  <a href="<?php echo site_url('Product_c/editProductPage/').urlencode(base64_encode($detailPrd[0]['prd_id'])) ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
                 </div>
               </div>
               <div class="card-body row">
-                <div class="col-sm-6 border-right">
+                <div class="col-lg-5 col-sm-12 border-right">
                   <div class="form-group row">
                     <h5 class="col-lg-4 col-sm-11 col-form-label">Nama Produk<a class="float-right"> : </a></h5>
                     <div class="col-lg-7 col-sm-11">
@@ -69,10 +69,18 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-lg-7 col-sm-12">
                   <div class="col-12">
                     <div class="form-group">
-                    <h5 class="col-md-4 col-sm-12 col-form-label">Stok<a class="float-right"> : </a></h5>
+                      <h5 class="col-md-4 col-sm-12 col-form-label">Deskripsi<a class="float-right"> : </a></h5>
+                      <div class="col-12 border">
+                        <p class="col-form-label font-weight-bold"><?php echo $detailPrd[0]['prd_description']?> </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group">
+                    <h5 class="col-md-4 col-sm-12 col-form-label font-weight-bold">Stok<a class="float-right"> : </a></h5>
                       <div class="table-responsive">
                         <table class="table table-bordered">
                           <thead>
@@ -83,11 +91,11 @@
                             </tr>
                             <tr class="text-center">
                               <td>Awal</td>
-                              <td>Tersedia</td>
+                              <td>Saat Ini</td>
                               <td>Awal</td>
-                              <td>Tersedia</td>
+                              <td>Saat Ini</td>
                               <td>Awal</td>
-                              <td>Tersedia</td>
+                              <td>Saat Ini</td>
                             </tr>
                           </thead>
                           <tbody>
@@ -106,9 +114,30 @@
                   </div>
                   <div class="col-12">
                     <div class="form-group">
-                      <h5 class="col-md-4 col-sm-12 col-form-label">Deskripsi<a class="float-right"> : </a></h5>
-                      <div class="col-12 border">
-                        <p class="col-form-label font-weight-bold"><?php echo $detailPrd[0]['prd_description']?> </p>
+                    <h5 class="col-md-4 col-sm-12 col-form-label font-weight-bold">Mutasi<a class="float-right"> : </a></h5>
+                      <div class="table-responsive">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Tgl</th>
+                              <th class="text-center">Asal</th>
+                              <th class="text-center">Tujuan</th>
+                              <th class="text-center">Qty Mutasi</th>
+                              <th>PS</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php foreach($detailMutation as $showM): ?>
+                            <tr>
+                              <td class="text-center"><small><?php echo date('Y/m/d', strtotime($showM['sm_date'])) ?></small></td>
+                              <td class="text-center"><?php if($showM['sm_stock_from'] == 'SG'){ echo 'Bagus'; } else if($showM['sm_stock_from'] == 'SNG'){ echo 'Rusak'; } else { echo 'Opname'; } ?></td>
+                              <td class="text-center"><?php if($showM['sm_stock_to'] == 'SG'){ echo 'Bagus'; } else if($showM['sm_stock_to'] == 'SNG'){ echo 'Rusak'; } else { echo 'Opname'; } ?></td>
+                              <td class="text-center"><?php echo $showM['sm_qty'] ?></td>
+                              <td class="text-center"><small><?php echo $showM['sm_post_script'] ?></small></td>
+                            </tr>
+                            <?php endforeach; ?>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>

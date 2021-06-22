@@ -81,15 +81,14 @@ Class Product_m extends MY_Model {
       }
 
     /** Q-Function : Select 1 data product berdasar product id */
-      function selectProductOnID($id){
+      function selectProductByID($id){
         $this->db->select('prd.*, stk.*, kat.'.$this->ctgr_f[1].', sat.'.$this->unit_f[1]);
         $this->db->from($this->prd_tb.' as prd');
         $this->db->where($this->prd_f[0], $id);
         $this->db->join($this->ctgr_tb.' as kat', 'kat.'.$this->ctgr_f[0].'=prd.'.$this->prd_f[3]);
         $this->db->join($this->unit_tb.' as sat', 'sat.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
         $this->db->join($this->stk_tb.' as stk', 'stk.'.$this->stk_f[1].'=prd.'.$this->prd_f[6]);
-        $resultSelect = $this->db->get();
-        return $resultSelect->result_array();
+        return $this->db->get();
       }
 
     /** Q-Function : Select data product berdasar ctgr_id */
@@ -139,6 +138,36 @@ Class Product_m extends MY_Model {
         ($amount > 0)? $this->db->limit($amount, $offset) : '';
         $resultSelect = $this->db->get();
         return $resultSelect;
+      }
+
+    /** Q-Function : Insert mutation stock */
+      function insertStockMutation($data, $field_from, $field_to){
+        $this->db->query('BEGIN');
+        $resultInsert = $this->db->insert($this->sm_tb, $data);
+        if($resultInsert > 0){
+          $this->db->query('LOCK TABLE '.$this->stk_tb.' as stk WRITE');
+          $updateStock = $this->db->query('UPDATE '.$this->stk_tb.' as stk JOIN ( SELECT '.$data['sm_prd_id_fk'].' as prd_id, '.$data['sm_qty'].' as prd_qty ) update_stock ON stk.'.$this->stk_f[1].' = update_stock.prd_id SET '.$this->stk_f[$field_from].' = '.$this->stk_f[$field_from].' - prd_qty, '.$this->stk_f[$field_to].' = '.$this->stk_f[$field_to].' + prd_qty ');
+          if($updateStock > 0){
+            $this->db->query('COMMIT');
+            $returnValue = TRUE;
+          } else {
+            $this->db->query('ROLLBACK');
+            $returnValue = FALSE; 
+          }
+          $this->db->query('UNLOCK TABLE');
+        } else {
+          $this->db->query('ROLLBACK');
+          $returnValue = FALSE;
+        }
+        return $returnValue;
+      }
+
+    /** Q-Function : Select mutatuin stock berdasar id */
+      function selectMutationByProductID($prd_id){
+        $this->db->select('sm.'.$this->sm_f[2].', sm.'.$this->sm_f[3].', sm.'.$this->sm_f[4].', sm.'.$this->sm_f[5].', sm.'.$this->sm_f[8]);
+        $this->db->from($this->sm_tb.' as sm');
+        $this->db->where($this->sm_f[1], $prd_id);
+        return $this->db->get();
       }
 
     /** Q-Function : count_filtered */

@@ -43,7 +43,7 @@ Class Product_c extends MY_Controller {
 
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
-			'assets' => array('datatables', 'list_product', 'f_confirm'),
+			'assets' => array('datatables', 'sweetalert2', 'list_product', 'f_confirm'),
 			'prdAjaxUrl' => site_url('Product_c/listProductAjax/All')
 		);
 		$this->page = 'product/list_product_v';
@@ -93,10 +93,13 @@ Class Product_c extends MY_Controller {
 
 	/** Function : List product berdasar kategori */
 	public function listProductOnCatPage($encoded_cat_id){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uG', 'uK', 'uP']);
+
 		$catID = base64_decode(urldecode($encoded_cat_id));
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
-			'assets' => array('datatables', 'f_confirm', 'list_product'),
+			'assets' => array('datatables', 'sweetalert2', 'f_confirm', 'list_product'),
 			'prdAjaxUrl' => site_url('Product_c/listProductAjax/Category/'.$encoded_cat_id),
 			'dataCtgr'	=> $this->Product_m->selectCategoryByID($catID)->result_array()
 		);
@@ -132,7 +135,8 @@ Class Product_c extends MY_Controller {
 			$row[] = $show['stk_not_good'];
 			$row[] = $show['prd_initial_op_stock'];
 			$row[] = $show['stk_opname'];
-			$row[] = '<a class="btn btn-xs btn-info" href="'.site_url('Product_c/detailProductPage/').urlencode(base64_encode($show['prd_id'])).'"> <i class="fas fa-search"></i> </a>';
+			$row[] = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Produk" href="'.site_url('Product_c/detailProductPage/').urlencode(base64_encode($show['prd_id'])).'"> <i class="fas fa-search"></i> </a>
+					<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Mutasi Stok" href="'.site_url('Product_c/stockMutationProductPage/'.urlencode(base64_encode($show['prd_id']))).'"><i class="fas fa-people-carry"></i></a>';
 		
 			$prdData[] = $row;
 		}
@@ -149,19 +153,154 @@ Class Product_c extends MY_Controller {
 		//print("<pre>".print_r($this->Product_m->selectProductStock(10, 0)->result_array(), true)."</pre>");
 	}
 
+	/** Function : Mutasi stock product */
+	public function stockMutationProductPage($encoded_prd_id){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uG']);
+
+	  /** Decode produk id */
+		$prdID = base64_decode(urldecode($encoded_prd_id));
+
+		$this->pageData = array(
+			'title' 	=> 'PoS | Mutasi Stock Product',
+			'assets'	=> array('sweetalert2', 'add_product'),
+			'detailPrd' => $this->Product_m->selectProductByID($prdID)->result_array(), // Get data berdasar produk id
+		);
+		
+		$this->page = 'product/stock_mutation_product_v';
+		$this->layout();
+	}
+
+	/** Function : Proses Mutasi stock */
+	public function stockMutationProses(){
+	  /** Load library & Helper */
+		$this->load->library('form_validation'); 
+		  
+	  /** Set rules form validation */
+		$configValidation = array(
+			array(
+				'field'	=> 'postPrdID',
+				'label'	=> 'Produk',
+				'rules'	=> 'trim|required|callback__validation_product',
+				'errors'	=> array(
+					'required' => 'Produk tidak boleh kosong'
+				)
+			),
+			array(
+				'field'	=> 'postStockDate',
+				'label'	=> 'Tgl Mutasi',
+				'rules'	=> 'trim|required|callback__validation_date',
+				'errors'	=> array(
+					'required' => 'Tgl mutasi tidak boleh kosong',
+					'_validation_date' => 'Tgl tidak valid'
+				)
+			),
+			array(
+				'field'	=> 'postStockA',
+				'label'	=> 'Dari stok',
+				'rules'	=> 'trim|required|in_list[SG,SNG,SO]',
+				'errors'	=> array(
+					'required' => 'Asal stok tidak boleh kosong',
+					'in_list' => 'Pilih opsi yang tersedia'
+				)
+			),
+			array(
+				'field'	=> 'postStockB',
+				'label'	=> 'Dari stok',
+				'rules'	=> 'trim|required|in_list[SG,SNG,SO]',
+				'errors'	=> array(
+					'required' => 'Asal stok tidak boleh kosong',
+					'in_list' => 'Pilih opsi yang tersedia'
+				)
+			),
+			array(
+				'field'	=> 'postStockQty',
+				'label'	=> 'Jumlah mutasi',
+				'rules'	=> 'trim|required|numeric|greater_than[0]',
+				'errors'	=> array(
+					'required' => 'Jumlah tidak boleh kosong',
+					'numeric' => 'Jumlah tidak valid',
+					'greater_than' => 'Jumlah harus lebih dari 0'
+				)
+			),
+			array(
+				'field'	=> 'postStockPS',
+				'label'	=> 'Catatan',
+				'rules'	=> 'trim'
+			),
+		);
+		$this->form_validation->set_rules($configValidation);
+
+	  /** Run form validation */
+		if($this->form_validation->run() == FALSE) {
+			$arrReturn = array(
+				'error'			=> TRUE,
+				'errorPrdID' 	=> form_error('postPrdID'),
+				'errorStockDate' => form_error('postStockDate'),
+				'errorStockA' 	=> form_error('postStockA'),
+				'errorStockB' 	=> form_error('postStockB'),
+				'errorStockQty' => form_error('postStockQty'),
+				'errorStockPS'	=> form_error('postStockPS')
+			);
+		} else {
+			$encoded_prd_id = $this->input->post('postPrdID');
+			$postData = array(
+				'sm_prd_id_fk' 	=> base64_decode(urldecode($this->input->post('postPrdID'))),
+				'sm_date' 		=> $this->input->post('postStockDate'),
+				'sm_stock_from' => $this->input->post('postStockA'),
+				'sm_stock_to' 	=> $this->input->post('postStockB'),
+				'sm_qty' 		=> $this->input->post('postStockQty'),
+				'sm_post_script' => $this->input->post('postStockPS'),
+				'created_at'	=> date('Y-m-d H:i:s'),
+				'created_by'	=> base64_decode(urldecode($this->session->userdata('userID')))
+			);
+			
+			/** Set asal field mutation */
+			$from = $this->setStockField($this->input->post('postStockA'));
+			$to = $this->setStockField($this->input->post('postStockB'));
+
+			/** Input ke database */
+			$inputSM = $this->Product_m->insertStockMutation($postData, $from, $to);
+
+			/** Proses simpan data */
+			if($inputSM == TRUE){
+				/** Result to return */
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'status'	=> 'successInsert',
+					'statusMsg' => 'Berhasil menambahkan data mutasi !',
+					'statusIcon' => 'success',
+					'redirect'	=> site_url('Product_c/detailProductPage/'.$encoded_prd_id)
+				);
+			} else {
+				/** Result to return */
+				$arrReturn = array(
+					'success'	=> TRUE,
+					'status'	=> 'failedInsert',
+					'statusMsg' => 'Gagal menambahkan data mutasi !',
+					'statusIcon' => 'error'
+				);
+			}
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode($arrReturn);
+	}
+
 	/** Function : Detail product page */
-	public function detailProductPage($id){
+	public function detailProductPage($encoded_prd_id){
 	  /** Check allowed user */
 		$this->auth_user(['uAll', 'uO', 'uG']);
 
 	  /** Decode produk id */
-		$prdID = base64_decode(urldecode($id));
+		$prdID = base64_decode(urldecode($encoded_prd_id));
 	  
 	  /** Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Detail Product',
 			'assets'  => array(),
-			'detailPrd' => $this->Product_m->selectProductOnID($prdID), // Get data berdasar produk id
+			'detailPrd' => $this->Product_m->selectProductByID($prdID)->result_array(), // Get data berdasar produk id
+			'detailMutation' => $this->Product_m->selectMutationByProductID($prdID)->result_array(), // Get data mutasi berdasar produk id
 		);
 		$this->page = 'product/detail_product_v';
 		$this->layout();
@@ -825,7 +964,7 @@ Class Product_c extends MY_Controller {
 		echo json_encode($output);
 	}
 
-	/* Function : add Satuan Proses */
+	/** Function : add Satuan Proses */
 	function addUnitProses(){
 		/** Load library & Helper */
 		  $this->load->library('form_validation'); 
@@ -883,7 +1022,7 @@ Class Product_c extends MY_Controller {
 		echo json_encode($arrReturn);
 	}
 
-	/* Function : edit Satuan Proses */
+	/** Function : edit Satuan Proses */
 	function editUnitProses(){
 		/** Get data dari form */
 		$editData = array(
@@ -916,7 +1055,7 @@ Class Product_c extends MY_Controller {
 		echo json_encode($arrReturn);
 	}
 
-	/* Function : Delete Satuan */
+	/** Function : Delete Satuan */
 	function deleteUnitProses(){
 	  /* Get posted id and decode */
 		$unitID = base64_decode(urldecode($this->input->post('postID')));
@@ -931,4 +1070,46 @@ Class Product_c extends MY_Controller {
 	  		echo 'failedDelete';
 	  	}
 	}
+
+  /** Lainnya */
+	/** Set field stock */
+	private function setStockField($post){
+		switch ($post){
+			case 'SG' :
+				return 2;
+				break;  
+			case 'SNG' :
+				return 3;
+				break;
+			case 'SO' :
+				return 4;
+				break;
+		}
+	}
+  
+  /** Validation */
+	/** Validation : Validation product id */
+	function _validation_product($post){
+		if($this->Product_m->selectProductByID(base64_decode(urldecode($post)))->num_rows() > 0){
+			return TRUE;
+		} else {
+			$this->form_validation->set_message('_validation_product', 'Product tidak ditemukan !');
+			return FALSE;
+		}
+	}
+	  
+	/** Validation : date */
+	  function _validation_date($post){
+		  /** preg_match pattern for input format YYYY-mm-dd */
+		  if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $post)){
+			  /** checkdate(month, day, year) for input format YYYY-mm-dd */
+			  if(checkdate(substr($post, 5, 2), substr($post, 8, 2), substr($post, 0, 4))){
+				  return TRUE;
+			  } else {
+				  return FALSE;
+			  }
+		  } else {
+			  return FALSE;
+		  }
+	  }
 }

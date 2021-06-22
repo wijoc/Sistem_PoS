@@ -39,6 +39,20 @@ class MY_Model extends CI_Model {
             '0' => 'ctgr_id',
             '1' => 'ctgr_name'
         );
+    
+    /** Table Mutasi Stock */
+        protected $sm_tb = 'tb_stock_mutation';
+        protected $sm_f  = array(
+            '0' => 'sm_id',
+            '1' => 'sm_prd_id_fk',
+            '2' => 'sm_stock_from',
+            '3' => 'sm_stock_to',
+            '4' => 'sm_qty',
+            '5' => 'sm_post_script',
+            '6' => 'created_at',
+            '7' => 'created_by',
+            '8' => 'sm_date'
+        );
   
     /** Table Satuan */
         protected $unit_tb = 'tb_unit';
