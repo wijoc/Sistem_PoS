@@ -24,7 +24,7 @@
           <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK']) == TRUE ){ ?>
           <div class="card-header">
             <div class="btn-group float-right" role="group" aria-label="Basic example">
-              <a class="btn btn-sm btn-info text-white" data-toggle="modal" data-placement="top" title="Tambah Customer" data-target="#modal-tambah-customer"> 
+              <a class="btn btn-sm btn-info text-white" data-toggle="modal" data-placement="top" title="Tambah Customer" data-target="#modal-add-customer"> 
                 <i class="fas fa-plus"></i>
               </a>
             </div>
@@ -65,7 +65,7 @@
     <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK']) == TRUE ){ ?>
     <!-- Modal -->
       <!-- Modal Tambah Pelanggan -->
-      <div class="modal fade" id="modal-tambah-customer">
+      <div class="modal fade" id="modal-add-customer">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -79,36 +79,36 @@
                 
                 <!-- Form-part input Pelanggan nama -->
                   <div class="form-group row">
-                    <label for="inputCtmNama" class="col-sm-3 col-form-label">Nama Pelanggan <font color="red">*</font> <a class="float-right"> : </a></label>
+                    <label for="input-ctm-name" class="col-sm-3 col-form-label">Nama Pelanggan <font color="red">*</font> <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postCtmNama" id="inputCtmNama" placeholder="Nama Pelanggan" required>
-                      <small id="errorCtmNama" class="error-msg" style="display:none; color:red; font-style: italic"></small>
+                      <input type="text" class="form-control float-right" name="postCtmName" id="input-ctm-name" placeholder="Nama Pelanggan" required>
+                      <small id="error-ctm-name" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
                 <!-- Form-part input Pelanggan Telp -->
                   <div class="form-group row">
-                    <label for="inputCtmTelp" class="col-sm-3 col-form-label">No. Telphone <a class="float-right"> : </a></label>
+                    <label for="input-ctm-phone" class="col-sm-3 col-form-label">No. Telphone <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postCtmTelp" id="inputCtmTelp" placeholder="Nomor telepone pelanggan">
-                      <small id="errorCtmTelp" class="error-msg" style="display:none; color:red; font-style: italic"></small>
+                      <input type="text" class="form-control float-right" name="postCtmPhone" id="input-ctm-phone" placeholder="Nomor telepone pelanggan">
+                      <small id="error-ctm-phone" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
                 <!-- Form-part input Pelanggan Email -->
                   <div class="form-group row">
-                    <label for="inputCtmEmail" class="col-sm-3 col-form-label">E - mail <a class="float-right"> : </a></label>
+                    <label for="input-ctm-email" class="col-sm-3 col-form-label">E - mail <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="email" class="form-control float-right" name="postCtmEmail" id="inputCtmEmail" placeholder="Alamat E - mail">
+                      <input type="email" class="form-control float-right" name="postCtmEmail" id="input-ctm-email" placeholder="Alamat E - mail">
                       <small id="errorCtmEmail" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
                 <!-- Form-part input Pelanggan Alamat -->
                   <div class="form-group row">
-                    <label for="inputCtmEmail" class="col-sm-3 col-form-label">Alamat <a class="float-right"> : </a></label>
+                    <label for="input-ctm-address" class="col-sm-3 col-form-label">Alamat Pengiriman <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <textarea class="form-control" name="postCtmAddress" rows="3"></textarea>
+                      <textarea class="form-control" name="postCtmAddress" id="input-ctm-address" rows="3"></textarea>
                     </div>
                   </div>
               </div>
@@ -135,40 +135,40 @@
             </div>
             <form action="<?php echo site_url('Customer_c/editCustomerProses') ?>" id="form-edit-customer">
               <div class="modal-body">
-                <input type="hidden" name="postCtmID" id="editCtmID" required readonly>
+                <input type="hidden" name="postCtmID" id="edit-ctm-ID" required readonly>
                 
                 <!-- Form-part input Pelanggan nama -->
                   <div class="form-group row">
-                    <label for="editCtmNama" class="col-sm-3 col-form-label">Nama Pelanggan <font color="red">*</font> <a class="float-right"> : </a></label>
+                    <label for="edit-ctm-name" class="col-sm-3 col-form-label">Nama Pelanggan <font color="red">*</font> <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postCtmNama" id="editCtmNama" placeholder="Nama Pelanggan" required>
-                      <small id="errorCtmNama" class="error-msg" style="display:none; color:red; font-style: italic"></small>
+                      <input type="text" class="form-control float-right" name="postCtmName" id="edit-ctm-name" placeholder="Nama Pelanggan" required>
+                      <small id="error-ctm-name" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
                 <!-- Form-part input Pelanggan Telp -->
                   <div class="form-group row">
-                    <label for="editCtmTelp" class="col-sm-3 col-form-label">No. Telphone <a class="float-right"> : </a></label>
+                    <label for="edit-ctm-phone" class="col-sm-3 col-form-label">No. Telphone <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postCtmTelp" id="editCtmTelp" placeholder="Nomor telepone pelanggan">
-                      <small id="errorCtmTelp" class="error-msg" style="display:none; color:red; font-style: italic"></small>
+                      <input type="text" class="form-control float-right" name="postCtmPhone" id="edit-ctm-phone" placeholder="Nomor telepone pelanggan">
+                      <small id="error-ctm-phone" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
                 <!-- Form-part input Pelanggan Email -->
                   <div class="form-group row">
-                    <label for="editCtmEmail" class="col-sm-3 col-form-label">E - mail <a class="float-right"> : </a></label>
+                    <label for="edit-ctm-email" class="col-sm-3 col-form-label">E - mail <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="email" class="form-control float-right" name="postCtmEmail" id="editCtmEmail" placeholder="Alamat E - mail">
-                      <small id="errorCtmEmail" class="error-msg" style="display:none; color:red; font-style: italic"></small>
+                      <input type="email" class="form-control float-right" name="postCtmEmail" id="edit-ctm-email" placeholder="Alamat E - mail">
+                      <small id="error-ctm-email" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
 
                 <!-- Form-part input Pelanggan Alamat -->
                   <div class="form-group row">
-                    <label for="editCtmEmail" class="col-sm-3 col-form-label">Alamat <a class="float-right"> : </a></label>
+                    <label for="edit-ctm-address" class="col-sm-3 col-form-label">Alamat <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <textarea class="form-control" name="postCtmAddress" id="editCtmAddress" rows="3"></textarea>
+                      <textarea class="form-control" name="postCtmAddress" id="edit-ctm-address" rows="3"></textarea>
                     </div>
                   </div>
               </div>

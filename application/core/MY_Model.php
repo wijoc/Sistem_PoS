@@ -70,7 +70,11 @@ class MY_Model extends CI_Model {
             '3' => 'supp_email',
             '4' => 'supp_telp',
             '5' => 'supp_address',
-            '6' => 'supp_status'
+            '6' => 'supp_status',
+            '7' => 'created_at',
+            '8' => 'created_by',
+            '9' => 'last_updated_at',
+            '10' => 'last_updated_by'
         );
 	
     /** Table Customer */
@@ -81,10 +85,14 @@ class MY_Model extends CI_Model {
             '2' => 'ctm_phone',
             '3' => 'ctm_email',
             '4' => 'ctm_address',
-            '5' => 'ctm_status'
+            '5' => 'ctm_status',
+            '6' => 'created_at',
+            '7' => 'created_by',
+            '8' => 'last_updated_at',
+            '9' => 'last_updated_by'
         );
 
-    /** Table transaksi purchases */
+    /** Table Transaksi purchases */
         protected $tp_tb = 'trans_purchases';
         protected $tp_f  = array(
             '0' => 'tp_id',
@@ -103,10 +111,13 @@ class MY_Model extends CI_Model {
             '13' => 'tp_installment',
             '14' => 'tp_note_file',
             '15' => 'tp_additional_cost',
-            '16' => 'tp_post_script'
+            '16' => 'tp_post_script',
+            '17' => 'created_at',
+            '18' => 'created_by',
+            '19' => 'tp_return_status'
         );
 
-    /** Table detail transaksi purchases */
+    /** Table Detail transaksi purchases */
         protected $dtp_tb = 'det_trans_purchases';
         protected $dtp_f  = array(
             '0' => 'dtp_id',
@@ -233,9 +244,11 @@ class MY_Model extends CI_Model {
             '1' => 'rs_tp_id_fk',
             '2' => 'rs_date',
             '3' => 'rs_status',
-            '4' => 'rs_cash',
-            '5' => 'rs_post_script',
-            '6' => 'created_at'
+            '4' => 'rs_cash_out',
+            '5' => 'rs_cash_in',
+            '6' => 'rs_post_script',
+            '7' => 'created_at',
+            '8' => 'creted_by'
         );
 
     /** Table Detail Return Supplier */

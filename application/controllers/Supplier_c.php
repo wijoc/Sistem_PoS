@@ -11,18 +11,20 @@ class Supplier_c extends MY_Controller
 
   /** Function : List Supplier */
   public function index(){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uP']);
 
-    /* Data yang akan dikirim ke view */
+    /** Data yang akan dikirim ke view */
     $this->pageData = array(
       'title'  => 'PoS | Supplier',
       'assets' => array('sweetalert2', 'contact', 'f_confirm'),
       'contact_url'  => site_url('Supplier_c/listSupplierAjax/')
     );
 
-    /* View file */
+    /** View file */
     $this->page = "contact/list_supplier_v";
 
-    /* Call function layout dari MY_Controller Class */
+    /** Call function layout dari MY_Controller Class */
     $this->layout();
   }
 
@@ -60,24 +62,36 @@ class Supplier_c extends MY_Controller
 
     /** Prepare Data */
       $i = 0;
-      foreach ($this->Supplier_m->selectSupplier($config['per_page'], $start_from, 0, $this->input->get('filter_keyword'), $this->input->get('filter_order'))->result_array() as $showSupp):
-        $suppData[$i]['data_id']    = urlencode(base64_encode($showSupp['supp_id']));
-        $suppData[$i]['data_name']  = ($showSupp['supp_name'])? $showSupp['supp_name'] : '<i class="fas fa-minus"></i>';
-        $suppData[$i]['data_contact'] = ($showSupp['supp_contact_name'])? $showSupp['supp_contact_name'] : '<i class="fas fa-minus"></i>';
-        $suppData[$i]['data_telp']    = ($showSupp['supp_telp'])? $showSupp['supp_telp'] : '<i class="fas fa-minus"></i>';
-        $suppData[$i]['data_email']   = ($showSupp['supp_email'])? $showSupp['supp_email'] : '<i class="fas fa-minus"></i>';
-        $suppData[$i]['data_address'] = ($showSupp['supp_address'])? $showSupp['supp_address'] : '<i class="fas fa-minus"></i>';
-        $i++;
-      endforeach;
+      if($this->Supplier_m->selectSupplier($config['per_page'], $start_from, 0, $this->input->get('filter_keyword'), $this->input->get('filter_order'))->num_rows() > 0){
+        foreach ($this->Supplier_m->selectSupplier($config['per_page'], $start_from, 0, $this->input->get('filter_keyword'), $this->input->get('filter_order'))->result_array() as $showSupp):
+          $suppData[$i]['data_id']    = urlencode(base64_encode($showSupp['supp_id']));
+          $suppData[$i]['data_name']  = ($showSupp['supp_name'])? $showSupp['supp_name'] : '<i class="fas fa-minus"></i>';
+          $suppData[$i]['data_contact'] = ($showSupp['supp_contact_name'])? $showSupp['supp_contact_name'] : '<i class="fas fa-minus"></i>';
+          $suppData[$i]['data_telp']    = ($showSupp['supp_telp'])? $showSupp['supp_telp'] : '<i class="fas fa-minus"></i>';
+          $suppData[$i]['data_email']   = ($showSupp['supp_email'])? $showSupp['supp_email'] : '<i class="fas fa-minus"></i>';
+          $suppData[$i]['data_address'] = ($showSupp['supp_address'])? $showSupp['supp_address'] : '<i class="fas fa-minus"></i>';
+          $i++;
+        endforeach;
+      } else {
+        $suppData = NULL;
+      }
       
       $data['pagination'] = $this->pagination->create_links();
       $data['contact_data'] = $suppData;
+      $data['count_data'] = $i;
       $data['page']       = $page;
       $data['type']       = 'supp';
-      $data['modal']      = 'modal-edit-supplier';
-      $data['url_detail']   = site_url('Supplier_c/getSupplier/');
-      $data['delete_type']  = 'soft-supp';
-      $data['delete_url']   = site_url('Supplier_c/deleteSupplier/soft');
+
+      // Note : Problem js ga mau compare boolean, jadi user_allowed bernilai string
+      if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK']) == TRUE ){
+        $data['user_allowed'] = 'TRUE';
+        $data['modal']        = 'modal-edit-supplier';
+        $data['url_detail']   = site_url('Supplier_c/getSupplier/');
+        $data['delete_type']  = 'soft-supp';
+        $data['delete_url']   = site_url('Supplier_c/deleteSupplier/soft');
+      } else {
+        $data['user_allowed'] = 'FALSE';
+      }
 
     header('Content-Type: application/json');
     echo json_encode($data);
@@ -87,7 +101,7 @@ class Supplier_c extends MY_Controller
   function getSupplier(){
     $suppID = base64_decode(urldecode($this->input->get('id')));
 
-    $suppData = $this->Supplier_m->selectSupplierOnID($suppID)->result_array();
+    $suppData = $this->Supplier_m->selectSupplierByID($suppID)->result_array();
     $returnData = array(
       'edit_name'    => $suppData[0]['supp_name'],
       'edit_contact' => $suppData[0]['supp_contact_name'],
@@ -113,11 +127,13 @@ class Supplier_c extends MY_Controller
     } else {
       /** Get data post dari form */
       $postData = array(
-        'supp_name' => $this->input->post('postSuppNama'),
+        'supp_name'     => $this->input->post('postSuppNama'),
         'supp_contact_name'   => $this->input->post('postSuppKontak'),
-        'supp_email'  => $this->input->post('postSuppEmail'),
-        'supp_telp'   => $this->input->post('postSuppTelp'),
-        'supp_address' => $this->input->post('postSuppAlamat'),
+        'supp_email'    => $this->input->post('postSuppEmail'),
+        'supp_telp'     => $this->input->post('postSuppTelp'),
+        'supp_address'  => $this->input->post('postSuppAlamat'),
+        'created_at'    => date('Y-m-d H:i:s'),
+        'created_by'    => base64_decode(urldecode($this->session->userdata('userID')))
       );
 
       /** Insert ke database */
@@ -147,7 +163,7 @@ class Supplier_c extends MY_Controller
     echo json_encode($arrReturn);
   }
 
-  /* Function : Edit supplier proses */
+  /** Function : Edit supplier proses */
   function editSupplierProses(){
     /** Run form validation */
     if ($this->_formValidation('edit') == FALSE) {
@@ -167,6 +183,8 @@ class Supplier_c extends MY_Controller
           'supp_email'  => $this->input->post('postSuppEmail'),
           'supp_telp'   => $this->input->post('postSuppTelp'),
           'supp_address' => $this->input->post('postSuppAlamat'),
+          'last_updated_at'    => date('Y-m-d H:i:s'),
+          'last_updated_by'    => base64_decode(urldecode($this->session->userdata('userID')))
         );
 
       /** Update row data */
@@ -195,14 +213,19 @@ class Supplier_c extends MY_Controller
     echo json_encode($arrReturn);
   }
 
-  /* Function : Delete supplier */
+  /** Function : Delete supplier */
   function deleteSupplier($deltype){
     /* Decode id */
     $suppID = base64_decode(urldecode($this->input->post('postID')));
 
     /* Delete dari database */
     if ($deltype === 'soft') {
-      $delSupp = $this->Supplier_m->softdeleteSupplier($suppID);
+      $setData = array(
+        'supp_status'     => 1,
+        'last_updated_at' => date('Y-m-d H:i:s'),
+        'last_updated_by' => base64_decode(urldecode($this->session->userdata('userID')))
+      );
+      $delSupp = $this->Supplier_m->updateSupplier($setData, $suppID);
     } else if ($deltype === 'hard') {
       $delSupp = $this->Supplier_m->deleteSupplier($suppID);
     }
@@ -216,7 +239,7 @@ class Supplier_c extends MY_Controller
   }
  
   /** Function : validasi */
-  private function _formValidation($from = 'add'){
+  private function _formValidation($form = 'add'){
     /** Load library & Helper */
     $this->load->library('form_validation');
 
@@ -261,7 +284,7 @@ class Supplier_c extends MY_Controller
       )
     );
 
-    if($from == 'edit'){
+    if($form == 'edit'){
       array_push(
         $config, 
         array(

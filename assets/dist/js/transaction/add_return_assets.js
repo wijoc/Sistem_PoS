@@ -2,11 +2,11 @@ $(document).ready(function(){
     /** Input biaya return */
     $("#input-rs-status").on("change", function(){
         if($(this).val() == "U") {
-            $("#input-rs-cash").prop("disabled", false)
-            $("#input-rs-cash").prop("required", true)
+            $("#input-rs-cash-in").prop("disabled", false)
+            $("#input-rs-cash-in").prop("required", true)
         } else {
-            $("#input-rs-cash").prop("disabled", true)
-            $("#input-rs-cash").prop("required", false)
+            $("#input-rs-cash-in").prop("disabled", true)
+            $("#input-rs-cash-in").prop("required", false)
         }
     })
 

@@ -160,7 +160,7 @@
 
 	<?php if(in_array('contact',$assets)){ ?>
 		<!-- Page Contact Assets -->
-		<script src="<?php echo base_url() ?>assets/dist/js/contact_assets.js"></script>
+		<script src="<?php echo base_url() ?>assets/dist/js/pages/contact_assets.js"></script>
 		<script>
 			var contact_url = "<?php echo $contact_url ?>"
 		</script>

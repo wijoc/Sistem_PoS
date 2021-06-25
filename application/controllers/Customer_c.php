@@ -28,7 +28,7 @@ Class Customer_c extends MY_Controller{
     }
 
     /** Function : Ajax list customer */
-    function listCustomerAjax(){
+    public function listCustomerAjax(){
       /** Load Library */
       $this->load->library('pagination');
   
@@ -61,18 +61,23 @@ Class Customer_c extends MY_Controller{
   
       /** Prepare Data */
         $i = 0;
-        foreach ($this->Customer_m->selectCustomer($config['per_page'], $start_from, 0, $this->input->get('filter_keyword'), $this->input->get('filter_order'))->result_array() as $showCtm):
-          $ctmData[$i]['data_id']    = urlencode(base64_encode($showCtm['ctm_id']));
-          $ctmData[$i]['data_name']  = '';
-          $ctmData[$i]['data_contact']  = ($showCtm['ctm_name'])? $showCtm['ctm_name'] : '<i class="fas fa-minus"></i>';
-          $ctmData[$i]['data_telp']    = ($showCtm['ctm_phone'])? $showCtm['ctm_phone'] : '<i class="fas fa-minus"></i>';
-          $ctmData[$i]['data_email']   = ($showCtm['ctm_email'])? $showCtm['ctm_email'] : '<i class="fas fa-minus"></i>';
-          $ctmData[$i]['data_address'] = ($showCtm['ctm_address'])? $showCtm['ctm_address'] : '<i class="fas fa-minus"></i>';
-          $i++;
-        endforeach;
+        if($this->Customer_m->selectCustomer($config['per_page'], $start_from, 0, $this->input->get('filter_keyword'), $this->input->get('filter_order'))->num_rows() > 0){
+          foreach ($this->Customer_m->selectCustomer($config['per_page'], $start_from, 0, $this->input->get('filter_keyword'), $this->input->get('filter_order'))->result_array() as $showCtm):
+            $ctmData[$i]['data_id']    = urlencode(base64_encode($showCtm['ctm_id']));
+            $ctmData[$i]['data_contact'] = '';
+            $ctmData[$i]['data_name']    = ($showCtm['ctm_name'])? $showCtm['ctm_name'] : '<i class="fas fa-minus"></i>';
+            $ctmData[$i]['data_telp']    = ($showCtm['ctm_phone'])? $showCtm['ctm_phone'] : '<i class="fas fa-minus"></i>';
+            $ctmData[$i]['data_email']   = ($showCtm['ctm_email'])? $showCtm['ctm_email'] : '<i class="fas fa-minus"></i>';
+            $ctmData[$i]['data_address'] = ($showCtm['ctm_address'])? $showCtm['ctm_address'] : '<i class="fas fa-minus"></i>';
+            $i++;
+          endforeach;
+        } else {
+          $ctmData = NULL;
+        }
         
         $data['pagination']   = $this->pagination->create_links();
         $data['contact_data'] = $ctmData;
+        $data['count_data']   = $i;
         $data['page']         = $page;
         $data['type']         = 'ctm';
 
@@ -93,22 +98,24 @@ Class Customer_c extends MY_Controller{
     }
 
     /** Function : Input customer proses */
-    function addCustomerProses(){
+    public function addCustomerProses(){
       /** Run form validation */
       if ($this->_formValidation() == FALSE) {
         $arrReturn = array(
           'error'    => TRUE,
-          'errorCtmNama'   => form_error('postCtmNama'),
-          'errorCtmTelp'    => form_error('postCtmTelp'),
+          'errorCtmName'   => form_error('postCtmName'),
+          'errorCtmPhone'   => form_error('postCtmPhone'),
           'errorCtmEmail'  => form_error('postCtmEmail')
         );
       } else {
         /** Get post data dari form data */
           $postData = array(
-            'ctm_name'  => $this->input->post('postCtmNama'),
-            'ctm_phone' => $this->input->post('postCtmTelp'),
+            'ctm_name'  => $this->input->post('postCtmName'),
+            'ctm_phone' => $this->input->post('postCtmPhone'),
             'ctm_email' => $this->input->post('postCtmEmail'),
-            'ctm_address' => $this->input->post('postCtmAddress')
+            'ctm_address' => $this->input->post('postCtmAddress'),
+            'created_at'    => date('Y-m-d H:i:s'),
+            'created_by'    => base64_decode(urldecode($this->session->userdata('userID')))
           );
 
         /** Insert data */
@@ -137,7 +144,7 @@ Class Customer_c extends MY_Controller{
     }
 
     /** Function : get customer berdasar customer id / customer nama */
-    function getCustomer(){
+    public function getCustomer(){
       $ctmData = $this->Customer_m->selectCustomerOnID(base64_decode(urldecode($this->input->get('id'))))->result_array();
 
       $returnData = array(
@@ -151,7 +158,7 @@ Class Customer_c extends MY_Controller{
     }
 
     /** Function : Autocomplete customer */
-    function searchCustomer($field){
+    public function searchCustomer($field){
       /* Decalare variable untuk output */
         $output = '';
       
@@ -204,24 +211,26 @@ Class Customer_c extends MY_Controller{
     }
 
     /** Function : Proses Edit customer */
-    function editCustomerProses(){
+    public function editCustomerProses(){
       /** Run form validation */
       if ($this->_formValidation('edit') == FALSE) {
         $arrReturn = array(
           'error'    => TRUE,
           'errorCtmID'    => form_error('postCtmID'),
-          'errorCtmNama'  => form_error('postCtmNama'),
-          'errorCtmTelp'  => form_error('postCtmTelp'),
+          'errorCtmName'  => form_error('postCtmName'),
+          'errorCtmTelp'  => form_error('postCtmPhone'),
           'errorCtmEmail' => form_error('postCtmEmail')
         );
       } else {
         /** Get data post id & decode */
           $ctmID = base64_decode(urldecode($this->input->post('postCtmID')));
           $postData = array(
-            'ctm_name'  => $this->input->post('postCtmNama'),
-            'ctm_phone' => $this->input->post('postCtmTelp'),
-            'ctm_email' => $this->input->post('postCtmEmail'),
-            'ctm_address' => $this->input->post('postCtmAddress')
+            'ctm_name'      => $this->input->post('postCtmName'),
+            'ctm_phone'     => $this->input->post('postCtmPhone'),
+            'ctm_email'     => $this->input->post('postCtmEmail'),
+            'ctm_address'     => $this->input->post('postCtmAddress'),
+            'last_updated_at' => date('Y-m-d H:i:s'),
+            'last_updated_by' => base64_decode(urldecode($this->session->userdata('userID')))
           );
 
         /** update data di database */
@@ -250,7 +259,7 @@ Class Customer_c extends MY_Controller{
     }
 
     /** Function : Delete customer */
-    function deleteCustomer($deltype){
+    public function deleteCustomer($deltype){
       /* Decode id */
         $ctmID = base64_decode(urldecode($this->input->post('postID')));
 
@@ -258,7 +267,12 @@ Class Customer_c extends MY_Controller{
         if($deltype === 'hard'){
          $deleteCustomer = $this->Customer_m->deleteCustomer($ctmID);
         } else if ($deltype === 'soft'){
-         $deleteCustomer = $this->Customer_m->softdeleteCustomer($ctmID);
+          $setData = array(
+            'ctm_status'     => 1,
+            'last_updated_at' => date('Y-m-d H:i:s'),
+            'last_updated_by' => base64_decode(urldecode($this->session->userdata('userID')))
+          );
+         $deleteCustomer = $this->Customer_m->updateCustomer($setData, $ctmID);
         }
 
       /* Set return value */
@@ -270,14 +284,14 @@ Class Customer_c extends MY_Controller{
     }
  
     /** Function : validasi */
-    private function _formValidation($from = 'add'){
+    private function _formValidation($form = 'add'){
       /** Load library & Helper */
       $this->load->library('form_validation');
   
       /** Set rules form validation */
-      $config = array(
+      $configValidation = array(
         array(
-          'field'  => 'postCtmNama',
+          'field'  => 'postCtmName',
           'label'  => 'Nama Pelanggan',
           'rules'  => 'trim|required',
           'errors'  => array(
@@ -285,7 +299,7 @@ Class Customer_c extends MY_Controller{
           )
         ),
         array(
-          'field'  => 'postCtmTelp',
+          'field'  => 'postCtmPhone',
           'label'  => 'No. Telp',
           'rules'  => 'trim|numeric',
           'errors'  => array(
@@ -302,14 +316,14 @@ Class Customer_c extends MY_Controller{
         ),
         array(
           'field'  => 'postCtmAddress',
-          'label'  => 'Alamat',
+          'label'  => 'Alamat Pengiriman',
           'rules'  => 'trim'
         )
       );
   
-      if($from == 'edit'){
+      if($form == 'edit'){
         array_push(
-          $config, 
+          $configValidation, 
           array(
             'field'  => 'postCtmID',
             'label'  => 'ID Customer',
@@ -321,7 +335,7 @@ Class Customer_c extends MY_Controller{
         );
       }
   
-      $this->form_validation->set_rules($config);
+      $this->form_validation->set_rules($configValidation);
   
       return $this->form_validation->run();
     }

@@ -25,7 +25,7 @@
             <div class="card card-primary card-outline">
               <div class="card-header">
                 <div class="float-right">
-                  <a class="btn btn-sm btn-info float-right text-white" data-toggle="tooltip" data-placement="top" title="Tambah produk baru" href="<?php echo site_url('Product_c/addProductPage/') ?>">
+                  <a class="btn btn-sm btn-info text-white" data-toggle="tooltip" data-placement="top" title="Tambah produk baru" href="<?php echo site_url('Product_c/addProductPage/') ?>">
                     <i class="fas fa-plus"></i>
                   </a>
                   <a class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="top" title="Mutasi Stok produk" href="<?php echo site_url('Product_c/stockMutationProductPage/') ?>"> 

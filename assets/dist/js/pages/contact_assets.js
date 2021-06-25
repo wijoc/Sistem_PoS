@@ -15,42 +15,42 @@ $(document).ready(function(){
                 if(data.error){
                     /** Error input nama */
                         if(data.errorSuppNama){
-                            $("#inputSuppNama").addClass('is-invalid')
-                            $("#errorSuppNama").css("display", "block")
-                            $("#errorSuppNama").html(data.errorSuppNama)
+                            $("#input-supp-name").addClass('is-invalid')
+                            $("#error-supp-name").css("display", "block")
+                            $("#error-supp-name").html(data.errorSuppNama)
                         } else {
-                            $("#inputSuppNama").removeClass('is-invalid')
-                            $("#errorSuppNama").css("display", "none")
+                            $("#input-supp-name").removeClass('is-invalid')
+                            $("#error-supp-name").css("display", "none")
                         }
 
                     /** Error input kontak nama */
                         if(data.errorSuppKontak){
-                            $("#inputSuppKontak").addClass('is-invalid')
-                            $("#errorSuppKontak").css("display", "block")
-                            $("#errorSuppKontak").html(data.errorSuppKontak)
+                            $("#input-supp-contact").addClass('is-invalid')
+                            $("#error-supp-contact").css("display", "block")
+                            $("#error-supp-contact").html(data.errorSuppKontak)
                         } else {
-                            $("#inputSuppKontak").removeClass('is-invalid')
-                            $("#errorSuppKontak").css("display", "none")
+                            $("#input-supp-contact").removeClass('is-invalid')
+                            $("#error-supp-contact").css("display", "none")
                         }
                         
                     /** Error input Telp */
                         if(data.errorSuppTelp){
-                            $("#inputSuppTelp").addClass('is-invalid')
-                            $("#errorSuppTelp").css("display", "block")
-                            $("#errorSuppTelp").html(data.errorSuppTelp)
+                            $("#input-supp-phone").addClass('is-invalid')
+                            $("#error-supp-phone").css("display", "block")
+                            $("#error-supp-phone").html(data.errorSuppTelp)
                         } else {
-                            $("#inputSuppTelp").removeClass('is-invalid')
-                            $("#errorSuppTelp").css("display", "none")
+                            $("#input-supp-phone").removeClass('is-invalid')
+                            $("#error-supp-phone").css("display", "none")
                         }
                         
                     /** Error input Email */
                         if(data.errorSuppEmail){
-                            $("#inputSuppEmail").addClass('is-invalid')
-                            $("#errorSuppEmail").css("display", "block")
-                            $("#errorSuppEmail").html(data.errorSuppEmail)
+                            $("#input-supp-email").addClass('is-invalid')
+                            $("#error-supp-email").css("display", "block")
+                            $("#error-supp-email").html(data.errorSuppEmail)
                         } else {
-                            $("#inputSuppEmail").removeClass('is-invalid')
-                            $("#errorSuppEmail").css("display", "none")
+                            $("#input-supp-email").removeClass('is-invalid')
+                            $("#error-supp-email").css("display", "none")
                         }
                 } else {
                     $(".error-msg").css("display", "none")
@@ -68,8 +68,6 @@ $(document).ready(function(){
                         icon: data.statusIcon,
                         title: data.statusMsg
                     }).then((result) => {
-                        $("#alert-supplier").append('<div class="alert alert-success text-center" style="opacity: 0.8" role="alert">'+ data.statusMsg +'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times</span></button></div>')
-                        
                         /** Execute function getRowData page 0 */
                         getRowData(0)
                     })
@@ -185,33 +183,33 @@ $(document).ready(function(){
             success : function(data){
                 if(data.error){
                     /** Error input nama */
-                        if(data.errorCtmNama){
-                            $("#inputCtmNama").addClass('is-invalid')
-                            $("#errorCtmNama").css("display", "block")
-                            $("#errorCtmNama").html(data.errorCtmNama)
+                        if(data.errorCtmName){
+                            $("#input-ctm-name").addClass('is-invalid')
+                            $("#error-ctm-name").css("display", "block")
+                            $("#error-ctm-name").html(data.errorCtmName)
                         } else {
-                            $("#inputCtmNama").removeClass('is-invalid')
-                            $("#errorCtmNama").css("display", "none")
+                            $("#input-ctm-name").removeClass('is-invalid')
+                            $("#error-ctm-name").css("display", "none")
                         }
                         
                     /** Error input Telp */
                         if(data.errorCtmTelp){
-                            $("#inputCtmTelp").addClass('is-invalid')
-                            $("#errorCtmTelp").css("display", "block")
-                            $("#errorCtmTelp").html(data.errorCtmTelp)
+                            $("#input-ctm-phone").addClass('is-invalid')
+                            $("#error-ctm-phone").css("display", "block")
+                            $("#error-ctm-phone").html(data.errorCtmTelp)
                         } else {
-                            $("#inputCtmTelp").removeClass('is-invalid')
-                            $("#errorCtmTelp").css("display", "none")
+                            $("#input-ctm-phone").removeClass('is-invalid')
+                            $("#error-ctm-phone").css("display", "none")
                         }
                         
                     /** Error input Harga Jual */
                         if(data.errorCtmEmail){
-                            $("#inputCtmEmail").addClass('is-invalid')
-                            $("#errorCtmEmail").css("display", "block")
-                            $("#errorCtmEmail").html(data.errorCtmEmail)
+                            $("#input-ctm-email").addClass('is-invalid')
+                            $("#error-ctm-email").css("display", "block")
+                            $("#error-ctm-email").html(data.errorCtmEmail)
                         } else {
-                            $("#inputCtmEmail").removeClass('is-invalid')
-                            $("#errorCtmEmail").css("display", "none")
+                            $("#input-ctm-email").removeClass('is-invalid')
+                            $("#error-ctm-email").css("display", "none")
                         }
                 } else {
                     $(".error-msg").css("display", "none")
@@ -219,7 +217,7 @@ $(document).ready(function(){
                     
                     if(data.status == 'successInsert'){
                         $("#form-add-customer").trigger("reset")
-                        $("#modal-tambah-pelanggan").modal("toggle")
+                        $("#modal-add-customer").modal("toggle")
                     }
 
                     Swal.fire({
@@ -264,33 +262,33 @@ $(document).ready(function(){
                             })
                         }
                         /** Error input nama */
-                            if(data.errorCtmNama){
-                                $("#form-edit-customer").find("#inputCtmNama").addClass('is-invalid')
-                                $("#form-edit-customer").find("#errorCtmNama").css("display", "block")
-                                $("#form-edit-customer").find("#errorCtmNama").html(data.errorCtmNama)
+                            if(data.errorCtmName){
+                                $("#form-edit-customer").find("#edit-ctm-name").addClass('is-invalid')
+                                $("#form-edit-customer").find("#error-ctm-name").css("display", "block")
+                                $("#form-edit-customer").find("#error-ctm-name").html(data.errorCtmName)
                             } else {
-                                $("#form-edit-customer").find("#inputCtmNama").removeClass('is-invalid')
-                                $("#form-edit-customer").find("#errorCtmNama").css("display", "none")
+                                $("#form-edit-customer").find("#edit-ctm-name").removeClass('is-invalid')
+                                $("#form-edit-customer").find("#error-ctm-name").css("display", "none")
                             }
                             
                         /** Error input Telp */
                             if(data.errorCtmTelp){
-                                $("#form-edit-customer").find("#inputCtmTelp").addClass('is-invalid')
-                                $("#form-edit-customer").find("#errorCtmTelp").css("display", "block")
-                                $("#form-edit-customer").find("#errorCtmTelp").html(data.errorCtmTelp)
+                                $("#form-edit-customer").find("#edit-ctm-phone").addClass('is-invalid')
+                                $("#form-edit-customer").find("#error-ctm-phone").css("display", "block")
+                                $("#form-edit-customer").find("#error-ctm-phone").html(data.errorCtmTelp)
                             } else {
-                                $("#form-edit-customer").find("#inputCtmTelp").removeClass('is-invalid')
-                                $("#form-edit-customer").find("#errorCtmTelp").css("display", "none")
+                                $("#form-edit-customer").find("#edit-ctm-phone").removeClass('is-invalid')
+                                $("#form-edit-customer").find("#error-ctm-phone").css("display", "none")
                             }
                             
                         /** Error input Harga Jual */
                             if(data.errorCtmEmail){
-                                $("#form-edit-customer").find("#inputCtmEmail").addClass('is-invalid')
-                                $("#form-edit-customer").find("#errorCtmEmail").css("display", "block")
-                                $("#form-edit-customer").find("#errorCtmEmail").html(data.errorCtmEmail)
+                                $("#form-edit-customer").find("#edit-ctm-email").addClass('is-invalid')
+                                $("#form-edit-customer").find("#error-ctm-email").css("display", "block")
+                                $("#form-edit-customer").find("#error-ctm-email").html(data.errorCtmEmail)
                             } else {
-                                $("#form-edit-customer").find("#inputCtmEmail").removeClass('is-invalid')
-                                $("#form-edit-customer").find("#errorCtmEmail").css("display", "none")
+                                $("#form-edit-customer").find("#edit-ctm-email").removeClass('is-invalid')
+                                $("#form-edit-customer").find("#error-ctm-email").css("display", "none")
                             }                    
                 } else {
                     $(".error-msg").css("display", "none")
@@ -303,7 +301,7 @@ $(document).ready(function(){
                         icon: data.statusIcon,
                         title: data.statusMsg
                     }).then((result) => {
-                        if(data.status == 'successInsert'){
+                        if(data.status == 'successUpdate'){
                             $("#modal-edit-customer").modal("toggle")
                         }
 
@@ -334,7 +332,7 @@ $(document).ready(function(){
         $.ajax({
             url     : contact_url + page,
             type    : 'GET',
-            data    : {filter_keyword : $("input[name='postSearch']").val(), filter_order : $("#contactOrder").val()},
+            data    : {filter_keyword : $("input[name='postSearch']").val(), filter_order : $("#contact-order").val()},
             datatype    : 'json',
             success     : function(data){
                 $("#pagination").html(data.pagination)
@@ -346,78 +344,82 @@ $(document).ready(function(){
 /** Function : Set list card */
     function createList(data){
         var output = ''
-        for(index in data.contact_data){
-            if(data.user_allowed == 'TRUE'){
-                output += `
-                    <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
-                        <div class="card bg-light">
-                            <div class="card-header text-muted border-bottom-0">
-                                `+ data.contact_data[index].data_name +`
-                            </div>
-                            <div class="card-body pt-0">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h6 class="lead font-weight-bold">`+ data.contact_data[index].data_contact +`</h6>
-                                        <ul class="ml-4 mb-0 fa-ul text-muted">
-                                            <li class="small">
-                                                <span class="fa-li"><i class="fas fa-md fa-phone"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_telp +`
-                                            </li>
-                                            <li class="small">
-                                                <span class="fa-li"><i class="fas fa-md fa-envelope-open-text"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_email +`
-                                            </li>
-                                            <li class="small">
-                                                <span class="fa-li"><i class="fas fa-md fa-building"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_address +`
-                                            </li>
-                                        </ul>
+        if(data.count_data > 0){
+            for(index in data.contact_data){
+                if(data.user_allowed == 'TRUE'){
+                    output += `
+                        <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
+                            <div class="card bg-light">
+                                <div class="card-header text-muted border-bottom-0">
+                                    `+ data.contact_data[index].data_contact +`
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h6 class="lead font-weight-bold">`+ data.contact_data[index].data_name +`</h6>
+                                            <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                <li class="small">
+                                                    <span class="fa-li"><i class="fas fa-md fa-phone"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_telp +`
+                                                </li>
+                                                <li class="small">
+                                                    <span class="fa-li"><i class="fas fa-md fa-envelope-open-text"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_email +`
+                                                </li>
+                                                <li class="small">
+                                                    <span class="fa-li"><i class="fas fa-md fa-building"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_address +`
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-footer">
-                                <div class="text-right">
-                                    <a href="" class="btn btn-sm btn-info">
-                                        <i class="fas fa-cash-register"></i>
-                                    </a>
-                                    <a class="btn btn-sm btn-warning" data-toggle="modal" data-target="#`+ data.modal +`" onclick="editContact('`+data.type+`', '`+ data.contact_data[index].data_id +`', '`+ data.url_detail +`')">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a class="btn btn-sm btn-danger" onclick="confirmDelete('`+ data.delete_type +`', '`+ data.contact_data[index].data_id +`', '`+ data.delete_url +`')">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                output += `
-                    <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
-                        <div class="card bg-light">
-                            <div class="card-header text-muted border-bottom-0">
-                                `+ data.contact_data[index].data_name +`
-                            </div>
-                            <div class="card-body pt-0">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h6 class="lead font-weight-bold">`+ data.contact_data[index].data_contact +`</h6>
-                                        <ul class="ml-4 mb-0 fa-ul text-muted">
-                                            <li class="small">
-                                                <span class="fa-li"><i class="fas fa-md fa-phone"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_telp +`
-                                            </li>
-                                            <li class="small">
-                                                <span class="fa-li"><i class="fas fa-md fa-envelope-open-text"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_email +`
-                                            </li>
-                                            <li class="small">
-                                                <span class="fa-li"><i class="fas fa-md fa-building"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_address +`
-                                            </li>
-                                        </ul>
+                                <div class="card-footer">
+                                    <div class="text-right">
+                                        <a href="" class="btn btn-sm btn-info" data-placement="top" title="Daftar Transaksi">
+                                            <i class="fas fa-cash-register"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-warning" data-toggle="modal" data-target="#`+ data.modal +`" data-placement="top" title="Edit kontak" onclick="editContact('`+data.type+`', '`+ data.contact_data[index].data_id +`', '`+ data.url_detail +`')">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-danger" data-placement="top" title="Hapus kontak" onclick="confirmDelete('`+ data.delete_type +`', '`+ data.contact_data[index].data_id +`', '`+ data.delete_url +`')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
-            }
-        } 
+                    `;
+                } else {
+                    output += `
+                        <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
+                            <div class="card bg-light">
+                                <div class="card-header text-muted border-bottom-0">
+                                    `+ data.contact_data[index].data_contact +`
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h6 class="lead font-weight-bold">`+ data.contact_data[index].data_name +`</h6>
+                                            <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                <li class="small">
+                                                    <span class="fa-li"><i class="fas fa-md fa-phone"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_telp +`
+                                                </li>
+                                                <li class="small">
+                                                    <span class="fa-li"><i class="fas fa-md fa-envelope-open-text"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_email +`
+                                                </li>
+                                                <li class="small">
+                                                    <span class="fa-li"><i class="fas fa-md fa-building"></i></span>&nbsp:&nbsp `+ data.contact_data[index].data_address +`
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } 
+        } else {
+            output += '<div class="col-12 alert alert-danger text-center font-weight-bold" style="opacity: 0.7" role="alert">Data belum tersedia !</div>'
+        }
         
         if(data.type == 'supp' ){
             $("#list-supp").html(output)
@@ -442,11 +444,11 @@ $(document).ready(function(){
                     $('#form-edit-supplier').find('#editSuppEmail').val(result.edit_email)
                     $('#form-edit-supplier').find('#editSuppAlamat').val(result.edit_address)
                 } else if(contact_type === 'ctm'){
-                    $('#form-edit-customer').find('#editCtmID').val(contact_id)
-                    $('#form-edit-customer').find('#editCtmNama').val(result.data_name)
-                    $('#form-edit-customer').find('#editCtmTelp').val(result.data_phone)
-                    $('#form-edit-customer').find('#editCtmEmail').val(result.data_email)
-                    $('#form-edit-customer').find('#editCtmAddress').val(result.data_address)
+                    $('#form-edit-customer').find('#edit-ctm-ID').val(contact_id)
+                    $('#form-edit-customer').find('#edit-ctm-name').val(result.data_name)
+                    $('#form-edit-customer').find('#edit-ctm-phone').val(result.data_phone)
+                    $('#form-edit-customer').find('#edit-ctm-email').val(result.data_email)
+                    $('#form-edit-customer').find('#edit-ctm-address').val(result.data_address)
                 }
             }
         })

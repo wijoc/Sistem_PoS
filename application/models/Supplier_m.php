@@ -29,7 +29,7 @@ Class Supplier_m extends MY_Model{
   }
 
   /** Q-Function : select row data supplier berdasar supp_id */
-  function selectSupplierOnID($id){
+  function selectSupplierByID($id){
     $this->db->where($this->supp_f[0], $id);
     $resultSelect = $this->db->get($this->supp_tb);
     return $resultSelect;
@@ -42,8 +42,8 @@ Class Supplier_m extends MY_Model{
   }
 
   /** Query : update data supplier */
-  function updateSupplier($data, $id){
-    $this->db->set($data);
+  function updateSupplier($update_data, $id){
+    $this->db->set($update_data);
     $this->db->where($this->supp_f[0], $id);
     $resultUpdate = $this->db->update($this->supp_tb);
     return $resultUpdate;

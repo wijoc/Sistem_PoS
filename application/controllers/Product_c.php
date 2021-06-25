@@ -25,6 +25,9 @@ Class Product_c extends MY_Controller {
   /** CRUD Product */
 	/** Function : Halaman form tambah product */
 	public function addProductPage(){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uG']);
+
 	  /** Proses tampil halaman */
 		$this->pageData = array(
 			'title'   => 'PoS | Input Product',
@@ -126,6 +129,11 @@ Class Product_c extends MY_Controller {
 	public function stockProductAjax(){
 		$prdData	= array();
 		foreach($this->Product_m->selectProductStock(10, 0)->result_array() as $show){
+			$actionBtn = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Produk" href="'.site_url('Product_c/detailProductPage/').urlencode(base64_encode($show['prd_id'])).'"> <i class="fas fa-search"></i> </a>';
+			if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uG']) == TRUE ){
+				$actionBtn .= '&nbsp;<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Mutasi Stok" href="'.site_url('Product_c/stockMutationProductPage/'.urlencode(base64_encode($show['prd_id']))).'"><i class="fas fa-people-carry"></i></a>';
+			}
+
 			$row = array();
 			$row[] = ($show['prd_barcode'])? $show['prd_barcode'] : '<i class="fas fa-minus" style="color: red;"></i>';
 			$row[] = $show['prd_name'];
@@ -135,8 +143,7 @@ Class Product_c extends MY_Controller {
 			$row[] = $show['stk_not_good'];
 			$row[] = $show['prd_initial_op_stock'];
 			$row[] = $show['stk_opname'];
-			$row[] = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Produk" href="'.site_url('Product_c/detailProductPage/').urlencode(base64_encode($show['prd_id'])).'"> <i class="fas fa-search"></i> </a>
-					<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Mutasi Stok" href="'.site_url('Product_c/stockMutationProductPage/'.urlencode(base64_encode($show['prd_id']))).'"><i class="fas fa-people-carry"></i></a>';
+			$row[] = $actionBtn;
 		
 			$prdData[] = $row;
 		}
@@ -832,7 +839,7 @@ Class Product_c extends MY_Controller {
 		  $this->load->library('form_validation'); 
 			
 		/** Set rules form validation */
-		  $config = array(
+		  $configValidation = array(
 			  array(
 				  'field'	=> 'postCtgrName',
 				  'label'	=> 'Nama Kategori',
@@ -843,7 +850,7 @@ Class Product_c extends MY_Controller {
 				  )
 			  )
 		  );
-		  $this->form_validation->set_rules($config);
+		  $this->form_validation->set_rules($configValidation);
   
 		/** Run form validation */
 		  if($this->form_validation->run() == FALSE) {

@@ -15,16 +15,16 @@ Class Transaction_c extends MY_Controller{
 	}
 
 	public function index(){
-	  /* Data yang akan dikirim ke view */
+	  /** Data yang akan dikirim ke view */
 	  	$this->pageData = array(
 	  		'title' => 'PoS | Transaksi',
 	  		'assets' =>array()
 	  	);
 
-	  /* Load file view */
+	  /** Load file view */
 	  	$this->page = 'trans/index_trans_v';
 
-	  /* Call function layout dari my controller */
+	  /** Call function layout dari my controller */
 	  	$this->layout();
 	}
 
@@ -35,7 +35,7 @@ Class Transaction_c extends MY_Controller{
 		$this->load->library('form_validation');
 	
 	  /** Set rules form validation */
-		$config = array(
+		$configValidation = array(
 		  array(
 			'field'  => 'postIdPrd',
 			'label'  => 'ID Product',
@@ -66,7 +66,7 @@ Class Transaction_c extends MY_Controller{
 		  )
 		);
 	
-		$this->form_validation->set_rules($config);
+		$this->form_validation->set_rules($configValidation);
 	
 	  /** Run validate */
 		if($this->form_validation->run() == FALSE){
@@ -254,6 +254,7 @@ Class Transaction_c extends MY_Controller{
   /** CRUD Purchases */
 	/** Function : Page add purchasing */
 	public function addPurchasesPage(){
+	  /** Check allowed user */
 		$this->auth_user(['uAll', 'uO', 'uP']);
 
 	  /** Load Model supplier untuk option supplier */
@@ -392,7 +393,7 @@ Class Transaction_c extends MY_Controller{
 	  
 		$this->form_validation->set_rules($configValidation);
 
-	  /** Run Valudation */
+	  /** Run Validation */
 		if($this->form_validation->run() == FALSE) {
 			$arrReturn = array(
 				'error'		=> TRUE,
@@ -432,6 +433,8 @@ Class Transaction_c extends MY_Controller{
 				'tp_total_cost'	 => $totalCart[0]['tp_total_paid'] + floatval($this->input->post('postPAdditional')),
 				'tp_paid' 		 => $this->input->post('postPPayment'),
 				'tp_post_script' => htmlspecialchars($this->input->post('postPPS')),
+				'created_at'	=> date('Y-m-d H:i:s'),
+				'created_by'	=> base64_decode(urldecode($this->session->userdata('userID')))
 			);
 		
 		  /** Prepare config tambahan */
@@ -510,6 +513,7 @@ Class Transaction_c extends MY_Controller{
 
 	/** Function : Page list trans pembelian */
 	public function listPurchasesPage(){
+	  /** Check allowed user */
 		$this->auth_user(['uAll', 'uO', 'uP']);
 
 		$this->pageData = array(
@@ -563,12 +567,36 @@ Class Transaction_c extends MY_Controller{
 
 	/** Function : Detail trans purchase */
 	public function detailPurchasesPage($encoded_trans_id){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uP']);
+
+	  /** Get detail retur */
+		$dataRS = $this->Return_m->selectRSByTPID(base64_decode(urldecode($encoded_trans_id)))->result_array();
+		$detailRS = array();
+
+		foreach($dataRS as $showRS){
+			$detailRS[$showRS['rs_id']]['show_date']	= $showRS['rs_date'];
+			$detailRS[$showRS['rs_id']]['show_status']	= ($showRS['rs_status'] == 'R')? '<span class="badge badge-success">Tukar Barang</span>' : '<span class="badge badge-info">Retur Uang</span>';
+			$detailRS[$showRS['rs_id']]['show_cash_in'] = $showRS['rs_cash_in'];
+			$detailRS[$showRS['rs_id']]['show_cash_out'] = $showRS['rs_cash_out'];
+			$detailRS[$showRS['rs_id']]['show_ps'] 		 = $showRS['rs_post_script'];
+			$detailRS[$showRS['rs_id']]['detail_rs'][] 	 = array(
+				'retur_product' => '<small>'.$showRS['prd_name'].'</small>',
+				'retur_qty'		=> $showRS['drs_return_qty']
+			);
+		}
+
+		foreach($detailRS as $key => $value){
+			$detailRS[$key]['count_prd'] = count($value['detail_rs']);
+		}
+
 		$this->pageData = array(
 			'title' 	=> 'PoS | Trans Pembelian',
 			'assets' 	=> array(),
 			'detailTrans' => $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
 			'detailCart'  => $this->Purchases_m->selectDetTP(base64_decode(urldecode($encoded_trans_id)))->result_array(),
 			'detailIP' 	  => $this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			'detailRetur' => $detailRS
 		);
 		$this->page = 'trans/purchases/detail_purchases_v';
 		$this->layout();
@@ -576,6 +604,9 @@ Class Transaction_c extends MY_Controller{
 
 	/** Function : Page pembayaran angsuran trans purchase */
 	public function installmentPurchasesPage($encoded_trans_id){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uP']);
+
 		$minTenor = ($this->Installment_m->selectLastPeriodeIP(base64_decode(urldecode($encoded_trans_id)))->num_rows() <= 0)? 1 : intval($this->Installment_m->selectLastPeriodeIP(base64_decode(urldecode($encoded_trans_id)))->result_array()[0]['ip_periode_end']) + 1;
 		$detailData = $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($encoded_trans_id)))->result_array();
 		
@@ -1803,10 +1834,34 @@ Class Transaction_c extends MY_Controller{
   /** CRUD Return Supplier */
 	/** Function : Page add return */
 	public function addRSPage($encoded_trans_id){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uP']);
+
+	  /** Get detail retur */
+		$dataRS = $this->Return_m->selectRSByTPID(base64_decode(urldecode($encoded_trans_id)))->result_array();
+		$detailRS = array();
+
+		foreach($dataRS as $showRS){
+			$detailRS[$showRS['rs_id']]['show_date']	= $showRS['rs_date'];
+			$detailRS[$showRS['rs_id']]['show_status']	= ($showRS['rs_status'] == 'R')? '<span class="badge badge-success">Tukar Barang</span>' : '<span class="badge badge-info">Retur Uang</span>';
+			$detailRS[$showRS['rs_id']]['show_cash_in'] = $showRS['rs_cash_in'];
+			$detailRS[$showRS['rs_id']]['show_cash_out'] = $showRS['rs_cash_out'];
+			$detailRS[$showRS['rs_id']]['show_ps'] 		= $showRS['rs_post_script'];
+			$detailRS[$showRS['rs_id']]['detail_rs'][] = array(
+				'retur_product' => '<small>'.$showRS['prd_name'].'</small>',
+				'retur_qty'		=> $showRS['drs_return_qty']
+			);
+		}
+
+		foreach($detailRS as $key => $value){
+			$detailRS[$key]['count_prd'] = count($value['detail_rs']);
+		}
+
 		$this->pageData = array(
 			'title'   => 'PoS | Retur Supplier',
 			'assets'  => array('jqueryui', 'sweetalert2', 'add_return'),
 			'detailCart'  => $this->Purchases_m->selectDetTP(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			'detailRetur' => $detailRS,
 			'transID'	  => $encoded_trans_id
 		);
 		$this->page = 'trans/return/add_return_supp_v';
@@ -1850,11 +1905,19 @@ Class Transaction_c extends MY_Controller{
 			  )
 			),
 			array(
-			  'field'  => 'postRSCash',
+			  'field'  => 'postRSCashOut',
 			  'label'  => 'Biaya Retur',
+			  'rules'  => 'trim|numeric',
+			  'errors'  => array(
+				  'numeric'  => 'Biaya retur tidak valid, harus berupa angka'
+			  )
+			),
+			array(
+			  'field'  => 'postRSCashIn',
+			  'label'  => 'Pengembalian Dana (Dana Masuk)',
 			  'rules'  => 'trim|numeric|callback__validation_return_cash',
 			  'errors'  => array(
-				  'numeric'  => 'Biaya tidak valid, harus berupa angka'
+				  'numeric'  => 'Dana masuk tidak valid, harus berupa angka'
 			  )
 			),
 			array(
@@ -1873,16 +1936,21 @@ Class Transaction_c extends MY_Controller{
 				'errorRSTPID'	=> form_error('postTPID'),
 				'errorRSDate'	=> form_error('postRSDate'),
 				'errorRSStatus'	=> form_error('postRSStatus'),
-				'errorRSCash'	=> form_error('postRSCash')
+				'errorRSCashIn'	=> form_error('postRSCashIn'),
+				'errorRSCashOut' => form_error('postRSCashOut')
 			);
 		} else {
+			
 		  /** Get form post data */
 			$postData = array(
-			    'rs_tp_id_fk' => base64_decode(urldecode($this->input->post('postTPID'))),
-				'rs_date' 	=> $this->input->post('postRSDate'),
-				'rs_status'	=> $this->input->post('postRSStatus'),
-				'rs_cash'	=> $this->input->post('postRSCash'),
-				'rs_post_script'	=> $this->input->post('postRSPS')
+			    'rs_tp_id_fk' 	=> base64_decode(urldecode($this->input->post('postTPID'))),
+				'rs_date' 		=> $this->input->post('postRSDate'),
+				'rs_status'		=> $this->input->post('postRSStatus'),
+				'rs_cash_in'	=> ($this->input->post('postRSCashIn') == '')? 0 : $this->input->post('postRSCashIn'),
+				'rs_cash_out'	=> ($this->input->post('postRSCashOut') == '')? 0 : $this->input->post('postRSCashOut'),
+				'rs_post_script' => $this->input->post('postRSPS'),
+				'created_at'	=> date('Y-m-d H:i:s'),
+				'created_by'	=> base64_decode(urldecode($this->session->userdata('userID')))
 			);
 
 			$detailData = array();
@@ -1911,7 +1979,7 @@ Class Transaction_c extends MY_Controller{
 						'status'	=> 'successInsert',
 						'statusIcon' => 'success',
 						'statusMsg'	 => 'Berhasil menambahkan transaksi retur',
-						'redirect'	 => site_url('Transaction_c/listReturnPage/')
+						'redirect'	 => site_url('Transaction_c/detailPurchasesPage/'.urlencode(base64_encode($postData['rs_tp_id_fk'])))
 					);
 				} else {
 					$arrReturn = array(
@@ -1954,7 +2022,7 @@ Class Transaction_c extends MY_Controller{
 			/** Load Model supplier */
 			$this->load->model('Supplier_m');
 
-			if($this->Supplier_m->selectSupplierOnID(base64_decode(urldecode($post)))->num_rows() > 0){
+			if($this->Supplier_m->selectSupplierByID(base64_decode(urldecode($post)))->num_rows() > 0){
 				return TRUE;
 			} else {
 				return FALSE;
@@ -2117,13 +2185,13 @@ Class Transaction_c extends MY_Controller{
 			}
 		}
 	  
-	  /** Validation : Biaya retur */
+	  /** Validation : Pengembalian dana retur */
 		function _validation_return_cash($post){
 			if($this->input->post('postRSStatus') == 'U'){
 				if(trim($post, "") != ''){
 					return TRUE;
 				} else {
-					$this->form_validation->set_message('_validation_return_cash', 'Biaya tidak boleh kosong');
+					$this->form_validation->set_message('_validation_return_cash', 'Dana masuk tidak boleh kosong');
 					return FALSE;
 				}
 			} else {
@@ -2135,13 +2203,7 @@ Class Transaction_c extends MY_Controller{
 		function _validation_return_tpid($post){
 			$checkTPID = $this->Purchases_m->selectPurchaseOnID(base64_decode(urldecode($post)))->num_rows();
 			if($checkTPID > 0){
-				$checkRS = $this->Return_m->selectRSOnTPID(base64_decode(urldecode($post)))->num_rows();
-				if($checkRS > 0){
-					$this->form_validation->set_message('_validation_return_tpid', 'Retur sudah pernah dilakukan !');
-					return FALSE;
-				} else {
-					return TRUE;
-				}
+				return TRUE;
 			} else {
 				$this->form_validation->set_message('_validation_return_tpid', 'Transaksi Pembelian tidak ditemukan !');
 				return FALSE;

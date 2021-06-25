@@ -83,8 +83,8 @@ function confirmDelete(item, getid, url, msg){
                         }).then((result)=>{
                             if(item == 'soft-supp' || item == 'hard-supp' || item == 'soft-ctm' || item == 'hard-ctm'){
                                 $("input[name='postSearch']").val('')
-                                $("#suppOrder").val('asc')
-                                $.getScript('assets/dist/js/contact_assets.js', function(data, textStatus, jqxhr ) {
+                                $("#contact-order").val('asc')
+                                $.getScript('assets/dist/js/pages/contact_assets.js', function(data, textStatus, jqxhr ) {
                                     getRowData(0)
                                 })
                             } else { $('.table-server').DataTable().ajax.reload() }
