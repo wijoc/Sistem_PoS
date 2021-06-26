@@ -64,6 +64,12 @@ Class Sales_m extends MY_Model{
 		return $this->db->get();
 	}
 
+    /** Q-Function : count all Trans sales */
+    function count_all(){
+    	$this->_querySelectSales('all', '0', null, null);
+    	return $this->db->get()->num_rows();
+    }
+
     /** Q-Function : Select data berdasar id */
     function selectSalesOnID($trans_id){
       $this->db->select('ts.*, ctm.'.$this->ctm_f[1].', SUM(dts.'.$this->dts_f[6].') as total_cart, acc.'.$this->acc_f[3].', bank.'.$this->bank_f[2]);

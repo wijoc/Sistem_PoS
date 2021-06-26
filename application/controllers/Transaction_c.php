@@ -1221,13 +1221,13 @@ Class Transaction_c extends MY_Controller{
 		$tsData	= array();
 		$no			= $this->input->post('start');
 		foreach($this->Sales_m->selectSales($this->input->post('length'), $this->input->post('start'), 0, 0)->result_array() as $show){
-			$actionBtn = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="'.site_url('Transaction_c/detailSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-search"></i> </a>';
+			$actionBtn = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Penjualan" href="'.site_url('Transaction_c/detailSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-search"></i> </a>';
 			
 			if($show['ts_payment_status'] == 'K'){ 
 				$showStatus = '<span class="badge badge-danger">Kredit - Belum Lunas</span>';
 
 				if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uK']) == TRUE ){
-					$actionBtn .= '&nbsp<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Bayar Angsuran Pembelian" href="'.site_url('Transaction_c/installmentSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-cash-register"></i> </a>';
+					$actionBtn .= '&nbsp<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Bayar Angsuran Penjualan" href="'.site_url('Transaction_c/installmentSalesPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-cash-register"></i> </a>';
 				}
 			} else if($show['ts_payment_status'] == 'T'){
 				$showStatus = '<span class="badge badge-success">Tunai - Lunas</span>';
@@ -1261,8 +1261,8 @@ Class Transaction_c extends MY_Controller{
 
 		$output = array(
 			'draw'			  => $this->input->post('draw'),
-			'recordsTotal'	  => $this->Purchases_m->count_all(),
-			'recordsFiltered' => $this->Purchases_m->selectPurchase('all', 0, $this->input->post('length'), $this->input->post('start'))->num_rows(),
+			'recordsTotal'	  => $this->Sales_m->count_all(),
+			'recordsFiltered' => $this->Sales_m->selectSales('all', 0, $this->input->post('length'), $this->input->post('start'))->num_rows(),
 			'data'			  => $tsData
 		);
 
@@ -2005,6 +2005,47 @@ Class Transaction_c extends MY_Controller{
 		echo json_encode($arrReturn);
 	}
 
+	/** Function : List retur Customer */
+	public function listRSPage(){
+		$this->auth_user(['uAll', 'uO', 'uP']);
+		$this->pageData = array(
+			'title' => 'PoS | Retur Pembelian',
+			'assets' => array('datatables', 'list_transaction'),
+			'transactionUrl' => site_url('Transaction_c/listRSAjax')
+		);
+		$this->page = 'trans/return/list_return_supp_v';
+		$this->layout();
+	}
+
+	/** Function : Ajax retur supplier */
+	public function listRSAjax(){
+		$rsData	= array();
+		$no		= $this->input->post('start');
+		foreach( $this->Return_m->selectRS( $this->input->post('length'), $this->input->post('start') )->result_array() as $showRS ){
+			$row = array();
+			$row[]	= date('Y-m-d', strtotime($showRS['rs_date']));
+			$row[]	= $showRS['tp_note_code'];
+			$row[]	= $showRS['supp_name'];
+			$row[]	= ($showRS['rs_status'] == 'R')? '<span class="badge badge-warning">Tukar Barang</span>' : '<span class="badge badge-danger">Pengembalian Dana</span>';
+			$row[]	= number_format($showRS['rs_cash_out'], 2);
+			$row[]	= number_format($showRS['rs_cash_in'], 2);
+			$row[]	= '<small>'.$showRS['rs_post_script'].'</small>';
+			$row[]	= '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Pembelian" href="'.site_url('Transaction_c/detailPurchasesPage/'.urlencode(base64_encode($showRS['rs_tp_id_fk']))).'"><i class="fas fa-search"></i></a>';
+
+			$rsData[] = $row;
+		}
+
+		$output = array(
+			'draw'			  => $this->input->post('draw'),
+			'recordsTotal'	  => $this->Return_m->count_all_rs(),
+			'recordsFiltered' => $this->Return_m->selectRS( $this->input->post('length'), $this->input->post('start') )->num_rows(),
+			'data'			  => $rsData
+		);
+
+		header('Content-Type: application/json');
+		echo json_encode($output);
+	}
+
   /** CRUD Return Costumer */
 	/** Function : Page add return costumer */
 	public function addRCPage($encoded_trans_id){
@@ -2151,6 +2192,45 @@ Class Transaction_c extends MY_Controller{
 
 		header('Content-Type: application/json');
 		echo json_encode($arrReturn);
+	}
+
+	/** Function : List retur Customer */
+	public function listRCPage(){
+		$this->auth_user(['uAll', 'uO', 'uK']);
+		$this->pageData = array(
+			'title' => 'PoS | Retur Penjualan',
+			'assets' => array('datatables', 'list_transaction'),
+			'transactionUrl' => site_url('Transaction_c/listRCAjax')
+		);
+		$this->page = 'trans/return/list_return_ctm_v';
+		$this->layout();
+	}
+
+	/** Function : Ajax retur customer */
+	public function listRCAjax(){
+		$rcData	= array();
+		$no		= $this->input->post('start');
+		foreach( $this->Return_m->selectRC( $this->input->post('length'), $this->input->post('start') )->result_array() as $showRC ){
+			$row = array();
+			$row[]	= date('Y-m-d', strtotime($showRC['rc_date']));
+			$row[]	= $showRC['ts_trans_code'];
+			$row[]	= $showRC['ctm_name'];
+			$row[]	= ($showRC['rc_status'] == 'R')? '<span class="badge badge-warning">Tukar Barang</span>' : '<span class="badge badge-danger">Pengembalian Dana</span>';
+			$row[]	= ($showRC['rc_status'] == 'U')? number_format($showRC['rc_cash'], 2) : '';
+			$row[]	= '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi Penjualan" href="'.site_url('Transaction_c/detailSalesPage/'.urlencode(base64_encode($showRC['rc_ts_id_fk']))).'"><i class="fas fa-search"></i></a>';
+
+			$rcData[] = $row;
+		}
+
+		$output = array(
+			'draw'			  => $this->input->post('draw'),
+			'recordsTotal'	  => $this->Return_m->count_all_rc(),
+			'recordsFiltered' => $this->Return_m->selectRC( $this->input->post('length'), $this->input->post('start') )->num_rows(),
+			'data'			  => $rcData
+		);
+
+		header('Content-Type: application/json');
+		echo json_encode($output);
 	}
 
   /** Custom Form Validation */

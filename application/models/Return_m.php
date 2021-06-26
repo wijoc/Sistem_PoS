@@ -103,7 +103,69 @@ Class Return_m extends MY_Model {
         return $this->db->insert_batch($this->drs_tb, $data);
     }
 
+    /** Query : Select trans return_supplier (return query string) */
+    function _querySelectRS($keyword = NULL, $order = NULL){
+      $this->db->select('rs.*, supp.'.$this->supp_f[1].', tp.'.$this->tp_f[12]);
+      $this->db->from($this->rs_tb.' as rs');
+      $this->db->join($this->tp_tb.' as tp', 'tp.'.$this->tp_f[0].' = rs.'.$this->rs_f[1], 'LEFT');
+      $this->db->join($this->supp_tb.' as supp', 'supp.'.$this->supp_f[0].' = tp.'.$this->tp_f[2], 'LEFT');
+    
+      /** Search */
+      if($keyword != NULL){
+        $this->db->group_start();
+        $this->db->like('tp.'.$this->tp_f[12], $keyword);
+        $this->db->or_like('supp.'.$this->supp_f[1], $keyword);
+        $this->db->group_end();
+      }
+    
+      /** Order, default sortby tp_date DESC */
+      ($order == null)? $this->db->order_by('rs.'.$this->rs_f[2], 'DESC') : $this->db->order_by('rs.'.$this->rs_f[$order['order']['0']['coloumn']], $order['order']['0']['dir']);
+    }
+
+    /** Q-Function : Select rowdata trans sales */
+    function selectRS($amount = 0, $offset = 0){
+      $this->_querySelectRS($this->input->post('search'), $this->input->post('order'));
+      ($amount > 0)? $this->db->limit($amount, $offset) : '';
+      return $this->db->get();
+    }
+
+    /** Q-Function : count all RS */
+    function count_all_rs(){
+      return $this->db->get($this->rs_tb)->num_rows();
+    }
+
   /** CRUD Return Customer */
+    /** Query : Select trans return_customer (return query string) */
+    function _querySelectRC($keyword = NULL, $order = NULL){
+      $this->db->select('rc.*, ctm.'.$this->ctm_f[1].', ts.'.$this->ts_f[1]);
+      $this->db->from($this->rc_tb.' as rc');
+      $this->db->join($this->ts_tb.' as ts', 'ts.'.$this->ts_f[0].' = rc.'.$this->rc_f[1], 'LEFT');
+      $this->db->join($this->ctm_tb.' as ctm', 'ctm.'.$this->ctm_f[0].' = ts.'.$this->ts_f[3], 'LEFT');
+    
+      /** Search */
+      if($keyword != NULL){
+        $this->db->group_start();
+        $this->db->like('rc.'.$this->rc_f[1], $keyword);
+        $this->db->or_like('ctm.'.$this->ctm_f[1], $keyword);
+        $this->db->group_end();
+      }
+    
+      /** Order, default sortby tp_date DESC */
+      ($order == null)? $this->db->order_by('rc.'.$this->rc_f[2], 'DESC') : $this->db->order_by('rc.'.$this->rc_f[$order['order']['0']['coloumn']], $order['order']['0']['dir']);
+    }
+
+    /** Q-Function : Select rowdata trans sales */
+    function selectRC($amount = 0, $offset = 0){
+      $this->_querySelectRC($this->input->post('search'), $this->input->post('order'));
+      ($amount > 0)? $this->db->limit($amount, $offset) : '';
+      return $this->db->get();
+    }
+
+    /** Q-Function : count all RC */
+    function count_all_rc(){
+      return $this->db->get($this->rc_tb)->num_rows();
+    }
+
     /** Q-Function : Select Trans Return Customer berdasar trans sales id */
     function selectRCByTSID($trans_id){
       $this->db->where($this->rc_f[1], $trans_id);
