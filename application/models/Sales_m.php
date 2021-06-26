@@ -31,7 +31,7 @@ Class Sales_m extends MY_Model{
 
 	/** Query : Select trans sales return (query string) */
 	function _querySelectSales($payment_status = 'all', $delete = 'all', $keyword = NULL, $order = NULL){
-		$this->db->select('ts.'.$this->ts_f[0].', ts.'.$this->ts_f[1].', ts.'.$this->ts_f[2].', ts.'.$this->ts_f[3].', ts.'.$this->ts_f[5].', ts.'.$this->ts_f[8].', ts.'.$this->ts_f[12].', ctm.'.$this->ctm_f[1]);
+		$this->db->select('ts.'.$this->ts_f[0].', ts.'.$this->ts_f[1].', ts.'.$this->ts_f[2].', ts.'.$this->ts_f[3].', ts.'.$this->ts_f[5].', ts.'.$this->ts_f[8].', ts.'.$this->ts_f[12].', ts.'.$this->ts_f[16].', ctm.'.$this->ctm_f[1]);
 		$this->db->from($this->ts_tb.' as ts');
 		$this->db->join($this->ctm_tb.' as ctm', 'ctm.'.$this->ctm_f[0].' = ts.'.$this->ts_f[3], 'LEFT');
 
@@ -80,6 +80,13 @@ Class Sales_m extends MY_Model{
     function deleteSale($trans_id){
   		return $this->db->delete($this->ts_tb, array($this->ts_f[0] => $trans_id));
     }
+
+	/** Q-Function : Update Transaction Sales */
+	function updateTS($set_data, $ts_id){
+		$this->db->set($set_data);
+		$this->db->where($this->ts_f[0], $ts_id);
+		return $this->db->update($this->ts_tb);
+	}
 
   /** Query det_sales */
 	/** Q-Function : Insert detail trans sale */

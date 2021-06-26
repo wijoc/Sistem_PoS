@@ -260,6 +260,29 @@ class MY_Model extends CI_Model {
             '3' => 'drs_return_qty'
         );
 
+    /** Table Return Customer */
+        protected $rc_tb = 'return_customer';
+        protected $rc_f  = array(
+            '0' => 'rc_id',
+            '1' => 'rc_ts_id_fk',
+            '2' => 'rc_date',
+            '3' => 'rc_status',
+            '4' => 'rc_cash',
+            '5' => 'rs_post_script',
+            '6' => 'created_at',
+            '7' => 'creted_by',
+            '8' => 'rc_code'
+        );
+
+    /** Table Detail Return Customer */
+        protected $drc_tb = 'det_return_customer';
+        protected $drc_f  = array(
+            '0' => 'drc_id',
+            '1' => 'drc_rc_id_fk',
+            '2' => 'drc_product_id_fk',
+            '3' => 'drc_return_qty'
+        );
+
 	/** Table rekening */
         protected $acc_tb = 'tb_bank_account';
         protected $acc_f = array(

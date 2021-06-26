@@ -36,20 +36,27 @@
                 <div class="table-responsive">
                     <table id="table-transaction" class="table table-bordered table-striped">
                       <thead>
-                        <th>Tgl</th>
-                        <th>Trans</th>
-                        <th>Pelanggan</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Tempo</th>
-                        <th>Aksi</th>
+                        <tr>
+                          <th rowspan="2" class="align-center text-center">Tgl</th>
+                          <th rowspan="2" class="align-center text-center">Trans</th>
+                          <th rowspan="2" class="align-center text-center">Pelanggan</th>
+                          <th rowspan="2" class="align-center text-center">Total</th>
+                          <th colspan="2" class="align-center text-center">Status</th>
+                          <th rowspan="2" class="align-center text-center">Tempo</th>
+                          <th rowspan="2" class="align-center text-center">Aksi</th>
+                        </tr>
+                        <tr>
+                          <th>Pembayaran</th>
+                          <th>Retur</th>
+                        </tr>
                       </thead>
                       <tfoot>
                         <th>Tgl</th>
                         <th>Trans</th>
                         <th>Pelanggan</th>
                         <th>Total</th>
-                        <th>Status</th>
+                        <th>Pembayaran</th>
+                        <th>Retur</th>
                         <th>Tempo</th>
                         <th>Aksi</th>
                       </tfoot>
