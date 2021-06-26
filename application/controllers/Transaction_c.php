@@ -1239,9 +1239,9 @@ Class Transaction_c extends MY_Controller{
 				if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uK']) == TRUE){
 					$actionBtn .= '&nbsp<a class="btn btn-xs btn-secondary" data-toggle="tooltip" data-placement="top" title="Transaksi Retur Terkait" href="'.site_url('Transaction_c/addRCPage/').urlencode(base64_encode($show['ts_id'])).'"> <i class="fas fa-exchange-alt"></i> </a>';
 				}
-				$returnStatus = "<span class=\"badge badge-success\">Belum Retur</span>";
+				$returnStatus = "<span class=\"badge badge-secondary\">Belum Retur</span>";
 			} else {
-				$returnStatus = "<span class=\"badge badge-danger\">Sudah Retur</span>";
+				$returnStatus = "<span class=\"badge badge-warning\">Sudah Retur</span>";
 			}
 
 			$no++;
@@ -1272,13 +1272,35 @@ Class Transaction_c extends MY_Controller{
 	/** Function : Detail trans Sales */
 	public function detailSalesPage($encoded_trans_id){
 		$this->auth_user(['uAll', 'uO', 'uK']);
+
+	  /** Get detail retur */
+		$dataRC = $this->Return_m->selectRCByTSID(base64_decode(urldecode($encoded_trans_id)))->result_array();
+		$detailRC = array();
+
+		foreach($dataRC as $showRC){
+			$detailRC[$showRC['rc_id']]['show_code']	= $showRC['rc_code'];
+			$detailRC[$showRC['rc_id']]['show_date']	= date('Y-m-d', strtotime($showRC['rc_date']));
+			$detailRC[$showRC['rc_id']]['show_status']	= ($showRC['rc_status'] == 'R')? '<span class="badge badge-success">Tukar Barang</span>' : '<span class="badge badge-info">Pengembalian Dana</span>';
+			$detailRC[$showRC['rc_id']]['show_cash']	= ($showRC['rc_status'] == 'U')? number_format($showRC['rc_cash'], 2) : 0;
+			$detailRC[$showRC['rc_id']]['show_ps'] 		 = $showRC['rc_post_script'];
+			$detailRC[$showRC['rc_id']]['detail_rc'][] 	 = array(
+				'retur_product' => '<small>'.$showRC['prd_name'].'</small>',
+				'retur_qty'		=> $showRC['drc_return_qty']
+			);
+		}
+
+		foreach($detailRC as $key => $value){
+			$detailRC[$key]['count_prd'] = count($value['detail_rc']);
+		}
+
 		$this->pageData = array(
 			'title' 	=> 'PoS | Trans Penjualan',
 			'assets' 	=> array(),
 			'id'		=> base64_decode(urldecode($encoded_trans_id)),
 			'detailTrans' => $this->Sales_m->selectSalesOnID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
 			'detailCart'  => $this->Sales_m->selectDetTS(base64_decode(urldecode($encoded_trans_id)))->result_array(),
-			//'detailIP' 	  => $this->Installment_m->selectIPonID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			'detailIS' 	  => $this->Installment_m->selectISOnID(base64_decode(urldecode($encoded_trans_id)))->result_array(),
+			'detailRS'	  => $detailRC
 		);
 		$this->page = 'trans/sales/detail_sales_v';
 		$this->layout();
@@ -1315,10 +1337,10 @@ Class Transaction_c extends MY_Controller{
 			$i = 0;
 			foreach($this->Installment_m->selectISOnID(base64_decode(urldecode($encoded_trans_id)))->result_array() as $showIS){
 				$returnData['i_data'][$i]['i_periode']		 = $showIS['is_periode'];
-				$returnData['i_data'][$i]['i_due_date'] 	 = '<font class="font-weight-bold">'.date('d-m-Y', strtotime($showIS['is_due_date']))."</font>";
+				$returnData['i_data'][$i]['i_due_date'] 	 = '<font class="font-weight-bold">'.date('d/m/y', strtotime($showIS['is_due_date']))."</font>";
 				$returnData['i_data'][$i]['i_code']			 = ($showIS['is_code'] != '')? '<font color="green">'.$showIS['is_code'].'</font>' : '-';
 				$returnData['i_data'][$i]['i_payment'] 	 	 = ($showIS['is_payment'] != '')? '<font color="green">'.number_format($showIS['is_payment'], 2).'</font>' : '-';
-				$returnData['i_data'][$i]['i_payment_date']  = ($showIS['is_payment_date'] != '')? '<font color="green">'.$showIS['is_payment_date'].'</font>' : '-';
+				$returnData['i_data'][$i]['i_payment_date']  = ($showIS['is_payment_date'] != '')? '<font color="green">'.date('d/m/y',strtotime($showIS['is_payment_date'])).'</font>' : '-';
 				$returnData['i_data'][$i]['i_ps']	 		 = ($showIS['is_post_script'] != '')? '<small>'.$showIS['is_post_script'].'</small>' : '';
 				$i++;
 			}

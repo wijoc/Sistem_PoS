@@ -228,7 +228,7 @@
                         <th rowspan="2" class="text-center align-middle">Tgl</th>
                         <th rowspan="2" class="text-center align-middle">Status</th>
                         <th colspan="2" class="text-center align-middle">Biaya</th>
-                        <th rowspan="2" class="text-center align-middle">PS</th>
+                        <th rowspan="2" class="text-center align-middle">Catatan</th>
                         <th colspan="2" class="text-center align-middle">Detail Retur</th>
                       </tr>
                       <tr>

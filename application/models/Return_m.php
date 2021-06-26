@@ -168,8 +168,12 @@ Class Return_m extends MY_Model {
 
     /** Q-Function : Select Trans Return Customer berdasar trans sales id */
     function selectRCByTSID($trans_id){
-      $this->db->where($this->rc_f[1], $trans_id);
-      return $this->db->get($this->rc_tb);
+      $this->db->select('rc.*, drc.*, prd.'.$this->prd_f[2]);
+      $this->db->from($this->rc_tb.' as rc');
+      $this->db->join($this->drc_tb.' as drc', 'drc.'.$this->drc_f[1].' = rc.'.$this->rc_f[0], 'LEFT');
+      $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].' = drc.'.$this->drc_f[2], 'LEFT');
+      $this->db->where('rc.'.$this->rc_f[1], $trans_id);
+      return $this->db->get();
     }
 
     /** Q-Function : Insert Trans Return Customer */

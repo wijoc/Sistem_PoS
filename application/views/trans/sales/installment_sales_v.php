@@ -113,7 +113,7 @@
                           <tr>
                             <th>Periode</th>
                             <th>Tempo</th>
-                            <th>No. Bayaran</th>
+                            <th>No. Bayar</th>
                             <th>Bayar</th>
                             <th>Tgl bayar</th>
                             <th>PS</th>

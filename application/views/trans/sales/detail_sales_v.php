@@ -24,7 +24,7 @@
           <div class="col-12">
             <div class="card card-info card-outline">
               <div class="card-header">
-                <h4 class="m-0 card-title text-uppercase">Detail Transaksi</h4> <small><i class="fa fa-minus"></i></small> <b><?php echo $detailTrans[0]['ts_trans_code'] ?></b>
+                <h4 class="m-0 card-title text-uppercase">Detail Transaksi <i class="fas fa-minus"></i> Nota : <b><?php echo $detailTrans[0]['ts_trans_code'] ?></b></h4>
                 <div class="float-right">
                   <a class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Daftar Transaksi Sales" href="<?php echo site_url('Transaction_c/listSalesPage') ?>"><i class="fas fa-list"></i></a>
                   <?php if($detailTrans[0]['ts_payment_status'] == 'K'){ ?>
@@ -178,12 +178,36 @@
           <!-- Detail Installment History -->
           <?php if($detailTrans[0]['ts_payment_status'] != 'T'){ ?>
             <div class="col-12">
-              <div class="card card-info card-outline">
+              <div class="card card-primary card-outline">
                 <div class="card-header">
-                  <h4 class="m-0 card-title">Detail Pembayaran Angsuran <i class="fas fa-minus"></i> Nota : <b><?php echo $detailTrans[0]['ts_trans_code'] ?></b></h4>
+                  <h4 class="m-0 card-title text-uppercase">Detail Pembayaran Angsuran <i class="fas fa-minus"></i> Nota : <b><?php echo $detailTrans[0]['ts_trans_code'] ?></b></h4>
                 </div>
                 <div class="card-body row">
                   <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead class="text-center">
+                        <tr>
+                          <th>Periode</th>
+                          <th>Tempo</th>
+                          <th>No. Pembayaran</th>
+                          <th>Biaya Pembayaran</th>
+                          <th>Tgl Bayar</th>
+                          <th>PS</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php foreach($detailIS as $showIS): ?>
+                        <tr>
+                          <td class="text-center"><?php echo $showIS['is_periode'] ?></td>
+                          <td class="text-center"><?php echo date('Y-m-d', strtotime($showIS['is_due_date'])) ?></td>
+                          <td class="text-center"><?php echo ($showIS['is_code'] != '')? '<font color="green">'.$showIS['is_code'].'</font>' : '-' ?></td>
+                          <td class="text-right"><?php echo ($showIS['is_payment'] != '')? '<font color="green">'.number_format($showIS['is_payment'], 2).'</font>' : '-' ?></td>
+                          <td class="text-center"><?php echo ($showIS['is_payment_date'] != '')? '<font color="green">'.date('d/m/y',strtotime($showIS['is_payment_date'])).'</font>' : '-' ?></td>
+                          <td class="text-justify"><?php echo ($showIS['is_post_script'] != '')? '<small>'.$showIS['is_post_script'].'</small>' : '' ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
@@ -195,20 +219,51 @@
             <div class="col-12">
               <div class="card card-danger card-outline">
                 <div class="card-header">
-                  <h4 class="m-0 card-title">Detail Retur Transaksi <i class="fas fa-minus"></i> Nota : <b><?php echo $detailTrans[0]['ts_trans_code'] ?></b></h4>
-                  <div class="float-right">
-                    <a class="btn btn-xs btn-success" href="<?php echo site_url('Transaction_c/listPurchasesPage') ?>"><i class="fas fa-list"></i></a>
-                  </div>
+                  <h4 class="m-0 card-title text-uppercase">History Retur <i class="fas fa-minus"></i> Nota : <b><?php echo $detailTrans[0]['ts_trans_code'] ?></b></h4>
                 </div>
                 <div class="card-body row">
                   <div class="table-responsive">
                     <table class="table table-bordered">
-                      <thead>
-                        <th>Nota Retur</th>
-                        <th>Produk</th>
-                        <th>Qty</th>
-                        <th>Status</th>
+                      <thead class="text-center">
+                        <tr>
+                          <th rowspan="2" class="align-middle">Tgl</th>
+                          <th rowspan="2" class="align-middle">No. Retur</th>
+                          <th rowspan="2" class="align-middle">Status</th>
+                          <th rowspan="2" class="align-middle">Biaya</th>
+                          <th rowspan="2" class="align-middle">Catatan</th>
+                          <th colspan="2" class="align-middle">Detail Retur</th>
+                        </tr>
+                        <tr>
+                          <th class="text-center">Produk</th>
+                          <th class="text-center">Qty Retur</th>
+                        </tr>
                       </thead>
+                      <tbody>
+                        <?php foreach($detailRS as $showDRC): ?>
+                          <tr>
+                            <td class="text-center align-middle" rowspan="<?php echo $showDRC['count_prd'] ?>"><?php echo $showDRC['show_date'] ?></td>
+                            <td class="text-right align-middle" rowspan="<?php echo $showDRC['count_prd'] ?>"><?php echo $showDRC['show_code'] ?></td>
+                            <td class="text-center align-middle" rowspan="<?php echo $showDRC['count_prd'] ?>"><?php echo $showDRC['show_status'] ?></td>
+                            <td class="text-right align-middle" rowspan="<?php echo $showDRC['count_prd'] ?>"><?php echo $showDRC['show_cash'] ?></td>
+                            <td rowspan="<?php echo $showDRC['count_prd'] ?>"><small><?php echo $showDRC['show_ps'] ?></small></td>
+                        
+                        <?php if($showDRC['count_prd'] > 1){ ?>
+                            <td><?php echo $showDRC['detail_rc'][array_key_first($showDRC['detail_rc'])]['retur_product'] ?></td>
+                            <td class="text-center"><?php echo $showDRC['detail_rc'][array_key_first($showDRC['detail_rc'])]['retur_qty'] ?></td>
+                          </tr>
+                          <?php unset($showDRC['detail_rc'][array_key_first($showDRC['detail_rc'])]); foreach($showDRC['detail_rc'] as $showPrd): ?>
+                          <tr>
+                            <td><?php echo $showPrd['retur_product'] ?></td>
+                            <td class="text-center"><?php echo $showPrd['retur_qty'] ?></td>
+                          </tr>
+                        
+                        <?php endforeach; } else { ?>
+                            <td><?php echo $showDRC['detail_rc'][array_key_first($showDRC['detail_rc'])]['retur_product'] ?></td>
+                            <td class="text-center"><?php echo $showDRC['detail_rc'][array_key_first($showDRC['detail_rc'])]['retur_qty'] ?></td>
+                          </tr>
+                         <?php } ?>
+                        <?php endforeach ?>
+                      </tbody>
                     </table>
                   </div>
                 </div>

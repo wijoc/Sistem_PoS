@@ -37,20 +37,20 @@
                     <table id="table-transaction" class="table table-bordered table-striped">
                       <thead>
                         <tr>
-                          <th rowspan="2" class="align-center text-center">Tgl</th>
-                          <th rowspan="2" class="align-center text-center">Trans</th>
-                          <th rowspan="2" class="align-center text-center">Pelanggan</th>
-                          <th rowspan="2" class="align-center text-center">Total</th>
-                          <th colspan="2" class="align-center text-center">Status</th>
-                          <th rowspan="2" class="align-center text-center">Tempo</th>
-                          <th rowspan="2" class="align-center text-center">Aksi</th>
+                          <th rowspan="2" class="align-middle text-center">Tgl</th>
+                          <th rowspan="2" class="align-middle text-center">Trans</th>
+                          <th rowspan="2" class="align-middle text-center">Pelanggan</th>
+                          <th rowspan="2" class="align-middle text-center">Total</th>
+                          <th colspan="2" class="align-middle text-center">Status</th>
+                          <th rowspan="2" class="align-middle text-center">Tempo</th>
+                          <th rowspan="2" class="align-middle text-center">Aksi</th>
                         </tr>
-                        <tr>
+                        <tr class="text-center">
                           <th>Pembayaran</th>
                           <th>Retur</th>
                         </tr>
                       </thead>
-                      <tfoot>
+                      <tfoot class="text-center">
                         <th>Tgl</th>
                         <th>Trans</th>
                         <th>Pelanggan</th>
