@@ -283,7 +283,7 @@ class MY_Model extends CI_Model {
             '3' => 'drc_return_qty'
         );
 
-	/** Table rekening */
+	/** Table Rekening */
         protected $acc_tb = 'tb_bank_account';
         protected $acc_f = array(
             '0' => 'acc_id',
@@ -293,7 +293,7 @@ class MY_Model extends CI_Model {
             '4' => 'acc_status'
         );
 
-	/** Table bank */
+	/** Table Bank */
         protected $bank_tb = 'ref_bank';
         protected $bank_f = array(
             '0' => 'bank_id',

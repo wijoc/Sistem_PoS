@@ -220,6 +220,19 @@
 		<script src="<?php echo base_url() ?>assets/dist/js/transaction/add_return_assets.js"></script>
 	<?php } ?>
 
+	<?php if(in_array('list_user', $assets)){ ?>
+		<!-- List User Assets -->
+		<script src="<?php echo base_url() ?>assets/dist/js/settings/user_assets.js"></script>
+		<script>
+			let users_url = "<?php echo $userAjaxUrl; ?>"
+		</script>
+	<?php } ?>
+
+	<?php if(in_array('f_confirm', $assets)){ ?>
+		<!-- Delete Confirmation Assets -->
+		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/f_confirm.js"></script>
+	<?php } ?>
+
 	<!-- belum -->
 
 	<?php if(in_array('p_setting', $assets)){ ?>
@@ -237,14 +250,4 @@
 	<!-- Page setting profile -->
 	<?php if(in_array('page_profile', $assets)){ ?>
 		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/setting_profile_assets.js"></script>
-	<?php } ?>
-
-	<!-- Page Konfirmasi Delete -->
-	<?php if(in_array('f_confirm', $assets)){ ?>
-		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/f_confirm.js"></script>
-	<?php } ?>
-
-	<!-- Alert -->
-	<?php if(in_array('alert', $assets)){ ?>
-		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/alert.js"></script>
 	<?php } ?>
