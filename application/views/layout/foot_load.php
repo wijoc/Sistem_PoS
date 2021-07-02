@@ -122,6 +122,11 @@
 		<script src="<?php echo base_url() ?>assets/plugins/toastr/toastr.min.js"></script>
 	<?php } ?>
 
+	<?php if(in_array('chart', $assets)){ ?>
+		<!-- ChartJS -->
+		<script src="<?php echo base_url() ?>assets/plugins/chart.js/Chart.min.js"></script>
+	<?php } ?>
+
 <!-- additional Page script goes here -->
 	<?php if(in_array('add_product',$assets)){ ?>
 		<!-- Page Add Product -->
@@ -231,6 +236,14 @@
 	<?php if(in_array('f_confirm', $assets)){ ?>
 		<!-- Delete Confirmation Assets -->
 		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/f_confirm.js"></script>
+	<?php } ?>
+
+	<?php if(in_array('dashboard', $assets)){ ?>
+		<!-- Dashboard Assets -->
+		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/dashboard_assets.js"></script>
+		<script>
+			var chart_url = '<?php echo $chartUrl; ?>'
+		</script>
 	<?php } ?>
 
 	<!-- belum -->

@@ -128,7 +128,7 @@ Class Product_c extends MY_Controller {
 	/** Function : Ajax stock product */
 	public function stockProductAjax(){
 		$prdData	= array();
-		foreach($this->Product_m->selectProductStock(10, 0)->result_array() as $show){
+		foreach($this->Product_m->selectProductStock($this->input->post('length'), $this->input->post('start'))->result_array() as $show){
 			$actionBtn = '<a class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Detail Produk" href="'.site_url('Product_c/detailProductPage/').urlencode(base64_encode($show['prd_id'])).'"> <i class="fas fa-search"></i> </a>';
 			if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uG']) == TRUE ){
 				$actionBtn .= '&nbsp;<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Mutasi Stok" href="'.site_url('Product_c/stockMutationProductPage/'.urlencode(base64_encode($show['prd_id']))).'"><i class="fas fa-people-carry"></i></a>';
@@ -156,8 +156,6 @@ Class Product_c extends MY_Controller {
 		);
 
 		echo json_encode($output);
-
-		//print("<pre>".print_r($this->Product_m->selectProductStock(10, 0)->result_array(), true)."</pre>");
 	}
 
 	/** Function : Mutasi stock product */
@@ -292,6 +290,68 @@ Class Product_c extends MY_Controller {
 
 		header('Content-Type: application/json');
 		echo json_encode($arrReturn);
+	}
+
+	/** Function : List Stock mutation */
+	public function listMutationPage(){
+	  /** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uG']);
+
+		$this->pageData = array(
+			'title'  => 'PoS | List Mutasi Stok',
+			'assets' => array('datatables', 'list_product'),
+			'prdAjaxUrl' => site_url('Product_c/listStockMutationAjax/')
+		);
+		$this->page = 'product/list_stock_mutation_v';
+		$this->layout();
+	}
+
+	/** Function : Ajax Stock Mutation */
+	public function listStockMutationAjax(){
+		$smData	= array();
+		foreach($this->Product_m->selectStockMutation($this->input->post('length'), $this->input->post('start'))->result_array() as $show){
+			switch ($show['sm_stock_from']){
+				case 'SG' :
+					$stock_from = '<span class="badge badge-info">Stok Bagus</span>';
+					break;  
+				case 'SNG' :
+					$stock_from = '<span class="badge badge-danger">Stok Rusak</span>';
+					break;
+				case 'SO' :
+					$stock_from = '<span class="badge badge-warning">Stok Opname</span>';
+					break;
+			}
+			switch ($show['sm_stock_to']){
+				case 'SG' :
+					$stock_to = '<span class="badge badge-info">Stok Bagus</span>';
+					break;  
+				case 'SNG' :
+					$stock_to = '<span class="badge badge-danger">Stok Rusak</span>';
+					break;
+				case 'SO' :
+					$stock_to = '<span class="badge badge-warning">Stok Opname</span>';
+					break;
+			}
+
+			$row = array();
+			$row[] = date('d-m-Y', strtotime($show['sm_date']));
+			$row[] = $show['prd_name'];
+			$row[] = $stock_from;
+			$row[] = $stock_to;
+			$row[] = $show['sm_qty'];
+			$row[] = "<small>".$show['sm_post_script']."</small>";
+		
+			$smData[] = $row;
+		}
+
+		$output = array(
+			'draw'			  => $this->input->post('draw'),
+			'recordsTotal'	  => $this->Product_m->count_all_mutation(),
+			'recordsFiltered' => $this->Product_m->selectStockMutation($this->input->post('length'), $this->input->post('start'))->num_rows(),
+			'data'			  => $smData
+		);
+
+		echo json_encode($output);
 	}
 
 	/** Function : Detail product page */

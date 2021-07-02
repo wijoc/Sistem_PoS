@@ -16,7 +16,7 @@
           
           <!-- Menu : Dashboard -->
           <li class="nav-item menu-open">
-            <a href="#" class="nav-link active">
+            <a href="<?php echo site_url('Page_c') ?>" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -46,6 +46,15 @@
             <a href="<?php echo site_url('Product_c/listCatUnitPage') ?>" class="nav-link">
               <i class="fas fa-box nav-icon"></i>
               <p>Kategori & Satuan</p>
+            </a>
+          </li>
+          <?php } ?>
+
+          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uG'])){ ?>
+          <li class="nav-item">
+            <a href="<?php echo site_url('Product_c/listMutationPage/') ?>" class="nav-link">
+              <i class="fas fa-circle fa-people-carry nav-icon"></i>
+              <p>Mutasi Stok</p>
             </a>
           </li>
           <?php } ?>

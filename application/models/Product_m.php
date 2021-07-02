@@ -91,6 +91,17 @@ Class Product_m extends MY_Model {
         return $this->db->get();
       }
 
+    /** Q-Function : Select data product dengan stock good paling sedikit */
+      function emergencyProductStock($amount, $status = 'all'){
+        $this->db->select('prd.'.$this->prd_f[0].', prd.'.$this->prd_f[2].', stk.'.$this->stk_f[2].', stk.'.$this->stk_f[3].', stk.'.$this->stk_f[4]);
+        $this->db->from($this->prd_tb.' as prd');
+        $this->db->join($this->stk_tb.' as stk', 'stk.'.$this->stk_f[1].' = prd.'.$this->prd_f[0]);
+        $this->db->where('prd.'.$this->prd_f[12], $status);
+        $this->db->order_by('stk.'.$this->stk_f[2], 'ASC');
+        ($amount > 0)? $this->db->limit($amount) : '';
+        return $this->db->get();
+      }
+
     /** Q-Function : Select data product berdasar ctgr_id */
       function selectProductOnCtgr($ctgr_id, $amount = 0, $offset = 0){
         $this->_querySelectProduct('0', $this->input->post('prdSearch'), $this->input->post('order'));
@@ -160,6 +171,20 @@ Class Product_m extends MY_Model {
           $returnValue = FALSE;
         }
         return $returnValue;
+      }
+
+    /** Q-Function : Select stock mutation */
+      function selectStockMutation($amount = 0, $offset = 0){
+        $this->db->select('sm.'.$this->sm_f[2].', sm.'.$this->sm_f[3].', sm.'.$this->sm_f[4].', sm.'.$this->sm_f[5].', sm.'.$this->sm_f[8].', prd.'.$this->prd_f[2]);
+        $this->db->from($this->sm_tb.' as sm');
+        $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].' = sm.'.$this->sm_f[1]);
+        ($amount > 0)? $this->db->limit($amount, $offset) : '';
+        return $this->db->get();
+      }
+
+    /** Q-Function : total semua Stock mutation */
+      function count_all_mutation(){
+        return $this->selectStockMutation()->num_rows();
       }
 
     /** Q-Function : Select mutatuin stock berdasar id */
