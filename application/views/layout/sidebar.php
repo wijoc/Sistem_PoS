@@ -3,7 +3,7 @@
     <a href="index3.html" class="brand-link navbar-orange">
       <img src="<?php echo base_url() ?>assets/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
-      <span class="brand-text font-weight-dark">Nama APP</span>
+      <span class="brand-text font-weight-dark">PoS</span>
     </a>
 
     <!-- Sidebar -->

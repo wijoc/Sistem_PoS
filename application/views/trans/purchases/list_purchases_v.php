@@ -30,6 +30,7 @@
               <div class="card-body">
                 <table id="table-transaction" class="table table-bordered table-striped">
                   <thead>
+                    <th></th>
                     <th>Tanggal</th>
                     <th>Nota</th>
                     <th>Supplier</th>
@@ -41,6 +42,7 @@
                   <tbody>
                   </tbody>
                   <tfoot>
+                    <th></th>
                     <th>Tanggal</th>
                     <th>Nota</th>
                     <th>Supplier</th>

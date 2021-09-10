@@ -23,9 +23,9 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3><?php echo $infoSales ?></h3>
+                <h3><?php echo $infoPurchases ?></h3>
 
-                <p>Total Trans. Penjualan Anda hari ini</p>
+                <p>Total Trans. Pembelian Anda hari ini</p>
               </div>
               <div class="icon">
                 <i class="fa fa-cash-register"></i>

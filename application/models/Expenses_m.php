@@ -47,4 +47,30 @@ Class Expenses_m extends MY_Model {
 		$this->db->where($this->te_f[0], $trans_id);
 		return $this->db->get();
 	}
+
+	/** Q-Function : Select total Expenses today */
+	function totalExpensesByDate($date, $user = 'all', $date_type = 'day'){
+		$this->db->select('SUM('.$this->te_f[4].') as total_expenses');
+		$this->db->from($this->te_tb);
+		
+		($user != 'all')? $this->db->where($this->te_f[9], $user) : '';
+		
+		if($date_type == 'day'){
+			$this->db->where($this->te_f[2], $date);
+		}
+
+		return $this->db->get();
+	}
+
+	/** Q-Function : Select Annual Expenses */
+	function monthlyTotalExpenses($year, $user = 'all'){
+		$this->db->select('extract(MONTH from '.$this->te_f[2].') as s_month, sum('.$this->te_f[4].') as total_expenses');
+		$this->db->from($this->te_tb);
+		$this->db->where('YEAR('.$this->te_f[2].')', $year);
+		
+		($user != 'all')? $this->db->where($this->te_f[9], $user) : '';
+
+		$this->db->group_by('s_month');
+		return $this->db->get();
+	}
 }

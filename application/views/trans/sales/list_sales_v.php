@@ -37,6 +37,7 @@
                     <table id="table-transaction" class="table table-bordered table-striped">
                       <thead>
                         <tr>
+                          <th rowspan="2"></th>
                           <th rowspan="2" class="align-middle text-center">Tgl</th>
                           <th rowspan="2" class="align-middle text-center">Trans</th>
                           <th rowspan="2" class="align-middle text-center">Pelanggan</th>
@@ -51,6 +52,7 @@
                         </tr>
                       </thead>
                       <tfoot class="text-center">
+                        <th></th>
                         <th>Tgl</th>
                         <th>Trans</th>
                         <th>Pelanggan</th>

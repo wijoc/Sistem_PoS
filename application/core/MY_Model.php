@@ -168,10 +168,12 @@ class MY_Model extends CI_Model {
             '10' => 'ts_tenor_periode',
             '11' => 'ts_installment',
             '12' => 'ts_due_date',
-            '13' => 'ts_delete',
+            '13' => 'ts_cancel',
             '14' => 'ts_delivery_method',
             '15' => 'ts_delivery_fee',
-            '16' => 'ts_return'
+            '16' => 'ts_return',
+            '17' => 'created_at',
+            '18' => 'created_by'
         );
 
     /** Table Detail Trans Sales */
@@ -194,7 +196,8 @@ class MY_Model extends CI_Model {
             '2' => 'temps_product_amount',
             '3' => 'temps_sale_price',
             '4' => 'temps_discount',
-            '5' => 'temps_total_paid'
+            '5' => 'temps_total_paid',
+            '6' => 'cart_by'
         );
 
     /** Table installment Sales */
@@ -221,7 +224,9 @@ class MY_Model extends CI_Model {
             '4' => 'te_payment',
             '5' => 'te_note_code',
             '6' => 'te_account_id_fk',
-            '7' => 'te_note_file'
+            '7' => 'te_note_file',
+            '8' => 'created_at',
+            '9' => 'created_by'
         );
 	
 	/** Table Revenues */
@@ -234,7 +239,9 @@ class MY_Model extends CI_Model {
             '4' => 'tr_payment_method',
             '5' => 'tr_payment',
             '6' => 'tr_account_id_fk',
-            '7' => 'tr_post_script'
+            '7' => 'tr_post_script',
+            '8' => 'created_at',
+            '9' => 'created_by'
         );
 
     /** Table Return Supplier */

@@ -86,6 +86,34 @@ Class Purchases_m extends MY_Model{
       return $this->db->get();
     }
 
+    /** Q-Function : Select total purchases today */
+    function totalPurchasesByDate($date, $user = 'all', $date_type = 'day'){
+      $this->db->select('SUM('.$this->tp_f[4].') as total_purchases');
+      $this->db->from($this->tp_tb);
+      
+      ($user != 'all')? $this->db->where($this->tp_f[18], $user) : '';
+      
+      if($date_type == 'day'){
+        $this->db->where($this->tp_f[1], $date);
+      }
+  
+      $this->db->where($this->tp_f[11], '0');
+      return $this->db->get();
+    }
+
+    /** Q-Function : Select Monthly Purchase in a year */
+    function monthlyTotalPurchases($year, $user = 'all'){
+      $this->db->select('extract(MONTH from '.$this->tp_f[1].') as s_month, sum('.$this->tp_f[4].') as total_purchases');
+      $this->db->from($this->tp_tb);
+      $this->db->where('YEAR('.$this->tp_f[1].')', $year);
+      
+      ($user != 'all')? $this->db->where($this->tp_f[18], $user) : '';
+  
+      $this->db->where($this->tp_f[11], '0');
+      $this->db->group_by('s_month');
+      return $this->db->get();
+    }
+
     /** Q-Function : Update Trans Purchase berdasar ID */
     function updatePurchaseOnID($data, $id){
       $this->db->where($this->tp_f[0], $id);

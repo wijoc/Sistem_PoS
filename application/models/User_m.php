@@ -38,6 +38,14 @@ Class User_m extends MY_Model{
         return $this->db->get();
     }
 
+    /** Q-Function : Count user per role */
+    function countUserPerRole(){
+        $this->db->select($this->u_f[4].', COUNT('.$this->u_f[0].') as count_user');
+        $this->db->from($this->u_tb);
+        $this->db->group_by($this->u_f[4]);
+        return $this->db->get();
+    }
+
     /** Q-Function : Count all row-date */
     function count_all(){
         return $this->db->get($this->u_tb)->num_rows();

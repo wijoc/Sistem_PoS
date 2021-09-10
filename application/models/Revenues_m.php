@@ -56,4 +56,30 @@ Class Revenues_m extends MY_Model {
 		$this->db->where($this->tr_f[0], $trans_id);
 		return $this->db->get();
 	}
+
+	/** Q-Function : Select total revenues today */
+	function totalRevenuesByDate($date, $user = 'all', $date_type = 'day'){
+		$this->db->select('SUM('.$this->tr_f[5].') as total_revenues');
+		$this->db->from($this->tr_tb);
+		
+		($user != 'all')? $this->db->where($this->tr_f[9], $user) : '';
+		
+		if($date_type == 'day'){
+			$this->db->where($this->tr_f[3], $date);
+		}
+
+		return $this->db->get();
+	}
+
+	/** Q-Function : Select Annual Revenues */
+	function monthlyTotalRevenues($year, $user = 'all'){
+		$this->db->select('extract(MONTH from '.$this->tr_f[3].') as s_month, sum('.$this->tr_f[5].') as total_revenues');
+		$this->db->from($this->tr_tb);
+		$this->db->where('YEAR('.$this->tr_f[3].')', $year);
+		
+		($user != 'all')? $this->db->where($this->tr_f[9], $user) : '';
+
+		$this->db->group_by('s_month');
+		return $this->db->get();
+	}
 }

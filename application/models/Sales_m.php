@@ -31,7 +31,7 @@ Class Sales_m extends MY_Model{
 
 	/** Query : Select trans sales return (query string) */
 	function _querySelectSales($payment_status = 'all', $delete = 'all', $keyword = NULL, $order = NULL){
-		$this->db->select('ts.'.$this->ts_f[0].', ts.'.$this->ts_f[1].', ts.'.$this->ts_f[2].', ts.'.$this->ts_f[3].', ts.'.$this->ts_f[5].', ts.'.$this->ts_f[8].', ts.'.$this->ts_f[12].', ts.'.$this->ts_f[16].', ctm.'.$this->ctm_f[1]);
+		$this->db->select('ts.'.$this->ts_f[0].', ts.'.$this->ts_f[1].', ts.'.$this->ts_f[2].', ts.'.$this->ts_f[3].', ts.'.$this->ts_f[5].', ts.'.$this->ts_f[8].', ts.'.$this->ts_f[12].', ts.'.$this->ts_f[16].', ts.'.$this->ts_f[18].', ctm.'.$this->ctm_f[1]);
 		$this->db->from($this->ts_tb.' as ts');
 		$this->db->join($this->ctm_tb.' as ctm', 'ctm.'.$this->ctm_f[0].' = ts.'.$this->ts_f[3], 'LEFT');
 
@@ -82,6 +82,34 @@ Class Sales_m extends MY_Model{
       return $this->db->get();
     }
 
+	/** Q-Function : Select total sales today */
+	function totalSalesByDate($date, $user = 'all', $date_type = 'day'){
+		$this->db->select('SUM('.$this->ts_f[5].') as total_sales');
+		$this->db->from($this->ts_tb);
+		
+		($user != 'all')? $this->db->where($this->ts_f[18], $user) : '';
+		
+		if($date_type == 'day'){
+			$this->db->where($this->ts_f[2], $date);
+		}
+
+		$this->db->where($this->ts_f[13], '0');
+		return $this->db->get();
+	}
+
+	/** Q-Function : Select Annual sales */
+	function monthlyTotalSales($year, $user = 'all'){
+		$this->db->select('extract(MONTH from '.$this->ts_f[2].') as s_month, sum('.$this->ts_f[5].') as total_sales');
+		$this->db->from($this->ts_tb);
+		$this->db->where('YEAR('.$this->ts_f[2].')', $year);
+		
+		($user != 'all')? $this->db->where($this->ts_f[18], $user) : '';
+
+		$this->db->where($this->ts_f[13], '0');
+		$this->db->group_by('s_month');
+		return $this->db->get();
+	}
+
     /** Q-Function : Delete transaction sales (permanent) */
     function deleteSale($trans_id){
   		return $this->db->delete($this->ts_tb, array($this->ts_f[0] => $trans_id));
@@ -125,23 +153,26 @@ Class Sales_m extends MY_Model{
 		  $this->cs_f[2] => $data['post_qty'],
 		  $this->cs_f[3] => $data['post_price'],
 		  $this->cs_f[4] => $data['post_discount'],
-		  $this->cs_f[5] => $data['post_total']
+		  $this->cs_f[5] => $data['post_total'],
+		  $this->cs_f[6] => $data['cart_by']
 		);
   
 		return $this->db->insert($this->cs_tb, $insertData);
 	}
 
     /** Q-Function : Select cart */
-    function selectCart(){
+    function selectCart($u_id){
     	$this->db->select($this->cs_tb.'.*, '.$this->prd_tb.'.'.$this->prd_f[2]);
     	$this->db->from($this->cs_tb);
     	$this->db->join($this->prd_tb, $this->prd_tb.'.'.$this->prd_f[0].' = '.$this->cs_tb.'.'.$this->cs_f[1]);
+		$this->db->where($this->cs_tb.'.'.$this->cs_f[6], $u_id);
     	return $this->db->get();
     }
 
     /** Q-Function : Get cart berdasar product_id */
-    function getCartonPrdID($prd_id){
+    function getCartonPrdID($prd_id, $u_id){
 		$this->db->where($this->cs_f[1], $prd_id);
+		$this->db->where($this->cs_f[6], $u_id);
 		return $this->db->get($this->cs_tb);
 	}
 
@@ -153,9 +184,10 @@ Class Sales_m extends MY_Model{
     }
 
     /** Q-Function : Delete cart berdasar product_id */
-    function deleteCart($prdId, $prdPrice){
+    function deleteCart($u_id, $prdId, $prdPrice){
       $this->db->where($this->cs_f[1], $prdId);
       $this->db->where($this->cs_f[3], $prdPrice);
+	  $this->db->where($this->cs_f[6], $u_id);
       return $this->db->delete($this->cs_tb);
     }
 

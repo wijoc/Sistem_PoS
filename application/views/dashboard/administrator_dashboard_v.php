@@ -19,48 +19,72 @@
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         <div class="row">
-          <div class="col-lg-4 col-6">
+          <div class="col-lg-2 col-6">
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3><?php echo $infoSales ?></h3>
+                <h3><?php echo $info_user['uO'] ?></h3>
 
-                <p>Total Trans. Penjualan Anda hari ini</p>
+                <p>User Owner</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-user"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3><?php echo $info_user['uK'] ?></h3>
+
+                <p>User Kasir</p>
               </div>
               <div class="icon">
                 <i class="fa fa-cash-register"></i>
               </div>
-              <a href="<?php echo site_url('Product_c/listProductPage') ?>" class="small-box-footer">Daftar Produk &nbsp; <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
-          <div class="col-lg-4 col-6">
+          <div class="col-lg-2 col-6">
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3><?php echo $infoRevenues ?></h3>
+                <h3><?php echo $info_user['uP'] ?></h3>
 
-                <p>Total Trans. Pendapatan Anda hari ini</p>
+                <p>User Adm. Purchasing</p>
               </div>
               <div class="icon">
                 <i class="fa fa-donate"></i>
               </div>
-              <a href="<?php echo site_url('Product_c/listCatUnitPage/') ?>" class="small-box-footer">Kategori dan Satuan &nbsp; <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-secondary">
+              <div class="inner">
+                <h3><?php echo $info_user['uG'] ?></h3>
+
+                <p>User Adm. Gudang</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-boxes"></i>
+              </div>
             </div>
           </div>
           <!-- ./col -->
-          <div class="col-lg-4 col-6">
+          <div class="col-lg-3 col-6">
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3><?php echo $infoExpenses ?></h3>
+                <h3>5</h3>
 
-                <p>Total Trans. Pengeluaran Anda hari ini</p>
+                <p>Total Role</p>
               </div>
               <div class="icon">
-                <i class="fa fa-hand-holding-usd"></i>
+                <i class="fa fa-users-cog"></i>
               </div>
-              <a href="<?php echo site_url('Product_c/listMutationPage/') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->

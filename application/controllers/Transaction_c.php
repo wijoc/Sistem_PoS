@@ -82,7 +82,8 @@ Class Transaction_c extends MY_Controller{
 				'post_product_id' 	  => base64_decode(urldecode($this->input->post('postIdPrd'))),
 				'post_price' => $this->input->post('postCartPrice'),
 				'post_qty' 	 => $this->input->post('postCartQty'),
-				'post_total' => floatval($this->input->post('postCartPrice')) * intval($this->input->post('postCartQty'))
+				'post_total' => floatval($this->input->post('postCartPrice')) * intval($this->input->post('postCartQty')),
+				'cart_by'	 => base64_decode(urldecode($this->session->userdata('userID')))
 			);
 
 			if($trans === 'Purchases'){
@@ -129,7 +130,7 @@ Class Transaction_c extends MY_Controller{
 					$postData['post_total'] = floatval($this->input->post('postCartPrice')) * intval($this->input->post('postCartQty')) - floatval($this->input->post('postCartDiscount'));
 
 					/** Cek product di keranjang */
-					$checkTemp = $this->Sales_m->getCartonPrdID(base64_decode(urldecode($this->input->post('postIdPrd'))))->result_array();
+					$checkTemp = $this->Sales_m->getCartonPrdID(base64_decode(urldecode($this->input->post('postIdPrd'))), base64_decode(urldecode($this->session->userdata('userID'))))->result_array();
 					if(count($checkTemp) > 0 && $checkTemp[0]['temps_sale_price'] == $postData['post_price']){
 						$newAmount = $checkTemp[0]['temps_product_amount'] + intval($postData['post_qty']);
 						$newDiscount  = $checkTemp[0]['temps_discount'] + floatval($postData['post_discount']);
@@ -184,7 +185,7 @@ Class Transaction_c extends MY_Controller{
 				);
 			}
 		} else if ($trans === 'Sales') {
-			$delCart = $this->Sales_m->deleteCart(base64_decode(urldecode($this->input->post('postId'))), $this->input->post('postPrice'));
+			$delCart = $this->Sales_m->deleteCart(base64_decode(urldecode($this->session->userdata('userID'))), base64_decode(urldecode($this->input->post('postId'))), $this->input->post('postPrice'));
 			if($delCart > 0){
 				$arrReturn = array(
 					'success'	=> TRUE,
@@ -205,7 +206,7 @@ Class Transaction_c extends MY_Controller{
 	/** Function : Daftar keranjang */
 	public function listCartAjax($trans){
 		if($trans == 'Purchases'){
-			$cartData = $this->Purchases_m->selectCart()->result_array();
+			$cartData = $this->Purchases_m->selectCart(base64_decode(urldecode($this->session->userdata('userID'))))->result_array();
 			$returnData = array(
 				'trans_type' => 'Purchases', 
 				'delete_url' => site_url('Transaction_c/deleteCart/Purchases/'),
@@ -225,7 +226,7 @@ Class Transaction_c extends MY_Controller{
 				$i++;
 			endforeach;
 		} else if($trans == 'Sales'){
-			$cartData = $this->Sales_m->selectCart()->result_array();
+			$cartData = $this->Sales_m->selectCart(base64_decode(urldecode($this->session->userdata('userID'))))->result_array();
 			$returnData = array(
 				'trans_type' => 'Sales', 
 				'delete_url' => site_url('Transaction_c/deleteCart/Sales/'),
@@ -459,7 +460,7 @@ Class Transaction_c extends MY_Controller{
 				$inputTP = $this->Purchases_m->insertPurchase($postData);
 				if($inputTP['resultInsert'] > 0){
 					/** Get data dari cart purchases */
-					foreach ($this->Purchases_m->selectCart()->result_array() as $row) {
+					foreach ($this->Purchases_m->selectCart(base64_decode(urldecode($this->session->userdata('userID'))))->result_array() as $row) {
 						$dataDetail[] = array(
 							'dtp_tp_fk'		 	 => $inputTP['insertID'],
 							'dtp_product_fk'	 => $row['tp_product_fk'],
@@ -544,6 +545,7 @@ Class Transaction_c extends MY_Controller{
 
 			$no++;
 			$row = array();
+			$row[] = ($show['created_by'] == base64_decode(urldecode($this->session->userdata('userID'))))? '<i class="fas fa-user"></i>' : '';
 			$row[] = date('Y-m-d', strtotime($show['tp_date']));
 			$row[] = $show['tp_note_code'];
 			$row[] = $show['supp_name'];
@@ -1052,7 +1054,7 @@ Class Transaction_c extends MY_Controller{
 			/** Insert trans installment && detail cart */
 			if($inputTS['resultInsert'] > 0){
 				/** Insert Detail Cart */
-				foreach ($this->Sales_m->selectCart()->result_array() as $row) {
+				foreach ($this->Sales_m->selectCart(base64_decode(urldecode($this->session->userdata('userID'))))->result_array() as $row) {
 					$dataDetail[] = array(
 						'dts_ts_id_fk'		 => $inputTS['insertID'],
 						'dts_product_fk'	 => $row['temps_product_fk'],
@@ -1246,6 +1248,7 @@ Class Transaction_c extends MY_Controller{
 
 			$no++;
 			$row = array();
+			$row[] = ($show['created_by'] == base64_decode(urldecode($this->session->userdata('userID'))))? '<i class="fas fa-user"></i>' : '';
 			$row[] = date('Y-m-d', strtotime($show['ts_date']));
 			$row[] = $show['ts_trans_code'];
 			$row[] = ($show['ts_customer_fk'] == 0)? 'Pelanggan Umum' : $show['ctm_name'];
@@ -1639,7 +1642,9 @@ Class Transaction_c extends MY_Controller{
 				'te_note_file'	=> NULL,
 				'te_payment'	=> $this->input->post('postEPayment'),
 				'te_payment_method'	=> $this->input->post('postMethod'),
-				'te_account_id_fk'	=> base64_decode(urldecode($this->input->post('postAccount')))
+				'te_account_id_fk'	=> base64_decode(urldecode($this->input->post('postAccount'))),
+				'created_at'	=> date('Y-m-d H:i:s'),
+				'created_by'	=> base64_decode(urldecode($this->session->userdata('userID')))
 			);
 		
 		  /** Prepare config tambahan */
@@ -1835,7 +1840,9 @@ Class Transaction_c extends MY_Controller{
 				'tr_payment_method' => $this->input->post('postMethod'),
 				'tr_payment'		=> $this->input->post('postRPayment'),
 				'tr_account_id_fk'	=> base64_decode(urldecode($this->input->post('postAccount'))),
-				'tr_post_script'	=> htmlspecialchars($this->input->post('postRPS'), ENT_QUOTES)
+				'tr_post_script'	=> htmlspecialchars($this->input->post('postRPS'), ENT_QUOTES),
+				'created_at'	=> date('Y-m-d H:i:s'),
+				'created_by'	=> base64_decode(urldecode($this->session->userdata('userID')))
 			);
 
 		  /** Proses input */
