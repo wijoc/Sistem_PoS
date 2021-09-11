@@ -119,6 +119,7 @@ class Page_c extends MY_Controller {
 		$this->auth_user(['uO']);
   
 	  /** Load model */
+		$this->load->model('Product_m');
 		$this->load->model('Sales_m');
 		$this->load->model('Purchases_m');
 		$this->load->model('Revenues_m');
@@ -137,6 +138,7 @@ class Page_c extends MY_Controller {
 			'infoPurchases' => ($todayPurchases[0]['total_purchases'] == NULL)? '0' : number_format($todayPurchases[0]['total_purchases'], 2),
 			'infoRevenues' => ($todayRevenues[0]['total_revenues'] == NULL)? '0' : number_format($todayRevenues[0]['total_revenues'], 2),
 			'infoExpenses' => ($todayExpenses[0]['total_expenses'] == NULL)? '0' : number_format($todayExpenses[0]['total_expenses'], 2),
+			'FEStock'  => $this->Product_m->emergencyProductStock(5, 0)->result_array(),
 			'chartUrl'	=> site_url('Page_c/lineTrans/owner')
 		);
 		$this->page = "dashboard/owner_dashboard_v";
@@ -181,6 +183,7 @@ class Page_c extends MY_Controller {
 		}
 
 		$returnData = array(
+			'user'		 => 'g',
 			'chart_type' => 'doughnut',
 			'canvas'	 => '#category-chart-canvas',
 			'label'		 => $label,

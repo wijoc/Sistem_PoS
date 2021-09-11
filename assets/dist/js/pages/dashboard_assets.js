@@ -9,12 +9,15 @@ $(document).ready(function(){
           if(result.user == 'o'){
             barChart(result.monthlySP)
             barChart(result.monthlyRE)
+            $('#nav-o-chart .nav-link').on("click", function(){
+              $("#chart-title span").html('Grafik '+ $(this).attr("data-name") +' per Bulan')
+            })
           } else if (result.user == 'admp') {
 
           } else if (result.user == 'k') {
 
           } else if (result.user == 'g') {
-
+            doughnatChart(result)
           } else {
 
           }
@@ -23,30 +26,27 @@ $(document).ready(function(){
 })
 
 /** Chart Doughnat */
-function doughnatChart(data){
-  var pieChartCanvas = $(String(data.canvas)).get(0).getContext('2d')
-  var pieData        = {
-    labels: data.label,
+function doughnatChart(d){
+  var donutChartCanvas = $(d.canvas).get(0).getContext('2d')
+  var donutData        = {
+    labels: d.label,
     datasets: [
       {
-        data: data.product,
-        backgroundColor : data.color,
+        data: d.product,
+        backgroundColor : d.color,
       }
     ]
   }
-  var pieOptions = {
-    legend: {
-      display: true
-    },
+  var donutOptions     = {
     maintainAspectRatio : false,
     responsive : true,
   }
   //Create pie or douhnut chart
   // You can switch between pie and douhnut using the method below.
-  var pieChart = new Chart(pieChartCanvas, {
-    type: data.chart_type,
-    data: pieData,
-    options: pieOptions      
+  var donutChart = new Chart(donutChartCanvas, {
+    type: d.chart_type,
+    data: donutData,
+    options: donutOptions      
   })
 }
 
