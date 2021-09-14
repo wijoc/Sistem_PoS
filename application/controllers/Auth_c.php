@@ -46,13 +46,13 @@ Class Auth_c extends MY_Controller{
                   'errorPassword' => form_error('postPassword')
               );
           } else {
-              $userData = $this->User_m->selectUserByUsername(htmlspecialchars($this->input->post('postUsername')))->result_array();
+              $userData = $this->User_m->selectUserByUsername($this->input->post('postUsername'))->result_array();
   
-              if(password_verify(htmlspecialchars($this->input->post('postPassword')), $userData[0]['u_password'])){
-                  $this->session->set_flashdata('logedInStatus', 'canLogin');
-                  $this->session->set_flashdata('logedInUser', $userData[0]['u_name']);
-                  $this->session->set_flashdata('logedInLevel', $userData[0]['u_level']);
-                  $this->session->set_flashdata('userID', urlencode(base64_encode($userData[0]['u_id'])));
+              if(password_verify($this->input->post('postPassword'), $userData[0]['u_password'])){
+                  $this->session->set_userdata('logedInStatus', 'canLogin');
+                  $this->session->set_userdata('logedInUser', $userData[0]['u_name']);
+                  $this->session->set_userdata('logedInLevel', $userData[0]['u_level']);
+                  $this->session->set_userdata('userID', urlencode(base64_encode($userData[0]['u_id'])));
                   $arrReturn = array(
                       'redirect' => site_url('Page_c')
                   );
@@ -75,7 +75,7 @@ Class Auth_c extends MY_Controller{
 
     function _validation_username($post){
         if($post != '' ){
-            if($this->User_m->selectUserByUsername(htmlspecialchars($post))->num_rows() > 0){
+            if($this->User_m->selectUserByUsername($post)->num_rows() > 0){
                 return TRUE;
             } else {
                 $this->form_validation->set_message('_validation_username', 'Username tidak ditemukan');
