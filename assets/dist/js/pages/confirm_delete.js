@@ -1,11 +1,12 @@
-function confirmDelete(item, getid, url, msg){
+function confirmDelete(item, get_id, del_url, msg){
     /** Cegah default event */
 	event.preventDefault()
 	
 	switch(item){
 		case "ctgr":
-			var warningMsg = "Penghapusan data bersifat permanen !  Menghapus data kategori akan mengubah detail data product dengan kategori ini !"
+			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data kategori akan mengubah detail data product dengan kategori ini !"
 			var cancelMsg  = "Batal menghapus data kategori !"
+            var table      = "#table-category"
 			break
 		case "unit":
 			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data satuan akan mengubah detail data product dengan satuan ini !"
@@ -66,64 +67,67 @@ function confirmDelete(item, getid, url, msg){
         /** jika klik tombol confirm, kirim data id via ajax */
         if (result.value){
             $.ajax({
-                type    : 'POST',
-                url     : url,
-                data    : { "postID" : getid },
-                proccesData: false,
-                /** jika ajax sukses mengirim data */
-                success: function(data){
-                    /** jika hasil return function delete success */
-                    if(data==='successDelete'){
+                type    : 'DELETE',
+                url     : del_url,
+                data    : { "dataID" : get_id },
+                datatype    : 'json',
+                statusCode: {
+                    200: function (response) {
                         Swal.fire({
-                            position: 'center',
+                            position: "center",
                             showConfirmButton: true,
-                            timer: 1500,
-                            icon: 'success',
-                            title: 'Data berhasil dihapus !'
-                        }).then((result)=>{
-                            if(item == 'soft-supp' || item == 'hard-supp' || item == 'soft-ctm' || item == 'hard-ctm'){
-                                $("input[name='postSearch']").val('')
-                                $("#contact-order").val('asc')
-                                $.getScript('assets/dist/js/pages/contact_assets.js', function(data, textStatus, jqxhr ) {
-                                    getRowData(0)
-                                })
-                            } else { $('.table-server').DataTable().ajax.reload() }
+                            timer: 2500,
+                            icon: response.icon,
+                            title: response.message
+                        }).then((r) => {
+                            $(response.table).DataTable().ajax.reload()
                         })
-                    } else if (data==='failedDelete') {
-                        Swal.fire({
-                            position: 'center',
-                            showConfirmButton: true,
-                            timer: 1500,
-                            icon: 'error',
-                            title: 'Data gagal dihapus !'
-                        }).then((result)=>{
-                            $('.table-server').DataTable().ajax.reload()
-                        })
-                    } else {
-                        Swal.fire({
-                            position: 'center',
-                            showConfirmButton: true,
-                            timer: 150000,
-                            icon: 'error',
-                            //title: 'Terjadi Kesalahan pada sistem. Silahkan coba beberapa saat lagi !'
-                            title: data
-                        }).then((result)=>{
-                            $('.table-server').DataTable().ajax.reload()
-                        })
+                    },
+                    500: function (response) {
+                        if(response.responseJSON){
+                            Swal.fire({
+                                position: "center",
+                                showConfirmButton: true,
+                                timer: 2500,
+                                icon: response.responseJSON.icon,
+                                title: response.responseJSON.message
+                            })
+                        } else {
+                            Swal.fire({
+                                position: "center",
+                                showConfirmButton: true,
+                                timer: 2500,
+                                icon: 'error',
+                                title: response.statusText
+                            })
+                        }
+                    },
+                    400: function (response) {
+                        if(response.responseJSON){
+                            Swal.fire({
+                                position: "center",
+                                showConfirmButton: true,
+                                timer: 2500,
+                                icon: response.responseJSON.icon,
+                                title: response.responseJSON.message
+                            })
+                        } else {
+                            Swal.fire({
+                                position: "center",
+                                showConfirmButton: true,
+                                timer: 2500,
+                                icon: 'error',
+                                title: response.statusText
+                            })
+                        }
                     }
                 },
-                /* Jika ajax gagal mengirim data */
-                error: function (data) {
-                    Swal.fire({
-                        posisiton: 'center',
-                        showConfirmButton: true,
-                        timer: 1500,
-                        icon: 'error',
-                        title: data
-                    }).then((result)=>{
-                        $('.table-server').DataTable().ajax.reload()
-                    })
-                }
+                // error: function(jqxhr, status, error) {
+                //     alert('error:', error);
+                //     console.log('jqxhr : ' + jqxhr)
+                //     console.log('status : ' + status)
+                //     console.log('error : ' + error)
+                // }
             })
         /* Jika klik tombol batal */
         } else if (result.dismiss === Swal.DismissReason.cancel) {

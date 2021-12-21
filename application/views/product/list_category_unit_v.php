@@ -39,7 +39,7 @@
                     <div class="row">
                       <h5 class="col-sm-6 m-0">Daftar Kategori</h5>
                       <div class="col-sm-6">
-                        <a class="btn btn-sm btn-info text-white float-right" data-toggle="modal" data-target="#modal-category">
+                        <a class="btn btn-sm btn-info text-white float-right" id="add-cat-button" data-toggle="modal" data-target="#modal-category">
                           <i class="fas fa-plus"></i>
                         </a>
                       </div>
@@ -68,7 +68,7 @@
                     <div class="row">
                       <h5 class="col-sm-6 m-0">Daftar Satuan</h5>
                       <div class="col-sm-6">
-                        <a class="btn btn-sm btn-info float-right text-white" data-toggle="modal" data-target="#modal-unit">
+                        <a class="btn btn-sm btn-info float-right text-white" id="add-unit-button" data-toggle="modal" data-target="#modal-unit">
                           <i class="fas fa-plus"></i></a>
                       </div>
                     </div>
@@ -106,25 +106,28 @@
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Tambah Kategori</h4>
+              <h4 class="modal-title"><span id="form-title">Tambah</span> Kategori</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Product_c/addCategoryProses') ?>" id="form-ctgr">
+            <form method="POST" id="form-cat">
               <div class="modal-body">
+                <!-- Form-hidden edit kategori id -->
+                  <input type="hidden" id="edit-cat-id" name="editID" required="" disabled="disabled">
+
                 <!-- Form-part input Kategori nama -->
                   <div class="form-group row">
-                    <label for="inputCtgrName" class="col-sm-3 col-form-label">Nama Kategori <a class="float-right"> : </a></label>
+                    <label for="input-cat-name" class="col-sm-4 col-form-label">Nama Kategori <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postCtgrName" id="inputCtgrName" placeholder="Nama kategori baru" required>
-                      <small id="errorCtgr" class="error-msg" style="display:none; color:red; font-style: italic"></small>
+                      <input type="text" class="form-control float-right" name="postCatName" id="input-cat-name" placeholder="Nama kategori..." required>
+                      <small id="error-cat-name" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
               </div>
               <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" id="submitctgr" class="btn btn-primary">Simpan</button>
+                <button type="submit" id="submit-cat" class="btn btn-primary">Simpan</button>
               </div>
             </form>
           </div>
@@ -138,19 +141,22 @@
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Tambah Satuan</h4>
+              <h4 class="modal-title"><span id="form-unit-title">Tambah</span> Satuan</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Product_c/addUnitProses') ?>" id="form-unit">
+            <form method="POST" id="form-unit">
               <div class="modal-body">
-                <!-- Form-part input Kategori -->
+                <!-- Form-hidden edit Unit id -->
+                  <input type="hidden" id="edit-unit-id" name="editUnitID" required="" disabled="disabled">
+
+                <!-- Form-part input Unit nama -->
                   <div class="form-group row">
-                    <label for="inputUnitName" class="col-sm-3 col-form-label">Nama Satuan <a class="float-right"> : </a></label>
+                    <label for="input-unit-name" class="col-sm-3 col-form-label">Nama Satuan <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postUnitName" id="inputUnitName" placeholder="Nama satuan baru" required>
-                      <small id="errorUnit" class="error-msg" style="display:none; color:red; font-style: italic"></small>
+                      <input type="text" class="form-control float-right" name="postUnitName" id="input-unit-name" placeholder="Nama satuan baru" required>
+                      <small id="error-unit-name" class="error-msg" style="display:none; color:red; font-style: italic"></small>
                     </div>
                   </div>
               </div>
@@ -175,15 +181,15 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form method="POST" action="<?php echo site_url('Product_c/') ?>" id="form-edit">
+            <form method="PUT" action="" id="form-edit">
               <div class="modal-body">
                 <!-- Form-part hidden Edit id -->
-                  <input type="hidden" name="postID" id="editID" value="" disabled="disabled">
+                  <input type="hidden" name="postID" id="edit-id" value="" disabled="disabled">
                 <!-- Form-part input Edit nama -->
                   <div class="form-group row">
                     <label for="editName" class="col-sm-3 col-form-label">Nama <a class="float-right"> : </a></label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postName" id="editName" placeholder="" required>
+                      <input type="text" class="form-control float-right" name="postName" id="edit-name" placeholder="" required>
                     </div>
                   </div>
               </div>

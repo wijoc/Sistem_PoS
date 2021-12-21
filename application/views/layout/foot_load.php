@@ -131,6 +131,9 @@
 	<?php if(in_array('add_product',$assets)){ ?>
 		<!-- Page Add Product -->
 		<script src="<?php echo base_url() ?>assets/dist/js/product/add_product_assets.js"></script>
+		<script>
+			let product_url = "<?php echo $prdInputApi ?>"
+		</script>
 	<?php } ?>
 
 	<?php if(in_array('edit_product',$assets)){ ?>
@@ -142,7 +145,7 @@
 		<!-- List Produk Assets -->
 		<script src="<?php echo base_url() ?>assets/dist/js/product/list_product_assets.js"></script>
 		<script>
-			let product_url = "<?php echo $prdAjaxUrl ?>"
+			let product_url = "<?php echo $prdListApi ?>"
 		</script>
 	<?php } ?>
 
@@ -156,10 +159,10 @@
 
 	<?php if(in_array('ctgr_unit', $assets)){ ?>
 		<!-- Page Kategori & Satuan -->
-		<script src="<?php echo base_url() ?>assets/dist/js/product/ctgr_unit_assets.js"></script>
+		<script src="<?php echo base_url() ?>assets/dist/js/product/cat_unit_assets.js"></script>
 		<script>
-			var ctgr_url = "<?php echo site_url('Product_c/listCategoryAjax') ?>"
-			var unit_url = "<?php echo site_url('Product_c/listUnitAjax') ?>"
+			var cat_url = "<?php echo $catApi ?>"
+			var unit_url = "<?php echo $unitApi ?>"
 		</script>
 	<?php } ?>
 
@@ -233,9 +236,9 @@
 		</script>
 	<?php } ?>
 
-	<?php if(in_array('f_confirm', $assets)){ ?>
+	<?php if(in_array('confirm_delete', $assets)){ ?>
 		<!-- Delete Confirmation Assets -->
-		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/f_confirm.js"></script>
+		<script type="text/javascript" src="<?php echo base_url() ?>assets/dist/js/pages/confirm_delete.js"></script>
 	<?php } ?>
 
 	<?php if(in_array('dashboard', $assets)){ ?>

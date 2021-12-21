@@ -8,7 +8,7 @@ class MY_Model extends CI_Model {
         protected $prd_tb = 'tb_product';
         protected $prd_f  = array(
             '0' => 'prd_id',
-            '1' => 'prd_barcode',
+            '1' => 'prd_code',
             '2' => 'prd_name',
             '3' => 'prd_category_id_fk',
             '4' => 'prd_purchase_price',

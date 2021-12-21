@@ -23,7 +23,7 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="card card-info card-outline">
-              <form class="form-horizontal" id="formAddPrd" method="POST" action="<?php echo site_url('Product_c/addProductProses') ?>" enctype="multipart/form-data">
+              <form class="form-horizontal" id="formAddPrd" enctype="multipart/form-data">
                 <div class="card-body">
                   <!-- Div ALert -->
                   <div id="alert-proses"></div>
@@ -43,8 +43,9 @@
                     <!-- Form-part input Kode Produk -->
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label>Barcode Product</label>
-                          <input type="text" class="form-control" name="postBarcode" id="inputBarcode" placeholder="Kosongkan jika tidak memiliki barcode">
+                          <label>Code Product</label>
+                          <input type="text" class="form-control" name="postCode" id="inputCode" placeholder="Barcode akan terisi otomatis jika kosong">
+                          <small style="color:red; font-style: italic">Akan terisi otomatis jika product tidak memiliki kode</small>
                         </div>
                       </div>
 
