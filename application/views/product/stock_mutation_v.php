@@ -24,7 +24,7 @@
           <div class="col-lg-12">
             <div class="card card-info card-outline">
               <div class="card-body">
-                <table id="table-product" class="table table-bordered table-striped">
+                <table id="table-stock-mutation" class="table table-bordered table-striped">
                   <thead>
                     <tr class="text-center">
                         <th>Tgl</th>

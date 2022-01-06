@@ -170,36 +170,3 @@
         </div>
         <!-- /.modal-dialog -->
       </div>
-
-     <!-- Modal Edit -->
-      <div class="modal fade" id="modal-edit">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Ubah Data <span id="edit-title"></span></h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form method="PUT" action="" id="form-edit">
-              <div class="modal-body">
-                <!-- Form-part hidden Edit id -->
-                  <input type="hidden" name="postID" id="edit-id" value="" disabled="disabled">
-                <!-- Form-part input Edit nama -->
-                  <div class="form-group row">
-                    <label for="editName" class="col-sm-3 col-form-label">Nama <a class="float-right"> : </a></label>
-                    <div class="col-sm-8">
-                      <input type="text" class="form-control float-right" name="postName" id="edit-name" placeholder="" required>
-                    </div>
-                  </div>
-              </div>
-              <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
-              </div>
-            </form>
-          </div>
-          <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-      </div>

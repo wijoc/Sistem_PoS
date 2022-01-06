@@ -11,75 +11,198 @@ defined('BASEPATH') OR exit('No direct script access allowed !');
 Class Product_m extends MY_Model {
   /** CRUD Product */
     /** Q-Function : next Increment Product */
-      function getNextIncrement(){
-        $this->db->select('AUTO_INCREMENT');
-        $this->db->from('information_schema.TABLES');
-        $this->db->where('TABLE_SCHEMA', $this->db->database);
-        $this->db->where('TABLE_NAME', $this->prd_tb);
-        $returnValue = $this->db->get();
-        return $returnValue->result_array();
-      }
-    
+    function getNextIncrement(){
+      $this->db->select('AUTO_INCREMENT');
+      $this->db->from('information_schema.TABLES');
+      $this->db->where('TABLE_SCHEMA', $this->db->database);
+      $this->db->where('TABLE_NAME', $this->prd_tb);
+      return $this->db->get();
+    }
+  
     /** Q-Function : insert product */
-      function insertProduct($data){
-        $resultInsert = $this->db->insert($this->prd_tb, $data);
-        if($resultInsert > 0){
-          $dataReturn = array(
-            'resultInsert' => $resultInsert,
-            'insertID'     => $this->db->insert_id() 
-          );
-        } else {
-          $dataReturn = array(
-            'resultInsert' => $resultInsert,
-            'insertID'     => null 
-          );
-        }
-        return $dataReturn;
+    function insertProduct($data){
+      $resultInsert = $this->db->insert($this->prd_tb, $data);
+      if($resultInsert > 0){
+        $dataReturn = array(
+          'resultInsert' => $resultInsert,
+          'insertID'     => $this->db->insert_id() 
+        );
+      } else {
+        $dataReturn = array(
+          'resultInsert' => $resultInsert,
+          'insertID'     => null 
+        );
       }
+      return $dataReturn;
+    }
+
+    /** Q-Function : Insert Stock */
+    function insertProductStock($data, $prd_id){
+      $insertData = array(
+        $this->stk_f[1] => $prd_id,
+        $this->stk_f[2] => $data['prd_initial_g_stock'],
+        $this->stk_f[3] => $data['prd_initial_ng_stock'],
+        $this->stk_f[4] => $data['prd_initial_op_stock']
+      );
+      $resultInsert = $this->db->insert($this->stk_tb, $insertData);
+      return $resultInsert;
+    }
 
     /** Query : Select product query */
-      public function _querySelectProduct($status = 'all', $keyword = null, $order = null, $select = 'all'){        
-        if($select == 'stock'){
-          /** Select data stock */
-          $this->db->select('prd.'.$this->prd_f[0].', prd.'.$this->prd_f[1].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[8].', prd.'.$this->prd_f[9].', prd.'.$this->prd_f[10].', stk.* ');
+    public function _querySelectProduct($status = 'all', $keyword = null, $order = null, $select = 'all'){        
+      if($select == 'stock'){
+        /** Select data stock */
+        $this->db->select('prd.'.$this->prd_f[0].', prd.'.$this->prd_f[1].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[8].', prd.'.$this->prd_f[9].', prd.'.$this->prd_f[10].', stk.* ');
 
-          $this->db->from($this->prd_tb.' as prd');
+        $this->db->from($this->prd_tb.' as prd');
 
-          $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].' = stk.'.$this->stk_f[1]);
-        } else if ($select == 'all') {
-          /** Select semua field data product */
-          $this->db->select('prd.*, ctgr.'.$this->ctgr_f[1].', u.'.$this->unit_f[1].', stk.'.$this->stk_f[2]);
+        $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].' = stk.'.$this->stk_f[1]);
+      } else if ($select == 'all') {
+        /** Select semua field data product */
+        $this->db->select('prd.*, ctgr.'.$this->ctgr_f[1].', u.'.$this->unit_f[1].', stk.'.$this->stk_f[2]);
 
-          $this->db->from($this->prd_tb.' as prd');
+        $this->db->from($this->prd_tb.' as prd');
 
-          $this->db->join($this->ctgr_tb.' as ctgr', 'ctgr.'.$this->ctgr_f[0].'=prd.'.$this->prd_f[3]);
-          $this->db->join($this->unit_tb.' as u', 'u.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
+        $this->db->join($this->ctgr_tb.' as ctgr', 'ctgr.'.$this->ctgr_f[0].'=prd.'.$this->prd_f[3]);
+        $this->db->join($this->unit_tb.' as u', 'u.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
 
-          $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].' = stk.'.$this->stk_f[1]);
-        }
-        
-        /** Jika status = all select semua data */
-        ($status != 'all')? $this->db->where('prd.'.$this->prd_f[12], $status) : '';
-
-        /** Jika keyword != null, set search data berdasar keyword */
-        if($keyword != null){
-          $this->db->group_start();
-          $this->db->like('prd.'.$this->prd_f['1'], $keyword['search']['value']);
-          $this->db->or_like('prd.'.$this->prd_f['2'], $keyword['search']['value']);
-          $this->db->group_end();
-        }
-        
-        /** Jika order = null, sort data bedasar prd_id */
-        ($order == null)? $this->db->order_by('prd.'.$this->prd_f[0], 'ASC') : $this->db->order_by('prd.'.$this->prd_f[$order['order']['0']['coloumn']], $order['order']['0']['dir']);
+        $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].' = stk.'.$this->stk_f[1]);
       }
+        
+      /** Jika status = all select semua data */
+      ($status != 'all')? $this->db->where('prd.'.$this->prd_f[12], $status) : '';
+
+      /** Jika keyword != null, set search data berdasar keyword */
+      if($keyword != null){
+        $this->db->group_start();
+        $this->db->like('prd.'.$this->prd_f['1'], $keyword['search']['value']);
+        $this->db->or_like('prd.'.$this->prd_f['2'], $keyword['search']['value']);
+        $this->db->group_end();
+      }
+        
+      /** Jika order = null, sort data bedasar prd_id */
+      ($order == null)? $this->db->order_by('prd.'.$this->prd_f[0], 'ASC') : $this->db->order_by('prd.'.$this->prd_f[$order['order']['0']['coloumn']], $order['order']['0']['dir']);
+    }
     
     /** Q-Function : Select product */
-      function selectProduct($amount = 0, $offset = 0, $status = 0, $search = NULL, $order = NULL){
-        $this->_querySelectProduct($status, $search, $order);
-        ($amount > 0)? $this->db->limit($amount, $offset) : '';
-        $resultSelect = $this->db->get();
-        return $resultSelect;
+    function selectProduct($amount = 0, $offset = 0, $status = 0, $search = NULL, $order = NULL){
+      $this->_querySelectProduct($status, $search, $order);
+      ($amount > 0)? $this->db->limit($amount, $offset) : '';
+      $resultSelect = $this->db->get();
+      return $resultSelect;
+    }
+
+    /** Q-function : Select product by ID */
+    function selectProductByID($prd_id){
+      $this->db->select('prd.*, ctgr.*, u.*, stk.'.$this->stk_f[2].', stk.'.$this->stk_f[3].', stk.'.$this->stk_f[4]);
+      $this->db->from($this->prd_tb.' as prd');
+      $this->db->join($this->ctgr_tb.' as ctgr', 'prd.'.$this->prd_f[3].' = ctgr.'.$this->ctgr_f[0], 'LEFT');
+      $this->db->join($this->unit_tb.' as u', 'prd.'.$this->prd_f[6].' = u.'.$this->unit_f[0], 'LEFT');
+      $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].' = stk.'.$this->stk_f[1], 'LEFT');
+      $this->db->where('prd.'.$this->prd_f[0], $prd_id);
+      return $this->db->get();
+    }
+
+    /** Q-Function : Select product by prd_code */
+    function selectProductByCode($prd_code){
+      $this->db->select('prd.*, ctgr.'.$this->ctgr_f[1].', u.'.$this->unit_f[1].', stk.'.$this->stk_f[2].', stk.'.$this->stk_f[3].', stk.'.$this->stk_f[4]);
+      $this->db->from($this->prd_tb.' as prd');
+      $this->db->join($this->ctgr_tb.' as ctgr', 'prd.'.$this->prd_f[0].' = ctgr.'.$this->ctgr_f[0]);
+      $this->db->join($this->unit_tb.' as u', 'prd.'.$this->prd_f[0].' = u.'.$this->unit_f[0]);
+      $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].' = stk.'.$this->stk_f[1]);
+      $this->db->where($this->prd_f[1], $prd_code);
+      return $this->db->get();
+    }
+
+    /** Q-Function : Select product by prd_code and id other than params */
+    function selectProductByCodeExID($prd_id, $prd_code){
+      $this->db->where($this->prd_f[1], $prd_code);
+      $this->db->where($this->prd_f[0].' != ', $prd_id);
+      return $this->db->get($this->prd_tb);
+    }
+
+    /** Q-Function : Select product by prd_name and id other than params */
+    function selectProductByNameExID($prd_id, $prd_name){
+      $this->db->where($this->prd_f[2], $prd_name);
+      $this->db->where($this->prd_f[0].' != ', $prd_id);
+      return $this->db->get($this->prd_tb);
+    }
+
+    /** Q-Function : Update product */
+    function updateProduct($update_data, $prd_id){
+      $this->db->set($update_data);
+      $this->db->where($this->prd_f[0], $prd_id);
+      return $this->db->update($this->prd_tb);
+    }
+
+    /** Q-Function : Delete product */
+    function deleteProduct($prd_id, $type){
+      if($type == 'soft'){
+        $deleteData = array(
+          'prd_status' => 1,
+          'deleted_at' => date('Y-m-d H:i:s'),
+          'deleted_by' => base64_decode(urldecode($this->session->userdata('userID')))
+        );
+        $this->db->set($deleteData);
+        $this->db->where($this->prd_f[0], $prd_id);
+        return $this->db->update($this->prd_tb);
+      } else if ($type == 'hard'){
+        $this->db->where($this->prd_f[0], $prd_id);
+        return $this->db->delete($this->prd_tb);
       }
+    }
+    
+  /** CRUD Stock & Mutation */
+    /** Q-Function : Select product stock */
+    function selectProductStock($amount = 0, $offset = 0, $search = null, $order = null){
+      $this->_querySelectProduct('0', $search, $order, 'stock');
+      ($amount > 0)? $this->db->limit($amount, $offset) : '';
+      return $this->db->get();
+    }
+
+    /** Q-Function : Insert Stock Mutation */
+    function insertStockMutation($sm_data){
+      /** Set field asal (from) dan field tujuan (to) */
+      $field_from = $sm_data['sm_stock_from'] == 'SG'? 2 : ($sm_data['sm_stock_from'] == 'SNG'? 3 : 4);
+      $field_to = $sm_data['sm_stock_to'] == 'SG'? 2 : ($sm_data['sm_stock_to'] == 'SNG'? 3 : 4);
+
+      $this->db->query('BEGIN');
+      $resultInsert = $this->db->insert($this->sm_tb, $sm_data);
+      if($resultInsert > 0){
+        $this->db->query('LOCK TABLE '.$this->stk_tb.' as stk WRITE');
+        $updateStock = $this->db->query('UPDATE '.$this->stk_tb.' as stk JOIN ( SELECT '.$sm_data['sm_prd_id_fk'].' as prd_id, '.$sm_data['sm_qty'].' as prd_qty ) update_stock ON stk.'.$this->stk_f[1].' = update_stock.prd_id SET '.$this->stk_f[$field_from].' = '.$this->stk_f[$field_from].' - prd_qty, '.$this->stk_f[$field_to].' = '.$this->stk_f[$field_to].' + prd_qty ');
+        if($updateStock > 0){
+          $this->db->query('COMMIT');
+          $returnValue = TRUE;
+        } else {
+          $this->db->query('ROLLBACK');
+          $returnValue = FALSE; 
+        }
+        $this->db->query('UNLOCK TABLE');
+      } else {
+        $this->db->query('ROLLBACK');
+        $returnValue = FALSE;
+      }
+      return $returnValue;
+    }
+
+    /** Q-Function : Select Stock Mutation */
+    function selectStockMutation($amount = 0, $offset = 0, $search = null, $order = null){
+      $this->db->select('sm.'.$this->sm_f[2].', sm.'.$this->sm_f[3].', sm.'.$this->sm_f[4].', sm.'.$this->sm_f[5].', sm.'.$this->sm_f[8].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[1]);
+      $this->db->from($this->sm_tb.' as sm');
+      $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].' = sm.'.$this->sm_f[1]);
+      ($amount > 0)? $this->db->limit($amount, $offset) : '';
+      return $this->db->get();
+    }
+
+    /** Q-Function : Select Stock Mutation on prd_id */
+    function selectSMByPrdID($prd_id){
+      $this->db->select('sm.'.$this->sm_f[2].', sm.'.$this->sm_f[3].', sm.'.$this->sm_f[4].', sm.'.$this->sm_f[5].', sm.'.$this->sm_f[8].', prd.'.$this->prd_f[2]);
+      $this->db->from($this->sm_tb.' as sm');
+      $this->db->join($this->prd_tb.' as prd', 'prd.'.$this->prd_f[0].' = sm.'.$this->sm_f[1]);
+      $this->db->where('prd.'.$this->prd_f[0], $prd_id);
+      return $this->db->get();
+    }
 
   /** CRUD Category */
     /** Q-Function : Select semua kategori, dan sort berdasar ctgr_name */

@@ -128,38 +128,34 @@
 	<?php } ?>
 
 <!-- additional Page script goes here -->
-	<?php if(in_array('add_product',$assets)){ ?>
-		<!-- Page Add Product -->
-		<script src="<?php echo base_url() ?>assets/dist/js/product/add_product_assets.js"></script>
+	<?php if(in_array('product', $assets)){ ?>
 		<script>
-			let product_url = "<?php echo $prdInputApi ?>"
+			let prds_url = "<?php echo $prdsApi ?>"
 		</script>
-	<?php } ?>
-
-	<?php if(in_array('edit_product',$assets)){ ?>
-		<!-- Page edit Product -->
-		<script src="<?php echo base_url() ?>assets/dist/js/product/edit_product_assets.js"></script>
-	<?php } ?>
-
-	<?php if(in_array('list_product',$assets)){ ?>
 		<!-- List Produk Assets -->
-		<script src="<?php echo base_url() ?>assets/dist/js/product/list_product_assets.js"></script>
-		<script>
-			let product_url = "<?php echo $prdListApi ?>"
-		</script>
+		<script src="<?php echo base_url() ?>assets/extra/js/product/product_assets.js"></script>
 	<?php } ?>
 
-	<?php if(in_array('stock_product',$assets)){ ?>
-		<!-- Stock Produk Assets -->
-		<script src="<?php echo base_url() ?>assets/dist/js/product/stock_product_assets.js"></script>
+	<?php if(in_array('stock_product', $assets)){ ?>
 		<script>
-			let stk_product_url = "<?php echo site_url('Product_c/stockProductAjax') ?>"
+			let prds_url = "<?php echo $stockApi ?>"
+			let mutation_url = "<?php echo $mutationApi ?>"
 		</script>
+		<!-- Stock Produk Assets -->
+		<script src="<?php echo base_url() ?>assets/extra/js/product/stock_product_assets.js"></script>
+	<?php } ?>
+
+	<?php if(in_array('stock_mutation', $assets)){ ?>
+		<script>
+			let mutation_url = "<?php echo $mutationApi ?>"
+		</script>
+		<!-- Stock Produk Assets -->
+		<script src="<?php echo base_url() ?>assets/extra/js/product/mutation_assets.js"></script>
 	<?php } ?>
 
 	<?php if(in_array('ctgr_unit', $assets)){ ?>
 		<!-- Page Kategori & Satuan -->
-		<script src="<?php echo base_url() ?>assets/dist/js/product/cat_unit_assets.js"></script>
+		<script src="<?php echo base_url() ?>assets/extra/js/product/cat_unit_assets.js"></script>
 		<script>
 			var cat_url = "<?php echo $catApi ?>"
 			var unit_url = "<?php echo $unitApi ?>"

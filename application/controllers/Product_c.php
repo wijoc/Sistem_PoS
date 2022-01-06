@@ -5,7 +5,7 @@ Class Product_c extends MY_Controller {
 
 	public function __construct(){
 		parent::__construct();
-		$this->load->model('Product_m', 'prd');
+		$this->load->model('Product_m', 'product');
 	}
 
 	public function index(){
@@ -23,34 +23,56 @@ Class Product_c extends MY_Controller {
 	}
 
   /** CRUD Product */
-	/** Function : Page List Product */
+	/** Function : Page Product */
 	public function productList(){
 	  	/** Check allowed user */
 		$this->auth_user(['uAll', 'uO', 'uG', 'uK', 'uP']);
   
 		$this->pageData = array(
-			'title'  		=> 'PoS | List Product',
-			'assets' 		=> array('datatables', 'sweetalert2', 'list_product', 'f_confirm'),
-			'prdListApi' 	=> site_url('api/Product_api')
+			'title'  	=> 'PoS | List Product',
+			'assets' 	=> array('datatables', 'sweetalert2', 'dropify', 'product', 'confirm_delete'),
+			'prdsApi' 	=> site_url('api/Product_api'),
 		);
-		$this->page = 'product/list_product_v';
+		
+		if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ) {
+			$this->pageData['optCtgr'] = $this->product->selectCategory()->result_array();
+			$this->pageData['optUnit'] = $this->product->selectUnit()->result_array();
+		}
+
+		$this->page = 'product/product_v';
 		$this->layout();
 	}
 
-	/** Function : Halaman form tambah product */
-	public function productAdd(){
+	/** Function : Page Stock */
+	public function productStock(){
 		/** Check allowed user */
 		$this->auth_user(['uAll', 'uO', 'uG']);
   
-		/** Proses tampil halaman */
 		$this->pageData = array(
-			'title'   => 'PoS | Input Product',
-			'assets'  => array('sweetalert2', 'dropify', 'add_product'),
-			'optCtgr' => $this->prd->selectCategory()->result_array(), // Get semua kategori untuk option
-			'optUnit' => $this->prd->selectUnit()->result_array(), // Get semua satuan untuk option
-			'prdInputApi' => site_url('api/Product_api')
+			'title' 	=> 'PoS | Stock Product',
+			'assets'	=> array('datatables', 'sweetalert2', 'stock_product'),
+			'stockApi'	=> site_url('api/Product_api'),
+			'mutationApi' => site_url('api/Product_api/stockMutation')
 		);
-		$this->page = 'product/add_product_v';
+  
+		/** Set view file */
+		$this->page = 'product/stock_product_v';
+		$this->layout();
+	}
+
+	/** Function : Page List Mutation */
+	public function stockMutation(){
+		/** Check allowed user */
+		$this->auth_user(['uAll', 'uO', 'uG']);
+  
+		$this->pageData = array(
+			'title' 	=> 'PoS | Stock Product',
+			'assets'	=> array('datatables', 'sweetalert2', 'stock_mutation'),
+			'mutationApi' => site_url('api/Product_api/stockMutation')
+		);
+  
+		/** Set view file */
+		$this->page = 'product/stock_mutation_v';
 		$this->layout();
 	}
 
@@ -65,7 +87,7 @@ Class Product_c extends MY_Controller {
 			'catApi' => site_url('api/Product_api/getCategory'),
 			'unitApi' => site_url('api/Product_api/getUnit'),
 		);
-		$this->page = 'product/list_category_unit_v';
+		$this->page = 'product/category_unit_v';
 		$this->layout();
 	}
 

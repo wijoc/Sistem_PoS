@@ -28,7 +28,7 @@
 
           <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG', 'uK', 'uP'])){ ?>
           <li class="nav-item">
-            <a href="<?php echo site_url('Product_c/listProductPage') ?>" class="nav-link">
+            <a href="<?php echo site_url('Product_c/productList') ?>" class="nav-link">
               <i class="fas fa-circle fa-cubes nav-icon"></i>
               <p>Produk</p>
             </a>
@@ -37,13 +37,13 @@
 
           <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG'])){ ?>
           <li class="nav-item">
-            <a href="<?php echo site_url('Product_c/stockProductPage') ?>" class="nav-link">
+            <a href="<?php echo site_url('Product_c/productStock') ?>" class="nav-link">
               <i class="fas fa-boxes nav-icon"></i>
               <p>Stok Produk</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?php echo site_url('Product_c/listCatUnitPage') ?>" class="nav-link">
+            <a href="<?php echo site_url('Product_c/catUnitList') ?>" class="nav-link">
               <i class="fas fa-box nav-icon"></i>
               <p>Kategori & Satuan</p>
             </a>
@@ -52,7 +52,7 @@
 
           <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uG'])){ ?>
           <li class="nav-item">
-            <a href="<?php echo site_url('Product_c/listMutationPage/') ?>" class="nav-link">
+            <a href="<?php echo site_url('Product_c/stockMutation/') ?>" class="nav-link">
               <i class="fas fa-circle fa-people-carry nav-icon"></i>
               <p>Mutasi Stok</p>
             </a>

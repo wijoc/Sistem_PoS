@@ -14,13 +14,19 @@ class MY_Model extends CI_Model {
             '4' => 'prd_purchase_price',
             '5' => 'prd_selling_price',
             '6' => 'prd_unit_id_fk',
-            '7' => 'prd_containts',
+            '7' => 'prd_contains',
             '8' => 'prd_initial_g_stock',
             '9' => 'prd_initial_ng_stock',
             '10' => 'prd_initial_op_stock',
             '11' => 'prd_description',
             '12' => 'prd_status',
-            '13' => 'prd_image'
+            '13' => 'prd_image',
+            '14' => 'created_at',
+            '15' => 'created_by',
+            '16' => 'last_updated_at',
+            '17' => 'last_updated_by',
+            '18' => 'deleted_at',
+            '19' => 'deleted_by'
         );
   
     /** Table Stock */

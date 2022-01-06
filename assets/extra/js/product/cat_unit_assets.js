@@ -125,7 +125,7 @@ $(document).ready(function(){
             data    : $("#form-cat").serialize(),
             datatype    : 'json',
             statusCode: {
-                201: function (response) {                    
+                201: function (response) {
                     Swal.fire({
                         position: "center",
                         showConfirmButton: true,
@@ -355,7 +355,6 @@ function editData(type, id){
                 },
                 404: function (response) {
                     resp_json = response.responseJSON
-                    console.log(resp_json)
                     
                     if(resp_json.message){
                         Swal.fire({
