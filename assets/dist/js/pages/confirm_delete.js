@@ -7,51 +7,65 @@ function confirmDelete(item, get_id, del_url, msg){
 			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data kategori akan mengubah detail data product dengan kategori ini !"
 			var cancelMsg  = "Batal menghapus data kategori !"
             var del_type   = "hard"
+            var del_url = del_url + get_id
+            var del_data = {"type" : del_type}
 			break
 		case "unit":
 			var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data satuan akan mengubah detail data product dengan satuan ini !"
 			var cancelMsg  = "Batal menghapus data satuan !"
             var del_type   = "hard"
+            var del_url = del_url + get_id
+            var del_data = {"type" : del_type}
 			break
 		case "soft-prd":
 			var warningMsg = "Menghapus data product tidak berpengaruh terhadap transaksi yang sudah dilakukan !"
 			var cancelMsg  = "Batal menghapus data product !"
             var del_type   = "soft"
+            var del_url = del_url + get_id
+            var del_data = {"type" : del_type}
 			break
         case "hard-prd":
             var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data product akan menghapus transaksi yang sudah dilakukan !"
             var cancelMsg  = "Batal menghapus data product !"
             var del_type   = "hard"
+            var del_url = del_url + get_id
+            var del_data = {"type" : del_type}
             break
         case "soft-supp":
             var warningMsg = "Menghapus data supplier tidak berpengaruh terhadap transaksi yang sudah dilakukan !"
             var cancelMsg  = "Batal menghapus data supplier !"
             var del_type   = "soft"
+            var del_data = { "dataID" : get_id, "type" : del_type }
             break
         case "hard-supp":
             var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data supplier akan menghapus transaksi yang sudah dilakukan !"
             var cancelMsg  = "Batal menghapus data supplier !"
             var del_type   = "hard"
+            var del_data = { "dataID" : get_id, "type" : del_type }
             break
         case "soft-ctm":
             var warningMsg = "Menghapus data pelanggan tidak berpengaruh terhadap transaksi yang sudah dilakukan !"
             var cancelMsg  = "Batal menghapus data pelanggan !"
             var del_type   = "soft"
+            var del_data = { "dataID" : get_id, "type" : del_type }
             break
         case "hard-ctm":
             var warningMsg = "Penghapusan data bersifat permanen ! Menghapus data pelanggan akan menghapus transaksi yang sudah dilakukan !"
             var cancelMsg  = "Batal menghapus data pelanggan !"
             var del_type   = "hard"
+            var del_data = { "dataID" : get_id, "type" : del_type }
             break
         case "soft-account":
             var warningMsg = "Penghapusan data rekening tidak berpengaruh terhadap transaksi !"
             var cancelMsg  = "Batal menghapus data rekening !"
             var del_type   = "soft"
+            var del_data = { "dataID" : get_id, "type" : del_type }
             break
 		default :
 			var warningMsg = msg
 			var cancelMsg  = "Batal menghapus data !"
             var del_type   = "soft"
+            var del_data = { "dataID" : get_id, "type" : del_type }
 	}
 
     /** Custom tombol sweetalert 2 */
@@ -78,7 +92,7 @@ function confirmDelete(item, get_id, del_url, msg){
             $.ajax({
                 type    : 'DELETE',
                 url     : del_url,
-                data    : { "dataID" : get_id, "type" : del_type },
+                data    : del_data,
                 datatype    : 'json',
                 statusCode: {
                     200: function (response) {

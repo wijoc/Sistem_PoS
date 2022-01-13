@@ -64,4 +64,15 @@ Class User_m extends MY_Model{
         $this->db->where($this->u_f[0], $uid);
         return $this->db->update($this->u_tb);
     }
+
+    /** Q-Function : Insert user session id */
+    function insertUserSess($sess_data){
+        return $this->db->insert($this->usess_tb, $sess_data);
+    }
+
+    /** Q-Function : Check user session_id */
+    function checkUSess($sess_id){
+        $this->db->where($this->usess_f[3], $sess_id);
+        return $this->db->get($this->usess_tb);
+    }
 }

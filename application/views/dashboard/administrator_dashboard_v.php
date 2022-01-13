@@ -23,7 +23,7 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3><?php echo $info_user['uO'] ?></h3>
+                <h3><?php echo $info_user->logedLevel ?></h3>
 
                 <p>User Owner</p>
               </div>
@@ -37,7 +37,7 @@
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3><?php echo $info_user['uK'] ?></h3>
+                <h3><?php echo $info_user->logedLevel ?></h3>
 
                 <p>User Kasir</p>
               </div>
@@ -51,7 +51,7 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3><?php echo $info_user['uP'] ?></h3>
+                <h3><?php echo $info_user->logedLevel ?></h3>
 
                 <p>User Adm. Purchasing</p>
               </div>
@@ -64,7 +64,7 @@
             <!-- small box -->
             <div class="small-box bg-secondary">
               <div class="inner">
-                <h3><?php echo $info_user['uG'] ?></h3>
+                <h3><?php echo $info_user->logedLevel ?></h3>
 
                 <p>User Adm. Gudang</p>
               </div>

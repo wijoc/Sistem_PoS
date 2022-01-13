@@ -49,28 +49,31 @@ Class Product_m extends MY_Model {
     }
 
     /** Query : Select product query */
-    public function _querySelectProduct($status = 'all', $keyword = null, $order = null, $select = 'all'){        
+    public function _querySelectProduct($status = 'all', $keyword = null, $order = null, $select = 'all', $ctgr = 'all'){        
       if($select == 'stock'){
         /** Select data stock */
         $this->db->select('prd.'.$this->prd_f[0].', prd.'.$this->prd_f[1].', prd.'.$this->prd_f[2].', prd.'.$this->prd_f[8].', prd.'.$this->prd_f[9].', prd.'.$this->prd_f[10].', stk.* ');
 
         $this->db->from($this->prd_tb.' as prd');
 
-        $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].' = stk.'.$this->stk_f[1]);
+        $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].' = stk.'.$this->stk_f[1], 'LEFT');
       } else if ($select == 'all') {
         /** Select semua field data product */
         $this->db->select('prd.*, ctgr.'.$this->ctgr_f[1].', u.'.$this->unit_f[1].', stk.'.$this->stk_f[2]);
 
         $this->db->from($this->prd_tb.' as prd');
 
-        $this->db->join($this->ctgr_tb.' as ctgr', 'ctgr.'.$this->ctgr_f[0].'=prd.'.$this->prd_f[3]);
-        $this->db->join($this->unit_tb.' as u', 'u.'.$this->unit_f[0].'=prd.'.$this->prd_f[6]);
+        $this->db->join($this->ctgr_tb.' as ctgr', 'ctgr.'.$this->ctgr_f[0].'=prd.'.$this->prd_f[3], 'LEFT');
+        $this->db->join($this->unit_tb.' as u', 'u.'.$this->unit_f[0].'=prd.'.$this->prd_f[6], 'LEFT');
 
-        $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].' = stk.'.$this->stk_f[1]);
+        $this->db->join($this->stk_tb.' as stk', 'prd.'.$this->prd_f[0].' = stk.'.$this->stk_f[1], 'LEFT');
       }
         
       /** Jika status = all select semua data */
       ($status != 'all')? $this->db->where('prd.'.$this->prd_f[12], $status) : '';
+      if($ctgr != 'all' ?? FALSE){
+        $this->db->where('prd.'.$this->prd_f[3], $ctgr);
+      }
 
       /** Jika keyword != null, set search data berdasar keyword */
       if($keyword != null){
@@ -113,6 +116,14 @@ Class Product_m extends MY_Model {
       $this->db->where($this->prd_f[1], $prd_code);
       return $this->db->get();
     }
+    
+    /** Q-Function : Select product berdasar category */
+    function selectProductOnCtgr($cat_id, $amount = 0, $offset = 0, $status = 0, $search = NULL, $order = NULL){
+      $this->_querySelectProduct($status, $search, $order, 'all', $cat_id);
+      ($amount > 0)? $this->db->limit($amount, $offset) : '';
+      $resultSelect = $this->db->get();
+      return $resultSelect;
+    }
 
     /** Q-Function : Select product by prd_code and id other than params */
     function selectProductByCodeExID($prd_id, $prd_code){
@@ -136,12 +147,12 @@ Class Product_m extends MY_Model {
     }
 
     /** Q-Function : Delete product */
-    function deleteProduct($prd_id, $type){
+    function deleteProduct($prd_id, $type, $uid){
       if($type == 'soft'){
         $deleteData = array(
           'prd_status' => 1,
           'deleted_at' => date('Y-m-d H:i:s'),
-          'deleted_by' => base64_decode(urldecode($this->session->userdata('userID')))
+          'deleted_by' => $uid
         );
         $this->db->set($deleteData);
         $this->db->where($this->prd_f[0], $prd_id);
@@ -229,8 +240,7 @@ Class Product_m extends MY_Model {
 
     /** Q-Function : Insert new kategori */
     function insertCategory($data){
-      $resultInsert = $this->db->insert($this->ctgr_tb, $data);
-      return $resultInsert;
+      return $this->db->insert($this->ctgr_tb, $data);
     }
     
     /** Q-Function : Select kategori berdasar id */
@@ -241,6 +251,13 @@ Class Product_m extends MY_Model {
       $this->db->where($this->ctgr_f[0], $id);
       $this->db->order_by($this->ctgr_f[1], 'ASC');
       return $this->db->get();
+    }
+
+    /** Q-Function : Select category by cat_name and id other than params */
+    function selectCatByNameExID($cat_id, $cat_name){
+      $this->db->where($this->ctgr_f[1], $cat_name);
+      $this->db->where($this->ctgr_f[0].' != ', $cat_id);
+      return $this->db->get($this->ctgr_tb);
     }
 
     /** Q-Function : Update Kategori */
@@ -284,6 +301,13 @@ Class Product_m extends MY_Model {
       $this->db->where($this->unit_f[0], $id);
       $this->db->order_by($this->unit_f[1], 'ASC');
       return $this->db->get();
+    }
+
+    /** Q-Function : Select unit by unit_name and id other than params */
+    function selectUnitByNameExID($unit_id, $unit_name){
+      $this->db->where($this->unit_f[1], $unit_name);
+      $this->db->where($this->unit_f[0].' != ', $unit_id);
+      return $this->db->get($this->unit_tb);
     }
     
     /** Q-Function : Insert Unit */

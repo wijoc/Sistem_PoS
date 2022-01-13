@@ -9,16 +9,20 @@ Class Product_c extends MY_Controller {
 	}
 
 	public function index(){
-	  /** Data yang akan dikirim ke view */
+		/** Check allowed User */
+		$cookieData = $this->auth_user();
+
+	  	/** Data yang akan dikirim ke view */
 		$this->pageData = array(
 			'title'  => 'PoS | List Product',
 			'assets' => array(),
+			'info_user' => $cookieData
 		);
 
-      /** View file */
+      	/** View file */
 		$this->page = 'product/index_product_v';
 
-      /** Call function layout dari MY_Controller Class */
+      	/** Call function layout dari MY_Controller Class */
         $this->layout();
 	}
 
@@ -26,15 +30,16 @@ Class Product_c extends MY_Controller {
 	/** Function : Page Product */
 	public function productList(){
 	  	/** Check allowed user */
-		$this->auth_user(['uAll', 'uO', 'uG', 'uK', 'uP']);
+		$userData = $this->auth_user(['uAll', 'uO', 'uG', 'uK', 'uP']);
   
 		$this->pageData = array(
 			'title'  	=> 'PoS | List Product',
 			'assets' 	=> array('datatables', 'sweetalert2', 'dropify', 'product', 'confirm_delete'),
-			'prdsApi' 	=> site_url('api/Product_api'),
+			'info_user' => $userData,
+			'prdsApi' 	=> site_url('api/Product_api/'),
 		);
 		
-		if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ) {
+		if( in_array($userData->logedLevel, ['uAll', 'uO', 'uG']) == TRUE ) {
 			$this->pageData['optCtgr'] = $this->product->selectCategory()->result_array();
 			$this->pageData['optUnit'] = $this->product->selectUnit()->result_array();
 		}
@@ -45,14 +50,15 @@ Class Product_c extends MY_Controller {
 
 	/** Function : Page Stock */
 	public function productStock(){
-		/** Check allowed user */
-		$this->auth_user(['uAll', 'uO', 'uG']);
+	  	/** Check allowed user */
+		$userData = $this->auth_user(['uAll', 'uO', 'uG']);
   
 		$this->pageData = array(
 			'title' 	=> 'PoS | Stock Product',
 			'assets'	=> array('datatables', 'sweetalert2', 'stock_product'),
-			'stockApi'	=> site_url('api/Product_api'),
-			'mutationApi' => site_url('api/Product_api/stockMutation')
+			'info_user' => $userData,
+			'stockApi'	=> site_url('api/Product_api/stocks/'),
+			'mutationApi' => site_url('api/Product_api/mutation/')
 		);
   
 		/** Set view file */
@@ -63,12 +69,13 @@ Class Product_c extends MY_Controller {
 	/** Function : Page List Mutation */
 	public function stockMutation(){
 		/** Check allowed user */
-		$this->auth_user(['uAll', 'uO', 'uG']);
+	  $userData = $this->auth_user(['uAll', 'uO', 'uG']);
   
 		$this->pageData = array(
 			'title' 	=> 'PoS | Stock Product',
 			'assets'	=> array('datatables', 'sweetalert2', 'stock_mutation'),
-			'mutationApi' => site_url('api/Product_api/stockMutation')
+			'info_user' => $userData,
+			'mutationApi' => site_url('api/Product_api/mutation/')
 		);
   
 		/** Set view file */
@@ -78,14 +85,15 @@ Class Product_c extends MY_Controller {
 
   /** CRUD : Category */
 	public function catUnitList(){
-	  	/** Check allowed user */
-		$this->auth_user(['uAll', 'uO', 'uG', 'uK', 'uP']);
+		/** Check allowed User */
+		$cookieData = $this->auth_user(['uAll', 'uO', 'uG', 'uK', 'uP']);
 
 		$this->pageData = array(
 			'title'  => 'PoS | List Kategori & Unit',
 			'assets' => array('datatables', 'sweetalert2', 'ctgr_unit', 'confirm_delete'),
-			'catApi' => site_url('api/Product_api/getCategory'),
-			'unitApi' => site_url('api/Product_api/getUnit'),
+			'catApi' => site_url('api/Product_api/categories/'),
+			'unitApi' => site_url('api/Product_api/units/'),
+			'info_user'	=> $cookieData
 		);
 		$this->page = 'product/category_unit_v';
 		$this->layout();

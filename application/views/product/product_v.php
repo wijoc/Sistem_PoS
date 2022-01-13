@@ -23,7 +23,7 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="card card-info card-outline">
-              <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?>
+              <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uG']) == TRUE ){ ?>
               <div class="card-header">
                 <h5 class="m-0 card-title"><?php echo (!empty($dataCtgr))? 'Produk dalam kategori <b class="text-uppercase">"'.$dataCtgr[0]['ctgr_name'].'"</b>' : '' ?></h5>
                 <div class="float-right" role="group" aria-label="Basic example">
@@ -43,11 +43,11 @@
                     <th>Barcode</th>
                     <th>Nama Produk</th>
                     <th>Kategori</th>
-                    <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uP']) == TRUE ){ ?> <th>Harga Beli</th> <?php } ?>
-                    <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK']) == TRUE ){ ?> <th>Harga Jual</th> <?php } ?>
+                    <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uP']) == TRUE ){ ?> <th>Harga Beli</th> <?php } ?>
+                    <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uK']) == TRUE ){ ?> <th>Harga Jual</th> <?php } ?>
                     <th>Satuan</th>
                     <th>Stok</th>
-                    <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?> <th>Aksi</th> <?php } ?>
+                    <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uG']) == TRUE ){ ?> <th>Aksi</th> <?php } ?>
                   </thead>
                   <tbody>
                   </tbody>
@@ -55,11 +55,11 @@
                     <th>Barcode</th>
                     <th>Nama Produk</th>
                     <th>Kategori</th>
-                    <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uP']) == TRUE ){ ?> <th>Harga Beli</th> <?php } ?>
-                    <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK']) == TRUE ){ ?> <th>Harga Jual</th> <?php } ?>
+                    <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uP']) == TRUE ){ ?> <th>Harga Beli</th> <?php } ?>
+                    <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uK']) == TRUE ){ ?> <th>Harga Jual</th> <?php } ?>
                     <th>Satuan</th>
                     <th>Stok</th>
-                    <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?> <th>Aksi</th> <?php } ?>
+                    <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uG']) == TRUE ){ ?> <th>Aksi</th> <?php } ?>
                   </tfoot>
                 </table>
               </div>
@@ -72,7 +72,7 @@
     <!-- /.content -->
 
 
-    <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?>
+    <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uG']) == TRUE ){ ?>
       <!-- Modal Product -->
       <div class="modal fade" id="modal-product">
         <div class="modal-dialog modal-xl">
@@ -327,7 +327,7 @@
                   <div class="form-group">
                   <h5 class="col-md-4 col-sm-12 col-form-label font-weight-bold">Mutasi<a class="float-right"> : </a></h5>
                     <div class="table-responsive">
-                      <table class="table table-bordered">
+                      <table class="table table-bordered" id="det-mutation-table">
                         <thead>
                           <tr>
                             <th>Tgl</th>
@@ -338,15 +338,6 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <?php for($i = 1; $i <= 3; $i++){ ?>
-                          <tr>
-                            <td class="text-center"><small>$i</small></td>
-                            <td class="text-center">Stk Opname</td>
-                            <td class="text-center">Stk Bagus</td>
-                            <td class="text-center">20</td>
-                            <td class="text-center"><small>qwertyqwertyqweyyqwyeqwye</small></td>
-                          </tr>
-                          <?php }; ?>
                         </tbody>
                       </table>
                     </div>

@@ -31,7 +31,7 @@
       <li class="nav-item dropdown">
         <a class="nav-link text-white font-weight-bold" data-toggle="dropdown">
           <img src="<?php echo base_url() ?>assets/dist/img/user2-160x160.jpg" style="width: 30px;" class="img-circle" alt="User Image">&nbsp;&nbsp; 
-          <?php echo $this->session->userdata('logedInUser') ?>
+          <?php echo $info_user->logedUser ?>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <a href="<?php echo site_url('Auth_c/logoutProses/') ?>" class="dropdown-item">

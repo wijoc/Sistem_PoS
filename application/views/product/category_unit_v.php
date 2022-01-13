@@ -50,7 +50,7 @@
                         <th>No.</th>
                         <th>Kategori</th>
                         <th>Jumlah Produk</th>
-                        <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
+                        <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
                       </thead>
                       <tbody>
                       </tbody>
@@ -58,7 +58,7 @@
                         <th>No.</th>
                         <th>Kategori</th>
                         <th>Jumlah Produk</th>
-                        <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
+                        <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
                       </tfoot>
                     </table>
                   </div>
@@ -78,7 +78,7 @@
                         <th>No.</th>
                         <th>Satuan</th>
                         <th>Jumlah Produk</th>
-                        <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
+                        <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
                       </thead>
                       <tbody>
                       </tbody>
@@ -86,7 +86,7 @@
                         <th>No.</th>
                         <th>Satuan</th>
                         <th>Jumlah Produk</th>
-                        <?php if( in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
+                        <?php if( in_array($info_user->logedLevel, ['uAll', 'uO', 'uG']) == TRUE ){ ?><th class="text-center">Aksi</th> <?php } ?>
                       </tfoot>
                     </table>
                   </div>
@@ -114,7 +114,7 @@
             <form method="POST" id="form-cat">
               <div class="modal-body">
                 <!-- Form-hidden edit kategori id -->
-                  <input type="hidden" id="edit-cat-id" name="editID" required="" disabled="disabled">
+                  <input type="hidden" id="edit-cat-id" name="editID" readonly>
 
                 <!-- Form-part input Kategori nama -->
                   <div class="form-group row">
@@ -149,7 +149,7 @@
             <form method="POST" id="form-unit">
               <div class="modal-body">
                 <!-- Form-hidden edit Unit id -->
-                  <input type="hidden" id="edit-unit-id" name="editUnitID" required="" disabled="disabled">
+                  <input type="hidden" id="edit-unit-id" name="editUnitID" readonly>
 
                 <!-- Form-part input Unit nama -->
                   <div class="form-group row">

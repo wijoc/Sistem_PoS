@@ -4,24 +4,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Page_c extends MY_Controller {
 
 	public function index(){
-		switch($this->session->userdata('logedInLevel')){
-			case "uO" :
-				$this->dashboardOwner();
-				break;
-			case "uG" :
-				$this->dashboardGudang();
-				break;
-			case "uP" :
-				$this->dashboardAdmp();
-				break;
-			case "uK" :
-				$this->dashboardKasir();
-				break;
-			case "uAll" :
-				$this->dashboardAdministrator();
-				break;
-			case ""	:
-				redirect('Auth_c');
+		// echo $this->auth_user(['uAll', 'uO', 'uG', 'uP', 'uK']);
+		if($this->auth_user(['uAll', 'uO', 'uG', 'uP', 'uK']) == TRUE){
+			$cookieToken = $this->input->cookie('X-ZPOS-SESSION');
+			/** Validate JWT */
+			$response = Authorization::validateToken($cookieToken);
+		
+			switch($response->logedLevel){
+				case "uO" :
+					$this->dashboardOwner();
+					break;
+				case "uG" :
+					$this->dashboardGudang();
+					break;
+				case "uP" :
+					$this->dashboardAdmp();
+					break;
+				case "uK" :
+					$this->dashboardKasir();
+					break;
+				case "uAll" :
+					$this->dashboardAdministrator();
+					break;
+				case ""	:
+					redirect('Auth_c');
+			}	
+		} else {
+			redirect('Page_c/notAllowedPage/');
 		}
 	}
 
@@ -147,21 +156,14 @@ class Page_c extends MY_Controller {
 
 	/** Dashboard : Administrator */
 	public function dashboardAdministrator(){
-	  /** Check allowed user */
-		$this->auth_user(['uAll']);
-
-	  /** Load model */
-		$this->load->model('User_m');
-
-	  /** Data user */
-		foreach($this->User_m->countUserPerRole()->result_array() as $show){
-			$datauser[$show['u_level']] = $show['count_user'];
-		}
+	  	/** Check allowed user */
+		$cookieData = $this->auth_user(['uAll']);
 
     	$this->pageData = array(
     		'title'    => 'PoS | Pelanggan',
 			'assets'   => array('chart'),
-			'info_user' => $datauser
+			// 'info_user' => $datauser,
+			'info_user' => $cookieData
     	);
 		$this->page = "dashboard/administrator_dashboard_v";
     	$this->layout();

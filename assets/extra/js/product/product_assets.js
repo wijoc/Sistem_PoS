@@ -47,7 +47,6 @@ $(document).ready(function(){
             type  : 'GET',
             datatype : 'json',
             data : {
-                'necessity' : 'dt'
                 // 'start' : 0, // pakai untuk offset data
                 // 'length' : 3, // pakai untuk limit data
             }
@@ -241,7 +240,7 @@ $(document).ready(function(){
                             position: "center",
                             showConfirmButton: true,
                             timer: 2500,
-                            icon: response.responseJSON.icon,
+                            icon: 'error',
                             title: response.responseJSON.message
                         })
                     } else {
@@ -263,9 +262,9 @@ $(document).ready(function(){
 
 function edtlProduct(id, type){
     $.ajax({
-        url     : prds_url,
+        url     : prds_url + id,
         method  : 'GET',
-        data    : {prdID : id, necessity : type},
+        data    : {necessity : type, mutation : (type == 'detail' ? true : false)},
         datatype    : 'json',
         beforeSend  : function(){
             $('.dropify-clear').click();
@@ -335,6 +334,20 @@ function edtlProduct(id, type){
                             <td>`+ response.data.data_op_stock +`</td>
                         </tr>
                     `)
+
+                    var mutation_html = ''
+                    for(index in response.data.mutation){
+                        mutation_html += `
+                        <tr>
+                            <td><small>`+ response.data.mutation[index].dsm_date +`</small></td>
+                            <td><small>`+ response.data.mutation[index].dsm_from +`</small></td>
+                            <td><small>`+ response.data.mutation[index].dsm_to +`</small></td>
+                            <td><small>`+ response.data.mutation[index].dsm_qty +`</small></td>
+                            <td><small>`+ response.data.mutation[index].dsm_ps +`</small></td>
+                        </tr>
+                    ` 
+                    }
+                    $("#det-mutation-table tbody").html(mutation_html)
                 }
             },
             404: function (response) {

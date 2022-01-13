@@ -22,10 +22,26 @@ class MY_Controller extends CI_Controller {
 		$this->load->view('layout/base_layout', $this->layout);
 	}
 
-	public function auth_user($allowed_user){
-		if($this->session->userdata('logedInStatus') == 'canLogin'){
-			if(in_array($this->session->userdata('logedInLevel'), $allowed_user) == FALSE){
-				redirect('Page_c/notAllowedPage/');
+	public function auth_user($allowed_user = NULL){
+		$cookieToken = $this->input->cookie('X-ZPOS-SESSION');
+		if($cookieToken ?? FALSE){
+			/** Validate JWT */
+			try{
+				$response = Authorization::validateToken($cookieToken);
+
+				/** Validate session_id */
+				$this->load->model('User_m', 'user');
+				if($this->user->checkUSess($response->session_id)->num_rows() > 0){
+					if(in_array($response->logedLevel, $allowed_user) == TRUE){
+						return $response;
+					} else {
+						redirect('Page_c/notAllowedPage/');
+					}
+				} else {
+					redirect('Auth_c');
+				}
+			} catch (Exception $exception){
+				redirect('Auth_c');
 			}
 		} else {
 			redirect('Auth_c');

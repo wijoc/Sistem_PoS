@@ -13,11 +13,11 @@ $(document).ready(function(){
 
         /** Get data dari api menggunakan ajax */
         ajax  : {
-            url   : prds_url,
+            url   : stock_url,
             type  : 'GET',
             datatype : 'json',
             data : {
-                'necessity' : 'stock'
+                'mutation' : false,
                 // 'start' : 0, // pakai untuk offset data
                 // 'length' : 3, // pakai untuk limit data
             }
@@ -30,12 +30,12 @@ $(document).ready(function(){
         columns   : [
                 { 'data' : 'data_code'},
                 { 'data' : 'data_name'},
-                { 'data' : 'ini_g_stk'},
-                { 'data' : 'stk_g'},
-                { 'data' : 'ini_ng_stk'},
-                { 'data' : 'stk_ng'},
-                { 'data' : 'ini_op_stk'},
-                { 'data' : 'stk_op'},
+                { 'data' : 'ini_g_stock'},
+                { 'data' : 'data_g_stock'},
+                { 'data' : 'ini_ng_stock'},
+                { 'data' : 'data_ng_stock'},
+                { 'data' : 'ini_op_stock'},
+                { 'data' : 'data_op_stock'},
             { 'data' : null,
                 'render': function (resp){
                     return `<a class="btn btn-xs btn-warning text-white" data-toggle="tooltip" data-placement="top" title="Mutasi stok produk" onClick="stockMutation('`+ resp.data_id +`')"><i class="fas fa-people-carry"></i></a>`
@@ -206,9 +206,9 @@ $(document).ready(function(){
 
 function stockMutation (id){
     $.ajax({
-        url     : prds_url,
+        url     : stock_url + id,
         method  : 'GET',
-        data    : {prdID : id, necessity : 'stock', mutation : true},
+        data    : {mutation : true},
         datatype    : 'json',
         beforeSend  : function(){
             // $("#form-prd").find("#input-prd-category").prop("selectedIndex", 0);

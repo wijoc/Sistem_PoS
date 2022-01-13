@@ -43,7 +43,11 @@ class MY_Model extends CI_Model {
         protected $ctgr_tb = 'tb_category';
         protected $ctgr_f  = array(
             '0' => 'ctgr_id',
-            '1' => 'ctgr_name'
+            '1' => 'ctgr_name',
+            '2' => 'created_at',
+            '3' => 'created_by',
+            '4' => 'last_update_at',
+            '5' => 'last_update_by'
         );
     
     /** Table Mutasi Stock */
@@ -323,6 +327,15 @@ class MY_Model extends CI_Model {
             '3' => 'u_name',
             '4' => 'u_level',
             '5' => 'u_status'
+        );
+
+    /** Table User Session */
+        protected $usess_tb = "user_session";
+        protected $usess_f = array(
+            '0' => 'id',
+            '1' => 'user_id',
+            '2' => 'user_ip',
+            '3' => 'sess_id'
         );
 
 	public function __construct(){

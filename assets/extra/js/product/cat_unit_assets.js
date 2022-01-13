@@ -12,20 +12,15 @@ $(document).ready(function(){
         $("#form-cat").attr("method", "POST")
         $("#form-cat").attr("action", cat_url)
 
-        $("#form-cat").find("#edit-cat-id").prop("required", false)
-        $("#form-cat").find("#edit-cat-id").prop("disabled", true)
-
         $("#form-cat").trigger('reset')
         $("#input-cat-name").removeClass('is-invalid')
         $("#error-cat-name").css("display", "none")
     })
+
     $("#add-unit-button").click(function(){
         $("#modal-unit").find("#form-title").html("Tambah")
         $('#modal-unit').modal("toggle")
         $("#form-unit").attr("method", "POST")
-
-        $("#form-unit").find("#edit-unit-id").prop("required", false)
-        $("#form-unit").find("#edit-unit-id").prop("disabled", true)
 
         $("#form-unit").trigger('reset')
         $("#input-unit-name").removeClass('is-invalid')
@@ -48,9 +43,10 @@ $(document).ready(function(){
         ajax  : {
             url   : cat_url,
             type  : 'GET',
+            headers: { "Authorization": 'as' },
+            crossDomain: true,
             datatype : 'json',
             data : {
-                'necessity' : 'dt'
                 // 'start' : 0, // pakai untuk offset data
                 // 'length' : 3, // pakai untuk limit data
             }
@@ -60,18 +56,21 @@ $(document).ready(function(){
             'targets'   : [0, -1],
             'orderable' : false
         }],
+        language: {
+            'emptyTable' : 'Data kategori tidak tersedia'
+        },  
         columns   : [
             { 'data': 'data_no'},
             { 'data': 'data_name' },
             { 'data': 'data_product' },
             { 'data': null, 
                 'render': function (resp) {
-                return `<a class="btn btn-xs btn-info text-white" data-toggle="tooltip" data-placement="top" title="Detail kategori"><i class="fas fa-search"></i></a>
+                return `<a class="btn btn-xs btn-info text-white" data-toggle="tooltip" data-placement="top" title="Produk kategori ini"><i class="fas fa-cubes"></i></a>
                 <a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Ubah kategori" onclick="editData('ctgr', '`+resp.data_id+`', '`+cat_url+`', '')"><i class="fas fa-edit"></i></a>
                 <a class="btn btn-xs btn-danger text-white" data-toggle="tooltip" data-placement="top" title="Hapus kategori" onclick="confirmDelete('ctgr', '`+resp.data_id+`', '`+cat_url+`', '')"><i class="fas fa-trash"></i></a>`
               }
             },
-        ]
+        ],
     })
 
     /** Datatables Unit serverside */
@@ -108,8 +107,7 @@ $(document).ready(function(){
             { 'data': 'data_product' },
             { 'data': null, 
                 'render': function (resp) {
-                return `<a class="btn btn-xs btn-info text-white" data-toggle="tooltip" data-placement="top" title="Detail satuan"><i class="fas fa-search"></i></a>
-                <a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Ubah satuan" onclick="editData('unit', '`+resp.data_id+`', '`+unit_url+`', '')"><i class="fas fa-edit"></i></a>
+                return `<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="top" title="Ubah satuan" onclick="editData('unit', '`+resp.data_id+`', '`+unit_url+`', '')"><i class="fas fa-edit"></i></a>
                 <a class="btn btn-xs btn-danger text-white" data-toggle="tooltip" data-placement="top" title="Hapus satuan" onclick="confirmDelete('unit', '`+resp.data_id+`', '`+unit_url+`', '')"><i class="fas fa-trash"></i></a>`
               }
             },
@@ -120,7 +118,7 @@ $(document).ready(function(){
     $("#form-cat").on("submit", function(event){
         event.preventDefault()
         $.ajax({
-            url     : cat_url,
+            url     : ($(this).attr("method") == "POST" ? cat_url : cat_url + $("#edit-cat-id").val()),
             method  : $(this).attr("method"),
             data    : $("#form-cat").serialize(),
             datatype    : 'json',
@@ -147,6 +145,44 @@ $(document).ready(function(){
                             showConfirmButton: true,
                             timer: 2500,
                             icon: response.responseJSON.icon,
+                            title: response.responseJSON.message
+                        })
+                    } else {
+                        Swal.fire({
+                            position: "center",
+                            showConfirmButton: true,
+                            timer: 2500,
+                            icon: 'error',
+                            title: response.statusText
+                        })
+                    }
+                },
+                401: function (response) {
+                    if(response.responseJSON){
+                        Swal.fire({
+                            position: "center",
+                            showConfirmButton: true,
+                            timer: 2500,
+                            icon: 'error',
+                            title: response.responseJSON.message
+                        })
+                    } else {
+                        Swal.fire({
+                            position: "center",
+                            showConfirmButton: true,
+                            timer: 2500,
+                            icon: 'error',
+                            title: response.statusText
+                        })
+                    }
+                },
+                403: function (response) {
+                    if(response.responseJSON){
+                        Swal.fire({
+                            position: "center",
+                            showConfirmButton: true,
+                            timer: 2500,
+                            icon: 'error',
                             title: response.responseJSON.message
                         })
                     } else {
@@ -226,7 +262,7 @@ $(document).ready(function(){
     $("#form-unit").on("submit", function(event){
         event.preventDefault()
         $.ajax({
-            url     : unit_url,
+            url     : ($(this).attr("method") == "POST" ? unit_url : unit_url + $("#edit-unit-id").val()),
             method  : $(this).attr("method"),
             data    : $("#form-unit").serialize(),
             datatype    : 'json',
@@ -332,9 +368,8 @@ $(document).ready(function(){
 function editData(type, id){
     if(type == 'ctgr'){
         $.ajax({
-            url     : cat_url,
+            url     : cat_url + id,
             method  : 'GET',
-            data    : {ctgrID : id},
             datatype    : 'json',
             statusCode: {
                 200: function (response) {
@@ -344,9 +379,6 @@ function editData(type, id){
                     $('#modal-category').modal("toggle")
                     $("#form-cat").attr("method", "PUT")
                     $("#form-cat").attr("action", cat_url)
-            
-                    $("#form-cat").find("#edit-cat-id").prop("required", true)
-                    $("#form-cat").find("#edit-cat-id").prop("disabled", false)
 
                     $("#form-cat").find("#edit-cat-id").val(resp_data.data_id)
                     $("#form-cat").find("#input-cat-name").val(resp_data.data_name)
@@ -370,9 +402,8 @@ function editData(type, id){
         })
     } else {
         $.ajax({
-            url     : unit_url,
+            url     : unit_url + id,
             method  : 'GET',
-            data    : {unitID : id},
             datatype    : 'json',
             statusCode: {
                 200: function (response) {
@@ -382,9 +413,6 @@ function editData(type, id){
                     $('#modal-unit').modal("toggle")
                     $("#form-unit").attr("method", "PUT")
                     $("#form-unit").attr("action", unit_url)
-            
-                    $("#form-unit").find("#edit-unit-id").prop("required", true)
-                    $("#form-unit").find("#edit-unit-id").prop("disabled", false)
 
                     $("#form-unit").find("#edit-unit-id").val(resp_data.data_id)
                     $("#form-unit").find("#input-unit-name").val(resp_data.data_name)

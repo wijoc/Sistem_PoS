@@ -1,6 +1,8 @@
 <!-- Core JS Goes here -->
 	<!-- jQuery -->
 	<script src="<?php echo base_url() ?>assets/plugins/jquery/jquery.min.js"></script>
+	<!-- JS Cookie -->
+	<script src="<?php echo base_url() ?>assets/plugins/js-cookie/js.cookie.js"></script>
 	<!-- Bootstrap 4 -->
 	<script src="<?php echo base_url() ?>assets/plugins/bootstrap/js/bootstrap.bundle.js"></script>
 	<!-- AdminLTE App -->
@@ -138,7 +140,7 @@
 
 	<?php if(in_array('stock_product', $assets)){ ?>
 		<script>
-			let prds_url = "<?php echo $stockApi ?>"
+			let stock_url = "<?php echo $stockApi ?>"
 			let mutation_url = "<?php echo $mutationApi ?>"
 		</script>
 		<!-- Stock Produk Assets -->

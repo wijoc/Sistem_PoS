@@ -26,7 +26,7 @@
 
           <li class="nav-header">Master Data</li>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG', 'uK', 'uP'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO', 'uG', 'uK', 'uP'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Product_c/productList') ?>" class="nav-link">
               <i class="fas fa-circle fa-cubes nav-icon"></i>
@@ -35,7 +35,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO', 'uG'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Product_c/productStock') ?>" class="nav-link">
               <i class="fas fa-boxes nav-icon"></i>
@@ -50,7 +50,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uG'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uG'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Product_c/stockMutation/') ?>" class="nav-link">
               <i class="fas fa-circle fa-people-carry nav-icon"></i>
@@ -59,7 +59,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Supplier_c') ?>" class="nav-link">
               <i class="fas fa-truck-moving nav-icon"></i>
@@ -68,7 +68,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO', 'uK'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Customer_c') ?>" class="nav-link">
               <i class="fas fa-user nav-icon"></i>
@@ -77,11 +77,11 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK', 'uP'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO', 'uK', 'uP'])){ ?>
           <li class="nav-header">Transaksi</li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uP'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO', 'uP'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Transaction_c/listPurchasesPage') ?>" class="nav-link">
               <i class="fas fa-dolly-flatbed nav-icon"></i>
@@ -90,7 +90,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO', 'uK'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Transaction_c/listSalesPage') ?>" class="nav-link">
               <i class="fas fa-cash-register nav-icon"></i>
@@ -99,7 +99,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uP', 'uK'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO', 'uP', 'uK'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Transaction_c/listExpensesPage') ?>" class="nav-link">
               <i class="fas fa-hand-holding-usd nav-icon"></i>
@@ -114,7 +114,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uP'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO', 'uP'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Transaction_c/listRSPage') ?>" class="nav-link">
               <i class="fas fa-exchange-alt nav-icon"></i>
@@ -123,7 +123,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uK'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO', 'uK'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Transaction_c/listRCPage') ?>" class="nav-link">
               <i class="fas fa-sync-alt nav-icon"></i>
@@ -132,11 +132,11 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO', 'uG'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO', 'uG'])){ ?>
           <li class="nav-header">Laporan</li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Report_c') ?>" class="nav-link">
               <i class="fas fa-file-signature nav-icon"></i>
@@ -145,7 +145,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uG'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uG'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Report_c') ?>" class="nav-link">
               <i class="fas fa-file-signature nav-icon"></i>
@@ -154,11 +154,11 @@
           </li>
           <?php } ?>
           
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO'])){ ?>
           <li class="nav-header">Pengaturan</li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll', 'uO'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll', 'uO'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('Setting_c/listAccountPage') ?>" class="nav-link">
               <i class="fas fa-university nav-icon"></i>
@@ -173,7 +173,7 @@
           </li>
           <?php } ?>
 
-          <?php if(in_array($this->session->userdata('logedInLevel'), ['uAll'])){ ?>
+          <?php if(in_array($info_user->logedLevel, ['uAll'])){ ?>
           <li class="nav-item">
             <a href="<?php echo site_url('User_c/listUserPage') ?>" class="nav-link">
               <i class="fas fa-users-cog nav-icon"></i>
