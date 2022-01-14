@@ -23,11 +23,25 @@ class MY_Controller extends CI_Controller {
 	}
 
 	public function auth_user($allowed_user = NULL){
-		$cookieToken = $this->input->cookie('X-ZPOS-SESSION');
-		if($cookieToken ?? FALSE){
+		// $jwtoken = $this->input->cookie('X-ZPOS-SESSION');
+
+        if($this->input->cookie('X-ZPOS-SESSION')){
+            $jwtoken = $this->input->cookie('X-ZPOS-SESSION');
+        } else {
+            $head = getallheaders();
+            if($head['Authorization']){
+                preg_match('/Bearer\s(\S+)/', $head['Authorization'], $matches);
+                $jwtoken = $matches[1];
+                $head = null;
+            } else {
+                $jwtoken = NULL;
+            }
+        }
+
+		if($jwtoken ?? FALSE){
 			/** Validate JWT */
 			try{
-				$response = Authorization::validateToken($cookieToken);
+				$response = Authorization::validateToken($jwtoken);
 
 				/** Validate session_id */
 				$this->load->model('User_m', 'user');

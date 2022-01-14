@@ -1,0 +1,1789 @@
+openapi: 3.0.0
+info:
+  title: Demo REST API POS
+  description: Dokumentasi API yang tersedia.
+  version: 0.1.1
+ 
+servers:
+  - url: https://zpos.epizy.com/api/
+    description: URL untuk demo endpoint.
+    
+paths: {
+  "/": {
+    get: {
+      summary: "Select all Product",
+      description: "Select all Product in DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      parameters: [
+        {
+          in: "query",
+          name: "categoryID",
+          description: "Show all product on this category. Category ID encoded like this : urlencode(base64_encode( category_id ))",
+          required: false,
+          schema: {
+            type : string,
+            nullable: true,
+            minimum: 1
+          }
+        },
+      ],
+      responses: {
+        '200':{    # status code
+          description: "Responses if request is success.",
+          content: {
+            application/json: {
+              schema: {
+                type: "object",
+                properties: {
+                  count_data: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Data Produk ditemukan'
+                  },
+                  data: {
+                    type: array,
+                    items: {
+                      type: "object",
+                      properties: {
+                        data_id: {
+                          type: string,
+                          example: 'MQ%3D%3D'
+                        },
+                        data_code: {
+                          type: string,
+                          example: '130030'
+                        },
+                        data_name: {
+                          type: string,
+                          example: 'Product A'
+                        },
+                        data_category: {
+                          type: string,
+                          example: 'Kategori A'
+                        },
+                        data_unit: {
+                          type: string,
+                          example: 'Satuan A'
+                        },
+                        data_purchase_price: {
+                          type: integer,
+                          example: 75000.10
+                        },
+                        data_selling_price: {
+                          type: integer,
+                          example: 75000.10
+                        },
+                        good_stock: {
+                          type: integer,
+                          example: 1
+                        },
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    },
+    post: {
+      summary: "Input new Product",
+      description: "Input new product to DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          multipart/form-data: {
+            schema: {
+              type: object,
+              properties: {
+                p-set-method: {
+                  type: string,
+                  example: '_POST', # or _PUT for update
+                },
+                postCode: {
+                  type: string,
+                  example: 'p202112030001',
+                  maximum: 20
+                },
+                postName: {
+                  type: string,
+                  example: 'Product A'
+                },
+                postCategory: {
+                  type: string,
+                  example: 'MQ%3%3%4' #encoded category_id using urlencode(ase64_encode(category_id))
+                },
+                postPPrice: {
+                  type: integer,
+                  example: 10000.00,
+                  minimum: 0
+                },
+                postSPrice: {
+                  type: integer,
+                  example: 10000.00,
+                  minimum: 0
+                },
+                postUnit: {
+                  type: string,
+                  example: 'MQ%3%3%4' #encoded unit_id using urlencode(ase64_encode(unit_id))
+                },
+                postContains: {
+                  type: integer,
+                  example: 1,
+                  minimum: 0
+                },
+                postStockG: { # if p-set-method is _PUT, this not necessary
+                  type: integer,
+                  example: 1,
+                  minimum: 0
+                },
+                postStockNG: { # if p-set-method is _PUT, this not necessary
+                  type: integer,
+                  example: 1,
+                  minimum: 0
+                },
+                postStockOP: { # if p-set-method is _PUT, this not necessary
+                  type: integer,
+                  example: 1,
+                  minimum: 0
+                },
+                postImg: {
+                  type: string,
+                  format: binary
+                }
+              }
+            },
+          }
+        }
+      },
+      responses: {
+        '201': {
+          description: "Responses if success creating produk data.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  message: {
+                    type: string,
+                    example: 'Berhasil menyimpan data produk !'
+                  }
+                }
+              }
+            }
+          }
+        },
+        '422': {
+          description: "Responses if error in data validation.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/ProductError"
+              }
+            }
+          }
+        },
+        '403': {
+          description: "Responses if failed input produk data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/notAllowed"
+              }
+            }
+          }
+        },
+        '500': {
+          description: "Responses if failed input produk data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Kesalahan sistem. Gagal menyimpan data produk !'
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    },
+  },
+  "/{prdID}": {
+    get: {
+      summary: "Select Product by prd_ID",
+      description: "Select Product by prd_ID",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      parameters: [
+        {
+          $ref: "#/components/parameters/prdID"
+        },
+        {
+          in: "query",
+          name: "necessity",
+          description: "option : detail or edit. Detail including (initial and current) stock, edit doesn't include stock",
+          required: true,
+          schema: {
+            type: string,
+            enum: [detail, edit]
+          }
+        },
+        {
+          in: "query",
+          name: "mutation",
+          description: "to enter a list of stock mutations related to this product. Optional, can be boolean or null",
+          schema: {
+            type: boolean,
+            nullable: true,
+            example: false
+          }
+        },
+      ],
+      responses: {
+        '200':{    # status code
+          description: "Responses if request is success.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  data: {
+                    type: object,
+                    properties: {
+                      data_id: {
+                        type: string,
+                        example: 'MQ%3D%3D'
+                      },
+                      data_code: {
+                        type: string,
+                        example: '130030'
+                      },
+                      data_name: {
+                        type: string,
+                        example: 'Product A'
+                      },
+                      data_category: {
+                        type: string,
+                        example: 'Kategori A'
+                      },
+                      data_unit: {
+                        type: string,
+                        example: 'Satuan A'
+                      },
+                      data_purchase_price: {
+                        type: integer,
+                        example: 75000.10
+                      },
+                      data_selling_price: {
+                        type: integer,
+                        example: 75000.10
+                      },
+                      good_stock: {
+                        type: integer,
+                        example: 1
+                      },
+                      mutation: {
+                        type: array,
+                        items: {
+                          properties: {
+                            data_name: {
+                              type: string,
+                              example: "Product A"
+                            },
+                            dsm_from: {
+                              type: string,
+                              example: "Stock Good"
+                            },
+                            dsm_to: {
+                              type: string,
+                              example: "Stock Opname"
+                            },
+                            dsm_qty: {
+                              type: integer,
+                              example: 1
+                            },
+                            dsm_ps: {
+                              type: string,
+                              example: "Long text"
+                            },
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        '401':{    # status code
+          description: "Responses if Invalid ID.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/InvalidID"
+              }
+            }
+          }
+        },
+        '404':{    # status code
+          description: "Responses if category not found.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/DataNotFound"
+              }
+            }
+          }
+        }
+      }
+    },
+  },
+  "/stocks": {
+    get: {
+      summary: "Select All Stock Product",
+      description: "Select All Product Stock",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      responses: {
+        '200':{    # status code
+          description: "Responses if request is success.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  message: {
+                    type: string,
+                    example: "Data ditemukan !"
+                  },
+                  data: {
+                    type: array,
+                    items: {
+                      properties: {
+                        data_id: {
+                          type: string,
+                          example: 'MQ%3D%3D'
+                        },
+                        data_code: {
+                          type: string,
+                          example: '130030'
+                        },
+                        data_name: {
+                          type: string,
+                          example: 'Product A'
+                        },
+                        data_g_stock: {
+                          type: integer,
+                          example: 1
+                        },
+                        data_ng_stock: {
+                          type: integer,
+                          example: 1
+                        },
+                        data_op_stock: {
+                          type: integer,
+                          example: 1
+                        },
+                        ini_g_stock: {
+                          type: integer,
+                          example: 1
+                        },
+                        ini_ng_stock: {
+                          type: integer,
+                          example: 1
+                        },
+                        ini_op_stock: {
+                          type: integer,
+                          example: 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        '401':{    # status code
+          description: "Responses if Invalid ID.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/InvalidID"
+              }
+            }
+          }
+        },
+        '404':{    # status code
+          description: "Responses if category not found.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/DataNotFound"
+              }
+            }
+          }
+        }
+      }
+    },
+  },
+  "/stocks/{prdID}": {
+    get: {
+      summary: "Select Stock Product by prd_ID",
+      description: "Select Product Stock by prd_ID",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      parameters: [
+        {
+          $ref: "#/components/parameters/prdID"
+        },
+        {
+          in: "query",
+          name: "mutation",
+          description: "to enter a list of stock mutations related to this product. Optional, can be boolean or null",
+          schema: {
+            type: boolean,
+            nullable: true,
+            example: false
+          }
+        },
+      ],
+      responses: {
+        '200':{    # status code
+          description: "Responses if request is success.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  data: {
+                    type: object,
+                    properties: {
+                      data_id: {
+                        type: string,
+                        example: 'MQ%3D%3D'
+                      },
+                      data_code: {
+                        type: string,
+                        example: '130030'
+                      },
+                      data_name: {
+                        type: string,
+                        example: 'Product A'
+                      },
+                      stk: {
+                        type: object,
+                        properties: {
+                          data_g_stock: {
+                            type: integer,
+                            example: 1
+                          },
+                          data_ng_stock: {
+                            type: integer,
+                            example: 1
+                          },
+                          data_op_stock: {
+                            type: integer,
+                            example: 1
+                          },
+                          ini_g_stock: {
+                            type: integer,
+                            example: 1
+                          },
+                          ini_ng_stock: {
+                            type: integer,
+                            example: 1
+                          },
+                          ini_op_stock: {
+                            type: integer,
+                            example: 1
+                          },
+                        }
+                      },
+                      mutation: {
+                        type: array,
+                        items: {
+                          properties: {
+                            data_name: {
+                              type: string,
+                              example: "Product A"
+                            },
+                            dsm_from: {
+                              type: string,
+                              example: "Stock Good"
+                            },
+                            dsm_to: {
+                              type: string,
+                              example: "Stock Opname"
+                            },
+                            dsm_qty: {
+                              type: integer,
+                              example: 1
+                            },
+                            dsm_ps: {
+                              type: string,
+                              example: "Long text"
+                            },
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+  },
+  "/mutation": {
+    get: {
+      summary: "Select all Stock Mutation",
+      description: "Select all Stock Mutation in DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      responses: {
+        '200':{    # status code
+          description: "Responses if request is success.",
+          content: {
+            application/json: {
+              schema: {
+                type: "object",
+                properties: {
+                  count_data: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Data Kategori ditemukan'
+                  },
+                  data: {
+                    type: array,
+                    items: {
+                      type: "object",
+                      properties: {
+                        data_date: {
+                          type: string,
+                          format: date,
+                          example: '2020-01-02'
+                        },
+                        data_product: {
+                          type: string,
+                          example: 'Product A'
+                        },
+                        data_from: {
+                          type: string,
+                          example: 'Stock From'
+                        },
+                        data_to: {
+                          type: string,
+                          example: 'Stock To'
+                        },
+                        data_qty: {
+                          type: integer,
+                          example: 1
+                        },
+                        data_ps: {
+                          type: string,
+                          format: text,
+                          example: 'Long Text'
+                        },
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    },
+    post: {
+      summary: "Input new stock mutation",
+      description: "Input new stock mutation to DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          application/application/x-www-form-urlencoded: {
+            schema: {
+              type: object,
+              properties: {
+                postPrdID: {
+                  type: string,
+                  example: 'encoded prd id with urlencode(base64_encode( prd_id ))'
+                },
+                postStockDate: {
+                  type: string,
+                  format: date,
+                  example: '2020-01-01'
+                },
+                postStockA: {
+                  type: string,
+                  enum: [SG, SNG, SO]
+                },
+                postStockB: {
+                  type: string,
+                  enum: [SG, SNG, SO]
+                },
+                postStockQty: {
+                  type: integer,
+                  minimum: 0,
+                  example: 1
+                },
+                postStockPS: {
+                  type: string,
+                  format: text,
+                  example: 'Category Name'
+                }
+              }
+            }
+          }
+        }
+      },
+      responses: {
+        '201': {
+          description: "Responses if success creating category data.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  message: {
+                    type: string,
+                    example: 'Berhasil menyimpan data category !'
+                  }
+                }
+              }
+            }
+          }
+        },
+        '422': {
+          description: "Responses if error in data validation.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/CategoryError"
+              }
+            }
+          }
+        },
+        '403': {
+          description: "Responses if failed input produk data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/notAllowed"
+              }
+            }
+          }
+        },
+        '500': {
+          description: "Responses if failed input unit data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Kesalahan sistem. Gagal menyimpan data satuan !'
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    }
+  },
+  "/categories": {
+    get: {
+      summary: "Select all Category",
+      description: "Select all Category in DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      responses: {
+        '200':{    # status code
+          description: "Responses if request is success.",
+          content: {
+            application/json: {
+              schema: {
+                type: "object",
+                properties: {
+                  count_data: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Data Kategori ditemukan'
+                  },
+                  data: {
+                    type: array,
+                    items: {
+                      type: "object",
+                      properties: {
+                        data_id: {
+                          type: string,
+                          example: 'MQ%3D%3D'
+                        },
+                        data_name: {
+                          type: string,
+                          example: 'Kategori A'
+                        },
+                        data_product: {
+                          type: integer,
+                          example: 1
+                        },
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    },
+    post: {
+      summary: "Input new category",
+      description: "Input new category to DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          application/application/x-www-form-urlencoded: {
+            schema: {
+              $ref: "#/components/schemas/CreateUpdateCategory"
+            }
+          }
+        }
+      },
+      responses: {
+        '201': {
+          description: "Responses if success creating category data.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  message: {
+                    type: string,
+                    example: 'Berhasil menyimpan data category !'
+                  }
+                }
+              }
+            }
+          }
+        },
+        '422': {
+          description: "Responses if error in data validation.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/CategoryError"
+              }
+            }
+          }
+        },
+        '500': {
+          description: "Responses if failed input unit data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Kesalahan sistem. Gagal menyimpan data satuan !'
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    }
+  },
+  "/categories/{categoryID}": {
+    get: {
+      summary: "Select Category",
+      description: "Select Category on categroy id",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      parameters: [
+        {
+          $ref: "#/components/parameters/categoryID"
+        },
+      ],
+      responses: {
+        '200':{    # status code
+          description: "Responses if request is success.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  count_data: {
+                    type: integer,
+                    example: 1
+                  },
+                  data: {
+                    type: array,
+                    items: {
+                      type: "object",
+                      properties: {
+                        data_id: {
+                          type: string,
+                          example: 'MQ%3D%3D'
+                        },
+                        data_name: {
+                          type: string,
+                          example: 'Canal'
+                        },
+                        data_product: {
+                          type: integer,
+                          example: 1
+                        },
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        '401':{    # status code
+          description: "Responses if Invalid ID.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/InvalidID"
+              }
+            }
+          }
+        },
+        '404':{    # status code
+          description: "Responses if category not found.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/DataNotFound"
+              }
+            }
+          }
+        }
+      }
+    },
+    put: {
+      summary: "Edit selected Category",
+      description: "Update Category in DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      parameters: [
+        {
+          $ref: "#/components/parameters/categoryID"
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          application/application/x-www-form-urlencoded: {
+            schema: {
+              $ref: "#/components/schemas/CreateUpdateCategory"
+            }
+          }
+        }
+      },
+      responses: {
+        '201': {
+          description: "Responses if success update category data.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  message: {
+                    type: string,
+                    example: 'Kategori berhasil diperbarui !'
+                  }
+                }
+              }
+            }
+          }
+        },
+        '422': {
+          description: "Responses if error in data validation.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/CategoryError"
+              }
+            }
+          }
+        },
+        '400':{    # status code
+          description: "Responses if categoryID is NULL.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/ProvideanID"
+              }
+            }
+          }
+        },
+        '403': {
+          description: "Responses if failed input produk data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/notAllowed"
+              }
+            }
+          }
+        },
+        '404':{    # status code
+          description: "Responses if category not found.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/DataNotFound"
+              }
+            }
+          }
+        },
+        '500': {
+          description: "Responses if failed input category data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Kesalahan sistem. Gagal menyimpan data kategori !'
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    },
+    delete: {
+      summary: "Delete selected Category",
+      description: "Delete Category in DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      parameters: [
+        {
+          $ref: "#/components/parameters/categoryID"
+        },
+      ],
+      responses: {
+        '200': {
+          description: "Responses if success delete category data.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  message: {
+                    type: string,
+                    example: 'Kategory berhasil dihapus !'
+                  }
+                }
+              }
+            }
+          }
+        },
+        '400':{    # status code
+          description: "Responses if categoryID is NULL.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/ProvideanID"
+              }
+            }
+          }
+        },
+        '404':{    # status code
+          description: "Responses if category not found.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/DataNotFound"
+              }
+            }
+          }
+        },
+        '403': {
+          description: "Responses if failed input produk data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/notAllowed"
+              }
+            }
+          }
+        },
+        '500': {
+          description: "Responses if failed delete category data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Kesalahan sistem. Gagal menghapus data kategori !'
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    }
+  },
+  "/units": {
+    get: {
+      summary: "Select all Unit",
+      description: "Select all Unit in DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      responses: {
+        '200':{    # status code
+          description: "Responses if request is success.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  count_data: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Data Satuan ditemukan'
+                  },
+                  data: {
+                    type: array,
+                    items: {
+                      type: "object",
+                      properties: {
+                        data_id: {
+                          type: string,
+                          example: 'MQ%3D%3D'
+                        },
+                        data_name: {
+                          type: string,
+                          example: 'Batang'
+                        },
+                        data_product: {
+                          type: integer,
+                          example: 1
+                        },
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    },
+    post: {
+      summary: "Input new unit",
+      description: "Input new unit to DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          application/application/x-www-form-urlencoded: {
+            schema: {
+              $ref: "#/components/schemas/CreateUpdateUnit"
+            }
+          }
+        }
+      },
+      responses: {
+        '201': {
+          description: "Responses if success creating unit data.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  message: {
+                    type: string,
+                    example: 'Berhasil menyimpan data satuan !'
+                  }
+                }
+              }
+            }
+          }
+        },
+        '422': {
+          description: "Responses if error in data validation.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: "object",
+                    properties: {
+                      errorName: {
+                        type: string,
+                        example: "<p>Satuan sudah tersedia</p>"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        '500': {
+          description: "Responses if failed input unit data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Kesalahan sistem. Gagal menyimpan data satuan !'
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    }
+  },
+  "/units/{unitID}": {
+    get: {
+      summary: "Select Unit",
+      description: "Select Unit in DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      parameters: [
+        {
+          $ref: "#/components/parameters/unitID"
+        },
+      ],
+      responses: {
+        '200':{    # status code
+          description: "Responses if request is success.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    data_id: {
+                      type: string,
+                      example: 'MQ%3D%3D'
+                    },
+                    data_name: {
+                      type: string,
+                      example: 'Batang'
+                    },
+                    data_product: {
+                      type: integer,
+                      example: 1
+                    },
+                  }
+                }
+              }
+            }
+          }
+        },
+        '401':{    # status code
+          description: "Responses if Invalid ID.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/InvalidID"
+              }
+            }
+          }
+        },
+        '404':{    # status code
+          description: "Responses if unit not found.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/DataNotFound"
+              }
+            }
+          }
+        }
+      }
+    },
+    put: {
+      summary: "Edit selected Unit",
+      description: "Update Unit in DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      parameters: [
+        {
+          $ref: "#/components/parameters/unitID"
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          application/application/x-www-form-urlencoded: {
+            schema: {
+              $ref: "#/components/schemas/CreateUpdateUnit"
+            }
+          }
+        }
+      },
+      responses: {
+        '201': {
+          description: "Responses if success update unit data.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  message: {
+                    type: string,
+                    example: 'Satuan berhasil diperbarui !'
+                  }
+                }
+              }
+            }
+          }
+        },
+        '422': {
+          description: "Responses if error in data validation.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: "object",
+                    properties: {
+                      errorName: {
+                        type: string,
+                        example: "<p>Satuan sudah tersedia</p>"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        '400':{    # status code
+          description: "Responses if unitID is NULL.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/ProvideanID"
+              }
+            }
+          }
+        },
+        '404':{    # status code
+          description: "Responses if unit not found.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/DataNotFound"
+              }
+            }
+          }
+        },
+        '500': {
+          description: "Responses if failed input unit data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Kesalahan sistem. Gagal menyimpan data satuan !'
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    },
+    delete: {
+      summary: "Delete selected Unit",
+      description: "Delete Unit in DB",
+      security: [
+        {
+          'BearerAuth': []
+        },
+        {
+          'cookieAuth': []
+        }
+      ],
+      parameters: [
+        {
+          $ref: "#/components/parameters/unitID"
+        },
+      ],
+      responses: {
+        '200': {
+          description: "Responses if success delete unit data.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: true
+                  },
+                  message: {
+                    type: string,
+                    example: 'Satuan berhasil dihapus !'
+                  }
+                }
+              }
+            }
+          }
+        },
+        '400':{    # status code
+          description: "Responses if unitID is NULL.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/ProvideanID"
+              }
+            }
+          }
+        },
+        '404':{    # status code
+          description: "Responses if unit not found.",
+          content: {
+            application/json: {
+              "schema":{
+                $ref: "#/components/schemas/DataNotFound"
+              }
+            }
+          }
+        },
+        '500': {
+          description: "Responses if failed delete unit data to DB.",
+          content: {
+            application/json: {
+              "schema":{
+                type: "object",
+                properties: {
+                  status: {
+                    type: boolean,
+                    example: false
+                  },
+                  message: {
+                    type: string,
+                    example: 'Kesalahan sistem. Gagal menghapus data satuan !'
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    }
+  }
+}
+
+components: {
+  securitySchemes: { # Use one of the following 2
+    BearerAuth: {
+      type: http,
+      scheme: bearer
+    },
+    cookieAuth: {
+      type: apiKey,
+      in: cookie,
+      name: 'X-ZPOS-SESSION'
+    }
+  },
+  parameters: {
+    prdID: {
+      name: "prdID",
+      description: "product ID encoded like this : urlencode(base64_encode( product_id ))",
+      in: "path",
+      required: true,
+      schema: {
+        type : string,
+        minimum: 1
+      }
+    },
+    unitID: {
+      name: "unitID",
+      description: "Unit ID encoded like this : urlencode(base64_encode( unit_id ))",
+      in: "path",
+      required: true,
+      schema: {
+        type : string,
+        minimum: 1
+      }
+    },
+    categoryID: {
+      name: "categoryID",
+      description: "Category ID encoded like this : urlencode(base64_encode( category_id ))",
+      in: "path",
+      required: true,
+      schema: {
+        type : string,
+        minimum: 1
+      }
+    },
+  },
+  schemas: {
+    ProvideanID: {
+      type: "object",
+      properties: {
+        status: {
+          type: boolean,
+          example: false
+        },
+        message: {
+          type: string,
+          example: 'Please provide an ID'
+        }
+      }
+    },
+    DataNotFound: {
+      type: "object",
+      properties: {
+        status: {
+          type: boolean,
+          example: false
+        },
+        message: {
+          type: string,
+          example: 'Satuan tidak ditemukan !'
+        }
+      }
+    },
+    InvalidID: {
+      type: "object",
+      properties: {
+        status: {
+          type: boolean,
+          example: false
+        },
+        message: {
+          type: string,
+          example: 'Invalid Unit ID'
+        }
+      }
+    },
+    notAllowed: {
+      type: "object",
+      properties: {
+        status: {
+          type: boolean,
+          example: false
+        },
+        message: {
+          type: string,
+          example: 'Not Allowed !'
+        }
+      }
+    },
+    ProductError: {
+      type: object,
+      properties: {
+        error_msg: {
+          type: string,
+          example: 'Invalid Input'
+        },
+        errorCode: {
+          type: string,
+          example: 'Kope Produk sudah digunakan'
+        },
+        errorName: {
+          type: string,
+          example: 'Nama Produk sudah digunakan'
+        },
+        errorCategory: {
+          type: string,
+          example: 'Kategori tidak ditemukan'
+        },
+        errorPPrice: {
+          type: string,
+          example: 'Harus lebih dari 0'
+        },
+        errorSPrice: {
+          type: string,
+          example: 'Harus lebih dari 0'
+        },
+        errorUnit: {
+          type: string,
+          example: 'Satuan tidak ditemukan'
+        },
+        errorContains: {
+          type: string,
+          example: 'Harus lebih dari 0'
+        },
+        errorStockG: {
+          type: string,
+          example: 'Harus lebih dari 0'
+        },
+        errorStockNG: {
+          type: string,
+          example: 'Harus lebih dari 0'
+        },
+        errorStockOP: {
+          type: string,
+          example: 'Harus lebih dari 0'
+        },
+        errorImg: {
+          type: string,
+          example: 'File Not Allowed !'
+        }
+      }
+    },
+    CreateUpdateCategory: {
+      type: object,
+      properties: {
+        postCatName: {
+          type: string,
+          example: 'Category Name'
+        }
+      }
+    },
+    CategoryError: {
+      type: "object",
+      properties: {
+        status: {
+          type: boolean,
+          example: false
+        },
+        message: {
+          type: "object",
+          properties: {
+            errorName: {
+              type: string,
+              example: "Category sudah tersedia"
+            }
+          }
+        }
+      }
+    },
+    CreateUpdateUnit: {
+      type: object,
+      properties: {
+        postUnitName: {
+          type: string,
+          example: 'Nama Unit'
+        }
+      }
+    },
+  }
+}

@@ -350,7 +350,7 @@ Class Product_api extends MY_Api {
                     }
         
                     $postData = array(
-                        'prd_code'		     => $this->post('postCode'),
+                        'prd_code'		     => ($this->post('postCode'))? $this->post('postCode') : $nextCode,
                         'prd_name'			 => $this->post('postName'),
                         'prd_category_id_fk' => base64_decode(urldecode($this->post('postCategory'))),
                         'prd_purchase_price' => $this->post('postPPrice'),
@@ -879,12 +879,12 @@ Class Product_api extends MY_Api {
         
             if($this->form_validation->run() == FALSE) {
                 $error_msg = array(
-                    'errorPrdID'   => form_error('postPrdID'),
-                    'errorStockDate' => form_error('postStockDate'),
-                    'errorStockA'    => form_error('postStockA'),
-                    'errorStockB'    => form_error('postStockB'),
-                    'errorStockQty'  => form_error('postStockQty'),
-                    'errorStockPS'   => form_error('postStockPS'),
+                    'errorPrdID'   => strip_tags(form_error('postPrdID')),
+                    'errorStockDate' => strip_tags(form_error('postStockDate')),
+                    'errorStockA'    => strip_tags(form_error('postStockA')),
+                    'errorStockB'    => strip_tags(form_error('postStockB')),
+                    'errorStockQty'  => strip_tags(form_error('postStockQty')),
+                    'errorStockPS'   => strip_tags(form_error('postStockPS')),
                 );
     
                 if(form_error('postPrdID') ?? false){
@@ -1141,7 +1141,7 @@ Class Product_api extends MY_Api {
                     if($this->form_validation->run() == FALSE) {
                         $this->response( [
                             'icon'   => 'error',
-                            'message'   => array('errorName' => form_error('postCatName'))
+                            'message'   => array('errorName' => strip_tags(form_error('postCatName')))
                         ], 422 );
                     } else {
                         $updateData = array(

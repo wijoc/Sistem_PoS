@@ -18,9 +18,13 @@ Class MY_Api extends RestController {
             $jwtoken = $this->input->cookie('X-ZPOS-SESSION');
         } else {
             $head = getallheaders();
-            preg_match('/Bearer\s(\S+)/', $head['Authorization'], $matches);
-            $jwtoken = $matches[1];
-            $head = null;
+            if($head['Authorization']){
+                preg_match('/Bearer\s(\S+)/', $head['Authorization'], $matches);
+                $jwtoken = $matches[1];
+                $head = null;
+            } else {
+                $jwtoken = NULL;
+            }
         }
 
 		if($jwtoken ?? FALSE){
